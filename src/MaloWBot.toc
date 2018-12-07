@@ -1,0 +1,19 @@
+## Interface: 30300
+## Title: MaloWBot
+## DefaultState: enabled
+## Notes: MaloWs Bot
+## Version 1
+## Author: MaloW
+
+Druid.lua
+Functions.lua
+GlobalDefinitions.lua
+Hunter.lua
+Mage.lua
+MaloWBot.lua
+MaloWAPIExtensions.lua
+Paladin.lua
+Priest.lua
+Rogue.lua
+Warlock.lua
+Warrior.lua

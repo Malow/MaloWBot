@@ -3,23 +3,34 @@ function mb_Mage(msg)
 		return
 	end
 
-	AssistByName(msg)
-	FollowByName(msg, true)
-
-	if mb_Mage_BuffArcaneInt() then
+	if max_GetTableSize(mb_queuedRequests) > 0 then
+		local queuedSpell = table.remove(mb_queuedRequests, 1)
+		TargetByName(queuedSpell.target, true)
+		CastSpellByName(queuedSpell.name)
 		return
 	end
 
+	AssistByName(msg)
+	FollowByName(msg, true)
+
 	CastSpellByName("Fire Blast")
-	CastSpellByName("Fireball")
+	CastSpellByName("Frostbolt")
 end
 
-function mb_Mage_BuffArcaneInt()
-	local arcaneIntTarget = mb_GetFriendlyMissingBuff(BUFF_ARCANE_INTELLECT, "Arcane Intellect", UNIT_FILTER_HAS_MANA)
-	if arcaneIntTarget ~= nil then
-		TargetUnit(arcaneIntTarget)
-		CastSpellByName("Arcane Intellect")
-		return true
-	end
-	return false
+function mb_Mage_OnLoad()
+	mb_RegisterForProposedRequest(BUFF_ARCANE_INTELLECT.requestType, mb_Mage_ProposedArcaneIntRequest)
+	mb_RegisterForAcceptedRequest(BUFF_ARCANE_INTELLECT.requestType, mb_Mage_HandleAcceptedArcaneIntRequest)
+	table.insert(mb_desiredBuffs, BUFF_ARCANE_INTELLECT)
+	table.insert(mb_desiredBuffs, BUFF_POWER_WORD_FORTITUDE)
+end
+
+function mb_Mage_ProposedArcaneIntRequest(requestId, requestType, requestBody)
+	mb_AcceptRequest(requestId, requestType, requestBody)
+end
+
+function mb_Mage_HandleAcceptedArcaneIntRequest(request)
+	local queuedSpell = {}
+	queuedSpell.target = request.requestBody
+	queuedSpell.name = "Arcane Intellect"
+	table.insert(mb_queuedRequests, queuedSpell)
 end

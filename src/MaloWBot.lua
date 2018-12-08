@@ -26,15 +26,12 @@ function mb_Print(msg)
 end
 
 -- Events
-mb_shouldReloadUi = false
-mb_startedCast = nil
+mb_castStartedTime = nil
 mb_isCasting = false
 mb_registeredProposedRequestsHandlers = {}
 mb_registeredAcceptedRequestsHandlers = {}
 mb_myAcceptedRequests = {}
-mb_queuedSpellCasts = {}
-mb_tradeGreysTarget = nil
-mb_tradeGoodiesTarget = nil
+mb_gcdSpell = {}
 function mb_OnEvent()
 	if event == "ADDON_LOADED" and arg1 == MY_NAME then
 		mb_OnLoad()
@@ -42,10 +39,12 @@ function mb_OnEvent()
 		mb_OnPostLoad()
 	elseif event == "SPELLCAST_START" or event == "SPELLCAST_CHANNEL_START" then
 		mb_isCasting = true
-		mb_startedCast = GetTime();
+		mb_castStartedTime = GetTime()
 	elseif event == "SPELLCAST_STOP" or event == "SPELLCAST_CHANNEL_STOP" or event == "SPELLCAST_INTERRUPTED" or event == "SPELLCAST_FAILED" then
 		mb_isCasting = false
 	elseif event == "CHAT_MSG_ADDON" and arg1 == "MB" then
+		local channel = arg3
+		local from = arg4
 		--local requestId, requestType, requestBody = string.match(arg2, "(%d+):(%a+):(.*)") -- string.match doesn't exist in 1.12, use this if you implement it yourself
 		local strings = max_SplitString(arg2, ":")
 		local messageType = strings[1]
@@ -54,7 +53,7 @@ function mb_OnEvent()
 			local requestType = strings[3]
 			local requestBody = strings[4]
 			if mb_registeredProposedRequestsHandlers[requestType] ~= nil then
-				mb_registeredProposedRequestsHandlers[requestType](requestId, requestType, requestBody)
+				mb_registeredProposedRequestsHandlers[requestType](requestId, requestType, requestBody, from)
 			end
 		elseif messageType == "acceptRequest" then
 			local requestId = strings[2]
@@ -86,33 +85,37 @@ f:RegisterEvent("PLAYER_LOGIN")
 f:SetScript("OnEvent", mb_OnEvent)
 
 
--- OnLoad
+-- OnLoad, when the addon has loaded. Some external things might not be available here
 function mb_OnLoad()
-	mb_RegisterForProposedRequest("reload", mb_ReloadRequestHandler)
-	mb_RegisterForProposedRequest("trademegreys", mb_TradeMeGreysRequestHandler)
-	mb_RegisterForProposedRequest("trademegoodies", mb_TradeMeGoodiesRequestHandler)
-	local playerClass = max_GetClass("player")
-	if playerClass == "DRUID" then
-	elseif playerClass == "HUNTER" then
-	elseif playerClass == "MAGE" then
-	elseif playerClass == "PALADIN" then
-	elseif playerClass == "PRIEST" then
-	elseif playerClass == "ROGUE" then
-	elseif playerClass == "WARLOCK" then
-		mb_RegisterForProposedRequest("summon", mb_Warlock_ProposedRequest)
-		mb_RegisterForAcceptedRequest("summon", mb_Warlock_HandleAcceptedRequest)
-	elseif playerClass == "WARRIOR" then
-	else
-		mb_Print("Error, playerClass " .. tostring(playerClass) .. " not supported")
-	end
-
-	mb_Print("Loaded")
 end
 
 -- OnPostLoad, called when macros are available
 function mb_OnPostLoad()
 	mb_CreateMBMacro()
 	mb_CreateTrainMacro()
+	mb_RegisterSharedRequestHandlers()
+	local playerClass = max_GetClass("player")
+	if playerClass == "DRUID" then
+		mb_Druid_OnLoad()
+	elseif playerClass == "HUNTER" then
+		mb_Hunter_OnLoad()
+	elseif playerClass == "MAGE" then
+		mb_Mage_OnLoad()
+	elseif playerClass == "PALADIN" then
+		mb_Paladin_OnLoad()
+	elseif playerClass == "PRIEST" then
+		mb_Priest_OnLoad()
+	elseif playerClass == "ROGUE" then
+		mb_Rogue_OnLoad()
+	elseif playerClass == "WARLOCK" then
+		mb_Warlock_OnLoad()
+	elseif playerClass == "WARRIOR" then
+		mb_Warrior_OnLoad()
+	else
+		mb_Print("Error, playerClass " .. tostring(playerClass) .. " not supported")
+	end
+
+	mb_Print("Loaded")
 end
 
 function mb_CreateMBMacro()
@@ -142,98 +145,41 @@ end
 
 -- OnUpdate
 function mb_OnUpdate()
-
 end
 
 -- OnCmd
 function mb_OnCmd(msg)
-	if msg == "train" then
-		mb_TrainAll()
+	if mb_HandleSpecialSlashCommand(msg) then
 		return
 	end
-	if msg == "trademegreys" then
-		mb_MakeRequest("trademegreys", UnitName("player"))
+
+	mb_RunBot(msg)
+end
+
+function mb_RunBot(followTarget)
+	if mb_HandleSharedBehaviour() then
 		return
 	end
-	if msg == "trademegoodies" then
-		mb_MakeRequest("trademegoodies", UnitName("player"))
-		return
-	end
-	if msg == "summon" then
-		mb_MakeRequest("summon", UnitName("target"))
-		return
-	end
-	if msg == "r" then
-		mb_MakeRequest("reload", "reload")
-		ReloadUI()
-		return
-	end
-	if msg == "inviteguild" then
-		for i = 1, 40 do
-			local name, rank, rankIndex, level, class, zone, group, note, officernote, online = GetGuildRosterInfo(i)
-			if name ~= nil then
-				InviteByName(name)
-			end
-		end
-		return
-	end
-	AcceptGuild()
-	AcceptGroup()
-	AcceptTrade()
-	AcceptResurrect()
-	RetrieveCorpse()
-	AcceptQuest()
-	ConfirmAcceptQuest()
-	ConfirmSummon()
-	--CancelLogout()
-	if mb_shouldReloadUi then
-		mb_shouldReloadUi = false
-		ReloadUI()
-		return
-	end
-	if mb_tradeGreysTarget ~= nil then
-		mb_DoTradeGreys()
-		return
-	end
-	if mb_tradeGoodiesTarget ~= nil then
-		mb_DoTradeGoodies()
-		return
-	end
+
 	local playerClass = max_GetClass("player")
 	if playerClass == "DRUID" then
-		mb_Druid(msg)
+		mb_Druid(followTarget)
 	elseif playerClass == "HUNTER" then
-		mb_Hunter(msg)
+		mb_Hunter(followTarget)
 	elseif playerClass == "MAGE" then
-		mb_Mage(msg)
+		mb_Mage(followTarget)
 	elseif playerClass == "PALADIN" then
-		mb_Paladin(msg)
+		mb_Paladin(followTarget)
 	elseif playerClass == "PRIEST" then
-		mb_Priest(msg)
+		mb_Priest(followTarget)
 	elseif playerClass == "ROGUE" then
-		mb_Rogue(msg)
+		mb_Rogue(followTarget)
 	elseif playerClass == "WARLOCK" then
-		mb_Warlock(msg)
+		mb_Warlock(followTarget)
 	elseif playerClass == "WARRIOR" then
-		mb_Warrior(msg)
+		mb_Warrior(followTarget)
 	else
 		mb_Print("Error, playerClass " .. tostring(playerClass) .. " not supported")
-	end
-end
-
-function mb_ReloadRequestHandler(requestId, requestType, requestBody)
-	mb_shouldReloadUi = true
-end
-
-function mb_TradeMeGreysRequestHandler(requestId, requestType, requestBody)
-	if UnitName("player") ~= requestBody then
-		mb_tradeGreysTarget = requestBody
-	end
-end
-
-function mb_TradeMeGoodiesRequestHandler(requestId, requestType, requestBody)
-	if UnitName("player") ~= requestBody then
-		mb_tradeGoodiesTarget = requestBody
 	end
 end
 
@@ -257,32 +203,6 @@ function mb_AcceptRequest(requestId, requestType, requestBody)
 	mb_myAcceptedRequests[requestId] = request
 	SendAddonMessage("MB", "acceptRequest:" .. requestId .. ":" .. UnitName("player"), "RAID")
 end
-
-
-function mb_DoTradeGreys()
-	local found, bag, slot = mb_GetTradeableItemWithQuality(0)
-	if found then
-		TargetByName(mb_tradeGreysTarget)
-		InitiateTrade("target")
-		PickupContainerItem(bag, slot)
-		DropItemOnUnit("target")
-	else
-		mb_tradeGreysTarget = nil
-	end
-end
-
-function mb_DoTradeGoodies()
-	local found, bag, slot = mb_GetTradeableItem()
-	if found then
-		TargetByName(mb_tradeGoodiesTarget)
-		InitiateTrade("target")
-		PickupContainerItem(bag, slot)
-		DropItemOnUnit("target")
-	else
-		mb_tradeGoodiesTarget = nil
-	end
-end
-
 
 
 

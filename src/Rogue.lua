@@ -8,3 +8,7 @@ function mb_Rogue(msg)
 	--elseif GetSpellCooldown("Feint") > 0 then
 	CastSpellByName("Sinister Strike")
 end
+
+function mb_Rogue_OnLoad()
+	table.insert(mb_desiredBuffs, BUFF_POWER_WORD_FORTITUDE)
+end

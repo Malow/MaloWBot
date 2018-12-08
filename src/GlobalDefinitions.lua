@@ -1,14 +1,35 @@
-BUFF_POWER_WORD_FORTITUDE = "Interface\\Icons\\Spell_Holy_WordFortitude"
-BUFF_DIVINE_SPIRIT = "Interface\\Icons\\Spell_Holy_DivineSpirit"
-BUFF_INNER_FIRE = "Interface\\Icons\\Spell_Holy_InnerFire"
-BUFF_SHADOW_PROTECTION = "Interface\\Icons\\Spell_Shadow_AntiShadow"
-BUFF_RENEW = "Interface\\Icons\\Spell_Holy_Renew"
-BUFF_SPIRIT_OF_REDEMPTION = "Interface\\Icons\\Spell_Holy_GreaterHeal"
-BUFF_ABOLISH_DISEASE = "Interface\\Icons\\Spell_Nature_NullifyDisease"
-DEBUFF_WEAKENED_SOUL = "Interface\\Icons\\Spell_Holy_AshesToAshes"
-BUFF_ARCANE_INTELLECT = "Interface\\Icons\\Spell_Holy_MagicalSentry"
-
-UNIT_FILTER_HAS_MANA = "UNIT_FILTER_HAS_MANA"
-
 MAX_BUFFS = 32
 MAX_DEBUFFS = 16
+
+--- Buff textures
+BUFF_TEXTURE_POWER_WORD_FORTITUDE = "Interface\\Icons\\Spell_Holy_WordFortitude"
+BUFF_TEXTURE_DIVINE_SPIRIT = "Interface\\Icons\\Spell_Holy_DivineSpirit"
+BUFF_TEXTURE_INNER_FIRE = "Interface\\Icons\\Spell_Holy_InnerFire"
+BUFF_TEXTURE_SHADOW_PROTECTION = "Interface\\Icons\\Spell_Shadow_AntiShadow"
+BUFF_TEXTURE_RENEW = "Interface\\Icons\\Spell_Holy_Renew"
+BUFF_TEXTURE_SPIRIT_OF_REDEMPTION = "Interface\\Icons\\Spell_Holy_GreaterHeal"
+BUFF_TEXTURE_ABOLISH_DISEASE = "Interface\\Icons\\Spell_Nature_NullifyDisease"
+BUFF_TEXTURE_ARCANE_INTELLECT = "Interface\\Icons\\Spell_Holy_MagicalSentry"
+
+--- Debuff textures
+DEBUFF_TEXTURE_WEAKENED_SOUL = "Interface\\Icons\\Spell_Holy_AshesToAshes"
+
+--- Unit filters
+UNIT_FILTER_HAS_MANA = "UNIT_FILTER_HAS_MANA"
+
+
+--- Requests
+BUFF_ARCANE_INTELLECT = {
+    requestType = "buffArcaneIntellect",
+    texture = BUFF_TEXTURE_ARCANE_INTELLECT,
+    throttle = 10
+}
+BUFF_POWER_WORD_FORTITUDE = {
+    requestType = "buffPowerWordFortitude",
+    texture = BUFF_TEXTURE_POWER_WORD_FORTITUDE,
+    throttle = 10
+}
+REQUEST_RESURRECT = {
+    requestType = "resurrect",
+    throttle = 20
+}

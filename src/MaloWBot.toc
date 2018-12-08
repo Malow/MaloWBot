@@ -18,5 +18,7 @@ PersonalizedConfig.lua
 Priest.lua
 Rogue.lua
 UnitSelectors.lua
+SharedRequestBehaviour.lua
+SlashCommands.lua
 Warlock.lua
 Warrior.lua

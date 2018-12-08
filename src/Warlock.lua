@@ -1,18 +1,21 @@
 function mb_Warlock(msg)
-	AssistByName(msg)
-	FollowByName(msg, true)
+	if mb_isCasting then
+		return
+	end
 
 	if max_GetTableSize(mb_queuedSpellCasts) > 0 then
 		local queuedSpell = table.remove(mb_queuedSpellCasts, 1)
 		TargetByName(queuedSpell.target, true)
 		CastSpellByName(queuedSpell.name)
+		return
 	end
-	local soulShardCount = mb_GetItemCountWithName("Soul Shard")
+
+	AssistByName(msg)
+	FollowByName(msg, true)
+
 	-- TODO: Use MobHealth addon and get the unit health from that instead of : UnitHealth("target") < 101 and
-	if soulShardCount < 12 then
-		if not mb_isCasting then
-			CastSpellByName("Drain Soul")
-		end
+	if max_GetFreeBagSlots() > 5 then
+		CastSpellByName("Drain Soul")
 	else
 		CastSpellByName("Shadow Bolt")
 	end
@@ -20,7 +23,6 @@ end
 
 function mb_Warlock_ProposedRequest(requestId, requestType, requestBody)
 	local soulShardCount = mb_GetItemCountWithName("Soul Shard")
-	-- TODO: Use MobHealth addon and get the unit health from that instead of : UnitHealth("target") < 101 and
 	if soulShardCount > 0 and not mb_isCasting then
 		mb_AcceptRequest(requestId, requestType, requestBody)
 	end

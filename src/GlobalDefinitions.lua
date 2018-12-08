@@ -8,5 +8,7 @@ BUFF_ABOLISH_DISEASE = "Interface\\Icons\\Spell_Nature_NullifyDisease"
 DEBUFF_WEAKENED_SOUL = "Interface\\Icons\\Spell_Holy_AshesToAshes"
 BUFF_ARCANE_INTELLECT = "Interface\\Icons\\Spell_Holy_MagicalSentry"
 
+UNIT_FILTER_HAS_MANA = "UNIT_FILTER_HAS_MANA"
+
 MAX_BUFFS = 32
 MAX_DEBUFFS = 16

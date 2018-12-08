@@ -33,6 +33,8 @@ mb_registeredProposedRequestsHandlers = {}
 mb_registeredAcceptedRequestsHandlers = {}
 mb_myAcceptedRequests = {}
 mb_queuedSpellCasts = {}
+mb_tradeGreysTarget = nil
+mb_tradeGoodiesTarget = nil
 function mb_OnEvent()
 	if event == "ADDON_LOADED" and arg1 == MY_NAME then
 		mb_OnLoad()
@@ -87,6 +89,8 @@ f:SetScript("OnEvent", mb_OnEvent)
 -- OnLoad
 function mb_OnLoad()
 	mb_RegisterForProposedRequest("reload", mb_ReloadRequestHandler)
+	mb_RegisterForProposedRequest("trademegreys", mb_TradeMeGreysRequestHandler)
+	mb_RegisterForProposedRequest("trademegoodies", mb_TradeMeGoodiesRequestHandler)
 	local playerClass = max_GetClass("player")
 	if playerClass == "DRUID" then
 	elseif playerClass == "HUNTER" then
@@ -107,6 +111,11 @@ end
 
 -- OnPostLoad, called when macros are available
 function mb_OnPostLoad()
+	mb_CreateMBMacro()
+	mb_CreateTrainMacro()
+end
+
+function mb_CreateMBMacro()
 	local macroId = GetMacroIndexByName("MB")
 	if macroId > 0 then
 		EditMacro(macroId, "MB", 12, "/mb Malow", 1, 1)
@@ -116,7 +125,19 @@ function mb_OnPostLoad()
 	PickupMacro(macroId)
 	PlaceAction(37) -- RightActionBarSlot1
 	ClearCursor()
-	SetBinding("7","MULTIACTIONBAR4BUTTON1");
+	SetBinding("7","MULTIACTIONBAR4BUTTON1")
+end
+
+function mb_CreateTrainMacro()
+	local macroId = GetMacroIndexByName("MBtrain")
+	if macroId > 0 then
+		EditMacro(macroId, "MBtrain", 11, "/mb train", 1, 1)
+	else
+		macroId = CreateMacro("MBtrain", 11, "/mb train", 1, 1)
+	end
+	PickupMacro(macroId)
+	PlaceAction(1) -- RightActionBarSlot1
+	ClearCursor()
 end
 
 -- OnUpdate
@@ -126,12 +147,25 @@ end
 
 -- OnCmd
 function mb_OnCmd(msg)
+	if msg == "train" then
+		mb_TrainAll()
+		return
+	end
+	if msg == "trademegreys" then
+		mb_MakeRequest("trademegreys", UnitName("player"))
+		return
+	end
+	if msg == "trademegoodies" then
+		mb_MakeRequest("trademegoodies", UnitName("player"))
+		return
+	end
 	if msg == "summon" then
 		mb_MakeRequest("summon", UnitName("target"))
 		return
 	end
 	if msg == "r" then
 		mb_MakeRequest("reload", "reload")
+		ReloadUI()
 		return
 	end
 	if msg == "inviteguild" then
@@ -155,6 +189,15 @@ function mb_OnCmd(msg)
 	if mb_shouldReloadUi then
 		mb_shouldReloadUi = false
 		ReloadUI()
+		return
+	end
+	if mb_tradeGreysTarget ~= nil then
+		mb_DoTradeGreys()
+		return
+	end
+	if mb_tradeGoodiesTarget ~= nil then
+		mb_DoTradeGoodies()
+		return
 	end
 	local playerClass = max_GetClass("player")
 	if playerClass == "DRUID" then
@@ -182,6 +225,18 @@ function mb_ReloadRequestHandler(requestId, requestType, requestBody)
 	mb_shouldReloadUi = true
 end
 
+function mb_TradeMeGreysRequestHandler(requestId, requestType, requestBody)
+	if UnitName("player") ~= requestBody then
+		mb_tradeGreysTarget = requestBody
+	end
+end
+
+function mb_TradeMeGoodiesRequestHandler(requestId, requestType, requestBody)
+	if UnitName("player") ~= requestBody then
+		mb_tradeGoodiesTarget = requestBody
+	end
+end
+
 function mb_MakeRequest(requestType, requestBody)
 	local requestId = math.random(9999999999)
 	SendAddonMessage("MB", "request:" .. requestId .. ":" .. requestType .. ":" .. requestBody, "RAID")
@@ -203,12 +258,55 @@ function mb_AcceptRequest(requestId, requestType, requestBody)
 	SendAddonMessage("MB", "acceptRequest:" .. requestId .. ":" .. UnitName("player"), "RAID")
 end
 
+function mb_TrainAll()
+	local title1, gossip1, title2, gossip2, title3, gossip3, title4, gossip4, title5, gossip5 = GetGossipOptions()
+	if gossip1 == "trainer" then
+		SelectGossipOption(1)
+	elseif gossip2 == "trainer" then
+		SelectGossipOption(2)
+	elseif gossip3 == "trainer" then
+		SelectGossipOption(3)
+	elseif gossip4 == "trainer" then
+		SelectGossipOption(4)
+	elseif gossip5 == "trainer" then
+		SelectGossipOption(5)
+	end
+	for i = 200, 1, -1 do
+		BuyTrainerService(i)
+	end
+end
+
+function mb_DoTradeGreys()
+	local found, bag, slot = mb_GetTradeableItemWithQuality(0)
+	if found then
+		TargetByName(mb_tradeGreysTarget)
+		InitiateTrade("target")
+		PickupContainerItem(bag, slot)
+		DropItemOnUnit("target")
+	else
+		mb_tradeGreysTarget = nil
+	end
+end
+
+function mb_DoTradeGoodies()
+	local found, bag, slot = mb_GetTradeableItem()
+	if found then
+		TargetByName(mb_tradeGoodiesTarget)
+		InitiateTrade("target")
+		PickupContainerItem(bag, slot)
+		DropItemOnUnit("target")
+	else
+		mb_tradeGoodiesTarget = nil
+	end
+end
+
 
 
 
 -- TODO:
 -- Test out LogOut() to remove /follow, works in combat? works while casting?
-
+-- On ready-check click away buffs with less than 8 minute duration
+-- If a trade window is open stop assisting cuz it breaks trade
 
 
 --- GOOD TO HAVE STUFF BELOW HERE

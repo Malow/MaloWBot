@@ -1,8 +1,9 @@
 function mb_Paladin(msg)
 	FollowByName(msg, true)
-	local healTargetUnit, missingHealth = mb_GetMostDamagedFriendly("Flash of Light")
-	if healTargetUnit ~= nil and missingHealth > 10 then 
+	local healSpell = "Holy Light" -- "Flash of Light"
+	local healTargetUnit, missingHealth = mb_GetMostDamagedFriendly(healSpell)
+	if missingHealth > 50 then
 		TargetUnit(healTargetUnit)
-		CastSpellByName("Flash of Light")
+		CastSpellByName(healSpell)
 	end
 end

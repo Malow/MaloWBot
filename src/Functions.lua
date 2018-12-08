@@ -72,4 +72,23 @@ function mb_IsValidTarget(unit, spell)
 		end
 	end 
 	return false
-end 
+end
+
+-- When there's a gossip opened this will first press "I want to train" and then learn everything available. Requires multiple runs with delay between to learn all ranks of all spells
+function mb_TrainAll()
+	local title1, gossip1, title2, gossip2, title3, gossip3, title4, gossip4, title5, gossip5 = GetGossipOptions()
+	if gossip1 == "trainer" then
+		SelectGossipOption(1)
+	elseif gossip2 == "trainer" then
+		SelectGossipOption(2)
+	elseif gossip3 == "trainer" then
+		SelectGossipOption(3)
+	elseif gossip4 == "trainer" then
+		SelectGossipOption(4)
+	elseif gossip5 == "trainer" then
+		SelectGossipOption(5)
+	end
+	for i = 200, 1, -1 do
+		BuyTrainerService(i)
+	end
+end

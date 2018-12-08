@@ -5,6 +5,7 @@
 ## Version 1
 ## Author: MaloW
 
+Config.lua
 Druid.lua
 Functions.lua
 GlobalDefinitions.lua
@@ -13,7 +14,9 @@ Mage.lua
 MaloWBot.lua
 MaloWAPIExtensions.lua
 Paladin.lua
+PersonalizedConfig.lua
 Priest.lua
 Rogue.lua
+UnitSelectors.lua
 Warlock.lua
 Warrior.lua

@@ -118,9 +118,9 @@ end
 function mb_CreateMBMacro()
 	local macroId = GetMacroIndexByName("MB")
 	if macroId > 0 then
-		EditMacro(macroId, "MB", 12, "/mb Malow", 1, 1)
+		EditMacro(macroId, "MB", 12, "/mb " .. mb_GetConfig()["followTarget"], 1, 1)
 	else
-		macroId = CreateMacro("MB", 12, "/mb Malow", 1, 1)
+		macroId = CreateMacro("MB", 12, "/mb " .. mb_GetConfig()["followTarget"], 1, 1)
 	end
 	PickupMacro(macroId)
 	PlaceAction(37) -- RightActionBarSlot1
@@ -136,7 +136,7 @@ function mb_CreateTrainMacro()
 		macroId = CreateMacro("MBtrain", 11, "/mb train", 1, 1)
 	end
 	PickupMacro(macroId)
-	PlaceAction(1) -- RightActionBarSlot1
+	PlaceAction(1)
 	ClearCursor()
 end
 
@@ -258,23 +258,6 @@ function mb_AcceptRequest(requestId, requestType, requestBody)
 	SendAddonMessage("MB", "acceptRequest:" .. requestId .. ":" .. UnitName("player"), "RAID")
 end
 
-function mb_TrainAll()
-	local title1, gossip1, title2, gossip2, title3, gossip3, title4, gossip4, title5, gossip5 = GetGossipOptions()
-	if gossip1 == "trainer" then
-		SelectGossipOption(1)
-	elseif gossip2 == "trainer" then
-		SelectGossipOption(2)
-	elseif gossip3 == "trainer" then
-		SelectGossipOption(3)
-	elseif gossip4 == "trainer" then
-		SelectGossipOption(4)
-	elseif gossip5 == "trainer" then
-		SelectGossipOption(5)
-	end
-	for i = 200, 1, -1 do
-		BuyTrainerService(i)
-	end
-end
 
 function mb_DoTradeGreys()
 	local found, bag, slot = mb_GetTradeableItemWithQuality(0)

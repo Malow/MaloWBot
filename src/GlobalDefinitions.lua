@@ -6,6 +6,7 @@ BUFF_RENEW = "Interface\\Icons\\Spell_Holy_Renew"
 BUFF_SPIRIT_OF_REDEMPTION = "Interface\\Icons\\Spell_Holy_GreaterHeal"
 BUFF_ABOLISH_DISEASE = "Interface\\Icons\\Spell_Nature_NullifyDisease"
 DEBUFF_WEAKENED_SOUL = "Interface\\Icons\\Spell_Holy_AshesToAshes"
+BUFF_ARCANE_INTELLECT = "Interface\\Icons\\Spell_Holy_MagicalSentry"
 
 MAX_BUFFS = 32
 MAX_DEBUFFS = 16

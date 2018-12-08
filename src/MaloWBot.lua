@@ -26,14 +26,98 @@ function mb_Print(msg)
 end
 
 -- Events
-local hasLoaded = false
-function mb_OnEvent(self, event, arg1, arg2, arg3, ...)
+mb_shouldReloadUi = false
+mb_startedCast = nil
+mb_isCasting = false
+mb_registeredProposedRequestsHandlers = {}
+mb_registeredAcceptedRequestsHandlers = {}
+mb_myAcceptedRequests = {}
+mb_queuedSpellCasts = {}
+function mb_OnEvent()
 	if event == "ADDON_LOADED" and arg1 == MY_NAME then
-		hasLoaded = true
+		mb_OnLoad()
+	elseif event == "PLAYER_LOGIN" then
+		mb_OnPostLoad()
+	elseif event == "SPELLCAST_START" or event == "SPELLCAST_CHANNEL_START" then
+		mb_isCasting = true
+		mb_startedCast = GetTime();
+	elseif event == "SPELLCAST_STOP" or event == "SPELLCAST_CHANNEL_STOP" or event == "SPELLCAST_INTERRUPTED" or event == "SPELLCAST_FAILED" then
+		mb_isCasting = false
+	elseif event == "CHAT_MSG_ADDON" and arg1 == "MB" then
+		--local requestId, requestType, requestBody = string.match(arg2, "(%d+):(%a+):(.*)") -- string.match doesn't exist in 1.12, use this if you implement it yourself
+		local strings = max_SplitString(arg2, ":")
+		local messageType = strings[1]
+		if messageType == "request" then
+			local requestId = strings[2]
+			local requestType = strings[3]
+			local requestBody = strings[4]
+			if mb_registeredProposedRequestsHandlers[requestType] ~= nil then
+				mb_registeredProposedRequestsHandlers[requestType](requestId, requestType, requestBody)
+			end
+		elseif messageType == "acceptRequest" then
+			local requestId = strings[2]
+			local request = mb_myAcceptedRequests[requestId]
+			if request ~= nil then
+				local playerName = strings[3]
+				if playerName == UnitName("player") then
+					if mb_registeredAcceptedRequestsHandlers[request.requestType] ~= nil then
+						mb_registeredAcceptedRequestsHandlers[request.requestType](request)
+					else
+						SendChatMessage("Kinda serious error over here, CTRL+F for: 892459824", "RAID", "Common")
+					end
+				else
+					mb_myAcceptedRequests[requestId] = nil
+				end
+			end
+		end
 	end
 end
 f:RegisterEvent("ADDON_LOADED")
+f:RegisterEvent("SPELLCAST_START")
+f:RegisterEvent("SPELLCAST_CHANNEL_START")
+f:RegisterEvent("SPELLCAST_STOP")
+f:RegisterEvent("SPELLCAST_CHANNEL_STOP")
+f:RegisterEvent("SPELLCAST_INTERRUPTED")
+f:RegisterEvent("SPELLCAST_FAILED")
+f:RegisterEvent("CHAT_MSG_ADDON")
+f:RegisterEvent("PLAYER_LOGIN")
 f:SetScript("OnEvent", mb_OnEvent)
+
+
+-- OnLoad
+function mb_OnLoad()
+	mb_RegisterForProposedRequest("reload", mb_ReloadRequestHandler)
+	local playerClass = max_GetClass("player")
+	if playerClass == "DRUID" then
+	elseif playerClass == "HUNTER" then
+	elseif playerClass == "MAGE" then
+	elseif playerClass == "PALADIN" then
+	elseif playerClass == "PRIEST" then
+	elseif playerClass == "ROGUE" then
+	elseif playerClass == "WARLOCK" then
+		mb_RegisterForProposedRequest("summon", mb_Warlock_ProposedRequest)
+		mb_RegisterForAcceptedRequest("summon", mb_Warlock_HandleAcceptedRequest)
+	elseif playerClass == "WARRIOR" then
+	else
+		mb_Print("Error, playerClass " .. tostring(playerClass) .. " not supported")
+	end
+
+	mb_Print("Loaded")
+end
+
+-- OnPostLoad, called when macros are available
+function mb_OnPostLoad()
+	local macroId = GetMacroIndexByName("MB")
+	if macroId > 0 then
+		EditMacro(macroId, "MB", 12, "/mb Malow", 1, 1)
+	else
+		macroId = CreateMacro("MB", 12, "/mb Malow", 1, 1)
+	end
+	PickupMacro(macroId)
+	PlaceAction(37) -- RightActionBarSlot1
+	ClearCursor()
+	SetBinding("7","MULTIACTIONBAR4BUTTON1");
+end
 
 -- OnUpdate
 function mb_OnUpdate()
@@ -42,6 +126,36 @@ end
 
 -- OnCmd
 function mb_OnCmd(msg)
+	if msg == "summon" then
+		mb_MakeRequest("summon", UnitName("target"))
+		return
+	end
+	if msg == "r" then
+		mb_MakeRequest("reload", "reload")
+		return
+	end
+	if msg == "inviteguild" then
+		for i = 1, 40 do
+			local name, rank, rankIndex, level, class, zone, group, note, officernote, online = GetGuildRosterInfo(i)
+			if name ~= nil then
+				InviteByName(name)
+			end
+		end
+		return
+	end
+	AcceptGuild()
+	AcceptGroup()
+	AcceptTrade()
+	AcceptResurrect()
+	RetrieveCorpse()
+	AcceptQuest()
+	ConfirmAcceptQuest()
+	ConfirmSummon()
+	--CancelLogout()
+	if mb_shouldReloadUi then
+		mb_shouldReloadUi = false
+		ReloadUI()
+	end
 	local playerClass = max_GetClass("player")
 	if playerClass == "DRUID" then
 		mb_Druid(msg)
@@ -64,14 +178,36 @@ function mb_OnCmd(msg)
 	end
 end
 
+function mb_ReloadRequestHandler(requestId, requestType, requestBody)
+	mb_shouldReloadUi = true
+end
+
+function mb_MakeRequest(requestType, requestBody)
+	local requestId = math.random(9999999999)
+	SendAddonMessage("MB", "request:" .. requestId .. ":" .. requestType .. ":" .. requestBody, "RAID")
+end
+
+function mb_RegisterForProposedRequest(requestType, func)
+	mb_registeredProposedRequestsHandlers[requestType] = func
+end
+
+function mb_RegisterForAcceptedRequest(requestType, func)
+	mb_registeredAcceptedRequestsHandlers[requestType] = func
+end
+
+function mb_AcceptRequest(requestId, requestType, requestBody)
+	local request = {}
+	request.requestType = requestType
+	request.requestBody = requestBody
+	mb_myAcceptedRequests[requestId] = request
+	SendAddonMessage("MB", "acceptRequest:" .. requestId .. ":" .. UnitName("player"), "RAID")
+end
 
 
 
 
-
-
-
-
+-- TODO:
+-- Test out LogOut() to remove /follow, works in combat? works while casting?
 
 
 

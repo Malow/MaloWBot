@@ -2,7 +2,7 @@
 function mb_GetMostDamagedFriendly(spell)
 	local healTarget = 0;
 	local missingHealthOfTarget = max_GetMissingHealth("player");
-	members = max_GetNumPartyOrRaidMembers();
+	local members = max_GetNumPartyOrRaidMembers();
 	for i = 1, members do 
 		local unit = max_GetUnitFromPartyOrRaidIndex(i);
 		local missingHealth = max_GetMissingHealth(unit);
@@ -24,7 +24,7 @@ end
 function mb_GetLowestHealthTarget(spell)
 	local healTarget = 0
 	local healthOfTarget = UnitHealth("player")
-	members = max_GetNumPartyOrRaidMembers()
+	local members = max_GetNumPartyOrRaidMembers()
 	for i = 1, members do 
 		local unit = max_GetUnitFromPartyOrRaidIndex(i)
 		local health = UnitHealth(unit)
@@ -40,6 +40,34 @@ function mb_GetLowestHealthTarget(spell)
 	else 
 		return max_GetUnitFromPartyOrRaidIndex(healTarget), healthOfTarget
 	end
+end
+
+-- Scans through the raid or party for a unit missing a specific buff, nil if none is found.
+function mb_GetFriendlyMissingBuff(buff)
+	local members = max_GetNumPartyOrRaidMembers();
+	for i = 1, members do
+		local unit = max_GetUnitFromPartyOrRaidIndex(i);
+		if not max_HasBuff(unit, buff) then
+			return unit
+		end
+	end
+	return nil
+end
+
+function mb_GetItemCountWithName(itemName)
+	local totalItemCount = 0
+	for bag = 0, 4 do
+		for slot = 1, GetContainerNumSlots(bag) do
+			local texture, itemCount, locked, quality, readable = GetContainerItemInfo(bag, slot)
+			if itemCount ~= nil then
+				local name = GetItemInfo(max_GetItemStringFromItemLink(GetContainerItemLink(bag, slot)))
+				if name == itemName then
+					totalItemCount = totalItemCount + itemCount
+				end
+			end
+		end
+	end
+	return totalItemCount
 end
 
 -- Checks if target exists, is visible, is friendly and if it's dead or ghost AND if it's in range of spell.

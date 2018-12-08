@@ -6,19 +6,20 @@
 ## Author: MaloW
 
 Config.lua
-Druid.lua
 Functions.lua
 GlobalDefinitions.lua
-Hunter.lua
-Mage.lua
 MaloWBot.lua
 MaloWAPIExtensions.lua
-Paladin.lua
 PersonalizedConfig.lua
-Priest.lua
-Rogue.lua
 UnitSelectors.lua
 SharedRequestBehaviour.lua
 SlashCommands.lua
-Warlock.lua
-Warrior.lua
+
+classes\Druid.lua
+classes\Hunter.lua
+classes\Mage.lua
+classes\Paladin.lua
+classes\Priest.lua
+classes\Rogue.lua
+classes\Warlock.lua
+classes\Warrior.lua

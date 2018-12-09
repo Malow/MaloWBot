@@ -124,6 +124,11 @@ function mb_IsIgnoredTradeItem(itemName)
 			return true
 		end
 	end
+	for i = max_GetTableSize(ITEMS_MANA_GEM), 1, -1 do
+		if itemName == ITEMS_MANA_GEM[i] then
+			return true
+		end
+	end
 	return false
 end
 

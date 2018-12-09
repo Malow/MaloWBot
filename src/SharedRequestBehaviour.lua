@@ -4,12 +4,14 @@ mb_tradeGreysTarget = nil
 mb_tradeGoodiesTarget = nil
 mb_queuedRequests = {}
 mb_desiredBuffs = {}
+mb_shouldHearthstone = false
 
 function mb_RegisterSharedRequestHandlers()
     mb_RegisterForProposedRequest("reload", mb_ReloadRequestHandler)
     mb_RegisterForProposedRequest("trademegreys", mb_TradeMeGreysRequestHandler)
     mb_RegisterForProposedRequest("trademegoodies", mb_TradeMeGoodiesRequestHandler)
     mb_RegisterForProposedRequest("promoteLeader", mb_PromoteLeaderRequestHandler)
+    mb_RegisterForProposedRequest("hearthstone", mb_HearthstoneRequestHandler)
 end
 
 function mb_HandleSharedBehaviour()
@@ -38,6 +40,16 @@ function mb_HandleQueuedSharedRequests()
         mb_shouldReloadUi = false
         ReloadUI()
         return true
+    end
+    if mb_shouldHearthstone then
+        mb_shouldHearthstone = false
+        local bag, slot = mb_GetItemLocation("Hearthstone")
+        if bag ~= nil then
+            UseContainerItem(bag, slot)
+            return
+        else
+            SendChatMessage("Uh guys? I don't have a Hearthstone...", "RAID", "Common")
+        end
     end
     if mb_tradeGreysTarget ~= nil then
         mb_DoTradeGreys()
@@ -72,6 +84,10 @@ function mb_PromoteLeaderRequestHandler(requestId, requestType, requestBody)
     if IsPartyLeader() then
         PromoteByName(mb_GetConfig()["followTarget"])
     end
+end
+
+function mb_HearthstoneRequestHandler(requestId, requestType, requestBody)
+    mb_shouldHearthstone = true
 end
 
 function mb_DoTradeGreys()

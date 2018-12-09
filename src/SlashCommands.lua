@@ -11,6 +11,8 @@ function mb_HandleSpecialSlashCommand(msg)
         mb_TrainAll()
     elseif msg == "summon" then
         mb_MakeRequest("summon", UnitName("target"))
+    elseif msg == "hearthstone" then
+        mb_MakeRequest("hearthstone", "hearthstone")
     elseif msg == "fixraidgroup" then
         if not IsPartyLeader() then
             mb_MakeRequest("promoteLeader", "promoteLeader")

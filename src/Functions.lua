@@ -28,7 +28,7 @@ function mb_GetTradeableItemWithQuality(desiredQuality)
 			local texture, itemCount, locked, quality, readable = GetContainerItemInfo(bag, slot)
 			if texture ~= nil then
 			end
-			if texture ~= nil and desiredQuality == quality then
+			if texture ~= nil and desiredQuality == quality and not locked then
 				local name = GetItemInfo(max_GetItemStringFromItemLink(GetContainerItemLink(bag, slot)))
 				if not mb_IsIgnoredTradeItem(name) then
 					return true, bag, slot

@@ -13,6 +13,8 @@ function mb_HandleSpecialSlashCommand(msg)
         mb_MakeRequest("summon", UnitName("target"))
     elseif msg == "hearthstone" then
         mb_MakeRequest("hearthstone", "hearthstone")
+    elseif msg == "mount" then
+        mb_MakeRequest("mount", "mount")
     elseif msg == "fixraidgroup" then
         if not IsPartyLeader() then
             mb_MakeRequest("promoteLeader", "promoteLeader")

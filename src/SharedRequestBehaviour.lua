@@ -2,16 +2,17 @@
 mb_shouldReloadUi = false
 mb_tradeGreysTarget = nil
 mb_tradeGoodiesTarget = nil
-mb_queuedRequests = {}
 mb_desiredBuffs = {}
 mb_shouldHearthstone = false
+mb_shouldMount = false
 
 function mb_RegisterSharedRequestHandlers()
-    mb_RegisterForProposedRequest("reload", mb_ReloadRequestHandler)
-    mb_RegisterForProposedRequest("trademegreys", mb_TradeMeGreysRequestHandler)
-    mb_RegisterForProposedRequest("trademegoodies", mb_TradeMeGoodiesRequestHandler)
-    mb_RegisterForProposedRequest("promoteLeader", mb_PromoteLeaderRequestHandler)
-    mb_RegisterForProposedRequest("hearthstone", mb_HearthstoneRequestHandler)
+    mb_RegisterForRequest("reload", mb_ReloadRequestHandler)
+    mb_RegisterForRequest("trademegreys", mb_TradeMeGreysRequestHandler)
+    mb_RegisterForRequest("trademegoodies", mb_TradeMeGoodiesRequestHandler)
+    mb_RegisterForRequest("promoteLeader", mb_PromoteLeaderRequestHandler)
+    mb_RegisterForRequest("hearthstone", mb_HearthstoneRequestHandler)
+    mb_RegisterForRequest("mount", mb_MountRequestHandler)
 end
 
 function mb_HandleSharedBehaviour()
@@ -43,13 +44,16 @@ function mb_HandleQueuedSharedRequests()
     end
     if mb_shouldHearthstone then
         mb_shouldHearthstone = false
-        local bag, slot = mb_GetItemLocation("Hearthstone")
-        if bag ~= nil then
-            UseContainerItem(bag, slot)
+        if mb_UseItem("Hearthstone") then
             return
         else
             SendChatMessage("Uh guys? I don't have a Hearthstone...", "RAID", "Common")
         end
+    end
+    if mb_shouldMount then
+        mb_shouldMount = false
+        CastSpellByName("Summon Warhorse")
+        CastSpellByName("Summon Felsteed")
     end
     if mb_tradeGreysTarget ~= nil then
         mb_DoTradeGreys()
@@ -86,8 +90,16 @@ function mb_PromoteLeaderRequestHandler(requestId, requestType, requestBody)
     end
 end
 
-function mb_HearthstoneRequestHandler(requestId, requestType, requestBody)
-    mb_shouldHearthstone = true
+function mb_HearthstoneRequestHandler(requestId, requestType, requestBody, from)
+    if from ~= UnitName("player") then
+        mb_shouldHearthstone = true
+    end
+end
+
+function mb_MountRequestHandler(requestId, requestType, requestBody, from)
+    if from ~= UnitName("player") then
+        mb_shouldMount = true
+    end
 end
 
 function mb_DoTradeGreys()
@@ -141,9 +153,44 @@ function mb_MakeThrottledRequest(request, requestBody)
     end
 end
 
-function mb_LearnTalent(tabIndex, talentIndex)
+function mb_LearnTalent(tabIndex, talentIndex, count)
     if not mb_GetConfig()["autoLearnTalents"] then
         return
     end
-    LearnTalent(tabIndex, talentIndex);
+    if count == nil then
+        LearnTalent(tabIndex, talentIndex)
+        return
+    end
+    local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(tabIndex, talentIndex)
+    if count > currentRank then
+        LearnTalent(tabIndex, talentIndex)
+    end
+end
+
+function mb_DoBasicCasterLogic()
+    if mb_isCasting then
+        return true
+    end
+
+    if mb_IsDrinking() then
+        if max_GetManaPercentage("player") < 95 then
+            return true
+        else
+            SitOrStand()
+        end
+    end
+
+    if max_GetManaPercentage("player") < 50 then
+        if mb_DrinkIfPossible() then
+            return true
+        end
+    end
+
+    if not UnitAffectingCombat("player") then
+        if mb_GetWaterCount() < 10 and max_GetClass("player") ~= "MAGE" then
+            mb_MakeThrottledRequest(REQUEST_WATER, UnitName("player"))
+        end
+    end
+
+    return false
 end

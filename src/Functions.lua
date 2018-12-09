@@ -71,6 +71,16 @@ function mb_GetItemLocation(itemName)
 	return nil
 end
 
+-- Use item by name, returns true on success
+function mb_UseItem(itemName)
+	local bag, slot = mb_GetItemLocation(itemName)
+	if bag ~= nil then
+		UseContainerItem(bag, slot)
+		return true
+	end
+	return false
+end
+
 -- returns bag and slot for conjured water
 function mb_LocateWaterInBags()
 	for i = max_GetTableSize(ITEMS_WATER), 1, -1 do

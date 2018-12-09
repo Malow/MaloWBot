@@ -1,26 +1,6 @@
 function mb_Paladin(msg)
-	if mb_isCasting then
+	if mb_DoBasicCasterLogic() then
 		return
-	end
-
-	if not UnitAffectingCombat("player") then
-		if mb_GetWaterCount() < 10 then
-			mb_MakeThrottledRequest(REQUEST_WATER, UnitName("player"))
-		end
-	end
-
-	if mb_IsDrinking() then
-		if max_GetManaPercentage("player") < 95 then
-			return
-		else
-			SitOrStand()
-		end
-	end
-
-	if max_GetManaPercentage("player") < 50 then
-		if mb_DrinkIfPossible() then
-			return
-		end
 	end
 
 	FollowByName(msg, true)

@@ -1,18 +1,32 @@
 function mb_Priest(msg)
-	AssistByName(msg)
-	FollowByName(msg, true)
+	if mb_DoBasicCasterLogic() then
+		return
+	end
 
 	if max_GetTableSize(mb_queuedRequests) > 0 then
-		local queuedSpell = table.remove(mb_queuedRequests, 1)
-		TargetByName(queuedSpell.target, true)
-		CastSpellByName(queuedSpell.name)
-		return
+		local queuedRequest = mb_queuedRequests[1]
+		if queuedRequest.requestType == BUFF_POWER_WORD_FORTITUDE.requestType then
+			-- if gcd is ready
+			TargetByName(queuedRequest.requestBody, true)
+			CastSpellByName("Power Word: Fortitude")
+			table.remove(mb_queuedRequests, 1)
+			return
+		elseif queuedRequest.requestType == REQUEST_RESURRECT.requestType then
+			TargetByName(queuedRequest.requestBody, true)
+			CastSpellByName("Resurrection")
+			table.remove(mb_queuedRequests, 1)
+			return
+		else
+			SendChatMessage("Serious error, received request for " .. request.requestType, "RAID", "Common")
+		end
 	end
 
 	if mb_Priest_PWS() then
 		return
 	end
 
+	AssistByName(msg)
+	FollowByName(msg, true)
 	CastSpellByName("Smite")
 end
 
@@ -28,19 +42,16 @@ function mb_Priest_PWS()
 end
 
 function mb_Priest_OnLoad()
-	mb_RegisterForProposedRequest(BUFF_POWER_WORD_FORTITUDE.requestType, mb_Priest_HandleProposedPowerWordFortitudeRequest)
-	mb_RegisterForAcceptedRequest(BUFF_POWER_WORD_FORTITUDE.requestType, mb_Priest_HandleAcceptedPowerWordFortitudeRequest)
-	mb_RegisterForProposedRequest(REQUEST_RESURRECT.requestType, mb_Priest_HandleProposedResurrectionRequest)
-	mb_RegisterForAcceptedRequest(REQUEST_RESURRECT.requestType, mb_Priest_HandleAcceptedResurrectionRequest)
+	mb_RegisterForRequest(BUFF_POWER_WORD_FORTITUDE.requestType, mb_Priest_HandlePowerWordFortitudeRequest)
+	mb_RegisterForRequest(REQUEST_RESURRECT.requestType, mb_Priest_HandleResurrectionRequest)
 	table.insert(mb_desiredBuffs, BUFF_ARCANE_INTELLECT)
 	table.insert(mb_desiredBuffs, BUFF_POWER_WORD_FORTITUDE)
 end
 
-function mb_Priest_HandleProposedPowerWordFortitudeRequest(requestId, requestType, requestBody)
+function mb_Priest_HandlePowerWordFortitudeRequest(requestId, requestType, requestBody)
 	if UnitAffectingCombat("player") then
 		return
-	end
-	if max_GetManaPercentage("player") < 80 then
+	elseif max_GetManaPercentage("player") < 80 then
 		return
 	end
 	local unit = max_GetUnitForPlayerName(requestBody)
@@ -49,26 +60,14 @@ function mb_Priest_HandleProposedPowerWordFortitudeRequest(requestId, requestTyp
 	end
 end
 
-function mb_Priest_HandleAcceptedPowerWordFortitudeRequest(request)
-	local queuedSpell = {}
-	queuedSpell.target = request.requestBody
-	queuedSpell.name = "Power Word: Fortitude"
-	table.insert(mb_queuedRequests, queuedSpell)
-end
-
-function mb_Priest_HandleProposedResurrectionRequest(requestId, requestType, requestBody)
+function mb_Priest_HandleResurrectionRequest(requestId, requestType, requestBody)
 	if UnitAffectingCombat("player") then
+		return
+	elseif max_GetManaPercentage("player") < 30 then
 		return
 	end
 	local unit = max_GetUnitForPlayerName(requestBody)
 	if UnitExists(unit) and UnitIsVisible(unit) and UnitIsFriend("player", unit) and UnitIsDead(unit) and max_IsSpellInRange("Resurrection", unit) then
 		mb_AcceptRequest(requestId, requestType, requestBody)
 	end
-end
-
-function mb_Priest_HandleAcceptedResurrectionRequest(request)
-	local queuedSpell = {}
-	queuedSpell.target = request.requestBody
-	queuedSpell.name = "Resurrection"
-	table.insert(mb_queuedRequests, queuedSpell)
 end

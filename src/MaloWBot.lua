@@ -28,11 +28,11 @@ end
 -- Events
 mb_castStartedTime = nil
 mb_isCasting = false
-mb_registeredProposedRequestsHandlers = {}
-mb_registeredAcceptedRequestsHandlers = {}
+mb_isTrading = false
+mb_registeredRequestsHandlers = {}
 mb_myAcceptedRequests = {}
 mb_gcdSpell = {}
-mb_isTrading = false
+mb_queuedRequests = {}
 function mb_OnEvent()
 	if event == "ADDON_LOADED" and arg1 == MY_NAME then
 		mb_OnLoad()
@@ -49,12 +49,12 @@ function mb_OnEvent()
 		--local requestId, requestType, requestBody = string.match(arg2, "(%d+):(%a+):(.*)") -- string.match doesn't exist in 1.12, use this if you implement it yourself
 		local strings = max_SplitString(arg2, ":")
 		local messageType = strings[1]
-		if messageType == "request" then
+		if messageType == "request" and max_GetTableSize(mb_queuedRequests) == 0 then
 			local requestId = strings[2]
 			local requestType = strings[3]
 			local requestBody = strings[4]
-			if mb_registeredProposedRequestsHandlers[requestType] ~= nil then
-				mb_registeredProposedRequestsHandlers[requestType](requestId, requestType, requestBody, from)
+			if mb_registeredRequestsHandlers[requestType] ~= nil then
+				mb_registeredRequestsHandlers[requestType](requestId, requestType, requestBody, from)
 			end
 		elseif messageType == "acceptRequest" then
 			local requestId = strings[2]
@@ -62,14 +62,9 @@ function mb_OnEvent()
 			if request ~= nil then
 				local playerName = strings[3]
 				if playerName == UnitName("player") then
-					if mb_registeredAcceptedRequestsHandlers[request.requestType] ~= nil then
-						mb_registeredAcceptedRequestsHandlers[request.requestType](request)
-					else
-						SendChatMessage("Kinda serious error over here, CTRL+F for: 892459824", "RAID", "Common")
-					end
-				else
-					mb_myAcceptedRequests[requestId] = nil
+					table.insert(mb_queuedRequests, request)
 				end
+				mb_myAcceptedRequests[requestId] = nil
 			end
 		end
 	elseif event == "TRADE_CLOSED" then
@@ -195,12 +190,8 @@ function mb_MakeRequest(requestType, requestBody)
 	SendAddonMessage("MB", "request:" .. requestId .. ":" .. requestType .. ":" .. requestBody, "RAID")
 end
 
-function mb_RegisterForProposedRequest(requestType, func)
-	mb_registeredProposedRequestsHandlers[requestType] = func
-end
-
-function mb_RegisterForAcceptedRequest(requestType, func)
-	mb_registeredAcceptedRequestsHandlers[requestType] = func
+function mb_RegisterForRequest(requestType, func)
+	mb_registeredRequestsHandlers[requestType] = func
 end
 
 function mb_AcceptRequest(requestId, requestType, requestBody)
@@ -211,6 +202,15 @@ function mb_AcceptRequest(requestId, requestType, requestBody)
 	SendAddonMessage("MB", "acceptRequest:" .. requestId .. ":" .. UnitName("player"), "RAID")
 end
 
+function mb_HasQueuedRequestOfType(requestType)
+	for i = 1, max_GetTableSize(mb_queuedRequests) do
+		if mb_queuedRequests[i].type == requestType then
+			return true
+		end
+	end
+	return false
+end
+
 
 
 -- TODO:
@@ -218,6 +218,10 @@ end
 -- On ready-check click away buffs with less than 8 minute duration
 -- If a trade window is open stop assisting cuz it breaks trade
 -- Make requests time out if their throttleTime - 1 has passed
+-- Reduce throttle if no1 accepts the request, maybe use like 1-2 seconds instead? (myPendingRequests with timer)
+-- Give me inventory dump-request, accepts if more than 8 slots free, requires implementing handling queued requests in shared logic.
+-- StopTradingMe request, clears the trade-target
+-- Think about only allowing 1 request at a time, is it smart? Prevents for example mage water from accepting too many, but also might not be efficient.
 
 
 --- GOOD TO HAVE STUFF BELOW HERE

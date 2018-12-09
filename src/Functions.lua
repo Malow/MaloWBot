@@ -102,7 +102,6 @@ function mb_GetWaterCount()
 end
 
 
-
 -- Contains a list of items that are ignored for trading, returns true/false
 function mb_IsIgnoredTradeItem(itemName)
 	if itemName == "Soul Shard" then
@@ -113,6 +112,17 @@ function mb_IsIgnoredTradeItem(itemName)
 		return true
 	elseif itemName == "Runed Copper Rod" then
 		return true
+	elseif itemName == "Blacksmith Hammer" then
+		return true
+	elseif itemName == "Mining Pick" then
+		return true
+	elseif itemName == "Skinning Knife" then
+		return true
+	end
+	for i = max_GetTableSize(ITEMS_WATER), 1, -1 do
+		if itemName == ITEMS_WATER[i] then
+			return true
+		end
 	end
 	return false
 end

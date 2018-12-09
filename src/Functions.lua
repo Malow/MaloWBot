@@ -1,6 +1,6 @@
 
 -- Returns the count of item with specified name
-function mb_GetItemCountWithName(itemName)
+function mb_GetItemCount(itemName)
 	local totalItemCount = 0
 	for bag = 0, 4 do
 		for slot = 1, GetContainerNumSlots(bag) do
@@ -14,6 +14,11 @@ function mb_GetItemCountWithName(itemName)
 		end
 	end
 	return totalItemCount
+end
+
+function mb_HasItem(itemName)
+	local itemCount = mb_GetItemCount(itemName)
+	return itemCount > 0
 end
 
 -- returns boolean found, bagId, slotId for an item of specified quality
@@ -49,6 +54,54 @@ function mb_GetTradeableItem()
 	end
 	return false
 end
+
+-- returns bag and slot for itemName
+function mb_GetItemLocation(itemName)
+	for bag = 0, 4 do
+		for slot = 1, GetContainerNumSlots(bag) do
+			local texture, itemCount, locked, quality, readable = GetContainerItemInfo(bag, slot)
+			if texture ~= nil then
+				local name = GetItemInfo(max_GetItemStringFromItemLink(GetContainerItemLink(bag, slot)))
+				if itemName == name then
+					return bag, slot
+				end
+			end
+		end
+	end
+	return nil
+end
+
+-- returns bag and slot for conjured water
+function mb_LocateWaterInBags()
+	for i = max_GetTableSize(ITEMS_WATER), 1, -1 do
+		local bag, slot = mb_GetItemLocation(ITEMS_WATER[i])
+		if bag ~= nil then
+			return bag, slot
+		end
+	end
+	return nil
+end
+
+-- Returns the count of conjured water the player has
+function mb_GetWaterCount()
+	local totalItemCount = 0
+	for bag = 0, 4 do
+		for slot = 1, GetContainerNumSlots(bag) do
+			local texture, itemCount, locked, quality, readable = GetContainerItemInfo(bag, slot)
+			if itemCount ~= nil then
+				local name = GetItemInfo(max_GetItemStringFromItemLink(GetContainerItemLink(bag, slot)))
+				for i = max_GetTableSize(ITEMS_WATER), 1, -1 do
+					if name == ITEMS_WATER[i] then
+						totalItemCount = totalItemCount + itemCount
+					end
+				end
+			end
+		end
+	end
+	return totalItemCount
+end
+
+
 
 -- Contains a list of items that are ignored for trading, returns true/false
 function mb_IsIgnoredTradeItem(itemName)
@@ -91,4 +144,21 @@ function mb_TrainAll()
 	for i = 200, 1, -1 do
 		BuyTrainerService(i)
 	end
+end
+
+-- Drinks conjured mage-water if possible, returns true/false
+function mb_DrinkIfPossible()
+	if not UnitAffectingCombat("player") and not mb_IsDrinking() then
+		local bag, slot = mb_LocateWaterInBags()
+		if bag ~= nil then
+			UseContainerItem(bag, slot)
+			return true
+		end
+	end
+	return false
+end
+
+-- Returns true/false whether the player has the drink-buff
+function mb_IsDrinking()
+	return max_HasBuff("player", BUFF_DRINK)
 end

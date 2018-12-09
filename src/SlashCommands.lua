@@ -12,6 +12,9 @@ function mb_HandleSpecialSlashCommand(msg)
     elseif msg == "summon" then
         mb_MakeRequest("summon", UnitName("target"))
     elseif msg == "fixraidgroup" then
+        if not IsPartyLeader() then
+            mb_MakeRequest("promoteLeader", "promoteLeader")
+        end
         for i = 1, 40 do
             local name, rank, rankIndex, level, class, zone, group, note, officernote, online = GetGuildRosterInfo(i)
             if name ~= nil then

@@ -28,16 +28,25 @@ function mb_Priest_PWS()
 end
 
 function mb_Priest_OnLoad()
-	mb_RegisterForProposedRequest(BUFF_POWER_WORD_FORTITUDE.requestType, mb_Priest_ProposedPowerWordFortitudeRequest)
+	mb_RegisterForProposedRequest(BUFF_POWER_WORD_FORTITUDE.requestType, mb_Priest_HandleProposedPowerWordFortitudeRequest)
 	mb_RegisterForAcceptedRequest(BUFF_POWER_WORD_FORTITUDE.requestType, mb_Priest_HandleAcceptedPowerWordFortitudeRequest)
-	mb_RegisterForProposedRequest(REQUEST_RESURRECT.requestType, mb_Priest_ProposedResurrectionRequest)
+	mb_RegisterForProposedRequest(REQUEST_RESURRECT.requestType, mb_Priest_HandleProposedResurrectionRequest)
 	mb_RegisterForAcceptedRequest(REQUEST_RESURRECT.requestType, mb_Priest_HandleAcceptedResurrectionRequest)
 	table.insert(mb_desiredBuffs, BUFF_ARCANE_INTELLECT)
 	table.insert(mb_desiredBuffs, BUFF_POWER_WORD_FORTITUDE)
 end
 
-function mb_Priest_ProposedPowerWordFortitudeRequest(requestId, requestType, requestBody)
-	mb_AcceptRequest(requestId, requestType, requestBody)
+function mb_Priest_HandleProposedPowerWordFortitudeRequest(requestId, requestType, requestBody)
+	if UnitAffectingCombat("player") then
+		return
+	end
+	if max_GetManaPercentage("player") < 80 then
+		return
+	end
+	local unit = max_GetUnitForPlayerName(requestBody)
+	if mb_IsValidTarget(unit,"Power Word: Fortitude") then
+		mb_AcceptRequest(requestId, requestType, requestBody)
+	end
 end
 
 function mb_Priest_HandleAcceptedPowerWordFortitudeRequest(request)
@@ -47,8 +56,14 @@ function mb_Priest_HandleAcceptedPowerWordFortitudeRequest(request)
 	table.insert(mb_queuedRequests, queuedSpell)
 end
 
-function mb_Priest_ProposedResurrectionRequest(requestId, requestType, requestBody)
-	mb_AcceptRequest(requestId, requestType, requestBody)
+function mb_Priest_HandleProposedResurrectionRequest(requestId, requestType, requestBody)
+	if UnitAffectingCombat("player") then
+		return
+	end
+	local unit = max_GetUnitForPlayerName(requestBody)
+	if UnitExists(unit) and UnitIsVisible(unit) and UnitIsFriend("player", unit) and UnitIsDead(unit) and max_IsSpellInRange("Resurrection", unit) then
+		mb_AcceptRequest(requestId, requestType, requestBody)
+	end
 end
 
 function mb_Priest_HandleAcceptedResurrectionRequest(request)

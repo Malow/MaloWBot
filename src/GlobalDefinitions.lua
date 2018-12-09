@@ -10,6 +10,8 @@ BUFF_TEXTURE_RENEW = "Interface\\Icons\\Spell_Holy_Renew"
 BUFF_TEXTURE_SPIRIT_OF_REDEMPTION = "Interface\\Icons\\Spell_Holy_GreaterHeal"
 BUFF_TEXTURE_ABOLISH_DISEASE = "Interface\\Icons\\Spell_Nature_NullifyDisease"
 BUFF_TEXTURE_ARCANE_INTELLECT = "Interface\\Icons\\Spell_Holy_MagicalSentry"
+BUFF_DRINK = "Interface\\Icons\\INV_Drink_07"
+BUFF_ICE_ARMOR = "Interface\\Icons\\Spell_Frost_FrostArmor02"
 
 --- Debuff textures
 DEBUFF_TEXTURE_WEAKENED_SOUL = "Interface\\Icons\\Spell_Holy_AshesToAshes"
@@ -32,4 +34,20 @@ BUFF_POWER_WORD_FORTITUDE = {
 REQUEST_RESURRECT = {
     requestType = "resurrect",
     throttle = 20
+}
+REQUEST_WATER = {
+    requestType = "water",
+    throttle = 10
+}
+
+
+--- Items
+ITEMS_WATER = {
+    "Conjured Water",
+    "Conjured Fresh Water",
+    "Conjured Purified Water",
+    "Conjured Spring Water"
+}
+ITEMS_MANA_GEM = {
+    "Mana Agate"
 }

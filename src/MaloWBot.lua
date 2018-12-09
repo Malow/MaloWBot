@@ -32,6 +32,7 @@ mb_registeredProposedRequestsHandlers = {}
 mb_registeredAcceptedRequestsHandlers = {}
 mb_myAcceptedRequests = {}
 mb_gcdSpell = {}
+mb_isTrading = false
 function mb_OnEvent()
 	if event == "ADDON_LOADED" and arg1 == MY_NAME then
 		mb_OnLoad()
@@ -71,6 +72,10 @@ function mb_OnEvent()
 				end
 			end
 		end
+	elseif event == "TRADE_CLOSED" then
+		mb_isTrading = false
+	elseif event == "TRADE_SHOW" then
+		mb_isTrading = true
 	end
 end
 f:RegisterEvent("ADDON_LOADED")
@@ -82,6 +87,8 @@ f:RegisterEvent("SPELLCAST_INTERRUPTED")
 f:RegisterEvent("SPELLCAST_FAILED")
 f:RegisterEvent("CHAT_MSG_ADDON")
 f:RegisterEvent("PLAYER_LOGIN")
+f:RegisterEvent("TRADE_CLOSED")
+f:RegisterEvent("TRADE_SHOW")
 f:SetScript("OnEvent", mb_OnEvent)
 
 

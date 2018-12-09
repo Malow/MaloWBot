@@ -9,6 +9,7 @@ function mb_RegisterSharedRequestHandlers()
     mb_RegisterForProposedRequest("reload", mb_ReloadRequestHandler)
     mb_RegisterForProposedRequest("trademegreys", mb_TradeMeGreysRequestHandler)
     mb_RegisterForProposedRequest("trademegoodies", mb_TradeMeGoodiesRequestHandler)
+    mb_RegisterForProposedRequest("promoteLeader", mb_PromoteLeaderRequestHandler)
 end
 
 function mb_HandleSharedBehaviour()
@@ -67,6 +68,12 @@ function mb_TradeMeGoodiesRequestHandler(requestId, requestType, requestBody)
     end
 end
 
+function mb_PromoteLeaderRequestHandler(requestId, requestType, requestBody)
+    if IsPartyLeader() then
+        PromoteByName(mb_GetConfig()["followTarget"])
+    end
+end
+
 function mb_DoTradeGreys()
     local found, bag, slot = mb_GetTradeableItemWithQuality(0)
     if found then
@@ -94,28 +101,33 @@ end
 function mb_CheckAndRequestBuffs()
     for i = 1, max_GetTableSize(mb_desiredBuffs) do
         if not max_HasBuff("player", mb_desiredBuffs[i].texture) then
-            if mb_desiredBuffs[i].lastRequested == nil then
-                mb_MakeRequest(mb_desiredBuffs[i].requestType, UnitName("player"))
-                mb_desiredBuffs[i].lastRequested = GetTime()
-            elseif mb_desiredBuffs[i].lastRequested + mb_desiredBuffs[i].throttle < GetTime() then
-                mb_MakeRequest(mb_desiredBuffs[i].requestType, UnitName("player"))
-                mb_desiredBuffs[i].lastRequested = GetTime()
-            end
+            mb_MakeThrottledRequest(mb_desiredBuffs[i], UnitName("player"))
         end
     end
 end
 
-mb_lastRequestedResurrect = nil
 function mb_RequestResurrection()
     if UnitIsGhost("player") then
         SendChatMessage("I'm dead and I released like a noob, gonna need manual res", "RAID", "Common")
     else
-        if mb_lastRequestedResurrect == nil then
-            mb_MakeRequest(REQUEST_RESURRECT.requestType, UnitName("player"))
-            mb_lastRequestedResurrect = GetTime()
-        elseif mb_lastRequestedResurrect + REQUEST_RESURRECT.throttle < GetTime() then
-            mb_MakeRequest(REQUEST_RESURRECT.requestType, UnitName("player"))
-            mb_lastRequestedResurrect = GetTime()
-        end
+        mb_MakeThrottledRequest(REQUEST_RESURRECT, UnitName("player"))
     end
+end
+
+mb_lastRequestedRequests = {}
+function mb_MakeThrottledRequest(request, requestBody)
+    if mb_lastRequestedRequests[request.requestType] == nil then
+        mb_MakeRequest(request.requestType, requestBody)
+        mb_lastRequestedRequests[request.requestType] = GetTime()
+    elseif mb_lastRequestedRequests[request.requestType] + request.throttle < GetTime() then
+        mb_MakeRequest(request.requestType, requestBody)
+        mb_lastRequestedRequests[request.requestType] = GetTime()
+    end
+end
+
+function mb_LearnTalent(tabIndex, talentIndex)
+    if not mb_GetConfig()["autoLearnTalents"] then
+        return
+    end
+    LearnTalent(tabIndex, talentIndex);
 end

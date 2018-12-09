@@ -22,14 +22,14 @@ function mb_Warlock(msg)
 end
 
 function mb_Warlock_OnLoad()
-	mb_RegisterForProposedRequest("summon", mb_Warlock_ProposedSummonRequest)
+	mb_RegisterForProposedRequest("summon", mb_Warlock_HandleProposedSummonRequest)
 	mb_RegisterForAcceptedRequest("summon", mb_Warlock_HandleAcceptedSummonRequest)
 	table.insert(mb_desiredBuffs, BUFF_ARCANE_INTELLECT)
 	table.insert(mb_desiredBuffs, BUFF_POWER_WORD_FORTITUDE)
 end
 
-function mb_Warlock_ProposedSummonRequest(requestId, requestType, requestBody)
-	local soulShardCount = mb_GetItemCountWithName("Soul Shard")
+function mb_Warlock_HandleProposedSummonRequest(requestId, requestType, requestBody)
+	local soulShardCount = mb_GetItemCount("Soul Shard")
 	if soulShardCount > 0 and not mb_isCasting then
 		mb_AcceptRequest(requestId, requestType, requestBody)
 	end

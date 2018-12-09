@@ -102,6 +102,18 @@ function max_GetFreeBagSlots()
 	return count
 end
 
+-- Turns a playerName into a unit-reference, nil if not found
+function max_GetUnitForPlayerName(playerName)
+	local members = max_GetNumPartyOrRaidMembers()
+	for i = 1, members do
+		local unit = max_GetUnitFromPartyOrRaidIndex(i)
+		if UnitName(unit) == playerName then
+			return unit
+		end
+	end
+	return nil
+end
+
 
 
 -- Splits a string where a character is found

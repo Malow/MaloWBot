@@ -217,6 +217,7 @@ end
 -- Test out LogOut() to remove /follow, works in combat? works while casting?
 -- On ready-check click away buffs with less than 8 minute duration
 -- If a trade window is open stop assisting cuz it breaks trade
+-- Make requests time out if their throttleTime - 1 has passed
 
 
 --- GOOD TO HAVE STUFF BELOW HERE

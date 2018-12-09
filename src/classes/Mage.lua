@@ -2,6 +2,7 @@
 --- TODO:
 ---	Evocation
 ---	Polymorph requests
+--- Water request, if you accept 5 requests at once you don't have 20 water for each
 ---
 function mb_Mage(msg)
 	if mb_isCasting then

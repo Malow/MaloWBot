@@ -13,6 +13,14 @@ function mb_RegisterSharedRequestHandlers()
 end
 
 function mb_HandleSharedBehaviour()
+    AcceptResurrect()
+    AcceptGuild()
+    AcceptGroup()
+    AcceptTrade()
+    RetrieveCorpse()
+    AcceptQuest()
+    ConfirmAcceptQuest()
+    ConfirmSummon()
     if UnitIsDeadOrGhost("player") then
         mb_RequestResurrection()
         return true
@@ -20,14 +28,6 @@ function mb_HandleSharedBehaviour()
     if mb_HandleQueuedSharedRequests() then
         return true
     end
-    AcceptGuild()
-    AcceptGroup()
-    AcceptTrade()
-    AcceptResurrect()
-    RetrieveCorpse()
-    AcceptQuest()
-    ConfirmAcceptQuest()
-    ConfirmSummon()
     --CancelLogout()
     mb_CheckAndRequestBuffs()
     return false

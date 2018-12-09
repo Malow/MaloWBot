@@ -44,7 +44,7 @@ function mb_GetTradeableItem()
 	for bag = 0, 4 do
 		for slot = 1, GetContainerNumSlots(bag) do
 			local texture, itemCount, locked, quality, readable = GetContainerItemInfo(bag, slot)
-			if texture ~= nil then
+			if texture ~= nil and not locked then
 				local name = GetItemInfo(max_GetItemStringFromItemLink(GetContainerItemLink(bag, slot)))
 				if not mb_IsIgnoredTradeItem(name) then
 					return true, bag, slot

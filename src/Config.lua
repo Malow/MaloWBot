@@ -8,5 +8,11 @@ function mb_GetConfig()
     if config["autoLearnTalents"] == nil then
         config["autoLearnTalents"] = false
     end
+    config["specs"] = {}
+    config["specs"]["Kaladin"] = "RetLight"
+    config["specs"]["Malow"] = "SanctuarySalvation"
+    config["specs"]["Rosita"] = "KingsJudge"
+    config["specs"]["Madeleina"] = "Wisdom"
+    config["specs"]["Skyler"] = "MightJudge"
     return config
 end

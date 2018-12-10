@@ -12,9 +12,15 @@ BUFF_TEXTURE_RENEW = "Interface\\Icons\\Spell_Holy_Renew"
 BUFF_TEXTURE_SPIRIT_OF_REDEMPTION = "Interface\\Icons\\Spell_Holy_GreaterHeal"
 BUFF_TEXTURE_ABOLISH_DISEASE = "Interface\\Icons\\Spell_Nature_NullifyDisease"
 BUFF_TEXTURE_ARCANE_INTELLECT = "Interface\\Icons\\Spell_Holy_MagicalSentry"
-BUFF_DRINK = "Interface\\Icons\\INV_Drink_07"
-BUFF_ICE_ARMOR = "Interface\\Icons\\Spell_Frost_FrostArmor02"
-BUFF_DEMON_ARMOR = "Interface\\Icons\\Spell_Shadow_RagingScream"
+BUFF_TEXTURE_BLESSING_OF_WISDOM = "Interface\\Icons\\Spell_Holy_SealOfWisdom"
+BUFF_TEXTURE_BLESSING_OF_MIGHT = "Interface\\Icons\\Spell_Holy_FistOfJustice"
+BUFF_TEXTURE_BLESSING_OF_KINGS = "Interface\\Icons\\Spell_Magic_MageArmor"
+BUFF_TEXTURE_BLESSING_OF_LIGHT = "Interface\\Icons\\Spell_Holy_PrayerOfHealing02"
+BUFF_TEXTURE_BLESSING_OF_SANCTUARY = "Interface\\Icons\\Spell_Nature_LightningShield"
+BUFF_TEXTURE_BLESSING_OF_SALVATION = "Interface\\Icons\\Spell_Holy_SealOfSalvation"
+BUFF_TEXTURE_DRINK = "Interface\\Icons\\INV_Drink_07"
+BUFF_TEXTURE_ICE_ARMOR = "Interface\\Icons\\Spell_Frost_FrostArmor02"
+BUFF_TEXTURE_DEMON_ARMOR = "Interface\\Icons\\Spell_Shadow_RagingScream"
 
 --- Debuff textures
 DEBUFF_TEXTURE_WEAKENED_SOUL = "Interface\\Icons\\Spell_Holy_AshesToAshes"
@@ -43,9 +49,39 @@ BUFF_POWER_WORD_FORTITUDE = {
     texture = BUFF_TEXTURE_POWER_WORD_FORTITUDE,
     throttle = 10
 }
+BUFF_BLESSING_OF_WISDOM = {
+    requestType = "buffBlessingOfWisdom",
+    texture = BUFF_TEXTURE_BLESSING_OF_WISDOM,
+    throttle = 10
+}
+BUFF_BLESSING_OF_MIGHT = {
+    requestType = "buffBlessingOfMight",
+    texture = BUFF_TEXTURE_BLESSING_OF_MIGHT,
+    throttle = 10
+}
+BUFF_BLESSING_OF_KINGS = {
+    requestType = "buffBlessingOfKings",
+    texture = BUFF_TEXTURE_BLESSING_OF_KINGS,
+    throttle = 10
+}
+BUFF_BLESSING_OF_LIGHT = {
+    requestType = "buffBlessingOfLight",
+    texture = BUFF_TEXTURE_BLESSING_OF_LIGHT,
+    throttle = 10
+}
+BUFF_BLESSING_OF_SANCTUARY = {
+    requestType = "buffBlessingOfSanctuary",
+    texture = BUFF_TEXTURE_BLESSING_OF_SANCTUARY,
+    throttle = 10
+}
+BUFF_BLESSING_OF_SALVATION = {
+    requestType = "buffBlessingOfSalvation",
+    texture = BUFF_TEXTURE_BLESSING_OF_SALVATION,
+    throttle = 10
+}
 REQUEST_RESURRECT = {
     requestType = "resurrect",
-    throttle = 20
+    throttle = 12
 }
 REQUEST_WATER = {
     requestType = "water",

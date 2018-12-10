@@ -56,12 +56,12 @@ function mb_CheckFilter(unit, unitFilter)
         end
         return true
     elseif unitFilter.name == UNIT_FILTER_DOES_NOT_HAVE_DEBUFF.name then
-        if max_HasDebuff(unit, unitFilter.debuffName) then
+        if max_HasDebuff(unit, unitFilter.debuff) then
             return false
         end
         return true
     elseif unitFilter.name == UNIT_FILTER_DOES_NOT_HAVE_BUFF.name then
-        if max_HasBuff(unit, unitFilter.buffName) then
+        if max_HasBuff(unit, unitFilter.buff) then
             return false
         end
         return true

@@ -6,9 +6,11 @@ end
  
 function mb_Rogue_OnLoad()
 	mb_Rogue_AddDesiredTalent()
-    table.insert(mb_desiredBuffs, BUFF_POWER_WORD_FORTITUDE)
-    --table.insert(mb_desiredBuffs, BUFF_MARK_OF_THE_WILD)
-    --table.insert(mb_desiredBuffs, BUFF_BLESSING_OF_MIGHT)
+	mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
+	mb_AddDesiredBuff(BUFF_BLESSING_OF_MIGHT)
+	mb_AddDesiredBuff(BUFF_BLESSING_OF_KINGS)
+	mb_AddDesiredBuff(BUFF_BLESSING_OF_LIGHT)
+	mb_AddDesiredBuff(BUFF_BLESSING_OF_SALVATION)
 end
 
 function mb_Rogue_AddDesiredTalents()

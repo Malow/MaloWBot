@@ -23,7 +23,7 @@ function mb_Warlock(commander)
     end
 
     if not UnitAffectingCombat("player") then
-        if not max_HasBuff("player", BUFF_DEMON_ARMOR) then
+        if not max_HasBuff("player", BUFF_TEXTURE_DEMON_ARMOR) then
             CastSpellByName("Demon Armor")
             return
         end
@@ -51,15 +51,26 @@ end
 
 function mb_Warlock_OnLoad()
     mb_RegisterForRequest("summon", mb_Warlock_HandleSummonRequest)
-    table.insert(mb_desiredBuffs, BUFF_ARCANE_INTELLECT)
-    table.insert(mb_desiredBuffs, BUFF_POWER_WORD_FORTITUDE)
+    mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
+    mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
+    mb_AddDesiredBuff(BUFF_BLESSING_OF_WISDOM)
+    mb_AddDesiredBuff(BUFF_BLESSING_OF_KINGS)
+    mb_AddDesiredBuff(BUFF_BLESSING_OF_LIGHT)
+    mb_AddDesiredBuff(BUFF_BLESSING_OF_SALVATION)
 
     mb_Warlock_AddDesiredTalents()
 end
 
 function mb_Warlock_HandleSummonRequest(requestId, requestType, requestBody)
+    if UnitAffectingCombat("player") then
+        return
+    elseif max_GetManaPercentage("player") < 30 then
+        return
+    elseif mb_IsDrinking() then
+        return
+    end
     local soulShardCount = mb_GetItemCount("Soul Shard")
-    if soulShardCount > 0 and not mb_isCasting and not UnitAffectingCombat("player") then
+    if soulShardCount > 0 and not mb_isCasting then
         mb_AcceptRequest(requestId, requestType, requestBody)
     end
 end

@@ -8,6 +8,10 @@ function mb_Hunter(commander)
 end
 
 function mb_Hunter_OnLoad()
-	table.insert(mb_desiredBuffs, BUFF_ARCANE_INTELLECT)
-	table.insert(mb_desiredBuffs, BUFF_POWER_WORD_FORTITUDE)
+	mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
+	mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
+	mb_AddDesiredBuff(BUFF_BLESSING_OF_WISDOM)
+	mb_AddDesiredBuff(BUFF_BLESSING_OF_KINGS)
+	mb_AddDesiredBuff(BUFF_BLESSING_OF_LIGHT)
+	mb_AddDesiredBuff(BUFF_BLESSING_OF_SALVATION)
 end

@@ -189,5 +189,5 @@ end
 
 -- Returns true/false whether the player has the drink-buff
 function mb_IsDrinking()
-	return max_HasBuff("player", BUFF_DRINK)
+	return max_HasBuff("player", BUFF_TEXTURE_DRINK)
 end

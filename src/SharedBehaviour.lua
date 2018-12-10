@@ -146,6 +146,9 @@ function mb_InventoryDumpRequestHandler(requestId, requestType, requestBody)
         return
     end
     if UnitName("player") ~= requestBody then
+        if max_GetClass("player") == "WARLOCK" then
+            return
+        end
         if max_GetFreeBagSlots() < 10 then
             return
         end
@@ -212,6 +215,22 @@ function mb_CheckAndRequestBuffs()
         if not max_HasBuff("player", mb_desiredBuffs[i].texture) then
             mb_MakeThrottledRequest(mb_desiredBuffs[i], UnitName("player"))
         end
+    end
+end
+
+function mb_AddDesiredBuff(buff)
+    table.insert(mb_desiredBuffs, buff)
+    local hasSalvation = false
+    local hasSanctuary = false
+    for i = 1, max_GetTableSize(mb_desiredBuffs) do
+        if mb_desiredBuffs[i].requestType == BUFF_BLESSING_OF_SALVATION.requestType then
+            hasSalvation = true
+        elseif mb_desiredBuffs[i].requestType == BUFF_BLESSING_OF_SANCTUARY.requestType then
+            hasSanctuary = true
+        end
+    end
+    if hasSalvation and hasSanctuary then
+        max_SayRaid("Hey uh guys, can I get both Salvation and Sanctuary? (No, no you can't, fix your code)")
     end
 end
 
@@ -293,3 +312,32 @@ function mb_DoBasicCasterLogic()
 
     return false
 end
+
+-- Checks combat and mana and target
+function mb_CanResurrectUnitWithSpell(unit, spell)
+    if UnitAffectingCombat("player") then
+        return false
+    elseif max_GetManaPercentage("player") < 30 then
+        return false
+    elseif mb_IsDrinking() then
+        return false
+    end
+    if UnitExists(unit) and UnitIsVisible(unit) and UnitIsFriend("player", unit) and UnitIsDead(unit) and max_IsSpellInRange(spell, unit) then
+        return true
+    end
+end
+
+-- Checks combat and mana and target
+function mb_CanBuffUnitWithSpell(unit, spell)
+    if UnitAffectingCombat("player") then
+        return false
+    elseif max_GetManaPercentage("player") < 50 then
+        return false
+    elseif mb_IsDrinking() then
+        return false
+    end
+    if mb_IsValidTarget(unit,spell) and max_GetLevelDifferenceFromSelf(unit) > -8 then
+        return true
+    end
+end
+

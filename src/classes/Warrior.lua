@@ -5,5 +5,9 @@ function mb_Warrior(commander)
 end
 
 function mb_Warrior_OnLoad()
-	table.insert(mb_desiredBuffs, BUFF_POWER_WORD_FORTITUDE)
+	mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
+	mb_AddDesiredBuff(BUFF_BLESSING_OF_MIGHT)
+	mb_AddDesiredBuff(BUFF_BLESSING_OF_KINGS)
+	mb_AddDesiredBuff(BUFF_BLESSING_OF_LIGHT)
+	mb_AddDesiredBuff(BUFF_BLESSING_OF_SANCTUARY)
 end

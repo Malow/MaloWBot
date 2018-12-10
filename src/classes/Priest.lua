@@ -62,30 +62,30 @@ end
 function mb_Priest_OnLoad()
 	mb_RegisterForRequest(BUFF_POWER_WORD_FORTITUDE.requestType, mb_Priest_HandlePowerWordFortitudeRequest)
 	mb_RegisterForRequest(REQUEST_RESURRECT.requestType, mb_Priest_HandleResurrectionRequest)
-	table.insert(mb_desiredBuffs, BUFF_ARCANE_INTELLECT)
-	table.insert(mb_desiredBuffs, BUFF_POWER_WORD_FORTITUDE)
+	mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
+	mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
+	mb_AddDesiredBuff(BUFF_BLESSING_OF_WISDOM)
+	mb_AddDesiredBuff(BUFF_BLESSING_OF_KINGS)
+	mb_AddDesiredBuff(BUFF_BLESSING_OF_LIGHT)
+	mb_AddDesiredBuff(BUFF_BLESSING_OF_SALVATION)
 end
 
 function mb_Priest_HandlePowerWordFortitudeRequest(requestId, requestType, requestBody)
-	if UnitAffectingCombat("player") then
-		return
-	elseif max_GetManaPercentage("player") < 80 then
+	if not mb_Priest_HasImprovedFortitude() then
 		return
 	end
-	local unit = max_GetUnitForPlayerName(requestBody)
-	if mb_IsValidTarget(unit,"Power Word: Fortitude") and max_GetLevelDifferenceFromSelf(unit) > -8 then
+	if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(requestBody), "Power Word: Fortitude") then
 		mb_AcceptRequest(requestId, requestType, requestBody)
 	end
 end
 
 function mb_Priest_HandleResurrectionRequest(requestId, requestType, requestBody)
-	if UnitAffectingCombat("player") then
-		return
-	elseif max_GetManaPercentage("player") < 30 then
-		return
-	end
-	local unit = max_GetUnitForPlayerName(requestBody)
-	if UnitExists(unit) and UnitIsVisible(unit) and UnitIsFriend("player", unit) and UnitIsDead(unit) and max_IsSpellInRange("Resurrection", unit) then
+	if mb_CanResurrectUnitWithSpell(max_GetUnitForPlayerName(requestBody), "Resurrection") then
 		mb_AcceptRequest(requestId, requestType, requestBody)
 	end
+end
+
+function mb_Priest_HasImprovedFortitude()
+	local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(1, 4)
+	return currentRank == 2
 end

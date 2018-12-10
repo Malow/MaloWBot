@@ -2,6 +2,7 @@
 ---     Evocation
 ---     Polymorph requests
 ---     Counterspell, might be hard, gotta scan combat log for % begins casting %, check libcast in PFUI
+---     Mage water trading is kinda buggy
 ---
 function mb_Mage(commander)
     if mb_DoBasicCasterLogic() then
@@ -42,7 +43,7 @@ function mb_Mage(commander)
                 return
             end
         end
-        if not max_HasBuff("player", BUFF_ICE_ARMOR) then
+        if not max_HasBuff("player", BUFF_TEXTURE_ICE_ARMOR) then
             CastSpellByName("Ice Armor")
             return
         end
@@ -69,23 +70,18 @@ end
 function mb_Mage_OnLoad()
     mb_RegisterForRequest(BUFF_ARCANE_INTELLECT.requestType, mb_Mage_HandleArcaneIntRequest)
     mb_RegisterForRequest(REQUEST_WATER.requestType, mb_Mage_HandleWaterRequest)
-    table.insert(mb_desiredBuffs, BUFF_ARCANE_INTELLECT)
-    table.insert(mb_desiredBuffs, BUFF_POWER_WORD_FORTITUDE)
+    mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
+    mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
+    mb_AddDesiredBuff(BUFF_BLESSING_OF_WISDOM)
+    mb_AddDesiredBuff(BUFF_BLESSING_OF_KINGS)
+    mb_AddDesiredBuff(BUFF_BLESSING_OF_LIGHT)
+    mb_AddDesiredBuff(BUFF_BLESSING_OF_SALVATION)
 
     mb_Mage_AddDesiredTalents()
 end
 
 function mb_Mage_HandleArcaneIntRequest(requestId, requestType, requestBody)
-    if UnitAffectingCombat("player") then
-        return
-    elseif max_GetManaPercentage("player") < 80 then
-        return
-    elseif mb_IsDrinking() then
-        return
-    end
-
-    local unit = max_GetUnitForPlayerName(requestBody)
-    if mb_IsValidTarget(unit, "Arcane Intellect") and max_GetLevelDifferenceFromSelf(unit) > -8 then
+    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(requestBody), "Arcane Intellect") then
         mb_AcceptRequest(requestId, requestType, requestBody)
     end
 end

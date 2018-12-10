@@ -17,11 +17,15 @@ function mb_Priest(msg)
 			table.remove(mb_queuedRequests, 1)
 			return
 		else
-			SendChatMessage("Serious error, received request for " .. request.requestType, "RAID", "Common")
+			max_SayRaid("Serious error, received request for " .. request.requestType)
 		end
 	end
 
 	if mb_Priest_PWS() then
+		return
+	end
+
+	if mb_Priest_Renew() then
 		return
 	end
 
@@ -32,8 +36,23 @@ end
 
 function mb_Priest_PWS()
 	local spell = "Power Word: Shield"
-	local healTargetUnit, healthOfTarget = mb_GetLowestHealthFriendly(spell)
+	local unitFilter = UNIT_FILTER_DOES_NOT_HAVE_DEBUFF
+	unitFilter.debuff = DEBUFF_TEXTURE_WEAKENED_SOUL
+	local healTargetUnit, healthOfTarget = mb_GetLowestHealthFriendly(spell, unitFilter)
 	if max_GetHealthPercentage(healTargetUnit) < 50 then
+		TargetUnit(healTargetUnit)
+		CastSpellByName(spell)
+		return true
+	end
+	return false
+end
+
+function mb_Priest_Renew()
+	local spell = "Renew"
+	local unitFilter = UNIT_FILTER_DOES_NOT_HAVE_BUFF
+	unitFilter.buff = BUFF_TEXTURE_RENEW
+	local healTargetUnit, missingHealthOfTarget = mb_GetMostDamagedFriendly(spell, unitFilter)
+	if max_GetHealthPercentage(healTargetUnit) < 75 then
 		TargetUnit(healTargetUnit)
 		CastSpellByName(spell)
 		return true
@@ -55,7 +74,7 @@ function mb_Priest_HandlePowerWordFortitudeRequest(requestId, requestType, reque
 		return
 	end
 	local unit = max_GetUnitForPlayerName(requestBody)
-	if mb_IsValidTarget(unit,"Power Word: Fortitude") then
+	if mb_IsValidTarget(unit,"Power Word: Fortitude") and max_GetLevelDifferenceFromSelf(unit) > -8 then
 		mb_AcceptRequest(requestId, requestType, requestBody)
 	end
 end

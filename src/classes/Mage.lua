@@ -1,5 +1,4 @@
----
---- TODO:
+-- TODO:
 ---     Evocation
 ---     Polymorph requests
 ---     Counterspell, might be hard, gotta scan combat log for % begins casting %, check libcast in PFUI
@@ -11,7 +10,6 @@ function mb_Mage(msg)
 
     if max_GetTableSize(mb_queuedRequests) > 0 then
         local queuedRequest = mb_queuedRequests[1]
-        mb_Print("Doing req: " .. queuedRequest.requestType)
         if queuedRequest.requestType == BUFF_ARCANE_INTELLECT.requestType then
             -- if off GCD
             TargetByName(queuedRequest.requestBody, true)
@@ -29,8 +27,7 @@ function mb_Mage(msg)
                 InitiateTrade("target")
             end
         else
-            mb_Print("It was not:" .. BUFF_ARCANE_INTELLECT.requestType)
-            --SendChatMessage("Serious error, received request for " .. queuedRequest.requestType, "RAID", "Common")
+            max_SayRaid("Serious error, received request for " .. queuedRequest.requestType)
         end
     end
 
@@ -76,7 +73,7 @@ function mb_Mage_OnLoad()
     table.insert(mb_desiredBuffs, BUFF_ARCANE_INTELLECT)
     table.insert(mb_desiredBuffs, BUFF_POWER_WORD_FORTITUDE)
 
-    mb_Mage_LearnTalents()
+    mb_Mage_AddDesiredTalents()
 end
 
 function mb_Mage_HandleArcaneIntRequest(requestId, requestType, requestBody)
@@ -89,7 +86,7 @@ function mb_Mage_HandleArcaneIntRequest(requestId, requestType, requestBody)
     end
 
     local unit = max_GetUnitForPlayerName(requestBody)
-    if mb_IsValidTarget(unit, "Arcane Intellect") then
+    if mb_IsValidTarget(unit, "Arcane Intellect") and max_GetLevelDifferenceFromSelf(unit) > -8 then
         mb_AcceptRequest(requestId, requestType, requestBody)
     end
 end
@@ -99,14 +96,52 @@ function mb_Mage_HandleWaterRequest(requestId, requestType, requestBody)
         return
     end
     local unit = max_GetUnitForPlayerName(requestBody)
-    if mb_IsValidTarget(unit, "Arcane Intellect") then -- Using Arcane int for first range-check
+    if mb_IsValidTarget(unit) then
         if CheckInteractDistance(unit, 2) then
             mb_AcceptRequest(requestId, requestType, requestBody)
         end
     end
 end
 
-function mb_Mage_LearnTalents()
-    mb_LearnTalent(3, 2) -- Improved Frostbolt
-    mb_LearnTalent(3, 5) -- Frostbite
+function mb_Mage_AddDesiredTalents()
+    if UnitLevel("player") == 60 then
+        -- Raiding spec
+        -- TODO: Decide between Ice Barrier and Presence of Mind, probably depends on whether or not we can detect movement
+        mb_AddDesiredTalent(3, 2, 5) -- Improved Frostbolt
+        mb_AddDesiredTalent(3, 3, 3) -- Elemental Precision
+        mb_AddDesiredTalent(3, 4, 5) -- Ice Shards
+        mb_AddDesiredTalent(3, 7, 3) -- Permafrost
+        mb_AddDesiredTalent(3, 8, 3) -- Piercing Ice
+        mb_AddDesiredTalent(3, 9, 1) -- Cold Snap
+        mb_AddDesiredTalent(3, 10, 3) -- Improved Blizzard
+        mb_AddDesiredTalent(3, 11, 2) -- Arctic reach
+        mb_AddDesiredTalent(3, 12, 3) -- Frost Channeling
+        mb_AddDesiredTalent(3, 14, 1) -- Ice Block
+        mb_AddDesiredTalent(3, 16, 1) -- Winter's Chill
+        -- mb_AddDesiredTalent(3, 14, 1) -- Ice Barrier
+        mb_AddDesiredTalent(1, 1, 2) -- Arcane Subtlety
+        mb_AddDesiredTalent(1, 2, 3) -- Arcane Focus
+        mb_AddDesiredTalent(1, 5, 5) -- Magic Absorption
+        mb_AddDesiredTalent(1, 6, 5) -- Arcane Concentration
+        mb_AddDesiredTalent(1, 7, 2) -- Magic Attunement
+        mb_AddDesiredTalent(1, 12, 3) -- Magic Meditation
+        --mb_AddDesiredTalent(1, 13, 1) -- Presence of Mind
+    else
+        -- Leveling spec
+        mb_AddDesiredTalent(3, 2, 5) -- Improved Frostbolt
+        mb_AddDesiredTalent(3, 5, 3) -- Frostbite
+        mb_AddDesiredTalent(3, 6, 2) -- Improved Frost Nova
+        mb_AddDesiredTalent(3, 4, 5) -- Ice Shards
+        mb_AddDesiredTalent(3, 13, 5) -- Shatter
+        mb_AddDesiredTalent(3, 11, 2) -- Arctic reach
+        mb_AddDesiredTalent(3, 3, 3) -- Elemental Precision
+        mb_AddDesiredTalent(3, 16, 5) -- Winter's Chill
+        mb_AddDesiredTalent(3, 8, 3) -- Piercing Ice
+        mb_AddDesiredTalent(3, 12, 3) -- Frost Channeling
+        mb_AddDesiredTalent(1, 1, 2) -- Arcane Subtlety
+        mb_AddDesiredTalent(3, 7, 3) -- Permafrost
+        mb_AddDesiredTalent(1, 2, 3) -- Arcane Focus
+        mb_AddDesiredTalent(1, 6, 5) -- Arcane Concentration
+        mb_AddDesiredTalent(1, 5, 2) -- Magic Absorption
+    end
 end

@@ -12,7 +12,7 @@ MaloWBot.lua
 MaloWAPIExtensions.lua
 PersonalizedConfig.lua
 UnitSelectors.lua
-SharedRequestBehaviour.lua
+SharedBehaviour.lua
 SlashCommands.lua
 
 classes\Druid.lua

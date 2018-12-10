@@ -5,6 +5,8 @@ mb_tradeGoodiesTarget = nil
 mb_desiredBuffs = {}
 mb_shouldHearthstone = false
 mb_shouldMount = false
+mb_shouldLearnTalents = mb_GetConfig()["autoLearnTalents"]
+mb_desiredTalentTree = {}
 
 function mb_RegisterSharedRequestHandlers()
     mb_RegisterForRequest("reload", mb_ReloadRequestHandler)
@@ -33,6 +35,9 @@ function mb_HandleSharedBehaviour()
     end
     --CancelLogout()
     mb_CheckAndRequestBuffs()
+    if mb_shouldLearnTalents then
+        mb_LearnTalents()
+    end
     return false
 end
 
@@ -45,15 +50,16 @@ function mb_HandleQueuedSharedRequests()
     if mb_shouldHearthstone then
         mb_shouldHearthstone = false
         if mb_UseItem("Hearthstone") then
-            return
+            return true
         else
-            SendChatMessage("Uh guys? I don't have a Hearthstone...", "RAID", "Common")
+            max_SayRaid("Uh guys? I don't have a Hearthstone...")
         end
     end
     if mb_shouldMount then
         mb_shouldMount = false
         CastSpellByName("Summon Warhorse")
         CastSpellByName("Summon Felsteed")
+        return true
     end
     if mb_tradeGreysTarget ~= nil then
         mb_DoTradeGreys()
@@ -134,36 +140,56 @@ function mb_CheckAndRequestBuffs()
     end
 end
 
+mb_hasSaidReleasedMessage = false
 function mb_RequestResurrection()
     if UnitIsGhost("player") then
-        SendChatMessage("I'm dead and I released like a noob, gonna need manual res", "RAID", "Common")
+        if not mb_hasSaidReleasedMessage then
+            max_SayRaid("I'm dead and I released like a noob, gonna need manual res")
+            mb_hasSaidReleasedMessage = true
+        end
     else
         mb_MakeThrottledRequest(REQUEST_RESURRECT, UnitName("player"))
     end
 end
 
-mb_lastRequestedRequests = {}
+mb_throttleData = {}
 function mb_MakeThrottledRequest(request, requestBody)
-    if mb_lastRequestedRequests[request.requestType] == nil then
+    if mb_throttleData[request.requestType] == nil then
         mb_MakeRequest(request.requestType, requestBody)
-        mb_lastRequestedRequests[request.requestType] = GetTime()
-    elseif mb_lastRequestedRequests[request.requestType] + request.throttle < GetTime() then
+        mb_throttleData[request.requestType] = {}
+        mb_throttleData[request.requestType].nextRequestTime = GetTime() + UNACCEPTED_REQUEST_THROTTLE
+        mb_throttleData[request.requestType].acceptedThrottle = request.throttle
+    elseif mb_throttleData[request.requestType].nextRequestTime < GetTime() then
         mb_MakeRequest(request.requestType, requestBody)
-        mb_lastRequestedRequests[request.requestType] = GetTime()
+        mb_throttleData[request.requestType].nextRequestTime = GetTime() + UNACCEPTED_REQUEST_THROTTLE
     end
 end
 
-function mb_LearnTalent(tabIndex, talentIndex, count)
-    if not mb_GetConfig()["autoLearnTalents"] then
-        return
+function mb_MyPendingRequestWasAccepted(request)
+    if mb_throttleData[request.requestType] ~= nil then
+        mb_throttleData[request.requestType].nextRequestTime = mb_throttleData[request.requestType].nextRequestTime + mb_throttleData[request.requestType].acceptedThrottle
+    else
+        max_SayRaid("Serious error, didn't have throttleData for: " .. request.requestType)
     end
-    if count == nil then
-        LearnTalent(tabIndex, talentIndex)
-        return
-    end
-    local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(tabIndex, talentIndex)
-    if count > currentRank then
-        LearnTalent(tabIndex, talentIndex)
+end
+
+function mb_AddDesiredTalent(tabIndex, talentIndex, count)
+    table.insert(mb_desiredTalentTree, {tabIndex = tabIndex, talentIndex = talentIndex, count = count})
+end
+
+function mb_LearnTalents()
+    if max_GetUnspentTalentPoints() > 0 and max_GetTableSize(mb_desiredTalentTree) > 0 then
+        for i = 1, max_GetTableSize(mb_desiredTalentTree) do
+            local desiredTalent = mb_desiredTalentTree[i]
+            local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(desiredTalent.tabIndex, desiredTalent.talentIndex)
+            if desiredTalent.count > currentRank then
+                LearnTalent(desiredTalent.tabIndex, desiredTalent.talentIndex)
+                return
+            end
+        end
+        mb_shouldLearnTalents = false -- Already learned all that we can learn
+    else
+        mb_shouldLearnTalents = false
     end
 end
 

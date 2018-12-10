@@ -114,8 +114,6 @@ function max_GetUnitForPlayerName(playerName)
 	return nil
 end
 
-
-
 -- Splits a string where a character is found
 function max_SplitString(str, char)
 	local strings = {}
@@ -125,6 +123,25 @@ function max_SplitString(str, char)
 	end
 	table.insert(strings, str)
 	return strings
+end
+
+-- Says the text in raid
+function max_SayRaid(msg)
+	SendChatMessage(msg, "RAID", "Common")
+end
+
+-- Returns the amount of unspent talent points
+function max_GetUnspentTalentPoints()
+	local spentPoints = 0
+	for tabIndex = 1, 3 do
+		for talentIndex = 1, 28 do
+			local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(tabIndex, talentIndex)
+			if nameTalent ~= nil then
+				spentPoints = spentPoints + currentRank
+			end
+		end
+	end
+	return UnitLevel("player") - 9 - spentPoints
 end
 
 -- Returns the size of a List/Table/Array

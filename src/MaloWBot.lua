@@ -13,7 +13,7 @@ local f = CreateFrame("frame", MY_NAME .. "Frame", UIParent)
 f:SetScript("OnUpdate", mb_Update)
 f:Show()
 
--- Cmds
+-- Commands hook
 SlashCmdList[MY_ABBREVIATION .. "COMMAND"] = function(msg)
 	SetCVar("autoSelfCast", 0)
 	mb_OnCmd(msg)
@@ -31,6 +31,7 @@ mb_isCasting = false
 mb_isTrading = false
 mb_registeredRequestsHandlers = {}
 mb_myAcceptedRequests = {}
+mb_myPendingRequests = {}
 mb_gcdSpell = {}
 mb_queuedRequests = {}
 function mb_OnEvent()
@@ -58,6 +59,8 @@ function mb_OnEvent()
 			end
 		elseif messageType == "acceptRequest" then
 			local requestId = strings[2]
+
+			-- Check if the request was one that I accepted, and if then I was the first to accept it
 			local request = mb_myAcceptedRequests[requestId]
 			if request ~= nil then
 				local playerName = strings[3]
@@ -65,6 +68,15 @@ function mb_OnEvent()
 					table.insert(mb_queuedRequests, request)
 				end
 				mb_myAcceptedRequests[requestId] = nil
+			end
+
+			-- Check if the request was made by me
+			local pendingRequest = mb_myPendingRequests[requestId]
+			if pendingRequest ~= nil then
+				local playerName = strings[3]
+				pendingRequest.acceptedBy = playerName
+				mb_MyPendingRequestWasAccepted(pendingRequest)
+				mb_myPendingRequests[requestId] = nil
 			end
 		end
 	elseif event == "TRADE_CLOSED" then
@@ -91,7 +103,7 @@ f:SetScript("OnEvent", mb_OnEvent)
 function mb_OnLoad()
 end
 
--- OnPostLoad, called when macros are available
+-- OnPostLoad, called when macros etc. are available
 function mb_OnPostLoad()
 	mb_CreateMBMacro()
 	mb_CreateTrainMacro()
@@ -141,8 +153,9 @@ function mb_CreateTrainMacro()
 		macroId = CreateMacro("MBtrain", 11, "/mb train", 1, 1)
 	end
 	PickupMacro(macroId)
-	PlaceAction(1)
+	PlaceAction(38)
 	ClearCursor()
+	SetBinding("8","MULTIACTIONBAR4BUTTON2")
 end
 
 -- OnUpdate
@@ -186,8 +199,12 @@ function mb_RunBot(followTarget)
 end
 
 function mb_MakeRequest(requestType, requestBody)
-	local requestId = math.random(9999999999)
+	local requestId = tostring(math.random(9999999999))
 	SendAddonMessage("MB", "request:" .. requestId .. ":" .. requestType .. ":" .. requestBody, "RAID")
+	local request = {}
+	request.requestType = requestType
+	request.requestBody = requestBody
+	mb_myPendingRequests[requestId] = request
 end
 
 function mb_RegisterForRequest(requestType, func)
@@ -217,8 +234,8 @@ end
 -- Test out LogOut() to remove /follow, works in combat? works while casting?
 -- On ready-check click away buffs with less than 8 minute duration
 -- If a trade window is open stop assisting cuz it breaks trade
--- Make requests time out if their throttleTime - 1 has passed
--- Reduce throttle if no1 accepts the request, maybe use like 1-2 seconds instead? (myPendingRequests with timer)
+-- Make accepted requests time out if their throttleTime - 1 has passed
+-- Figure out a way to clear up pending requests list, it will grow forever atm
 -- Give me inventory dump-request, accepts if more than 8 slots free, requires implementing handling queued requests in shared logic.
 -- StopTradingMe request, clears the trade-target
 -- Think about only allowing 1 request at a time, is it smart? Prevents for example mage water from accepting too many, but also might not be efficient.

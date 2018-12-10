@@ -1,9 +1,8 @@
-function mb_Paladin(msg)
+function mb_Paladin(commander)
 	if mb_DoBasicCasterLogic() then
 		return
 	end
 
-	FollowByName(msg, true)
 	local healSpell = "Flash of Light"
 	local healTargetUnit, missingHealth = mb_GetMostDamagedFriendly(healSpell)
 	if missingHealth > 50 then

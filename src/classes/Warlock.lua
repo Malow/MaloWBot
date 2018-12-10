@@ -3,17 +3,17 @@
 ---     Pets
 ---     Curses
 ---
-function mb_Warlock(msg)
+function mb_Warlock(commander)
     if mb_DoBasicCasterLogic() then
         return
     end
 
     if max_GetTableSize(mb_queuedRequests) > 0 then
-        local queuedRequest = mb_queuedRequests[1]
-        if queuedRequest.requestType == "summon" then
+        local request = mb_queuedRequests[1]
+        if request.requestType == "summon" then
             -- if gcd is ready
             max_SayRaid("I'm summoning " .. request.requestBody)
-            TargetByName(queuedRequest.requestBody, true)
+            TargetByName(request.requestBody, true)
             CastSpellByName("Ritual of Summoning")
             table.remove(mb_queuedRequests, 1)
             return
@@ -35,8 +35,7 @@ function mb_Warlock(msg)
         end
     end
 
-    AssistByName(msg)
-    FollowByName(msg, true)
+    AssistByName(commander)
 
     if max_GetHealthPercentage("player") < 20 then
         CastSpellByName("Drain Life")

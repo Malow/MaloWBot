@@ -7,6 +7,8 @@ function mb_HandleSpecialSlashCommand(msg)
         mb_MakeRequest("trademegreys", UnitName("player"))
     elseif msg == "trademegoodies" then
         mb_MakeRequest("trademegoodies", UnitName("player"))
+    elseif msg == "inventoryDump" then
+        mb_MakeRequest("inventoryDump", UnitName("player"))
     elseif msg == "train" then
         mb_TrainAll()
     elseif msg == "summon" then

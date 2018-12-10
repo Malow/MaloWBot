@@ -1,10 +1,9 @@
-function mb_Druid(msg)
+function mb_Druid(commander)
 	if mb_DoBasicCasterLogic() then
 		return
 	end
 
-	AssistByName(msg)
-	FollowByName(msg, true)
+	AssistByName(commander)
 	CastSpellByName("Moonfire")
 end
 

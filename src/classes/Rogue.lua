@@ -1,6 +1,5 @@
-function mb_Rogue(msg)
-	AssistByName(msg)
-	FollowByName(msg, true)
+function mb_Rogue(commander)
+	AssistByName(commander)
 	--mb_Print(GetSpellCooldown("Feint"))
 	CastSpellByName("attack")
 	--if PlayerHasSpells("Feint") and GetSpellCooldown("Feint") == 0 then

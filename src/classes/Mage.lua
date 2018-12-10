@@ -3,31 +3,31 @@
 ---     Polymorph requests
 ---     Counterspell, might be hard, gotta scan combat log for % begins casting %, check libcast in PFUI
 ---
-function mb_Mage(msg)
+function mb_Mage(commander)
     if mb_DoBasicCasterLogic() then
         return
     end
 
     if max_GetTableSize(mb_queuedRequests) > 0 then
-        local queuedRequest = mb_queuedRequests[1]
-        if queuedRequest.requestType == BUFF_ARCANE_INTELLECT.requestType then
+        local request = mb_queuedRequests[1]
+        if request.requestType == BUFF_ARCANE_INTELLECT.requestType then
             -- if off GCD
-            TargetByName(queuedRequest.requestBody, true)
+            TargetByName(request.requestBody, true)
             CastSpellByName("Arcane Intellect")
             table.remove(mb_queuedRequests, 1)
             return
-        elseif queuedRequest.requestType == REQUEST_WATER.requestType then
+        elseif request.requestType == REQUEST_WATER.requestType then
             if mb_isTrading then
                 local bag, slot = mb_LocateWaterInBags()
                 PickupContainerItem(bag, slot)
                 DropItemOnUnit("target")
                 table.remove(mb_queuedRequests, 1)
             else
-                TargetByName(queuedRequest.requestBody, true)
+                TargetByName(request.requestBody, true)
                 InitiateTrade("target")
             end
         else
-            max_SayRaid("Serious error, received request for " .. queuedRequest.requestType)
+            max_SayRaid("Serious error, received request for " .. request.requestType)
         end
     end
 
@@ -60,8 +60,7 @@ function mb_Mage(msg)
 
     --- Time to do some actual combat
 
-    AssistByName(msg)
-    FollowByName(msg, true)
+    AssistByName(commander)
 
     CastSpellByName("Fire Blast")
     CastSpellByName("Frostbolt")

@@ -1,18 +1,18 @@
-function mb_Priest(msg)
+function mb_Priest(commander)
 	if mb_DoBasicCasterLogic() then
 		return
 	end
 
 	if max_GetTableSize(mb_queuedRequests) > 0 then
-		local queuedRequest = mb_queuedRequests[1]
-		if queuedRequest.requestType == BUFF_POWER_WORD_FORTITUDE.requestType then
+		local request = mb_queuedRequests[1]
+		if request.requestType == BUFF_POWER_WORD_FORTITUDE.requestType then
 			-- if gcd is ready
-			TargetByName(queuedRequest.requestBody, true)
+			TargetByName(request.requestBody, true)
 			CastSpellByName("Power Word: Fortitude")
 			table.remove(mb_queuedRequests, 1)
 			return
-		elseif queuedRequest.requestType == REQUEST_RESURRECT.requestType then
-			TargetByName(queuedRequest.requestBody, true)
+		elseif request.requestType == REQUEST_RESURRECT.requestType then
+			TargetByName(request.requestBody, true)
 			CastSpellByName("Resurrection")
 			table.remove(mb_queuedRequests, 1)
 			return
@@ -29,8 +29,7 @@ function mb_Priest(msg)
 		return
 	end
 
-	AssistByName(msg)
-	FollowByName(msg, true)
+	AssistByName(commander)
 	CastSpellByName("Smite")
 end
 

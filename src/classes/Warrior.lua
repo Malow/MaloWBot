@@ -1,6 +1,5 @@
-function mb_Warrior(msg)
-	AssistByName(msg)
-	FollowByName(msg, true)
+function mb_Warrior(commander)
+	AssistByName(commander)
 	CastSpellByName("Attack")
 	CastSpellByName("Heroic Strike")
 end

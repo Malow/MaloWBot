@@ -107,7 +107,7 @@ end
 function mb_OnPostLoad()
 	mb_CreateMBMacro()
 	mb_CreateTrainMacro()
-	mb_RegisterSharedRequestHandlers()
+	mb_RegisterMassCommandRequestHandlers()
 	local playerClass = max_GetClass("player")
 	if playerClass == "DRUID" then
 		mb_Druid_OnLoad()
@@ -171,28 +171,28 @@ function mb_OnCmd(msg)
 	mb_RunBot(msg)
 end
 
-function mb_RunBot(followTarget)
-	if mb_HandleSharedBehaviour() then
+function mb_RunBot(commander)
+	if mb_HandleSharedBehaviour(commander) then
 		return
 	end
 
 	local playerClass = max_GetClass("player")
 	if playerClass == "DRUID" then
-		mb_Druid(followTarget)
+		mb_Druid(commander)
 	elseif playerClass == "HUNTER" then
-		mb_Hunter(followTarget)
+		mb_Hunter(commander)
 	elseif playerClass == "MAGE" then
-		mb_Mage(followTarget)
+		mb_Mage(commander)
 	elseif playerClass == "PALADIN" then
-		mb_Paladin(followTarget)
+		mb_Paladin(commander)
 	elseif playerClass == "PRIEST" then
-		mb_Priest(followTarget)
+		mb_Priest(commander)
 	elseif playerClass == "ROGUE" then
-		mb_Rogue(followTarget)
+		mb_Rogue(commander)
 	elseif playerClass == "WARLOCK" then
-		mb_Warlock(followTarget)
+		mb_Warlock(commander)
 	elseif playerClass == "WARRIOR" then
-		mb_Warrior(followTarget)
+		mb_Warrior(commander)
 	else
 		mb_Print("Error, playerClass " .. tostring(playerClass) .. " not supported")
 	end
@@ -231,14 +231,12 @@ end
 
 
 -- TODO:
--- Test out LogOut() to remove /follow, works in combat? works while casting?
--- On ready-check click away buffs with less than 8 minute duration
--- If a trade window is open stop assisting cuz it breaks trade
--- Make accepted requests time out if their throttleTime - 1 has passed
--- Figure out a way to clear up pending requests list, it will grow forever atm
--- Give me inventory dump-request, accepts if more than 8 slots free, requires implementing handling queued requests in shared logic.
--- StopTradingMe request, clears the trade-target
--- Think about only allowing 1 request at a time, is it smart? Prevents for example mage water from accepting too many, but also might not be efficient.
+--- Test out LogOut() to remove /follow, works in combat? works while casting?
+--- On ready-check click away buffs with less than 8 minute duration
+--- If a trade window is open stop assisting cuz it breaks trade
+--- Make accepted requests time out if their throttleTime - 1 has passed
+--- Figure out a way to clear up pending requests list, it will grow forever atm
+--- Think about only allowing 1 request at a time, is it smart? Prevents for example mage water from accepting too many, but also might not be efficient.
 
 
 --- GOOD TO HAVE STUFF BELOW HERE

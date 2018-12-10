@@ -1,4 +1,3 @@
-
 mb_shouldReloadUi = false
 mb_tradeGreysTarget = nil
 mb_tradeGoodiesTarget = nil
@@ -8,26 +7,32 @@ mb_shouldMount = false
 mb_shouldLearnTalents = mb_GetConfig()["autoLearnTalents"]
 mb_desiredTalentTree = {}
 
-function mb_RegisterSharedRequestHandlers()
+function mb_RegisterMassCommandRequestHandlers()
     mb_RegisterForRequest("reload", mb_ReloadRequestHandler)
     mb_RegisterForRequest("trademegreys", mb_TradeMeGreysRequestHandler)
     mb_RegisterForRequest("trademegoodies", mb_TradeMeGoodiesRequestHandler)
+    mb_RegisterForRequest("inventoryDump", mb_InventoryDumpRequestHandler)
     mb_RegisterForRequest("promoteLeader", mb_PromoteLeaderRequestHandler)
     mb_RegisterForRequest("hearthstone", mb_HearthstoneRequestHandler)
     mb_RegisterForRequest("mount", mb_MountRequestHandler)
 end
 
-function mb_HandleSharedBehaviour()
-    AcceptResurrect()
+function mb_HandleSharedBehaviour(commander)
     AcceptGuild()
     AcceptGroup()
-    AcceptTrade()
+    if mb_isTrading then
+        AcceptTrade()
+    end
     RetrieveCorpse()
     AcceptQuest()
     ConfirmAcceptQuest()
     ConfirmSummon()
     if UnitIsDeadOrGhost("player") then
+        AcceptResurrect()
         mb_RequestResurrection()
+        return true
+    end
+    if mb_HandleMassCommandRequests() then
         return true
     end
     if mb_HandleQueuedSharedRequests() then
@@ -38,10 +43,14 @@ function mb_HandleSharedBehaviour()
     if mb_shouldLearnTalents then
         mb_LearnTalents()
     end
+
+    if not mb_IsDrinking() then
+        FollowByName(commander, true)
+    end
     return false
 end
 
-function mb_HandleQueuedSharedRequests()
+function mb_HandleMassCommandRequests()
     if mb_shouldReloadUi then
         mb_shouldReloadUi = false
         ReloadUI()
@@ -61,13 +70,31 @@ function mb_HandleQueuedSharedRequests()
         CastSpellByName("Summon Felsteed")
         return true
     end
+    return false
+end
+
+function mb_HandleQueuedSharedRequests()
+    if max_GetTableSize(mb_queuedRequests) > 0 then
+        local request = mb_queuedRequests[1]
+        if request.requestType == "trademegreys" then
+            mb_tradeGreysTarget = request.requestBody
+            table.remove(mb_queuedRequests, 1)
+        elseif request.requestType == "trademegoodies" then
+            mb_tradeGoodiesTarget = request.requestBody
+            table.remove(mb_queuedRequests, 1)
+        elseif request.requestType == "inventoryDump" then
+            TargetByName(request.requestBody)
+            InitiateTrade("target")
+            table.remove(mb_queuedRequests, 1)
+        end
+    end
     if mb_tradeGreysTarget ~= nil then
         mb_DoTradeGreys()
-        return true
+        return
     end
     if mb_tradeGoodiesTarget ~= nil then
         mb_DoTradeGoodies()
-        return true
+        return
     end
     return false
 end
@@ -79,16 +106,58 @@ function mb_ReloadRequestHandler(requestId, requestType, requestBody, from)
 end
 
 function mb_TradeMeGreysRequestHandler(requestId, requestType, requestBody)
+    if mb_tradeGreysTarget ~= nil or mb_tradeGoodiesTarget ~= nil then
+        return
+    end
     if UnitName("player") ~= requestBody then
-        mb_tradeGreysTarget = requestBody
+        local found, bag, slot = mb_GetTradeableItemWithQuality(0)
+        if not found then
+            return false
+        end
+        local unit = max_GetUnitForPlayerName(requestBody)
+        if mb_IsValidTarget(unit) then
+            if CheckInteractDistance(unit, 2) then
+                mb_AcceptRequest(requestId, requestType, requestBody)
+            end
+        end
     end
 end
 
 function mb_TradeMeGoodiesRequestHandler(requestId, requestType, requestBody)
+    if mb_tradeGreysTarget ~= nil or mb_tradeGoodiesTarget ~= nil then
+        return
+    end
     if UnitName("player") ~= requestBody then
-        mb_tradeGoodiesTarget = requestBody
+        local found, bag, slot = mb_GetTradeableItem()
+        if not found then
+            return false
+        end
+        local unit = max_GetUnitForPlayerName(requestBody)
+        if mb_IsValidTarget(unit) then
+            if CheckInteractDistance(unit, 2) then
+                mb_AcceptRequest(requestId, requestType, requestBody)
+            end
+        end
     end
 end
+
+function mb_InventoryDumpRequestHandler(requestId, requestType, requestBody)
+    if mb_tradeGreysTarget ~= nil or mb_tradeGoodiesTarget ~= nil then
+        return
+    end
+    if UnitName("player") ~= requestBody then
+        if max_GetFreeBagSlots() < 10 then
+            return
+        end
+        local unit = max_GetUnitForPlayerName(requestBody)
+        if mb_IsValidTarget(unit) then
+            if CheckInteractDistance(unit, 2) then
+                mb_AcceptRequest(requestId, requestType, requestBody)
+            end
+        end
+    end
+end
+
 
 function mb_PromoteLeaderRequestHandler(requestId, requestType, requestBody)
     if IsPartyLeader() then
@@ -109,10 +178,13 @@ function mb_MountRequestHandler(requestId, requestType, requestBody, from)
 end
 
 function mb_DoTradeGreys()
+    TargetByName(mb_tradeGreysTarget)
+    if not mb_isTrading then
+        InitiateTrade("target")
+        return
+    end
     local found, bag, slot = mb_GetTradeableItemWithQuality(0)
     if found then
-        TargetByName(mb_tradeGreysTarget)
-        InitiateTrade("target")
         PickupContainerItem(bag, slot)
         DropItemOnUnit("target")
     else
@@ -121,10 +193,13 @@ function mb_DoTradeGreys()
 end
 
 function mb_DoTradeGoodies()
-    local found, bag, slot = mb_GetTradeableItem()
-    if found then
-        TargetByName(mb_tradeGoodiesTarget)
+    TargetByName(mb_tradeGoodiesTarget)
+    if not mb_isTrading then
         InitiateTrade("target")
+        return
+    end
+    local found, bag, slot = mb_GetTradeableItem(0)
+    if found then
         PickupContainerItem(bag, slot)
         DropItemOnUnit("target")
     else
@@ -168,13 +243,11 @@ end
 function mb_MyPendingRequestWasAccepted(request)
     if mb_throttleData[request.requestType] ~= nil then
         mb_throttleData[request.requestType].nextRequestTime = mb_throttleData[request.requestType].nextRequestTime + mb_throttleData[request.requestType].acceptedThrottle
-    else
-        max_SayRaid("Serious error, didn't have throttleData for: " .. request.requestType)
     end
 end
 
 function mb_AddDesiredTalent(tabIndex, talentIndex, count)
-    table.insert(mb_desiredTalentTree, {tabIndex = tabIndex, talentIndex = talentIndex, count = count})
+    table.insert(mb_desiredTalentTree, { tabIndex = tabIndex, talentIndex = talentIndex, count = count })
 end
 
 function mb_LearnTalents()

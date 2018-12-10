@@ -1,10 +1,9 @@
-function mb_Hunter(msg)
+function mb_Hunter(commander)
 	if mb_DoBasicCasterLogic() then
 		return
 	end
 
-	AssistByName(msg)
-	FollowByName(msg, true)
+	AssistByName(commander)
 	CastSpellByName("Arcane Shot")
 end
 

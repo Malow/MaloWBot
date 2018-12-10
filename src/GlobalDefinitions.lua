@@ -49,6 +49,11 @@ BUFF_POWER_WORD_FORTITUDE = {
     texture = BUFF_TEXTURE_POWER_WORD_FORTITUDE,
     throttle = 10
 }
+BUFF_DIVINE_SPIRIT = {
+    requestType = "buffDivineSpirit",
+    texture = BUFF_TEXTURE_DIVINE_SPIRIT,
+    throttle = 10
+}
 BUFF_BLESSING_OF_WISDOM = {
     requestType = "buffBlessingOfWisdom",
     texture = BUFF_TEXTURE_BLESSING_OF_WISDOM,

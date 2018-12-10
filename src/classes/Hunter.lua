@@ -14,4 +14,5 @@ function mb_Hunter_OnLoad()
 	mb_AddDesiredBuff(BUFF_BLESSING_OF_KINGS)
 	mb_AddDesiredBuff(BUFF_BLESSING_OF_LIGHT)
 	mb_AddDesiredBuff(BUFF_BLESSING_OF_SALVATION)
+	mb_AddDesiredBuff(BUFF_DIVINE_SPIRIT)
 end

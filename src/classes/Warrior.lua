@@ -1,3 +1,6 @@
+-- TODO:
+---     Tank VS DPS distinction for Sanctuary/Salvation
+---
 function mb_Warrior(commander)
 	AssistByName(commander)
 	CastSpellByName("Attack")

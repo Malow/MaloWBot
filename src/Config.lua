@@ -14,5 +14,9 @@ function mb_GetConfig()
     config["specs"]["Rosita"] = "KingsJudge"
     config["specs"]["Madeleina"] = "Wisdom"
     config["specs"]["Skyler"] = "MightJudge"
+    config["specs"]["Hardrac"] = "Holy"
+    config["specs"]["Bondrin"] = "Holy"
+    config["specs"]["Silmelin"] = "Holy"
+    config["specs"]["Noldralda"] = "Disc"
     return config
 end

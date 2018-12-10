@@ -15,6 +15,26 @@ function mb_Paladin(commander)
             CastSpellByName("Blessing of Might")
             table.remove(mb_queuedRequests, 1)
             return
+        elseif request.requestType == BUFF_BLESSING_OF_KINGS.requestType then
+            TargetByName(request.requestBody, true)
+            CastSpellByName("Blessing of Kings")
+            table.remove(mb_queuedRequests, 1)
+            return
+        elseif request.requestType == BUFF_BLESSING_OF_LIGHT.requestType then
+            TargetByName(request.requestBody, true)
+            CastSpellByName("Blessing of Light")
+            table.remove(mb_queuedRequests, 1)
+            return
+        elseif request.requestType == BUFF_BLESSING_OF_SANCTUARY.requestType then
+            TargetByName(request.requestBody, true)
+            CastSpellByName("Blessing of Sanctuary")
+            table.remove(mb_queuedRequests, 1)
+            return
+        elseif request.requestType == BUFF_BLESSING_OF_SALVATION.requestType then
+            TargetByName(request.requestBody, true)
+            CastSpellByName("Blessing of Salvation")
+            table.remove(mb_queuedRequests, 1)
+            return
         elseif request.requestType == REQUEST_RESURRECT.requestType then
             TargetByName(request.requestBody, true)
             CastSpellByName("Redemption")
@@ -42,6 +62,7 @@ function mb_Paladin_OnLoad()
     mb_AddDesiredBuff(BUFF_BLESSING_OF_KINGS)
     mb_AddDesiredBuff(BUFF_BLESSING_OF_LIGHT)
     mb_AddDesiredBuff(BUFF_BLESSING_OF_SALVATION)
+    mb_AddDesiredBuff(BUFF_DIVINE_SPIRIT)
     mb_RegisterForRequest(REQUEST_RESURRECT.requestType, mb_Paladin_HandleResurrectionRequest)
     mb_RegisterForRequest(BUFF_BLESSING_OF_WISDOM.requestType, mb_Paladin_HandleBlessingOfWisdomRequest)
     mb_RegisterForRequest(BUFF_BLESSING_OF_MIGHT.requestType, mb_Paladin_HandleBlessingOfMightRequest)

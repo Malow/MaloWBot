@@ -57,6 +57,7 @@ function mb_Warlock_OnLoad()
     mb_AddDesiredBuff(BUFF_BLESSING_OF_KINGS)
     mb_AddDesiredBuff(BUFF_BLESSING_OF_LIGHT)
     mb_AddDesiredBuff(BUFF_BLESSING_OF_SALVATION)
+    mb_AddDesiredBuff(BUFF_DIVINE_SPIRIT)
 
     mb_Warlock_AddDesiredTalents()
 end

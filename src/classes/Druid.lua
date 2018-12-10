@@ -1,3 +1,6 @@
+-- TODO:
+---     Tank VS DPS VS Healer distinction for Sanctuary/Salvation and Might
+---
 function mb_Druid(commander)
 	if mb_DoBasicCasterLogic() then
 		return
@@ -14,4 +17,5 @@ function mb_Druid_OnLoad()
 	mb_AddDesiredBuff(BUFF_BLESSING_OF_KINGS)
 	mb_AddDesiredBuff(BUFF_BLESSING_OF_LIGHT)
 	mb_AddDesiredBuff(BUFF_BLESSING_OF_SALVATION)
+	mb_AddDesiredBuff(BUFF_DIVINE_SPIRIT)
 end

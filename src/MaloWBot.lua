@@ -237,6 +237,14 @@ end
 --- Make accepted requests time out if their throttleTime - 1 has passed
 --- Figure out a way to clear up pending requests list, it will grow forever atm
 --- Think about only allowing 1 request at a time, is it smart? Prevents for example mage water from accepting too many, but also might not be efficient.
+---	Add healing-code. When you start healing someone with a cast-time announce that you're doing so and then listen to announces.
+---		Add the announced heals to the targets current health until you see your own announcement, then decide if you want to cancel your cast or not.
+---		Also scan the target for current health and hots and other stuff to decide if you should cancel.
+---	Owners request buffs for their pets
+---	Reagent watch
+---
+---
+
 
 
 --- GOOD TO HAVE STUFF BELOW HERE

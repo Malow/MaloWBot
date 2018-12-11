@@ -99,7 +99,8 @@ ITEMS_WATER = {
     "Conjured Fresh Water",
     "Conjured Purified Water",
     "Conjured Spring Water",
-    "Conjured Mineral Water"
+    "Conjured Mineral Water",
+    "Conjured Sparkling Water"
 }
 ITEMS_MANA_GEM = {
     "Mana Agate",

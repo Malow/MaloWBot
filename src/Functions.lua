@@ -128,6 +128,8 @@ function mb_IsIgnoredTradeItem(itemName)
 		return true
 	elseif itemName == "Skinning Knife" then
 		return true
+	elseif itemName == "Thieves's Tools" then
+		return true
 	end
 	for i = max_GetTableSize(ITEMS_WATER), 1, -1 do
 		if itemName == ITEMS_WATER[i] then

@@ -30,6 +30,7 @@ function mb_HandleSharedBehaviour(commander)
     if UnitIsDeadOrGhost("player") then
         AcceptResurrect()
         mb_RequestResurrection()
+        FollowByName(commander, true)
         return true
     end
     if mb_HandleMassCommandRequests() then

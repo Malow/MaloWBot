@@ -242,7 +242,12 @@ end
 ---		Also scan the target for current health and hots and other stuff to decide if you should cancel.
 ---	Owners request buffs for their pets
 ---	Reagent watch
----
+---	Add GCD-checks for buffing requests
+---	Decursing + Dispelling + Depoisoning + Dediseasing
+--- Double-request handling can happen if the propose happens for 1 guy after the accept has already been sent.
+--- Add ressing prio, other ressers first
+---	AOE mode on/off
+--- Follow in ghost
 ---
 
 

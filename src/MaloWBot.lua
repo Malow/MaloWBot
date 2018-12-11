@@ -248,7 +248,14 @@ end
 --- Add ressing prio, other ressers first
 ---	AOE mode on/off
 --- Follow in ghost
+--- Prioritize ressing over buffs, maybe prio wisdom over ressing?
+--- Interact with target keybind 9
+--- Soulstone request
+--- Auto-next quests, only when choose reward wait, auto-repair all
 ---
+---
+
+
 
 
 

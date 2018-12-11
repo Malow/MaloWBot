@@ -4,6 +4,7 @@ mb_tradeGoodiesTarget = nil
 mb_desiredBuffs = {}
 mb_shouldHearthstone = false
 mb_shouldMount = false
+mb_shouldReleaseCorpse = false
 mb_shouldLearnTalents = mb_GetConfig()["autoLearnTalents"]
 mb_desiredTalentTree = {}
 
@@ -15,6 +16,7 @@ function mb_RegisterMassCommandRequestHandlers()
     mb_RegisterForRequest("promoteLeader", mb_PromoteLeaderRequestHandler)
     mb_RegisterForRequest("hearthstone", mb_HearthstoneRequestHandler)
     mb_RegisterForRequest("mount", mb_MountRequestHandler)
+    mb_RegisterForRequest("releaseCorpse", mb_ReleaseCorpseRequestHandler)
 end
 
 function mb_HandleSharedBehaviour(commander)
@@ -27,13 +29,13 @@ function mb_HandleSharedBehaviour(commander)
     AcceptQuest()
     ConfirmAcceptQuest()
     ConfirmSummon()
+    if mb_HandleMassCommandRequests() then
+        return true
+    end
     if UnitIsDeadOrGhost("player") then
         AcceptResurrect()
         mb_RequestResurrection()
         FollowByName(commander, true)
-        return true
-    end
-    if mb_HandleMassCommandRequests() then
         return true
     end
     if mb_HandleQueuedSharedRequests() then
@@ -69,6 +71,11 @@ function mb_HandleMassCommandRequests()
         mb_shouldMount = false
         CastSpellByName("Summon Warhorse")
         CastSpellByName("Summon Felsteed")
+        return true
+    end
+    if mb_shouldReleaseCorpse then
+        mb_shouldReleaseCorpse = false
+        RepopMe()
         return true
     end
     return false
@@ -178,6 +185,12 @@ end
 function mb_MountRequestHandler(requestId, requestType, requestBody, from)
     if from ~= UnitName("player") then
         mb_shouldMount = true
+    end
+end
+
+function mb_ReleaseCorpseRequestHandler(requestId, requestType, requestBody, from)
+    if from ~= UnitName("player") then
+        mb_shouldReleaseCorpse = true
     end
 end
 

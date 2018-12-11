@@ -128,7 +128,7 @@ function mb_IsIgnoredTradeItem(itemName)
 		return true
 	elseif itemName == "Skinning Knife" then
 		return true
-	elseif itemName == "Thieves's Tools" then
+	elseif itemName == "Thieves' Tools" then
 		return true
 	elseif itemName == "Core Fragment" then
 		return true

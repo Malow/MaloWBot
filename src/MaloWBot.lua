@@ -252,6 +252,7 @@ end
 --- Interact with target keybind 9
 --- Soulstone request
 --- Auto-next quests, only when choose reward wait, auto-repair all
+--- Gold-spreading
 ---
 ---
 

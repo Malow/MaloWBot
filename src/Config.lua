@@ -8,6 +8,9 @@ function mb_GetConfig()
     if config["autoLearnTalents"] == nil then
         config["autoLearnTalents"] = false
     end
+    if config["autoTrainSpells"] == nil then
+        config["autoTrainSpells"] = true -- Automatically train all class and profession skills when Gossip-panel is opened for an NPC that can teach you something.
+    end
     config["specs"] = {}
     config["specs"]["Kaladin"] = "RetLight"
     config["specs"]["Malow"] = "SanctuarySalvation"

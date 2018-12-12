@@ -7,6 +7,7 @@ mb_shouldMount = false
 mb_shouldReleaseCorpse = false
 mb_shouldLearnTalents = mb_GetConfig()["autoLearnTalents"]
 mb_desiredTalentTree = {}
+mb_ShouldTrainSpells = false
 
 function mb_RegisterMassCommandRequestHandlers()
     mb_RegisterForRequest("reload", mb_ReloadRequestHandler)
@@ -17,6 +18,8 @@ function mb_RegisterMassCommandRequestHandlers()
     mb_RegisterForRequest("hearthstone", mb_HearthstoneRequestHandler)
     mb_RegisterForRequest("mount", mb_MountRequestHandler)
     mb_RegisterForRequest("releaseCorpse", mb_ReleaseCorpseRequestHandler)
+    mb_RegisterForRequest("haveQuest", mb_HaveQuestRequestHandler)
+    mb_RegisterForRequest("doesNotHaveQuest", mb_DoesNotHaveQuestRequestHandler)
 end
 
 function mb_HandleSharedBehaviour(commander)
@@ -26,9 +29,20 @@ function mb_HandleSharedBehaviour(commander)
         AcceptTrade()
     end
     RetrieveCorpse()
-    AcceptQuest()
     ConfirmAcceptQuest()
     ConfirmSummon()
+    if mb_isTraining then
+        mb_TrainSpells()
+        return true
+    end
+    if mb_isGossiping then
+        mb_HandleGossiping()
+        return true
+    end
+    if mb_isVendoring then
+        mb_HandleVendoring()
+        return true
+    end
     if mb_HandleMassCommandRequests() then
         return true
     end
@@ -168,7 +182,6 @@ function mb_InventoryDumpRequestHandler(requestId, requestType, requestBody)
         end
     end
 end
-
 
 function mb_PromoteLeaderRequestHandler(requestId, requestType, requestBody)
     if IsPartyLeader() then
@@ -327,31 +340,81 @@ function mb_DoBasicCasterLogic()
     return false
 end
 
--- Checks combat and mana and target
-function mb_CanResurrectUnitWithSpell(unit, spell)
-    if UnitAffectingCombat("player") then
-        return false
-    elseif max_GetManaPercentage("player") < 30 then
-        return false
-    elseif mb_IsDrinking() then
-        return false
+mb_saidQuestCompleteHelpMessageTime = 0
+function mb_HandleGossiping()
+    -- QuestHaste addon takes care of accepting/completing of quests.
+
+    if GetNumQuestChoices() > 1 and mb_saidQuestCompleteHelpMessageTime + 10 < GetTime() then
+        max_SayRaid("I need help deciding which quest-reward to pick.")
+        mb_hasSaidQuestCompleteHelpMessage = GetTime()
+        return
     end
-    if UnitExists(unit) and UnitIsVisible(unit) and UnitIsFriend("player", unit) and UnitIsDead(unit) and max_IsSpellInRange(spell, unit) then
-        return true
+
+    local _, gossip1, _, gossip2, _, gossip3, _, gossip4, _, gossip5 = GetGossipOptions()
+    if mb_GetConfig()["autoTrainSpells"] then
+        if gossip1 == "trainer" then
+            SelectGossipOption(1)
+            return
+        elseif gossip2 == "trainer" then
+            SelectGossipOption(2)
+            return
+        elseif gossip3 == "trainer" then
+            SelectGossipOption(3)
+            return
+        elseif gossip4 == "trainer" then
+            SelectGossipOption(4)
+            return
+        elseif gossip5 == "trainer" then
+            SelectGossipOption(5)
+            return
+        end
     end
 end
 
--- Checks combat and mana and target
-function mb_CanBuffUnitWithSpell(unit, spell)
-    if UnitAffectingCombat("player") then
-        return false
-    elseif max_GetManaPercentage("player") < 50 then
-        return false
-    elseif mb_IsDrinking() then
-        return false
+mb_trainAttemptsLeft = 15 -- Used to train all ranks
+function mb_TrainSpells()
+    for i = 200, 1, -1 do
+        BuyTrainerService(i)
     end
-    if mb_IsValidTarget(unit,spell) and max_GetLevelDifferenceFromSelf(unit) > -8 then
-        return true
+    mb_trainAttemptsLeft = mb_trainAttemptsLeft - 1
+    if mb_trainAttemptsLeft < 1 then
+        mb_ShouldTrainSpells = false
+        mb_trainAttemptsLeft = 15
+        CloseTrainer()
     end
 end
+
+function mb_HandleVendoring()
+    if GetRepairAllCost() > GetMoney() then
+        max_SayRaid("Guys, I'm broke and can't afford my repairs :(")
+    end
+    RepairAllItems()
+    local found, bag, slot = mb_GetTradeableItemWithQuality(0)
+    while found do
+        UseContainerItem(bag, slot)
+        found, bag, slot = mb_GetTradeableItemWithQuality(0)
+    end
+    CloseMerchant()
+end
+
+function mb_HaveQuestRequestHandler(requestId, requestType, requestBody)
+    for i = 1, 50 do
+        local name = GetQuestLogTitle(i)
+        if name == requestBody then
+            max_SayRaid("I have quest: " .. requestBody)
+            return
+        end
+    end
+end
+
+function mb_DoesNotHaveQuestRequestHandler(requestId, requestType, requestBody)
+    for i = 1, 50 do
+        local name = GetQuestLogTitle(i)
+        if name == requestBody then
+            return
+        end
+    end
+    max_SayRaid("I do not have quest: " .. requestBody)
+end
+
 

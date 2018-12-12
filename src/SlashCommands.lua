@@ -9,8 +9,6 @@ function mb_HandleSpecialSlashCommand(msg)
         mb_MakeRequest("trademegoodies", UnitName("player"))
     elseif msg == "inventoryDump" then
         mb_MakeRequest("inventoryDump", UnitName("player"))
-    elseif msg == "train" then
-        mb_TrainAll()
     elseif msg == "summon" then
         mb_MakeRequest("summon", UnitName("target"))
     elseif msg == "hearthstone" then
@@ -19,6 +17,14 @@ function mb_HandleSpecialSlashCommand(msg)
         mb_MakeRequest("mount", "mount")
     elseif msg == "releaseCorpse" then
         mb_MakeRequest("releaseCorpse", "releaseCorpse")
+    elseif string.find(msg, "haveQuest") then
+        local questLogId = GetQuestLogSelection()
+        local questName = GetQuestLogTitle(questLogId)
+        mb_MakeRequest("haveQuest", questName)
+    elseif string.find(msg, "doesNotHaveQuest") then
+        local questLogId = GetQuestLogSelection()
+        local questName = GetQuestLogTitle(questLogId)
+        mb_MakeRequest("doesNotHaveQuest", questName)
     elseif msg == "fixraidgroup" then
         if not IsPartyLeader() then
             mb_MakeRequest("promoteLeader", "promoteLeader")

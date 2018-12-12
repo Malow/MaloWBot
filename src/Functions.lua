@@ -162,25 +162,6 @@ function mb_IsValidTarget(unit, spell)
 	return false
 end
 
--- When there's a gossip opened this will first press "I want to train" and then learn everything available. Requires multiple runs with delay between to learn all ranks of all spells
-function mb_TrainAll()
-	local title1, gossip1, title2, gossip2, title3, gossip3, title4, gossip4, title5, gossip5 = GetGossipOptions()
-	if gossip1 == "trainer" then
-		SelectGossipOption(1)
-	elseif gossip2 == "trainer" then
-		SelectGossipOption(2)
-	elseif gossip3 == "trainer" then
-		SelectGossipOption(3)
-	elseif gossip4 == "trainer" then
-		SelectGossipOption(4)
-	elseif gossip5 == "trainer" then
-		SelectGossipOption(5)
-	end
-	for i = 200, 1, -1 do
-		BuyTrainerService(i)
-	end
-end
-
 -- Drinks conjured mage-water if possible, returns true/false
 function mb_DrinkIfPossible()
 	if not UnitAffectingCombat("player") and not mb_IsDrinking() then
@@ -196,4 +177,32 @@ end
 -- Returns true/false whether the player has the drink-buff
 function mb_IsDrinking()
 	return max_HasBuff("player", BUFF_TEXTURE_DRINK)
+end
+
+-- Checks combat and mana and target
+function mb_CanResurrectUnitWithSpell(unit, spell)
+	if UnitAffectingCombat("player") then
+		return false
+	elseif max_GetManaPercentage("player") < 30 then
+		return false
+	elseif mb_IsDrinking() then
+		return false
+	end
+	if UnitExists(unit) and UnitIsVisible(unit) and UnitIsFriend("player", unit) and UnitIsDead(unit) and max_IsSpellInRange(spell, unit) then
+		return true
+	end
+end
+
+-- Checks combat and mana and target
+function mb_CanBuffUnitWithSpell(unit, spell)
+	if UnitAffectingCombat("player") then
+		return false
+	elseif max_GetManaPercentage("player") < 50 then
+		return false
+	elseif mb_IsDrinking() then
+		return false
+	end
+	if mb_IsValidTarget(unit,spell) and max_GetLevelDifferenceFromSelf(unit) > -8 then
+		return true
+	end
 end

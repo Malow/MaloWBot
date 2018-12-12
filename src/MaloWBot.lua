@@ -29,6 +29,10 @@ end
 mb_castStartedTime = nil
 mb_isCasting = false
 mb_isTrading = false
+mb_isVendoring = false
+mb_isGossiping = false
+mb_gossipOpenedTime = 0
+mb_isTraining = false
 mb_registeredRequestsHandlers = {}
 mb_myAcceptedRequests = {}
 mb_myPendingRequests = {}
@@ -83,6 +87,17 @@ function mb_OnEvent()
 		mb_isTrading = false
 	elseif event == "TRADE_SHOW" then
 		mb_isTrading = true
+	elseif event == "MERCHANT_CLOSED" then
+		mb_isVendoring = false
+	elseif event == "MERCHANT_SHOW" then
+		mb_isVendoring = true
+	elseif event == "GOSSIP_SHOW" then
+		mb_gossipOpenedTime = GetTime()
+		mb_isGossiping = true
+	elseif event == "TRAINER_CLOSED" then
+		mb_isTraining = false
+	elseif event == "TRAINER_SHOW" then
+		mb_isTraining = true
 	end
 end
 f:RegisterEvent("ADDON_LOADED")
@@ -96,6 +111,11 @@ f:RegisterEvent("CHAT_MSG_ADDON")
 f:RegisterEvent("PLAYER_LOGIN")
 f:RegisterEvent("TRADE_CLOSED")
 f:RegisterEvent("TRADE_SHOW")
+f:RegisterEvent("MERCHANT_CLOSED")
+f:RegisterEvent("MERCHANT_SHOW")
+f:RegisterEvent("GOSSIP_SHOW") -- GOSSIP_CLOSE fires when clicking on a quest, using time-based logic for deciding when gossip is really closed
+f:RegisterEvent("TRAINER_CLOSED")
+f:RegisterEvent("TRAINER_SHOW")
 f:SetScript("OnEvent", mb_OnEvent)
 
 
@@ -106,7 +126,6 @@ end
 -- OnPostLoad, called when macros etc. are available
 function mb_OnPostLoad()
 	mb_CreateMBMacro()
-	mb_CreateTrainMacro()
 	mb_RegisterMassCommandRequestHandlers()
 	local playerClass = max_GetClass("player")
 	if playerClass == "DRUID" then
@@ -133,33 +152,28 @@ function mb_OnPostLoad()
 end
 
 function mb_CreateMBMacro()
-	local macroId = GetMacroIndexByName("MB")
-	if macroId > 0 then
-		EditMacro(macroId, "MB", 12, "/mb " .. mb_GetConfig()["followTarget"], 1, 1)
-	else
-		macroId = CreateMacro("MB", 12, "/mb " .. mb_GetConfig()["followTarget"], 1, 1)
-	end
-	PickupMacro(macroId)
-	PlaceAction(37) -- RightActionBarSlot1
-	ClearCursor()
-	SetBinding("7","MULTIACTIONBAR4BUTTON1")
+	mb_CreateMacro("MB_Main", "/mb " .. mb_GetConfig()["followTarget"], 37, "7", "MULTIACTIONBAR4BUTTON1")
+	mb_CreateMacro("MB_ZoomIn", "/run SetView(3); CameraZoomIn(2);", 38, "8", "MULTIACTIONBAR4BUTTON2")
 end
 
-function mb_CreateTrainMacro()
-	local macroId = GetMacroIndexByName("MBtrain")
+function mb_CreateMacro(name, body, actionSlot, bindingKey, bindingName)
+	local macroId = GetMacroIndexByName(name)
 	if macroId > 0 then
-		EditMacro(macroId, "MBtrain", 11, "/mb train", 1, 1)
+		EditMacro(macroId, name, 12, body, 1, 1)
 	else
-		macroId = CreateMacro("MBtrain", 11, "/mb train", 1, 1)
+		macroId = CreateMacro(name, 12, body, 1, 1)
 	end
 	PickupMacro(macroId)
-	PlaceAction(38)
+	PlaceAction(actionSlot)
 	ClearCursor()
-	SetBinding("8","MULTIACTIONBAR4BUTTON2")
+	SetBinding(bindingKey, bindingName)
 end
 
 -- OnUpdate
 function mb_OnUpdate()
+	if mb_isGossiping and mb_gossipOpenedTime + 5 < GetTime() then
+		mb_isGossiping = false
+	end
 end
 
 -- OnCmd
@@ -242,17 +256,16 @@ end
 ---		Also scan the target for current health and hots and other stuff to decide if you should cancel.
 ---	Owners request buffs for their pets
 ---	Reagent watch
+--- Proper range-check of spells
 ---	Add GCD-checks for buffing requests
 ---	Decursing + Dispelling + Depoisoning + Dediseasing
 --- Double-request handling can happen if the propose happens for 1 guy after the accept has already been sent.
 --- Add ressing prio, other ressers first
 ---	AOE mode on/off
---- Follow in ghost
 --- Prioritize ressing over buffs, maybe prio wisdom over ressing?
---- Interact with target keybind 9
 --- Soulstone request
---- Auto-next quests, only when choose reward wait, auto-repair all
---- Gold-spreading
+--- Automatic Gold-spreading
+---	Sit/stand logic based on error-messages, see RogueSpam addon.
 ---
 ---
 

@@ -20,13 +20,14 @@ function mb_RegisterMassCommandRequestHandlers()
     mb_RegisterForRequest("releaseCorpse", mb_ReleaseCorpseRequestHandler)
     mb_RegisterForRequest("haveQuest", mb_HaveQuestRequestHandler)
     mb_RegisterForRequest("doesNotHaveQuest", mb_DoesNotHaveQuestRequestHandler)
+    mb_RegisterForRequest("areaOfEffectMode", mb_AreaOfEffectModeRequestHandler)
 end
 
 function mb_HandleSharedBehaviour(commander)
     AcceptGuild()
     AcceptGroup()
     if mb_isTrading then
-        AcceptTrade()
+        mb_AcceptTradeThrottled()
     end
     RetrieveCorpse()
     ConfirmAcceptQuest()
@@ -416,5 +417,10 @@ function mb_DoesNotHaveQuestRequestHandler(requestId, requestType, requestBody)
     end
     max_SayRaid("I do not have quest: " .. requestBody)
 end
+
+function mb_AreaOfEffectModeRequestHandler(requestId, requestType, requestBody)
+    mb_areaOfEffectMode = requestBody == "on"
+end
+
 
 

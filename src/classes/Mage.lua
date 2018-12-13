@@ -2,8 +2,8 @@
 ---     Evocation
 ---     Polymorph requests
 ---     Counterspell, might be hard, gotta scan combat log for % begins casting %, check libcast in PFUI
----     Mage water trading is kinda buggy
 ---
+
 function mb_Mage(commander)
     if mb_DoBasicCasterLogic() then
         return
@@ -18,14 +18,16 @@ function mb_Mage(commander)
             table.remove(mb_queuedRequests, 1)
             return
         elseif request.requestType == REQUEST_WATER.requestType then
-            if mb_isTrading then
+            TargetByName(request.requestBody, true)
+            if not CursorHasItem() then
                 local bag, slot = mb_LocateWaterInBags()
                 PickupContainerItem(bag, slot)
+                InitiateTrade("target")
+                return
+            else
                 DropItemOnUnit("target")
                 table.remove(mb_queuedRequests, 1)
-            else
-                TargetByName(request.requestBody, true)
-                InitiateTrade("target")
+                return
             end
         else
             max_SayRaid("Serious error, received request for " .. request.requestType)
@@ -63,8 +65,12 @@ function mb_Mage(commander)
 
     AssistByName(commander)
 
-    CastSpellByName("Fire Blast")
-    CastSpellByName("Frostbolt")
+    if mb_areaOfEffectMode then
+        CastSpellByName("Arcane Explosion")
+    else
+        CastSpellByName("Frostbolt")
+        CastSpellByName("Fire Blast")
+    end
 end
 
 function mb_Mage_OnLoad()

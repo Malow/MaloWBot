@@ -38,6 +38,7 @@ mb_myAcceptedRequests = {}
 mb_myPendingRequests = {}
 mb_gcdSpell = {}
 mb_queuedRequests = {}
+mb_areaOfEffectMode = false
 function mb_OnEvent()
 	if event == "ADDON_LOADED" and arg1 == MY_NAME then
 		mb_OnLoad()
@@ -263,9 +264,13 @@ end
 --- Add ressing prio, other ressers first
 ---	AOE mode on/off
 --- Prioritize ressing over buffs, maybe prio wisdom over ressing?
---- Soulstone request
 --- Automatic Gold-spreading
 ---	Sit/stand logic based on error-messages, see RogueSpam addon.
+---	Warlock:
+---		Healthstone
+---		Pets
+---		Curses
+---		Soulstone request
 ---
 ---
 

@@ -1,4 +1,3 @@
-
 function mb_HandleSpecialSlashCommand(msg)
     if msg == "r" then
         mb_MakeRequest("reload", "reload")
@@ -21,6 +20,10 @@ function mb_HandleSpecialSlashCommand(msg)
         local questLogId = GetQuestLogSelection()
         local questName = GetQuestLogTitle(questLogId)
         mb_MakeRequest("haveQuest", questName)
+    elseif string.find(msg, "aoe") then
+        local mode = max_SplitString(msg, " ")[2]
+        mb_areaOfEffectMode = mode == "on"
+        mb_MakeRequest("areaOfEffectMode", mode)
     elseif string.find(msg, "doesNotHaveQuest") then
         local questLogId = GetQuestLogSelection()
         local questName = GetQuestLogTitle(questLogId)

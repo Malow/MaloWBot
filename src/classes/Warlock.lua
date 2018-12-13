@@ -1,8 +1,3 @@
--- TODO:
----     Healthstones
----     Pets
----     Curses
----
 function mb_Warlock(commander)
     if mb_DoBasicCasterLogic() then
         return
@@ -37,16 +32,16 @@ function mb_Warlock(commander)
 
     AssistByName(commander)
 
-    if max_GetHealthPercentage("player") < 20 then
+    if max_GetHealthPercentage("player") < 25 then
         CastSpellByName("Drain Life")
     end
 
     -- TODO: Use MobHealth addon and get the unit health from that instead of : UnitHealth("target") < 20 and
-    if max_GetFreeBagSlots() > 5 then
+    if max_GetFreeBagSlots() > 5 and max_GetLevelDifferenceFromSelf("target") > -10 then
         CastSpellByName("Drain Soul")
-    else
-        CastSpellByName("Shadow Bolt")
+        return
     end
+    CastSpellByName("Shadow Bolt")
 end
 
 function mb_Warlock_OnLoad()

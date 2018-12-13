@@ -206,3 +206,11 @@ function mb_CanBuffUnitWithSpell(unit, spell)
 		return true
 	end
 end
+
+mb_lastAcceptedTrade = 0
+function mb_AcceptTradeThrottled()
+	if mb_lastAcceptedTrade + 0.5 < GetTime() then
+		mb_lastAcceptedTrade = GetTime()
+		AcceptTrade()
+	end
+end

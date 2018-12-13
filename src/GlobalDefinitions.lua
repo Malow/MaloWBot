@@ -13,11 +13,17 @@ BUFF_TEXTURE_SPIRIT_OF_REDEMPTION = "Interface\\Icons\\Spell_Holy_GreaterHeal"
 BUFF_TEXTURE_ABOLISH_DISEASE = "Interface\\Icons\\Spell_Nature_NullifyDisease"
 BUFF_TEXTURE_ARCANE_INTELLECT = "Interface\\Icons\\Spell_Holy_MagicalSentry"
 BUFF_TEXTURE_BLESSING_OF_WISDOM = "Interface\\Icons\\Spell_Holy_SealOfWisdom"
+BUFF_TEXTURE_GREATER_BLESSING_OF_WISDOM = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom"
 BUFF_TEXTURE_BLESSING_OF_MIGHT = "Interface\\Icons\\Spell_Holy_FistOfJustice"
+BUFF_TEXTURE_GREATER_BLESSING_OF_MIGHT = "Interface\\Icons\\Spell_Holy_GreaterBlessingofKings"
 BUFF_TEXTURE_BLESSING_OF_KINGS = "Interface\\Icons\\Spell_Magic_MageArmor"
+BUFF_TEXTURE_GREATER_BLESSING_OF_KINGS = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings"
 BUFF_TEXTURE_BLESSING_OF_LIGHT = "Interface\\Icons\\Spell_Holy_PrayerOfHealing02"
+BUFF_TEXTURE_GREATER_BLESSING_OF_LIGHT = "Interface\\Icons\\Spell_Holy_GreaterBlessingofLight"
 BUFF_TEXTURE_BLESSING_OF_SANCTUARY = "Interface\\Icons\\Spell_Nature_LightningShield"
+BUFF_TEXTURE_GREATER_BLESSING_OF_SANCTUARY = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSanctuary"
 BUFF_TEXTURE_BLESSING_OF_SALVATION = "Interface\\Icons\\Spell_Holy_SealOfSalvation"
+BUFF_TEXTURE_GREATER_BLESSING_OF_SALVATION = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSalvation"
 BUFF_TEXTURE_DRINK = "Interface\\Icons\\INV_Drink_07"
 BUFF_TEXTURE_ICE_ARMOR = "Interface\\Icons\\Spell_Frost_FrostArmor02"
 BUFF_TEXTURE_DEMON_ARMOR = "Interface\\Icons\\Spell_Shadow_RagingScream"
@@ -68,32 +74,32 @@ BUFF_DIVINE_SPIRIT = {
 }
 BUFF_BLESSING_OF_WISDOM = {
     requestType = "buffBlessingOfWisdom",
-    textures = { BUFF_TEXTURE_BLESSING_OF_WISDOM },
+    textures = { BUFF_TEXTURE_BLESSING_OF_WISDOM, BUFF_TEXTURE_GREATER_BLESSING_OF_WISDOM },
     throttle = 10
 }
 BUFF_BLESSING_OF_MIGHT = {
     requestType = "buffBlessingOfMight",
-    textures = { BUFF_TEXTURE_BLESSING_OF_MIGHT },
+    textures = { BUFF_TEXTURE_BLESSING_OF_MIGHT, BUFF_TEXTURE_GREATER_BLESSING_OF_MIGHT },
     throttle = 10
 }
 BUFF_BLESSING_OF_KINGS = {
     requestType = "buffBlessingOfKings",
-    textures = { BUFF_TEXTURE_BLESSING_OF_KINGS },
+    textures = { BUFF_TEXTURE_BLESSING_OF_KINGS, BUFF_TEXTURE_GREATER_BLESSING_OF_KINGS },
     throttle = 10
 }
 BUFF_BLESSING_OF_LIGHT = {
     requestType = "buffBlessingOfLight",
-    textures = { BUFF_TEXTURE_BLESSING_OF_LIGHT },
+    textures = { BUFF_TEXTURE_BLESSING_OF_LIGHT, BUFF_TEXTURE_GREATER_BLESSING_OF_LIGHT },
     throttle = 10
 }
 BUFF_BLESSING_OF_SANCTUARY = {
     requestType = "buffBlessingOfSanctuary",
-    textures = { BUFF_TEXTURE_BLESSING_OF_SANCTUARY },
+    textures = { BUFF_TEXTURE_BLESSING_OF_SANCTUARY, BUFF_TEXTURE_GREATER_BLESSING_OF_SANCTUARY },
     throttle = 10
 }
 BUFF_BLESSING_OF_SALVATION = {
     requestType = "buffBlessingOfSalvation",
-    textures = { BUFF_TEXTURE_BLESSING_OF_SALVATION },
+    textures = { BUFF_TEXTURE_BLESSING_OF_SALVATION, BUFF_TEXTURE_GREATER_BLESSING_OF_SALVATION },
     throttle = 10
 }
 BUFF_MARK_OF_THE_WILD = {

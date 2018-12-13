@@ -144,6 +144,10 @@ function mb_IsIgnoredTradeItem(itemName)
 		return true
 	elseif itemName == "Doomshot" then
 		return true
+	elseif itemName == "Wild Thornroot" then
+		return true
+	elseif itemName == "Symbol of Kings" then
+		return true
 	end
 	for i = max_GetTableSize(ITEMS_WATER), 1, -1 do
 		if itemName == ITEMS_WATER[i] then

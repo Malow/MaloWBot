@@ -249,6 +249,7 @@ end
 -- TODO:
 --- Test out LogOut() to remove /follow, works in combat? works while casting?
 --- On ready-check click away buffs with less than 8 minute duration
+---		Also decline ready-checks if missing buffs or mana or items (healthstone)
 --- If a trade window is open stop assisting cuz it breaks trade
 --- Make accepted requests time out if their throttleTime - 1 has passed
 --- Figure out a way to clear up pending requests list, it will grow forever atm
@@ -257,14 +258,13 @@ end
 ---		Add the announced heals to the targets current health until you see your own announcement, then decide if you want to cancel your cast or not.
 ---		Also scan the target for current health and hots and other stuff to decide if you should cancel.
 ---	Owners request buffs for their pets
----	Reagent watch
 --- Proper range-check of spells
 ---	Add GCD-checks for buffing requests
 ---	Decursing + Dispelling + Depoisoning + Dediseasing
 --- Double-request handling can happen if the propose happens for 1 guy after the accept has already been sent.
---- Add ressing prio, other ressers first
----	AOE mode on/off
---- Prioritize ressing over buffs, maybe prio wisdom over ressing?
+--- Request-prioritization system:
+---		Add ressing prio, other ressers first
+---		Prioritize ressing over buffing, maybe prio wisdom over ressing?
 --- Automatic Gold-spreading
 ---	Sit/stand logic based on error-messages, see RogueSpam addon.
 ---	Warlock:
@@ -275,6 +275,8 @@ end
 ---     Evocation
 ---     Polymorph requests
 ---     Counterspell, might be hard, gotta scan combat log for % begins casting %, check libcast in PFUI
+--- Priest:
+---		Check PWS cooldown
 --- Vendoring: Vendor 1 item per frame, DC otherwise
 ---
 ---

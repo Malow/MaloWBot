@@ -38,6 +38,7 @@ function mb_Druid_OnLoad()
 	mb_AddDesiredBuff(BUFF_BLESSING_OF_SALVATION)
 	mb_AddDesiredBuff(BUFF_DIVINE_SPIRIT)
 	mb_Druid_AddDesiredTalents()
+	mb_AddReagentWatch("Wild Thornroot", 20)
 end
 
 function mb_Druid_HandleMarkOfTheWildRequest(requestId, requestType, requestBody)

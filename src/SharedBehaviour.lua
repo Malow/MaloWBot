@@ -393,6 +393,7 @@ function mb_TrainSpells()
 end
 
 function mb_HandleVendoring()
+    mb_WarnForWatchedReagents()
     if GetRepairAllCost() > GetMoney() then
         max_SayRaid("Guys, I'm broke and can't afford my repairs :(")
     end
@@ -429,5 +430,25 @@ function mb_AreaOfEffectModeRequestHandler(requestId, requestType, requestBody)
     mb_areaOfEffectMode = requestBody == "on"
 end
 
+mb_watchedReagents = {}
+-- Adds an item-name together with a minimum count that the player will warn when repairing if it has too few of
+function mb_AddReagentWatch(itemName, minimumCount)
+    local reagent = {}
+    reagent.itemName = itemName
+    reagent.minimumCount = minimumCount
+    reagent.hasWarned = false
+    table.insert(mb_watchedReagents, reagent)
+end
 
+function mb_WarnForWatchedReagents()
+    for i = 1, max_GetTableSize(mb_watchedReagents) do
+        local itemCount = mb_GetItemCount(mb_watchedReagents[i].itemName)
+        if itemCount < mb_watchedReagents[i].minimumCount then
+            if not mb_watchedReagents[i].hasWarned then
+                max_SayRaid("I'm down to " .. itemCount .. " " .. mb_watchedReagents[i].itemName .. ". I would like another " .. mb_watchedReagents[i].minimumCount - itemCount)
+                mb_watchedReagents[i].hasWarned = true
+            end
+        end
+    end
+end
 

@@ -7,32 +7,32 @@ function mb_Paladin(commander)
         local request = mb_queuedRequests[1]
         if request.requestType == BUFF_BLESSING_OF_WISDOM.requestType then
             TargetByName(request.requestBody, true)
-            CastSpellByName("Blessing of Wisdom")
+            CastSpellByName("Greater Blessing of Wisdom")
             table.remove(mb_queuedRequests, 1)
             return
         elseif request.requestType == BUFF_BLESSING_OF_MIGHT.requestType then
             TargetByName(request.requestBody, true)
-            CastSpellByName("Blessing of Might")
+            CastSpellByName("Greater Blessing of Might")
             table.remove(mb_queuedRequests, 1)
             return
         elseif request.requestType == BUFF_BLESSING_OF_KINGS.requestType then
             TargetByName(request.requestBody, true)
-            CastSpellByName("Blessing of Kings")
+            CastSpellByName("Greater Blessing of Kings")
             table.remove(mb_queuedRequests, 1)
             return
         elseif request.requestType == BUFF_BLESSING_OF_LIGHT.requestType then
             TargetByName(request.requestBody, true)
-            CastSpellByName("Blessing of Light")
+            CastSpellByName("Greater Blessing of Light")
             table.remove(mb_queuedRequests, 1)
             return
         elseif request.requestType == BUFF_BLESSING_OF_SANCTUARY.requestType then
             TargetByName(request.requestBody, true)
-            CastSpellByName("Blessing of Sanctuary")
+            CastSpellByName("Greater Blessing of Sanctuary")
             table.remove(mb_queuedRequests, 1)
             return
         elseif request.requestType == BUFF_BLESSING_OF_SALVATION.requestType then
             TargetByName(request.requestBody, true)
-            CastSpellByName("Blessing of Salvation")
+            CastSpellByName("Greater Blessing of Salvation")
             table.remove(mb_queuedRequests, 1)
             return
         elseif request.requestType == REQUEST_RESURRECT.requestType then
@@ -72,6 +72,7 @@ function mb_Paladin_OnLoad()
     mb_RegisterForRequest(BUFF_BLESSING_OF_SANCTUARY.requestType, mb_Paladin_HandleBlessingOfSanctuaryRequest)
     mb_RegisterForRequest(BUFF_BLESSING_OF_SALVATION.requestType, mb_Paladin_HandleBlessingOfSalvationRequest)
     mb_Paladin_AddDesiredTalents()
+    mb_AddReagentWatch("Symbol of Kings", 100)
 end
 
 function mb_Paladin_HandleResurrectionRequest(requestId, requestType, requestBody)
@@ -84,7 +85,7 @@ function mb_Paladin_HandleBlessingOfWisdomRequest(requestId, requestType, reques
     if not mb_Paladin_HasImprovedWisdom() then
         return
     end
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(requestBody), "Blessing of Wisdom") then
+    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(requestBody), "Greater Blessing of Wisdom") then
         mb_AcceptRequest(requestId, requestType, requestBody)
     end
 end
@@ -93,7 +94,7 @@ function mb_Paladin_HandleBlessingOfMightRequest(requestId, requestType, request
     if not mb_Paladin_HasImprovedMight() then
         return
     end
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(requestBody), "Blessing of Might") then
+    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(requestBody), "Greater Blessing of Might") then
         mb_AcceptRequest(requestId, requestType, requestBody)
     end
 end
@@ -102,7 +103,7 @@ function mb_Paladin_HandleBlessingOfKingsRequest(requestId, requestType, request
     if not mb_Paladin_HasKings() then
         return
     end
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(requestBody), "Blessing of Kings") then
+    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(requestBody), "Greater Blessing of Kings") then
         mb_AcceptRequest(requestId, requestType, requestBody)
     end
 end
@@ -111,7 +112,7 @@ function mb_Paladin_HandleBlessingOfLightRequest(requestId, requestType, request
     if mb_GetConfig()["specs"][UnitName("player")] ~= "RetLight" then
         return
     end
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(requestBody), "Blessing of Light") then
+    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(requestBody), "Greater Blessing of Light") then
         mb_AcceptRequest(requestId, requestType, requestBody)
     end
 end
@@ -120,16 +121,16 @@ function mb_Paladin_HandleBlessingOfSanctuaryRequest(requestId, requestType, req
     if not mb_Paladin_HasSanctuary() then
         return
     end
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(requestBody), "Blessing of Sanctuary") then
+    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(requestBody), "Greater Blessing of Sanctuary") then
         mb_AcceptRequest(requestId, requestType, requestBody)
     end
 end
 
 function mb_Paladin_HandleBlessingOfSalvationRequest(requestId, requestType, requestBody)
-    if mb_GetConfig()["specs"][UnitName("player")] ~= "RetLight" then
+    if mb_GetConfig()["specs"][UnitName("player")] ~= "SanctuarySalvation" then
         return
     end
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(requestBody), "Blessing of Salvation") then
+    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(requestBody), "Greater Blessing of Salvation") then
         mb_AcceptRequest(requestId, requestType, requestBody)
     end
 end

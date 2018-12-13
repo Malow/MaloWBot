@@ -70,6 +70,7 @@ end
 function mb_Mage_OnLoad()
     mb_RegisterForRequest(BUFF_ARCANE_INTELLECT.requestType, mb_Mage_HandleArcaneIntRequest)
     mb_RegisterForRequest(REQUEST_WATER.requestType, mb_Mage_HandleWaterRequest)
+    mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
     mb_AddDesiredBuff(BUFF_BLESSING_OF_WISDOM)
@@ -102,7 +103,7 @@ end
 function mb_Mage_AddDesiredTalents()
     if UnitLevel("player") == 60 then
         -- Raiding spec
-        -- TODO: Decide between Ice Barrier and Presence of Mind, probably depends on whether or not we can detect movement
+        -- TODO: Decide between Ice Barrier and Presence of Mind, probably depends on whether or not we can detect movement (use the error text like the rogue addon for that?)
         mb_AddDesiredTalent(3, 2, 5) -- Improved Frostbolt
         mb_AddDesiredTalent(3, 3, 3) -- Elemental Precision
         mb_AddDesiredTalent(3, 4, 5) -- Ice Shards

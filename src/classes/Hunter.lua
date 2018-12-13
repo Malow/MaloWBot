@@ -8,6 +8,7 @@ function mb_Hunter(commander)
 end
 
 function mb_Hunter_OnLoad()
+	mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
 	mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
 	mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
 	mb_AddDesiredBuff(BUFF_BLESSING_OF_WISDOM)

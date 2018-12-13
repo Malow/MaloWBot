@@ -86,6 +86,7 @@ function mb_HandleMassCommandRequests()
         mb_shouldMount = false
         CastSpellByName("Summon Warhorse")
         CastSpellByName("Summon Felsteed")
+        CastSpellByName("Travel Form")
         return true
     end
     if mb_shouldReleaseCorpse then
@@ -240,7 +241,13 @@ end
 
 function mb_CheckAndRequestBuffs()
     for i = 1, max_GetTableSize(mb_desiredBuffs) do
-        if not max_HasBuff("player", mb_desiredBuffs[i].texture) then
+        local hasBuff = false
+        for u = 1, max_GetTableSize(mb_desiredBuffs[i].textures) do
+            if max_HasBuff("player", mb_desiredBuffs[i].textures[u]) then
+                hasBuff = true
+            end
+        end
+        if not hasBuff then
             mb_MakeThrottledRequest(mb_desiredBuffs[i], UnitName("player"))
         end
     end

@@ -224,3 +224,25 @@ function mb_AcceptTradeThrottled()
 		AcceptTrade()
 	end
 end
+
+function mb_ShouldBuffGroupWide(unitName, buff)
+	local groupUnits = max_GetGroupUnitsFor(unitName)
+	local count = 0
+	for i = 1, max_GetTableSize(groupUnits) do
+		if mb_IsValidTarget(groupUnits[i]) then
+			local hasBuff = false
+			for u = 1, max_GetTableSize(buff.textures) do
+				if max_HasBuff(groupUnits[i], buff.textures[u]) then
+					hasBuff = true
+				end
+			end
+			if not hasBuff then
+				count = count + 1
+			end
+		end
+	end
+	if count > 1 then
+		return true
+	end
+	return false
+end

@@ -12,6 +12,7 @@ function max_GetNumPartyOrRaidMembers()
 	return 0
 end
 
+-- Returns the unit that has specified raidIndex
 function max_GetUnitFromPartyOrRaidIndex(index)
 	if index ~= 0 then
 		if UnitInRaid("player") then
@@ -114,6 +115,18 @@ function max_GetUnitForPlayerName(playerName)
 	return nil
 end
 
+-- Turns a playerName into a raid-index, nil if not found
+function max_GetRaidIndexForPlayerName(playerName)
+	local members = max_GetNumPartyOrRaidMembers()
+	for i = 1, members do
+		local unit = max_GetUnitFromPartyOrRaidIndex(i)
+		if UnitName(unit) == playerName then
+			return i
+		end
+	end
+	return nil
+end
+
 -- Splits a string where a character is found
 function max_SplitString(str, char)
 	local strings = {}
@@ -149,4 +162,27 @@ function max_GetTableSize(t)
 	local count = 0
 	for _ in pairs(t) do count = count + 1 end
 	return count
+end
+
+-- Returns which subgroup the unit with the specified raidIndex is in
+function max_GetSubgroupForRaidIndex(raidIndex)
+	local name, rank, subgroup, level, class, fileName, zone, online, isDead = GetRaidRosterInfo(raidIndex)
+	return subgroup
+end
+
+-- Returns a list of names of units of the group that the provided unit's name is part of
+function max_GetGroupUnitsFor(unitName)
+	local targetRaidIndex = max_GetRaidIndexForPlayerName(unitName)
+	local targetSubGroup = max_GetSubgroupForRaidIndex(targetRaidIndex)
+	local groupMembers = {}
+
+	local membersCount = max_GetNumPartyOrRaidMembers()
+	for i = 1, membersCount do
+		local unit = max_GetUnitFromPartyOrRaidIndex(i)
+		local name, rank, subgroup, level, class, fileName, zone, online, isDead = GetRaidRosterInfo(i)
+		if subgroup == targetSubGroup then
+			table.insert(groupMembers, unit)
+		end
+	end
+	return groupMembers
 end

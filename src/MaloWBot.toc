@@ -5,6 +5,7 @@
 ## Version 1
 ## Author: MaloW
 
+CombatLogModule.lua
 Config.lua
 Functions.lua
 GlobalDefinitions.lua

@@ -134,6 +134,16 @@ function mb_IsIgnoredTradeItem(itemName)
 		return true
 	elseif itemName == "Blackhand's Command" then
 		return true
+	elseif itemName == "Major Soulstone" then
+		return true
+	elseif itemName == "General Drakkisath's Command" then
+		return true
+	elseif itemName == "Bijou's Information" then
+		return true
+	elseif itemName == "Unadorned Seal of Ascension" then
+		return true
+	elseif itemName == "Doomshot" then
+		return true
 	end
 	for i = max_GetTableSize(ITEMS_WATER), 1, -1 do
 		if itemName == ITEMS_WATER[i] then

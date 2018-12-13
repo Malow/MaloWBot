@@ -126,7 +126,7 @@ end
 
 -- OnPostLoad, called when macros etc. are available
 function mb_OnPostLoad()
-	mb_CreateMBMacro()
+	mb_CreateMBMacros()
 	mb_RegisterMassCommandRequestHandlers()
 	local playerClass = max_GetClass("player")
 	if playerClass == "DRUID" then
@@ -152,9 +152,10 @@ function mb_OnPostLoad()
 	mb_Print("Loaded")
 end
 
-function mb_CreateMBMacro()
+function mb_CreateMBMacros()
 	mb_CreateMacro("MB_Main", "/mb " .. mb_GetConfig()["followTarget"], 37, "7", "MULTIACTIONBAR4BUTTON1")
 	mb_CreateMacro("MB_ZoomIn", "/run SetView(3); CameraZoomIn(2);", 38, "8", "MULTIACTIONBAR4BUTTON2")
+	mb_CreateMacro("MB_DE", "/cast Disenchant", 39, "1", "MULTIACTIONBAR4BUTTON3")
 end
 
 function mb_CreateMacro(name, body, actionSlot, bindingKey, bindingName)
@@ -270,9 +271,16 @@ end
 ---		Healthstone
 ---		Pets
 ---		Curses
----		Soulstone request
+---	Mage:
+---     Evocation
+---     Polymorph requests
+---     Counterspell, might be hard, gotta scan combat log for % begins casting %, check libcast in PFUI
+--- Vendoring: Vendor 1 item per frame, DC otherwise
 ---
 ---
+---
+---
+
 
 
 

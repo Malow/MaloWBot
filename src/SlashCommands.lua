@@ -10,6 +10,8 @@ function mb_HandleSpecialSlashCommand(msg)
         mb_MakeRequest("inventoryDump", UnitName("player"))
     elseif msg == "summon" then
         mb_MakeRequest("summon", UnitName("target"))
+    elseif msg == "soulstone" then
+        mb_MakeRequest("soulstone", UnitName("target"))
     elseif msg == "hearthstone" then
         mb_MakeRequest("hearthstone", "hearthstone")
     elseif msg == "mount" then

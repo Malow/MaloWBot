@@ -1,9 +1,3 @@
--- TODO:
----     Evocation
----     Polymorph requests
----     Counterspell, might be hard, gotta scan combat log for % begins casting %, check libcast in PFUI
----
-
 function mb_Mage(commander)
     if mb_DoBasicCasterLogic() then
         return

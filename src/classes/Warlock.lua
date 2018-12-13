@@ -12,6 +12,17 @@ function mb_Warlock(commander)
             CastSpellByName("Ritual of Summoning")
             table.remove(mb_queuedRequests, 1)
             return
+        elseif request.requestType == "soulstone" then
+            -- if gcd is ready
+            if mb_HasItem("Major Soulstone") then
+                max_SayRaid("I'm soulstoning " .. requestBody)
+                TargetByName(request.requestBody, true)
+                mb_UseItem("Major Soulstone")
+                table.remove(mb_queuedRequests, 1)
+            else
+                CastSpellByName("Create Soulstone (Major)")
+            end
+            return
         else
             max_SayRaid("Serious error, received request for " .. request.requestType)
         end
@@ -46,6 +57,7 @@ end
 
 function mb_Warlock_OnLoad()
     mb_RegisterForRequest("summon", mb_Warlock_HandleSummonRequest)
+    mb_RegisterForRequest("soulstone", mb_Warlock_HandleSoulstoneRequest)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
     mb_AddDesiredBuff(BUFF_BLESSING_OF_WISDOM)
@@ -58,6 +70,20 @@ function mb_Warlock_OnLoad()
 end
 
 function mb_Warlock_HandleSummonRequest(requestId, requestType, requestBody)
+    if UnitAffectingCombat("player") then
+        return
+    elseif max_GetManaPercentage("player") < 30 then
+        return
+    elseif mb_IsDrinking() then
+        return
+    end
+    local soulShardCount = mb_GetItemCount("Soul Shard")
+    if soulShardCount > 0 and not mb_isCasting then
+        mb_AcceptRequest(requestId, requestType, requestBody)
+    end
+end
+
+function mb_Warlock_HandleSoulstoneRequest(requestId, requestType, requestBody)
     if UnitAffectingCombat("player") then
         return
     elseif max_GetManaPercentage("player") < 30 then

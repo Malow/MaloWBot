@@ -21,5 +21,11 @@ function mb_GetConfig()
     config["specs"]["Bondrin"] = "Holy"
     config["specs"]["Silmelin"] = "Holy"
     config["specs"]["Noldralda"] = "Disc"
+	config["specs"]["Garret"]= "WarrTank"
+	config["specs"]["Elery"]= "WarrTank"
+	config["specs"]["Kalman"]= "WarrTank"
+	config["specs"]["Verne"]= "Fury"
+	config["specs"]["Hammond"]= "Fury"
+	config["specs"]["Davrice"]= "Fury"
     return config
 end

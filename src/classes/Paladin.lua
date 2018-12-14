@@ -71,13 +71,13 @@ function mb_Paladin(commander)
         end
     end
 
-    --local healSpell = "Flash of Light"
-    --local healTargetUnit, missingHealth = mb_GetMostDamagedFriendly(healSpell)
-    --if missingHealth > 50 then
-    --    TargetUnit(healTargetUnit)
-    --    CastSpellByName(healSpell)
-    --    return
-    --end
+    local healSpell = "Flash of Light"
+    local healTargetUnit, missingHealth = mb_GetMostDamagedFriendly(healSpell)
+    if missingHealth > 50 then
+        TargetUnit(healTargetUnit)
+        CastSpellByName(healSpell)
+        return
+    end
 end
 
 function mb_Paladin_OnLoad()

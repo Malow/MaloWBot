@@ -47,6 +47,7 @@ function mb_Warlock(commander)
         CastSpellByName("Drain Life")
     end
 
+    CastSpellByName("Shadow Bolt") -- HAX REMOVE
     -- TODO: Use MobHealth addon and get the unit health from that instead of : UnitHealth("target") < 20 and
     if max_GetFreeBagSlots() > 5 and max_GetLevelDifferenceFromSelf("target") > -10 then
         CastSpellByName("Drain Soul")

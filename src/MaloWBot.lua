@@ -346,7 +346,6 @@ end
 ---		Pets
 ---		Curses
 ---	Mage:
----     Evocation
 ---     Polymorph requests
 ---     Counterspell, might be hard, gotta scan combat log for % begins casting %, check libcast in PFUI
 --- Priest:

@@ -30,6 +30,10 @@ function mb_HandleSpecialSlashCommand(msg)
         local questLogId = GetQuestLogSelection()
         local questName = GetQuestLogTitle(questLogId)
         mb_MakeRequest("doesNotHaveQuest", questName, 10)
+    elseif string.find(msg, "follow") then
+        local mode = max_SplitString(msg, " ")[2]
+        mb_shouldFollow = mode == "on"
+        mb_MakeRequest("followMode", mode, 10)
     elseif msg == "fixraidgroup" then
         if not IsPartyLeader() then
             mb_MakeRequest("promoteLeader", "promoteLeader", 10)

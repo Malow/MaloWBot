@@ -19,6 +19,13 @@ function mb_Druid(commander)
             end
             mb_RequestCompleted(request)
             return
+        elseif request.type == REQUEST_DECURSE.type then
+            if mb_IsOnGCD() then
+                return
+            end
+            max_CastSpellOnRaidMemberByPlayerName("Remove Curse", request.body)
+            mb_RequestCompleted(request)
+            return
         else
             max_SayRaid("Serious error, received request for " .. request.type)
         end
@@ -34,12 +41,13 @@ function mb_Druid(commander)
 
     if max_GetManaPercentage("player") > 95 then
         AssistByName(commander)
-        CastSpellByName("Moonfire")
+        CastSpellByName("Wrath")
     end
 end
 
 function mb_Druid_OnLoad()
     mb_RegisterForRequest(BUFF_MARK_OF_THE_WILD.type, mb_Druid_HandleMarkOfTheWildRequest)
+    mb_RegisterForRequest(REQUEST_DECURSE.type, mb_Druid_HandleDecurseRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
@@ -87,6 +95,13 @@ function mb_Druid_HandleMarkOfTheWildRequest(request)
         mb_AcceptRequest(request)
     end
 end
+
+function mb_Mage_HandleDecurseRequest(request)
+    if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Remove Curse") then
+        mb_AcceptRequest(request)
+    end
+end
+
 
 function mb_Druid_HasImprovedMOTW()
     local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(3, 1)

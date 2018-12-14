@@ -7,7 +7,8 @@ mb_shouldMount = false
 mb_shouldReleaseCorpse = false
 mb_shouldLearnTalents = mb_GetConfig()["autoLearnTalents"]
 mb_desiredTalentTree = {}
-mb_ShouldTrainSpells = false
+mb_shouldTrainSpells = false
+mb_shouldFollow = true
 
 function mb_RegisterMassCommandRequestHandlers()
     mb_RegisterForRequest("reload", mb_ReloadRequestHandler)
@@ -21,6 +22,7 @@ function mb_RegisterMassCommandRequestHandlers()
     mb_RegisterForRequest("haveQuest", mb_HaveQuestRequestHandler)
     mb_RegisterForRequest("doesNotHaveQuest", mb_DoesNotHaveQuestRequestHandler)
     mb_RegisterForRequest("areaOfEffectMode", mb_AreaOfEffectModeRequestHandler)
+    mb_RegisterForRequest("followMode", mb_FollowModeRequestHandler)
 end
 
 function mb_HandleSharedBehaviour(commander)
@@ -64,7 +66,7 @@ function mb_HandleSharedBehaviour(commander)
         mb_LearnTalents()
     end
 
-    if not mb_IsDrinking() then
+    if not mb_IsDrinking() and mb_shouldFollow then
         FollowByName(commander, true)
     end
     return false
@@ -244,7 +246,7 @@ function mb_CheckAndRequestBuffs()
     end
     for i = 1, max_GetTableSize(mb_desiredBuffs) do
         if not max_HasBuffWithMultipleTextures("player", mb_desiredBuffs[i].textures) then
-            mb_MakeThrottledRequest(mb_desiredBuffs[i], UnitName("player"), 5)
+            mb_MakeThrottledRequest(mb_desiredBuffs[i], UnitName("player"), 1)
         end
     end
 end
@@ -253,10 +255,10 @@ function mb_CheckAndRequestDispels()
     for i = 1, MAX_DEBUFFS do
         local debuffTexture, debuffApplications, debuffDispelType = UnitDebuff("player", i)
         if debuffDispelType and debuffDispelType == "Magic" then
-            mb_MakeThrottledRequest(REQUEST_DISPEL, UnitName("player"), 10)
+            mb_MakeThrottledRequest(REQUEST_DISPEL, UnitName("player"), 6)
         end
         if debuffDispelType and debuffDispelType == "Curse" then
-            mb_MakeThrottledRequest(REQUEST_DECURSE, UnitName("player"), 10)
+            mb_MakeThrottledRequest(REQUEST_DECURSE, UnitName("player"), 6)
         end
     end
 end
@@ -352,7 +354,7 @@ function mb_DoBasicCasterLogic()
         end
     end
 
-    if max_GetManaPercentage("player") < 50 then
+    if max_GetManaPercentage("player") < 60 then
         if mb_DrinkIfPossible() then
             return true
         end
@@ -405,7 +407,7 @@ function mb_TrainSpells()
     end
     mb_trainAttemptsLeft = mb_trainAttemptsLeft - 1
     if mb_trainAttemptsLeft < 1 then
-        mb_ShouldTrainSpells = false
+        mb_shouldTrainSpells = false
         mb_trainAttemptsLeft = 15
         CloseTrainer()
     end
@@ -448,6 +450,12 @@ end
 
 function mb_AreaOfEffectModeRequestHandler(request)
     mb_areaOfEffectMode = request.body == "on"
+end
+
+function mb_FollowModeRequestHandler(request)
+    if request.from == mb_GetConfig()["followTarget"] then
+        mb_shouldFollow = request.body == "on"
+    end
 end
 
 mb_watchedReagents = {}

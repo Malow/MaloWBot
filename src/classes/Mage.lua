@@ -56,6 +56,8 @@ function mb_Mage(commander)
 
     if UnitAffectingCombat("player") then
         if max_GetManaPercentage("player") < 10 then
+            CastSpellByName("Evocation")
+        elseif max_GetManaPercentage("player") < 20 then
             for i = max_GetTableSize(ITEMS_MANA_GEM), 1, -1 do
                 if mb_UseItem(ITEMS_MANA_GEM[i]) then
                     break
@@ -112,7 +114,7 @@ function mb_Mage_HandleWaterRequest(request)
 end
 
 function mb_Mage_HandleDecurseRequest(request)
-    if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Remove Lesser Magic") then
+    if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Remove Lesser Curse") then
         mb_AcceptRequest(request)
     end
 end

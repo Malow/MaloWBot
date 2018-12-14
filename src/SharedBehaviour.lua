@@ -241,13 +241,7 @@ function mb_CheckAndRequestBuffs()
         return
     end
     for i = 1, max_GetTableSize(mb_desiredBuffs) do
-        local hasBuff = false
-        for u = 1, max_GetTableSize(mb_desiredBuffs[i].textures) do
-            if max_HasBuff("player", mb_desiredBuffs[i].textures[u]) then
-                hasBuff = true
-            end
-        end
-        if not hasBuff then
+        if not max_HasBuffWithMultipleTextures("player", mb_desiredBuffs[i].textures) then
             mb_MakeThrottledRequest(mb_desiredBuffs[i], UnitName("player"), 5)
         end
     end

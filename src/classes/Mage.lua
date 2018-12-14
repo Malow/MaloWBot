@@ -9,7 +9,9 @@ function mb_Mage(commander)
             if mb_IsOnGCD() then
                 return
             end
-            max_CastSpellOnRaidMemberByPlayerName("Arcane Intellect", request.body)
+            if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_ARCANE_INTELLECT.textures) then
+                max_CastSpellOnRaidMemberByPlayerName("Arcane Intellect", request.body)
+            end
             mb_RequestCompleted(request)
             return
         elseif request.type == REQUEST_WATER.type then

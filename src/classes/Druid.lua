@@ -14,7 +14,7 @@ function mb_Druid(commander)
             end
             if mb_ShouldBuffGroupWide(request.body, BUFF_MARK_OF_THE_WILD) then
                 max_CastSpellOnRaidMemberByPlayerName("Gift of the Wild", request.body)
-            else
+            elseif not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_MARK_OF_THE_WILD.textures) then
                 max_CastSpellOnRaidMemberByPlayerName("Mark of the Wild", request.body)
             end
             mb_RequestCompleted(request)

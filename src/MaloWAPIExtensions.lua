@@ -35,6 +35,16 @@ function max_HasBuff(unit, buff)
 	return false
 end
 
+-- Returns true/false depending on if the unit has any of the buffs
+function max_HasBuffWithMultipleTextures(unit, textures)
+	for u = 1, max_GetTableSize(textures) do
+		if max_HasBuff(unit, textures[u]) then
+			return true
+		end
+	end
+	return false
+end
+
 -- Returns true/false depending on if the unit has the buff
 function max_HasDebuff(unit, debuff)
 	for i = 1, MAX_DEBUFFS do

@@ -9,14 +9,18 @@ function mb_Priest(commander)
             if mb_IsOnGCD() then
                 return
             end
-            max_CastSpellOnRaidMemberByPlayerName("Power Word: Fortitude", request.body)
+            if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_POWER_WORD_FORTITUDE.textures) then
+                max_CastSpellOnRaidMemberByPlayerName("Power Word: Fortitude", request.body)
+            end
             mb_RequestCompleted(request)
             return
         elseif request.type == BUFF_DIVINE_SPIRIT.type then
             if mb_IsOnGCD() then
                 return
             end
-            max_CastSpellOnRaidMemberByPlayerName("Divine Spirit", request.body)
+            if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_DIVINE_SPIRIT.textures) then
+                max_CastSpellOnRaidMemberByPlayerName("Divine Spirit", request.body)
+            end
             mb_RequestCompleted(request)
             return
         elseif request.type == REQUEST_RESURRECT.type then

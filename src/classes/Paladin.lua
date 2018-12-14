@@ -9,42 +9,54 @@ function mb_Paladin(commander)
             if mb_IsOnGCD() then
                 return
             end
-            max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Wisdom", request.body)
+            if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_BLESSING_OF_WISDOM.textures) then
+                max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Wisdom", request.body)
+            end
             mb_RequestCompleted(request)
             return
         elseif request.type == BUFF_BLESSING_OF_MIGHT.type then
             if mb_IsOnGCD() then
                 return
             end
-            max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Might", request.body)
+            if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_BLESSING_OF_MIGHT.textures) then
+                max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Might", request.body)
+            end
             mb_RequestCompleted(request)
             return
         elseif request.type == BUFF_BLESSING_OF_KINGS.type then
             if mb_IsOnGCD() then
                 return
             end
-            max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Kings", request.body)
+            if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_BLESSING_OF_KINGS.textures) then
+                max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Kings", request.body)
+            end
             mb_RequestCompleted(request)
             return
         elseif request.type == BUFF_BLESSING_OF_LIGHT.type then
             if mb_IsOnGCD() then
                 return
             end
-            max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Light", request.body)
+            if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_BLESSING_OF_LIGHT.textures) then
+                max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Light", request.body)
+            end
             mb_RequestCompleted(request)
             return
         elseif request.type == BUFF_BLESSING_OF_SANCTUARY.type then
             if mb_IsOnGCD() then
                 return
             end
-            max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Sanctuary", request.body)
+            if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_BLESSING_OF_SANCTUARY.textures) then
+                max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Sanctuary", request.body)
+            end
             mb_RequestCompleted(request)
             return
         elseif request.type == BUFF_BLESSING_OF_SALVATION.type then
             if mb_IsOnGCD() then
                 return
             end
-            max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Salvation", request.body)
+            if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_BLESSING_OF_SALVATION.textures) then
+                max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Salvation", request.body)
+            end
             mb_RequestCompleted(request)
             return
         elseif request.type == REQUEST_RESURRECT.type then

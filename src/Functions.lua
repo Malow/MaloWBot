@@ -233,16 +233,8 @@ function mb_ShouldBuffGroupWide(unitName, buff)
 	local groupUnits = max_GetGroupUnitsFor(unitName)
 	local count = 0
 	for i = 1, max_GetTableSize(groupUnits) do
-		if mb_IsUnitValidTarget(groupUnits[i]) then
-			local hasBuff = false
-			for u = 1, max_GetTableSize(buff.textures) do
-				if max_HasBuff(groupUnits[i], buff.textures[u]) then
-					hasBuff = true
-				end
-			end
-			if not hasBuff then
-				count = count + 1
-			end
+		if mb_IsUnitValidTarget(groupUnits[i]) and not max_HasBuffWithMultipleTextures(groupUnits[i], buff.textures) then
+			count = count + 1
 		end
 	end
 	if count > 1 then

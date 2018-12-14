@@ -225,13 +225,13 @@ end
 
 function mb_DoTradeGoodies()
     if not mb_isTrading then
-        InitiateTrade(max_GetUnitForPlayerName(mb_tradeGreysTarget))
+        InitiateTrade(max_GetUnitForPlayerName(mb_tradeGoodiesTarget))
         return
     end
     local found, bag, slot = mb_GetTradeableItem(0)
     if found then
         PickupContainerItem(bag, slot)
-        DropItemOnUnit(max_GetUnitForPlayerName(mb_tradeGreysTarget))
+        DropItemOnUnit(max_GetUnitForPlayerName(mb_tradeGoodiesTarget))
     else
         mb_tradeGoodiesTarget = nil
     end

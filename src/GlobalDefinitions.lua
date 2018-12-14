@@ -9,6 +9,8 @@ BUFF_TEXTURE_DIVINE_SPIRIT = "Interface\\Icons\\Spell_Holy_DivineSpirit"
 BUFF_TEXTURE_INNER_FIRE = "Interface\\Icons\\Spell_Holy_InnerFire"
 BUFF_TEXTURE_SHADOW_PROTECTION = "Interface\\Icons\\Spell_Shadow_AntiShadow"
 BUFF_TEXTURE_RENEW = "Interface\\Icons\\Spell_Holy_Renew"
+BUFF_TEXTURE_REJUVENATION = "Interface\\Icons\\Spell_Nature_Rejuvenation"
+BUFF_TEXTURE_REGROWTH = "Interface\\Icons\\Spell_Nature_ResistNature"
 BUFF_TEXTURE_SPIRIT_OF_REDEMPTION = "Interface\\Icons\\Spell_Holy_GreaterHeal"
 BUFF_TEXTURE_ABOLISH_DISEASE = "Interface\\Icons\\Spell_Nature_NullifyDisease"
 BUFF_TEXTURE_ARCANE_INTELLECT = "Interface\\Icons\\Spell_Holy_MagicalSentry"
@@ -53,6 +55,14 @@ REQUEST_RESURRECT = {
 }
 REQUEST_WATER = {
     type = "water",
+    throttle = 10
+}
+REQUEST_DISPEL = {
+    type = "dispel",
+    throttle = 10
+}
+REQUEST_DECURSE = {
+    type = "decurse",
     throttle = 10
 }
 

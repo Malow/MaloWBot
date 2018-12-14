@@ -25,6 +25,13 @@ function mb_Mage(commander)
                 mb_RequestCompleted(request)
                 return
             end
+        elseif request.type == REQUEST_DECURSE.type then
+            if mb_IsOnGCD() then
+                return
+            end
+            max_CastSpellOnRaidMemberByPlayerName("Remove Lesser Curse", request.body)
+            mb_RequestCompleted(request)
+            return
         else
             max_SayRaid("Serious error, received request for " .. request.type)
         end
@@ -72,6 +79,7 @@ end
 function mb_Mage_OnLoad()
     mb_RegisterForRequest(BUFF_ARCANE_INTELLECT.type, mb_Mage_HandleArcaneIntRequest)
     mb_RegisterForRequest(REQUEST_WATER.type, mb_Mage_HandleWaterRequest)
+    mb_RegisterForRequest(REQUEST_DECURSE.type, mb_Mage_HandleDecurseRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
@@ -100,6 +108,12 @@ function mb_Mage_HandleWaterRequest(request)
         if CheckInteractDistance(unit, 2) then
             mb_AcceptRequest(request)
         end
+    end
+end
+
+function mb_Mage_HandleDecurseRequest(request)
+    if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Remove Lesser Magic") then
+        mb_AcceptRequest(request)
     end
 end
 

@@ -59,6 +59,7 @@ function mb_HandleSharedBehaviour(commander)
     end
     --CancelLogout()
     mb_CheckAndRequestBuffs()
+    mb_CheckAndRequestDispels()
     if mb_shouldLearnTalents then
         mb_LearnTalents()
     end
@@ -244,6 +245,18 @@ function mb_CheckAndRequestBuffs()
     for i = 1, max_GetTableSize(mb_desiredBuffs) do
         if not max_HasBuffWithMultipleTextures("player", mb_desiredBuffs[i].textures) then
             mb_MakeThrottledRequest(mb_desiredBuffs[i], UnitName("player"), 5)
+        end
+    end
+end
+
+function mb_CheckAndRequestDispels()
+    for i = 1, MAX_DEBUFFS do
+        local debuffTexture, debuffApplications, debuffDispelType = UnitDebuff("player", i)
+        if debuffDispelType and debuffDispelType == "Magic" then
+            mb_MakeThrottledRequest(REQUEST_DISPEL, UnitName("player"), 10)
+        end
+        if debuffDispelType and debuffDispelType == "Curse" then
+            mb_MakeThrottledRequest(REQUEST_DECURSE, UnitName("player"), 10)
         end
     end
 end

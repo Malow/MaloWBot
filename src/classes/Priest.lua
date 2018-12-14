@@ -30,6 +30,13 @@ function mb_Priest(commander)
             max_CastSpellOnRaidMemberByPlayerName("Resurrection", request.body)
             mb_RequestCompleted(request)
             return
+        elseif request.type == REQUEST_DISPEL.type then
+            if mb_IsOnGCD() then
+                return
+            end
+            max_CastSpellOnRaidMemberByPlayerName("Dispel Magic", request.body)
+            mb_RequestCompleted(request)
+            return
         else
             max_SayRaid("Serious error, received request for " .. request.type)
         end
@@ -50,6 +57,12 @@ function mb_Priest(commander)
         end
     else
         max_SayRaid("Serious error, bad spec for priest: " .. mySpec)
+    end
+
+
+    if mb_areaOfEffectMode then
+        CastSpellByName("Holy Nova")
+        return
     end
 
     if max_GetManaPercentage("player") > 95 then
@@ -124,6 +137,7 @@ function mb_Priest_OnLoad()
     mb_RegisterForRequest(BUFF_POWER_WORD_FORTITUDE.type, mb_Priest_HandlePowerWordFortitudeRequest)
     mb_RegisterForRequest(BUFF_DIVINE_SPIRIT.type, mb_Priest_HandleDivineSpiritRequest)
     mb_RegisterForRequest(REQUEST_RESURRECT.type, mb_Priest_HandleResurrectionRequest)
+    mb_RegisterForRequest(REQUEST_DISPEL.type, mb_Priest_HandleDispelRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
@@ -156,6 +170,12 @@ end
 
 function mb_Priest_HandleResurrectionRequest(request)
     if mb_CanResurrectUnitWithSpell(max_GetUnitForPlayerName(request.body), "Resurrection") then
+        mb_AcceptRequest(request)
+    end
+end
+
+function mb_Priest_HandleDispelRequest(request)
+    if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Dispel Magic") then
         mb_AcceptRequest(request)
     end
 end

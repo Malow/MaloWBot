@@ -24,8 +24,18 @@ function mb_Druid(commander)
         end
     end
 
-    AssistByName(commander)
-    CastSpellByName("Moonfire")
+    if mb_Druid_Rejuvenation() then
+        return
+    end
+
+    if mb_Druid_Regrowth() then
+        return
+    end
+
+    if max_GetManaPercentage("player") > 95 then
+        AssistByName(commander)
+        CastSpellByName("Moonfire")
+    end
 end
 
 function mb_Druid_OnLoad()
@@ -41,6 +51,32 @@ function mb_Druid_OnLoad()
     mb_Druid_AddDesiredTalents()
     mb_AddReagentWatch("Wild Thornroot", 20)
     mb_AddGCDCheckSpell("Rejuvenation")
+end
+
+function mb_Druid_Rejuvenation()
+    local spell = "Rejuvenation"
+    local unitFilter = UNIT_FILTER_DOES_NOT_HAVE_BUFF
+    unitFilter.buff = BUFF_TEXTURE_REJUVENATION
+    local healTargetUnit, missingHealthOfTarget = mb_GetMostDamagedFriendly(spell, unitFilter)
+    if max_GetHealthPercentage(healTargetUnit) < 75 then
+        TargetUnit(healTargetUnit)
+        CastSpellByName(spell)
+        return true
+    end
+    return false
+end
+
+function mb_Druid_Regrowth()
+    local spell = "Regrowth"
+    local unitFilter = UNIT_FILTER_DOES_NOT_HAVE_BUFF
+    unitFilter.buff = BUFF_TEXTURE_REGROWTH
+    local healTargetUnit, missingHealthOfTarget = mb_GetMostDamagedFriendly(spell, unitFilter)
+    if max_GetHealthPercentage(healTargetUnit) < 60 then
+        TargetUnit(healTargetUnit)
+        CastSpellByName(spell)
+        return true
+    end
+    return false
 end
 
 function mb_Druid_HandleMarkOfTheWildRequest(request)

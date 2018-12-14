@@ -5,7 +5,7 @@ function mb_Rogue(commander)
 end
 
 function mb_Rogue_OnLoad()
-    mb_Rogue_AddDesiredTalent()
+    mb_Rogue_AddDesiredTalents()
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
     mb_AddDesiredBuff(BUFF_BLESSING_OF_MIGHT)

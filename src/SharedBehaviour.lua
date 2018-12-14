@@ -32,6 +32,7 @@ function mb_HandleSharedBehaviour(commander)
     RetrieveCorpse()
     ConfirmAcceptQuest()
     ConfirmSummon()
+    AcceptQuest()
     if mb_isTraining then
         mb_TrainSpells()
         return true

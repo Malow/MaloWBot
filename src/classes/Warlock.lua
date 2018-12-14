@@ -3,28 +3,28 @@ function mb_Warlock(commander)
         return
     end
 
-    if max_GetTableSize(mb_queuedRequests) > 0 then
-        local request = mb_queuedRequests[1]
-        if request.requestType == "summon" then
-            -- if gcd is ready
-            max_SayRaid("I'm summoning " .. request.requestBody)
-            TargetByName(request.requestBody, true)
-            CastSpellByName("Ritual of Summoning")
-            table.remove(mb_queuedRequests, 1)
+    local request = mb_GetQueuedRequest()
+    if request ~= nil then
+        if request.type == "summon" then
+            if mb_IsOnGCD() then
+                return
+            end
+            max_SayRaid("I'm summoning " .. request.body)
+            max_CastSpellOnRaidMemberByPlayerName("Ritual of Summoning", request.body)
+            mb_RequestCompleted(request)
             return
-        elseif request.requestType == "soulstone" then
-            -- if gcd is ready
+        elseif request.type == "soulstone" then
             if mb_HasItem("Major Soulstone") then
-                max_SayRaid("I'm soulstoning " .. requestBody)
-                TargetByName(request.requestBody, true)
+                max_SayRaid("I'm soulstoning " .. request.body)
+                TargetByName(request.body, true)
                 mb_UseItem("Major Soulstone")
-                table.remove(mb_queuedRequests, 1)
+                mb_RequestCompleted(request)
             else
                 CastSpellByName("Create Soulstone (Major)")
             end
             return
         else
-            max_SayRaid("Serious error, received request for " .. request.requestType)
+            max_SayRaid("Serious error, received request for " .. request.type)
         end
     end
 
@@ -66,11 +66,11 @@ function mb_Warlock_OnLoad()
     mb_AddDesiredBuff(BUFF_BLESSING_OF_LIGHT)
     mb_AddDesiredBuff(BUFF_BLESSING_OF_SALVATION)
     mb_AddDesiredBuff(BUFF_DIVINE_SPIRIT)
-
     mb_Warlock_AddDesiredTalents()
+    mb_AddGCDCheckSpell("Shadow Bolt")
 end
 
-function mb_Warlock_HandleSummonRequest(requestId, requestType, requestBody)
+function mb_Warlock_HandleSummonRequest(request)
     if UnitAffectingCombat("player") then
         return
     elseif max_GetManaPercentage("player") < 30 then
@@ -80,11 +80,11 @@ function mb_Warlock_HandleSummonRequest(requestId, requestType, requestBody)
     end
     local soulShardCount = mb_GetItemCount("Soul Shard")
     if soulShardCount > 0 and not mb_isCasting then
-        mb_AcceptRequest(requestId, requestType, requestBody)
+        mb_AcceptRequest(request)
     end
 end
 
-function mb_Warlock_HandleSoulstoneRequest(requestId, requestType, requestBody)
+function mb_Warlock_HandleSoulstoneRequest(request)
     if UnitAffectingCombat("player") then
         return
     elseif max_GetManaPercentage("player") < 30 then
@@ -93,8 +93,8 @@ function mb_Warlock_HandleSoulstoneRequest(requestId, requestType, requestBody)
         return
     end
     local soulShardCount = mb_GetItemCount("Soul Shard")
-    if soulShardCount > 0 and not mb_isCasting then
-        mb_AcceptRequest(requestId, requestType, requestBody)
+    if soulShardCount > 0 and not mb_isCasting then -- TODO: Add valid target and range check
+        mb_AcceptRequest(request)
     end
 end
 

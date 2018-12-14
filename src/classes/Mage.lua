@@ -3,33 +3,33 @@ function mb_Mage(commander)
         return
     end
 
-    if max_GetTableSize(mb_queuedRequests) > 0 then
-        local request = mb_queuedRequests[1]
-        if request.requestType == BUFF_ARCANE_INTELLECT.requestType then
-            -- if off GCD
-            TargetByName(request.requestBody, true)
-            CastSpellByName("Arcane Intellect")
-            table.remove(mb_queuedRequests, 1)
+    local request = mb_GetQueuedRequest()
+    if request ~= nil then
+        if request.type == BUFF_ARCANE_INTELLECT.type then
+            if mb_IsOnGCD() then
+                return
+            end
+            max_CastSpellOnRaidMemberByPlayerName("Arcane Intellect", request.body)
+            mb_RequestCompleted(request)
             return
-        elseif request.requestType == REQUEST_WATER.requestType then
-            TargetByName(request.requestBody, true)
+        elseif request.type == REQUEST_WATER.type then
             if not CursorHasItem() then
                 local bag, slot = mb_LocateWaterInBags()
                 PickupContainerItem(bag, slot)
-                InitiateTrade("target")
+                InitiateTrade(max_GetUnitForPlayerName(request.body))
                 return
             else
-                DropItemOnUnit("target")
-                table.remove(mb_queuedRequests, 1)
+                DropItemOnUnit(max_GetUnitForPlayerName(request.body))
+                mb_RequestCompleted(request)
                 return
             end
         else
-            max_SayRaid("Serious error, received request for " .. request.requestType)
+            max_SayRaid("Serious error, received request for " .. request.type)
         end
     end
 
     if not UnitAffectingCombat("player") then
-        if mb_GetWaterCount() < 40 then
+        if mb_GetWaterCount() < 60 then
             CastSpellByName("Conjure Water")
             return
         end
@@ -68,8 +68,8 @@ function mb_Mage(commander)
 end
 
 function mb_Mage_OnLoad()
-    mb_RegisterForRequest(BUFF_ARCANE_INTELLECT.requestType, mb_Mage_HandleArcaneIntRequest)
-    mb_RegisterForRequest(REQUEST_WATER.requestType, mb_Mage_HandleWaterRequest)
+    mb_RegisterForRequest(BUFF_ARCANE_INTELLECT.type, mb_Mage_HandleArcaneIntRequest)
+    mb_RegisterForRequest(REQUEST_WATER.type, mb_Mage_HandleWaterRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
@@ -80,22 +80,23 @@ function mb_Mage_OnLoad()
     mb_AddDesiredBuff(BUFF_DIVINE_SPIRIT)
 
     mb_Mage_AddDesiredTalents()
+    mb_AddGCDCheckSpell("Frostbolt")
 end
 
-function mb_Mage_HandleArcaneIntRequest(requestId, requestType, requestBody)
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(requestBody), "Arcane Intellect") then
-        mb_AcceptRequest(requestId, requestType, requestBody)
+function mb_Mage_HandleArcaneIntRequest(request)
+    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Arcane Intellect") then
+        mb_AcceptRequest(request)
     end
 end
 
-function mb_Mage_HandleWaterRequest(requestId, requestType, requestBody)
+function mb_Mage_HandleWaterRequest(request)
     if mb_GetWaterCount() < 25 then
         return
     end
-    local unit = max_GetUnitForPlayerName(requestBody)
-    if mb_IsValidTarget(unit) then
+    local unit = max_GetUnitForPlayerName(request.body)
+    if mb_IsUnitValidTarget(unit) then
         if CheckInteractDistance(unit, 2) then
-            mb_AcceptRequest(requestId, requestType, requestBody)
+            mb_AcceptRequest(request)
         end
     end
 end

@@ -48,62 +48,62 @@ UNIT_FILTER_DOES_NOT_HAVE_BUFF = {
 
 --- Requests
 REQUEST_RESURRECT = {
-    requestType = "resurrect",
+    type = "resurrect",
     throttle = 12
 }
 REQUEST_WATER = {
-    requestType = "water",
+    type = "water",
     throttle = 10
 }
 
 --- Buff Requests
 BUFF_ARCANE_INTELLECT = {
-    requestType = "buffArcaneIntellect",
+    type = "buffArcaneIntellect",
     textures = { BUFF_TEXTURE_ARCANE_INTELLECT },
     throttle = 10
 }
 BUFF_POWER_WORD_FORTITUDE = {
-    requestType = "buffPowerWordFortitude",
+    type = "buffPowerWordFortitude",
     textures = { BUFF_TEXTURE_POWER_WORD_FORTITUDE },
     throttle = 10
 }
 BUFF_DIVINE_SPIRIT = {
-    requestType = "buffDivineSpirit",
+    type = "buffDivineSpirit",
     textures = { BUFF_TEXTURE_DIVINE_SPIRIT },
     throttle = 10
 }
 BUFF_BLESSING_OF_WISDOM = {
-    requestType = "buffBlessingOfWisdom",
+    type = "buffBlessingOfWisdom",
     textures = { BUFF_TEXTURE_BLESSING_OF_WISDOM, BUFF_TEXTURE_GREATER_BLESSING_OF_WISDOM },
     throttle = 10
 }
 BUFF_BLESSING_OF_MIGHT = {
-    requestType = "buffBlessingOfMight",
+    type = "buffBlessingOfMight",
     textures = { BUFF_TEXTURE_BLESSING_OF_MIGHT, BUFF_TEXTURE_GREATER_BLESSING_OF_MIGHT },
     throttle = 10
 }
 BUFF_BLESSING_OF_KINGS = {
-    requestType = "buffBlessingOfKings",
+    type = "buffBlessingOfKings",
     textures = { BUFF_TEXTURE_BLESSING_OF_KINGS, BUFF_TEXTURE_GREATER_BLESSING_OF_KINGS },
     throttle = 10
 }
 BUFF_BLESSING_OF_LIGHT = {
-    requestType = "buffBlessingOfLight",
+    type = "buffBlessingOfLight",
     textures = { BUFF_TEXTURE_BLESSING_OF_LIGHT, BUFF_TEXTURE_GREATER_BLESSING_OF_LIGHT },
     throttle = 10
 }
 BUFF_BLESSING_OF_SANCTUARY = {
-    requestType = "buffBlessingOfSanctuary",
+    type = "buffBlessingOfSanctuary",
     textures = { BUFF_TEXTURE_BLESSING_OF_SANCTUARY, BUFF_TEXTURE_GREATER_BLESSING_OF_SANCTUARY },
     throttle = 10
 }
 BUFF_BLESSING_OF_SALVATION = {
-    requestType = "buffBlessingOfSalvation",
+    type = "buffBlessingOfSalvation",
     textures = { BUFF_TEXTURE_BLESSING_OF_SALVATION, BUFF_TEXTURE_GREATER_BLESSING_OF_SALVATION },
     throttle = 10
 }
 BUFF_MARK_OF_THE_WILD = {
-    requestType = "buffMarkOfTheWild",
+    type = "buffMarkOfTheWild",
     textures = { BUFF_TEXTURE_MARK_OF_THE_WILD, BUFF_TEXTURE_GIFT_OF_THE_WILD },
     throttle = 10
 }
@@ -119,5 +119,7 @@ ITEMS_WATER = {
 }
 ITEMS_MANA_GEM = {
     "Mana Agate",
-    "Mana Jade"
+    "Mana Jade",
+    "Mana Citrine",
+    "Mana Ruby"
 }

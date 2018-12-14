@@ -17,7 +17,7 @@ f:Show()
 SlashCmdList[MY_ABBREVIATION .. "COMMAND"] = function(msg)
 	SetCVar("autoSelfCast", 0)
 	mb_OnCmd(msg)
-end 
+end
 SLASH_MBCOMMAND1 = "/" .. MY_ABBREVIATION;
 
 -- Prints message in chatbox
@@ -36,7 +36,7 @@ mb_isTraining = false
 mb_registeredRequestsHandlers = {}
 mb_myAcceptedRequests = {}
 mb_myPendingRequests = {}
-mb_gcdSpell = {}
+mb_gcdSpells = {}
 mb_queuedRequests = {}
 mb_areaOfEffectMode = false
 function mb_OnEvent()
@@ -50,40 +50,7 @@ function mb_OnEvent()
 	elseif event == "SPELLCAST_STOP" or event == "SPELLCAST_CHANNEL_STOP" or event == "SPELLCAST_INTERRUPTED" or event == "SPELLCAST_FAILED" then
 		mb_isCasting = false
 	elseif event == "CHAT_MSG_ADDON" and arg1 == "MB" then
-		local channel = arg3
-		local from = arg4
-		--local requestId, requestType, requestBody = string.match(arg2, "(%d+):(%a+):(.*)") -- string.match doesn't exist in 1.12, use this if you implement it yourself
-		local strings = max_SplitString(arg2, ":")
-		local messageType = strings[1]
-		if messageType == "request" and max_GetTableSize(mb_queuedRequests) == 0 then
-			local requestId = strings[2]
-			local requestType = strings[3]
-			local requestBody = strings[4]
-			if mb_registeredRequestsHandlers[requestType] ~= nil then
-				mb_registeredRequestsHandlers[requestType](requestId, requestType, requestBody, from)
-			end
-		elseif messageType == "acceptRequest" then
-			local requestId = strings[2]
-
-			-- Check if the request was one that I accepted, and if then I was the first to accept it
-			local request = mb_myAcceptedRequests[requestId]
-			if request ~= nil then
-				local playerName = strings[3]
-				if playerName == UnitName("player") then
-					table.insert(mb_queuedRequests, request)
-				end
-				mb_myAcceptedRequests[requestId] = nil
-			end
-
-			-- Check if the request was made by me
-			local pendingRequest = mb_myPendingRequests[requestId]
-			if pendingRequest ~= nil then
-				local playerName = strings[3]
-				pendingRequest.acceptedBy = playerName
-				mb_MyPendingRequestWasAccepted(pendingRequest)
-				mb_myPendingRequests[requestId] = nil
-			end
-		end
+        mb_HandleMBCommunication(arg2, arg3, arg4)
 	elseif event == "TRADE_CLOSED" then
 		mb_isTrading = false
 	elseif event == "TRADE_SHOW" then
@@ -119,6 +86,50 @@ f:RegisterEvent("TRAINER_CLOSED")
 f:RegisterEvent("TRAINER_SHOW")
 f:SetScript("OnEvent", mb_OnEvent)
 
+mb_queuedIncomingRequests = {}
+function mb_HandleMBCommunication(arg2, arg3, arg4)
+    local channel = arg3
+    local from = arg4
+    --local requestId, requestType, requestBody = string.match(arg2, "(%d+):(%a+):(.*)") -- string.match doesn't exist in 1.12, use this if you implement it yourself
+    local strings = max_SplitString(arg2, ":")
+    local messageType = strings[1]
+    if messageType == "request" then
+        local request = {}
+        request.id = strings[2]
+        request.type = strings[3]
+        request.body = strings[4]
+        request.priority = tonumber(strings[5])
+        request.from = from
+        if mb_registeredRequestsHandlers[request.type] ~= nil then
+			if mb_ShouldAddRequestToQueue(request) then
+				table.insert(mb_queuedIncomingRequests, request)
+			end
+        end
+    elseif messageType == "acceptRequest" then
+        local requestId = strings[2]
+
+        -- Check if the request was one that I accepted, and if then I was the first to accept it
+        local request = mb_myAcceptedRequests[requestId]
+        if request ~= nil then
+            local playerName = strings[3]
+            if playerName == UnitName("player") then
+                table.insert(mb_queuedRequests, request)
+            end
+            mb_myAcceptedRequests[requestId] = nil
+            return
+        end
+
+        -- Check if the request was made by me
+        local pendingRequest = mb_myPendingRequests[requestId]
+        if pendingRequest ~= nil then
+            local playerName = strings[3]
+            pendingRequest.acceptedBy = playerName
+            mb_MyPendingRequestWasAccepted(pendingRequest)
+            mb_myPendingRequests[requestId] = nil
+            return
+        end
+    end
+end
 
 -- OnLoad, when the addon has loaded. Some external things might not be available here
 function mb_OnLoad()
@@ -188,6 +199,8 @@ function mb_OnCmd(msg)
 end
 
 function mb_RunBot(commander)
+	mb_HandleIncomingRequests()
+
 	if mb_HandleSharedBehaviour(commander) then
 		return
 	end
@@ -214,12 +227,22 @@ function mb_RunBot(commander)
 	end
 end
 
-function mb_MakeRequest(requestType, requestBody)
+function mb_HandleIncomingRequests()
+	for i = 1, max_GetTableSize(mb_queuedIncomingRequests) do
+		local request = mb_queuedIncomingRequests[i]
+		mb_registeredRequestsHandlers[request.type](request)
+	end
+	mb_queuedIncomingRequests = {}
+end
+
+function mb_MakeRequest(requestType, requestBody, requestPriority)
 	local requestId = tostring(math.random(9999999999))
-	SendAddonMessage("MB", "request:" .. requestId .. ":" .. requestType .. ":" .. requestBody, "RAID")
+	SendAddonMessage("MB", "request:" .. requestId .. ":" .. requestType .. ":" .. requestBody .. ":" .. requestPriority, "RAID")
 	local request = {}
-	request.requestType = requestType
-	request.requestBody = requestBody
+	request.type = requestType
+	request.body = requestBody
+	request.priority = requestPriority
+    request.id = requestId
 	mb_myPendingRequests[requestId] = request
 end
 
@@ -227,12 +250,9 @@ function mb_RegisterForRequest(requestType, func)
 	mb_registeredRequestsHandlers[requestType] = func
 end
 
-function mb_AcceptRequest(requestId, requestType, requestBody)
-	local request = {}
-	request.requestType = requestType
-	request.requestBody = requestBody
-	mb_myAcceptedRequests[requestId] = request
-	SendAddonMessage("MB", "acceptRequest:" .. requestId .. ":" .. UnitName("player"), "RAID")
+function mb_AcceptRequest(request)
+	mb_myAcceptedRequests[request.id] = request
+	SendAddonMessage("MB", "acceptRequest:" .. request.id .. ":" .. UnitName("player"), "RAID")
 end
 
 function mb_HasQueuedRequestOfType(requestType)
@@ -244,27 +264,81 @@ function mb_HasQueuedRequestOfType(requestType)
 	return false
 end
 
+function mb_AddGCDCheckSpell(spellName)
+	table.insert(mb_gcdSpells, max_GetSpellbookId(spellName))
+end
+
+function mb_IsOnGCD()
+	local numberOfGCDSpells = max_GetTableSize(mb_gcdSpells)
+	if numberOfGCDSpells == 0 then
+		max_SayRaid("Serious error, I'm trying to check GCD but have not added any GCD-spells")
+		return false
+	end
+	for i = 1, numberOfGCDSpells do
+		if not max_IsSpellbookIdOnCooldown(mb_gcdSpells[i]) then
+			return false
+		end
+	end
+	return true
+end
+
+function mb_ShouldAddRequestToQueue(request)
+    local queuedRequestSize = max_GetTableSize(mb_queuedRequests)
+    local highestPriorityRequest = mb_GetQueuedRequest()
+	if highestPriorityRequest == nil then
+		return true
+	end
+    if request.priority > highestPriorityRequest.priority then
+        return true
+    end
+    if queuedRequestSize > 2 then
+        return false
+    end
+    return true
+end
+
+function mb_GetQueuedRequest()
+    local queuedRequestSize = max_GetTableSize(mb_queuedRequests)
+	if queuedRequestSize == 0 then
+		return nil
+	end
+    local highestPriorityRequest = nil
+	for k, v in pairs(mb_queuedRequests) do
+		if highestPriorityRequest == nil then
+			highestPriorityRequest = v
+		elseif v.priority > highestPriorityRequest.priority then
+			highestPriorityRequest = v
+		end
+	end
+    return highestPriorityRequest
+end
+
+function mb_RequestCompleted(request)
+    local queuedRequestSize = max_GetTableSize(mb_queuedRequests)
+    for i = 1, queuedRequestSize do
+        if mb_queuedRequests[i].id == request.id then
+            table.remove(mb_queuedRequests, i)
+            return
+        end
+    end
+end
 
 
 -- TODO:
 --- Test out LogOut() to remove /follow, works in combat? works while casting?
 --- On ready-check click away buffs with less than 8 minute duration
----		Also decline ready-checks if missing buffs or mana or items (healthstone)
+---		Also decline ready-checks if missing buffs or mana or items (healthstone) (and say so in raid)
 --- If a trade window is open stop assisting cuz it breaks trade
 --- Make accepted requests time out if their throttleTime - 1 has passed
 --- Figure out a way to clear up pending requests list, it will grow forever atm
---- Think about only allowing 1 request at a time, is it smart? Prevents for example mage water from accepting too many, but also might not be efficient.
 ---	Add healing-code. When you start healing someone with a cast-time announce that you're doing so and then listen to announces.
 ---		Add the announced heals to the targets current health until you see your own announcement, then decide if you want to cancel your cast or not.
 ---		Also scan the target for current health and hots and other stuff to decide if you should cancel.
+---     Also make healers heal without targeting using non-self-cast
 ---	Owners request buffs for their pets
 --- Proper range-check of spells
----	Add GCD-checks for buffing requests
 ---	Decursing + Dispelling + Depoisoning + Dediseasing
---- Double-request handling can happen if the propose happens for 1 guy after the accept has already been sent.
---- Request-prioritization system:
----		Add ressing prio, other ressers first
----		Prioritize ressing over buffing, maybe prio wisdom over ressing?
+--- Double-request handling can happen if the propose reaches 1 guy after the accept has already been sent. Shouldn't happen though
 --- Automatic Gold-spreading
 ---	Sit/stand logic based on error-messages, see RogueSpam addon.
 ---	Warlock:
@@ -276,9 +350,18 @@ end
 ---     Polymorph requests
 ---     Counterspell, might be hard, gotta scan combat log for % begins casting %, check libcast in PFUI
 --- Priest:
----		Check PWS cooldown
---- Vendoring: Vendor 1 item per frame, DC otherwise
----
+---     Buff shadow protection
+---     Holy should be casting/stop-casting greater heals (ranked depending on incoming damage) on tanks
+---     Disc priest will probably have little to do, should be a bit more aggressive with renewing raid I guess
+---     All priests should be keeping renew up 24/7 on tanking tanks
+---     PW:S if below X health or tank below % HP
+---     Can swap groups in combat? If so priests could be spamming PoH with swapping people in who need it.
+--- Druids:
+---     Tranquility like PoH in priest
+---     Rejuvenation and Regrowth on tanking tanks 24/7
+---     Swiftmend
+---     Insect Swarm
+---     Cast/Stop-cast HT/Regrowth spam on tanks? Rejuvenation on raid?
 ---
 ---
 ---
@@ -308,14 +391,14 @@ end
 -- List all buffs and debuffs:
 -- /run for i = 1, 32 do local b = UnitBuff("player", i); if b then ChatFrame1:AddMessage("Buff: " .. b); end local d = UnitDebuff("player", i); if d then ChatFrame1:AddMessage("Debuff: " .. d); end end
 --
--- List all buffs ids:
--- /run for i = 1, 32 do local a,b,c,d,e,f,g,h,i,j,k = UnitBuff("player", i); if k then ChatFrame1:AddMessage("Buff: " .. k); end end
---
 -- List all spells you know and their IDs:
--- /run for i = 1, 1000 do local s = GetSpellName(i, "BOOKTYPE_SPELL"); if s then ChatFrame1:AddMessage(i .. " - " .. s); end end
+-- /run for i = 1, 1000 do local s, r = GetSpellName(i, "BOOKTYPE_SPELL"); if s then ChatFrame1:AddMessage(i .. " - " .. s .. " - " .. tostring(r)); end end
 --
--- Get cooldown left for spellid:
+-- Get cooldown left for spellbookId:
 -- /run local s, d = GetSpellCooldown(76, "BOOKTYPE_SPELL"); if d ~= 0 then c = d - (GetTime() - s); ChatFrame1:AddMessage(c); else ChatFrame1:AddMessage("0"); end
+
+-- Is spellbookId spell on cooldown:
+-- /run local s, d = GetSpellCooldown(31, "BOOKTYPE_SPELL"); if d ~= 0 then ChatFrame1:AddMessage("true"); else ChatFrame1:AddMessage("false"); end
 --
 -- Print which is your current action:
 -- /run for i = 1, 1000 do if IsCurrentAction(i) then ChatFrame1:AddMessage(i .. " is current action"); end end

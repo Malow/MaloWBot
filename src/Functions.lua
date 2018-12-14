@@ -163,7 +163,7 @@ function mb_IsIgnoredTradeItem(itemName)
 end
 
 -- Checks if target exists, is visible, is friendly and if it's dead or ghost AND if it's in range of spell if a spell is provided.
-function mb_IsValidTarget(unit, spell)
+function mb_IsUnitValidTarget(unit, spell)
 	if UnitExists(unit) and UnitIsVisible(unit) and UnitIsFriend("player", unit) and not UnitIsDeadOrGhost(unit) and not max_HasBuff(unit, BUFF_TEXTURE_SPIRIT_OF_REDEMPTION) then
 		if spell ~= nil then
 			if max_IsSpellInRange(spell, unit) then
@@ -216,7 +216,7 @@ function mb_CanBuffUnitWithSpell(unit, spell)
 	elseif mb_IsDrinking() then
 		return false
 	end
-	if mb_IsValidTarget(unit,spell) and max_GetLevelDifferenceFromSelf(unit) > -8 then
+	if mb_IsUnitValidTarget(unit, spell) and max_GetLevelDifferenceFromSelf(unit) > -8 then
 		return true
 	end
 end
@@ -233,7 +233,7 @@ function mb_ShouldBuffGroupWide(unitName, buff)
 	local groupUnits = max_GetGroupUnitsFor(unitName)
 	local count = 0
 	for i = 1, max_GetTableSize(groupUnits) do
-		if mb_IsValidTarget(groupUnits[i]) then
+		if mb_IsUnitValidTarget(groupUnits[i]) then
 			local hasBuff = false
 			for u = 1, max_GetTableSize(buff.textures) do
 				if max_HasBuff(groupUnits[i], buff.textures[u]) then

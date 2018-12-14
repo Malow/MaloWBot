@@ -71,19 +71,35 @@ end
 
 -- Returns true if said spell is in range to unit. NEEDS auto self-cast off.
 function max_IsSpellInRange(spell, unit)
-	if CheckInteractDistance(unit, 4) then -- Haxxfix, needs proper implementation
-		return true
+	if UnitIsFriend("player", "target") then
+		ClearTarget()
 	end
 
-	--local can = false
-	--ClearTarget()
-	--CastSpellByName(spell, false)
-	--if SpellCanTargetUnit(unit) then
-	--	can = true
-	--end
-	--SpellStopTargeting()
-	--return can
-	return false
+	local can = false
+	CastSpellByName(spell, false)
+	if SpellCanTargetUnit(unit) then
+		can = true
+	end
+	SpellStopTargeting()
+	return can
+end
+
+-- Casts the spell on the unit-reference, doesn't work with target. NEEDS auto self-cast off.
+function max_CastSpellOnRaidMember(spellName, unit)
+	if UnitIsFriend("player", "target") then
+		ClearTarget()
+	end
+	CastSpellByName(spellName, false)
+	SpellTargetUnit(unit)
+end
+
+function max_CastSpellOnRaidMemberByPlayerName(spellName, playerName)
+	local unit = max_GetUnitForPlayerName(playerName)
+	if UnitIsFriend("player", "target") then
+		ClearTarget()
+	end
+	CastSpellByName(spellName, false)
+	SpellTargetUnit(unit)
 end
 
 function max_GetLevelDifferenceFromSelf(unit)
@@ -185,4 +201,27 @@ function max_GetGroupUnitsFor(unitName)
 		end
 	end
 	return groupMembers
+end
+
+-- Returns the spellbookId of the spell
+function max_GetSpellbookId(spellName)
+	for i = 1, 200 do
+		local name, rank = GetSpellName(i, "BOOKTYPE_SPELL")
+		if name == spellName then
+			return i
+		end
+	end
+	max_SayRaid("Serious error, I don't know the spell: " .. tostring(spellName))
+end
+
+-- Returns true/false depending on if the spell with this name is on cooldown
+function max_IsSpellNameOnCooldown(spellName)
+	local start, duration = GetSpellCooldown(max_GetSpellbookId(spellName), "BOOKTYPE_SPELL ")
+	return start ~= 0
+end
+
+-- Returns true/false depending on if the spell with this spellbookId is on cooldown
+function max_IsSpellbookIdOnCooldown(spellbookId)
+	local start, duration = GetSpellCooldown(spellbookId, "BOOKTYPE_SPELL ")
+	return start ~= 0
 end

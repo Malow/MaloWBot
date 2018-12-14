@@ -9,7 +9,7 @@ function mb_GetMostDamagedFriendly(spell, unitFilter)
             break
         end
         local missingHealth = max_GetMissingHealth(unit)
-        if mb_IsValidTarget(unit, spell) then
+        if mb_IsUnitValidTarget(unit, spell) then
             if missingHealth > missingHealthOfTarget then
                 missingHealthOfTarget = missingHealth
                 healTarget = i
@@ -34,7 +34,7 @@ function mb_GetLowestHealthFriendly(spell, unitFilter)
             break
         end
         local health = UnitHealth(unit)
-        if mb_IsValidTarget(unit, spell) then
+        if mb_IsUnitValidTarget(unit, spell) then
             if health < healthOfTarget then
                 healthOfTarget = health
                 healTarget = i

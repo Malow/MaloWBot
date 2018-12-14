@@ -3,55 +3,69 @@ function mb_Paladin(commander)
         return
     end
 
-    if max_GetTableSize(mb_queuedRequests) > 0 then
-        local request = mb_queuedRequests[1]
-        if request.requestType == BUFF_BLESSING_OF_WISDOM.requestType then
-            TargetByName(request.requestBody, true)
-            CastSpellByName("Greater Blessing of Wisdom")
-            table.remove(mb_queuedRequests, 1)
+    local request = mb_GetQueuedRequest()
+    if request ~= nil then
+        if request.type == BUFF_BLESSING_OF_WISDOM.type then
+            if mb_IsOnGCD() then
+                return
+            end
+            max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Wisdom", request.body)
+            mb_RequestCompleted(request)
             return
-        elseif request.requestType == BUFF_BLESSING_OF_MIGHT.requestType then
-            TargetByName(request.requestBody, true)
-            CastSpellByName("Greater Blessing of Might")
-            table.remove(mb_queuedRequests, 1)
+        elseif request.type == BUFF_BLESSING_OF_MIGHT.type then
+            if mb_IsOnGCD() then
+                return
+            end
+            max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Might", request.body)
+            mb_RequestCompleted(request)
             return
-        elseif request.requestType == BUFF_BLESSING_OF_KINGS.requestType then
-            TargetByName(request.requestBody, true)
-            CastSpellByName("Greater Blessing of Kings")
-            table.remove(mb_queuedRequests, 1)
+        elseif request.type == BUFF_BLESSING_OF_KINGS.type then
+            if mb_IsOnGCD() then
+                return
+            end
+            max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Kings", request.body)
+            mb_RequestCompleted(request)
             return
-        elseif request.requestType == BUFF_BLESSING_OF_LIGHT.requestType then
-            TargetByName(request.requestBody, true)
-            CastSpellByName("Greater Blessing of Light")
-            table.remove(mb_queuedRequests, 1)
+        elseif request.type == BUFF_BLESSING_OF_LIGHT.type then
+            if mb_IsOnGCD() then
+                return
+            end
+            max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Light", request.body)
+            mb_RequestCompleted(request)
             return
-        elseif request.requestType == BUFF_BLESSING_OF_SANCTUARY.requestType then
-            TargetByName(request.requestBody, true)
-            CastSpellByName("Greater Blessing of Sanctuary")
-            table.remove(mb_queuedRequests, 1)
+        elseif request.type == BUFF_BLESSING_OF_SANCTUARY.type then
+            if mb_IsOnGCD() then
+                return
+            end
+            max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Sanctuary", request.body)
+            mb_RequestCompleted(request)
             return
-        elseif request.requestType == BUFF_BLESSING_OF_SALVATION.requestType then
-            TargetByName(request.requestBody, true)
-            CastSpellByName("Greater Blessing of Salvation")
-            table.remove(mb_queuedRequests, 1)
+        elseif request.type == BUFF_BLESSING_OF_SALVATION.type then
+            if mb_IsOnGCD() then
+                return
+            end
+            max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Salvation", request.body)
+            mb_RequestCompleted(request)
             return
-        elseif request.requestType == REQUEST_RESURRECT.requestType then
-            TargetByName(request.requestBody, true)
-            CastSpellByName("Redemption")
-            table.remove(mb_queuedRequests, 1)
+        elseif request.type == REQUEST_RESURRECT.type then
+            if mb_IsOnGCD() then
+                return
+            end
+            max_CastSpellOnRaidMemberByPlayerName("Redemption", request.body)
+            mb_RequestCompleted(request)
             return
         else
-            max_SayRaid("Serious error, received request for " .. request.requestType)
+            max_SayRaid("Serious error, received request for " .. request.type)
         end
     end
 
-    local healSpell = "Flash of Light"
-    local healTargetUnit, missingHealth = mb_GetMostDamagedFriendly(healSpell)
-    if missingHealth > 50 then
-        TargetUnit(healTargetUnit)
-        CastSpellByName(healSpell)
-        return
-    end
+    --local healSpell = "Flash of Light"
+    --local healTargetUnit, missingHealth = mb_GetMostDamagedFriendly(healSpell)
+    --if missingHealth > 50 then
+    --    TargetUnit(healTargetUnit)
+    --    CastSpellByName(healSpell)
+    --    return
+    --end
 end
 
 function mb_Paladin_OnLoad()
@@ -64,74 +78,75 @@ function mb_Paladin_OnLoad()
     mb_AddDesiredBuff(BUFF_BLESSING_OF_LIGHT)
     mb_AddDesiredBuff(BUFF_BLESSING_OF_SALVATION)
     mb_AddDesiredBuff(BUFF_DIVINE_SPIRIT)
-    mb_RegisterForRequest(REQUEST_RESURRECT.requestType, mb_Paladin_HandleResurrectionRequest)
-    mb_RegisterForRequest(BUFF_BLESSING_OF_WISDOM.requestType, mb_Paladin_HandleBlessingOfWisdomRequest)
-    mb_RegisterForRequest(BUFF_BLESSING_OF_MIGHT.requestType, mb_Paladin_HandleBlessingOfMightRequest)
-    mb_RegisterForRequest(BUFF_BLESSING_OF_KINGS.requestType, mb_Paladin_HandleBlessingOfKingsRequest)
-    mb_RegisterForRequest(BUFF_BLESSING_OF_LIGHT.requestType, mb_Paladin_HandleBlessingOfLightRequest)
-    mb_RegisterForRequest(BUFF_BLESSING_OF_SANCTUARY.requestType, mb_Paladin_HandleBlessingOfSanctuaryRequest)
-    mb_RegisterForRequest(BUFF_BLESSING_OF_SALVATION.requestType, mb_Paladin_HandleBlessingOfSalvationRequest)
+    mb_RegisterForRequest(REQUEST_RESURRECT.type, mb_Paladin_HandleResurrectionRequest)
+    mb_RegisterForRequest(BUFF_BLESSING_OF_WISDOM.type, mb_Paladin_HandleBlessingOfWisdomRequest)
+    mb_RegisterForRequest(BUFF_BLESSING_OF_MIGHT.type, mb_Paladin_HandleBlessingOfMightRequest)
+    mb_RegisterForRequest(BUFF_BLESSING_OF_KINGS.type, mb_Paladin_HandleBlessingOfKingsRequest)
+    mb_RegisterForRequest(BUFF_BLESSING_OF_LIGHT.type, mb_Paladin_HandleBlessingOfLightRequest)
+    mb_RegisterForRequest(BUFF_BLESSING_OF_SANCTUARY.type, mb_Paladin_HandleBlessingOfSanctuaryRequest)
+    mb_RegisterForRequest(BUFF_BLESSING_OF_SALVATION.type, mb_Paladin_HandleBlessingOfSalvationRequest)
     mb_Paladin_AddDesiredTalents()
     mb_AddReagentWatch("Symbol of Kings", 100)
+    mb_AddGCDCheckSpell("Holy Light")
 end
 
-function mb_Paladin_HandleResurrectionRequest(requestId, requestType, requestBody)
-    if mb_CanResurrectUnitWithSpell(max_GetUnitForPlayerName(requestBody), "Redemption") then
-        mb_AcceptRequest(requestId, requestType, requestBody)
+function mb_Paladin_HandleResurrectionRequest(request)
+    if mb_CanResurrectUnitWithSpell(max_GetUnitForPlayerName(request.body), "Redemption") then
+        mb_AcceptRequest(request)
     end
 end
 
-function mb_Paladin_HandleBlessingOfWisdomRequest(requestId, requestType, requestBody)
+function mb_Paladin_HandleBlessingOfWisdomRequest(request)
     if not mb_Paladin_HasImprovedWisdom() then
         return
     end
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(requestBody), "Greater Blessing of Wisdom") then
-        mb_AcceptRequest(requestId, requestType, requestBody)
+    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Greater Blessing of Wisdom") then
+        mb_AcceptRequest(request)
     end
 end
 
-function mb_Paladin_HandleBlessingOfMightRequest(requestId, requestType, requestBody)
+function mb_Paladin_HandleBlessingOfMightRequest(request)
     if not mb_Paladin_HasImprovedMight() then
         return
     end
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(requestBody), "Greater Blessing of Might") then
-        mb_AcceptRequest(requestId, requestType, requestBody)
+    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Greater Blessing of Might") then
+        mb_AcceptRequest(request)
     end
 end
 
-function mb_Paladin_HandleBlessingOfKingsRequest(requestId, requestType, requestBody)
+function mb_Paladin_HandleBlessingOfKingsRequest(request)
     if not mb_Paladin_HasKings() then
         return
     end
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(requestBody), "Greater Blessing of Kings") then
-        mb_AcceptRequest(requestId, requestType, requestBody)
+    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Greater Blessing of Kings") then
+        mb_AcceptRequest(request)
     end
 end
 
-function mb_Paladin_HandleBlessingOfLightRequest(requestId, requestType, requestBody)
+function mb_Paladin_HandleBlessingOfLightRequest(request)
     if mb_GetConfig()["specs"][UnitName("player")] ~= "RetLight" then
         return
     end
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(requestBody), "Greater Blessing of Light") then
-        mb_AcceptRequest(requestId, requestType, requestBody)
+    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Greater Blessing of Light") then
+        mb_AcceptRequest(request)
     end
 end
 
-function mb_Paladin_HandleBlessingOfSanctuaryRequest(requestId, requestType, requestBody)
+function mb_Paladin_HandleBlessingOfSanctuaryRequest(request)
     if not mb_Paladin_HasSanctuary() then
         return
     end
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(requestBody), "Greater Blessing of Sanctuary") then
-        mb_AcceptRequest(requestId, requestType, requestBody)
+    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Greater Blessing of Sanctuary") then
+        mb_AcceptRequest(request)
     end
 end
 
-function mb_Paladin_HandleBlessingOfSalvationRequest(requestId, requestType, requestBody)
+function mb_Paladin_HandleBlessingOfSalvationRequest(request)
     if mb_GetConfig()["specs"][UnitName("player")] ~= "SanctuarySalvation" then
         return
     end
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(requestBody), "Greater Blessing of Salvation") then
-        mb_AcceptRequest(requestId, requestType, requestBody)
+    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Greater Blessing of Salvation") then
+        mb_AcceptRequest(request)
     end
 end
 

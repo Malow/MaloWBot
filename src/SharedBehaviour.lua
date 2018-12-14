@@ -98,18 +98,17 @@ function mb_HandleMassCommandRequests()
 end
 
 function mb_HandleQueuedSharedRequests()
-    if max_GetTableSize(mb_queuedRequests) > 0 then
-        local request = mb_queuedRequests[1]
-        if request.requestType == "trademegreys" then
-            mb_tradeGreysTarget = request.requestBody
-            table.remove(mb_queuedRequests, 1)
-        elseif request.requestType == "trademegoodies" then
-            mb_tradeGoodiesTarget = request.requestBody
-            table.remove(mb_queuedRequests, 1)
-        elseif request.requestType == "inventoryDump" then
-            TargetByName(request.requestBody)
-            InitiateTrade("target")
-            table.remove(mb_queuedRequests, 1)
+    local request = mb_GetQueuedRequest()
+    if request ~= nil then
+        if request.type == "trademegreys" then
+            mb_tradeGreysTarget = request.body
+            mb_RequestCompleted(request)
+        elseif request.type == "trademegoodies" then
+            mb_tradeGoodiesTarget = request.body
+            mb_RequestCompleted(request)
+        elseif request.type == "inventoryDump" then
+            InitiateTrade(max_GetUnitForPlayerName(request.body))
+            mb_RequestCompleted(request)
         end
     end
     if mb_tradeGreysTarget ~= nil then
@@ -123,123 +122,124 @@ function mb_HandleQueuedSharedRequests()
     return false
 end
 
-function mb_ReloadRequestHandler(requestId, requestType, requestBody, from)
-    if from ~= UnitName("player") then
+function mb_ReloadRequestHandler(request)
+    if request.from ~= UnitName("player") then
         mb_shouldReloadUi = true
     end
 end
 
-function mb_TradeMeGreysRequestHandler(requestId, requestType, requestBody)
+function mb_TradeMeGreysRequestHandler(request)
     if mb_tradeGreysTarget ~= nil or mb_tradeGoodiesTarget ~= nil then
         return
     end
-    if UnitName("player") ~= requestBody then
+    if UnitName("player") ~= request.body then
         local found, bag, slot = mb_GetTradeableItemWithQuality(0)
         if not found then
             return false
         end
-        local unit = max_GetUnitForPlayerName(requestBody)
-        if mb_IsValidTarget(unit) then
+        local unit = max_GetUnitForPlayerName(request.body)
+        if mb_IsUnitValidTarget(unit) then
             if CheckInteractDistance(unit, 2) then
-                mb_AcceptRequest(requestId, requestType, requestBody)
+                mb_AcceptRequest(request)
             end
         end
     end
 end
 
-function mb_TradeMeGoodiesRequestHandler(requestId, requestType, requestBody)
+function mb_TradeMeGoodiesRequestHandler(request)
     if mb_tradeGreysTarget ~= nil or mb_tradeGoodiesTarget ~= nil then
         return
     end
-    if UnitName("player") ~= requestBody then
+    if UnitName("player") ~= request.body then
         local found, bag, slot = mb_GetTradeableItem()
         if not found then
             return false
         end
-        local unit = max_GetUnitForPlayerName(requestBody)
-        if mb_IsValidTarget(unit) then
+        local unit = max_GetUnitForPlayerName(request.body)
+        if mb_IsUnitValidTarget(unit) then
             if CheckInteractDistance(unit, 2) then
-                mb_AcceptRequest(requestId, requestType, requestBody)
+                mb_AcceptRequest(request)
             end
         end
     end
 end
 
-function mb_InventoryDumpRequestHandler(requestId, requestType, requestBody)
+function mb_InventoryDumpRequestHandler(request)
     if mb_tradeGreysTarget ~= nil or mb_tradeGoodiesTarget ~= nil then
         return
     end
-    if UnitName("player") ~= requestBody then
+    if UnitName("player") ~= request.body then
         if max_GetClass("player") == "WARLOCK" then
             return
         end
         if max_GetFreeBagSlots() < 10 then
             return
         end
-        local unit = max_GetUnitForPlayerName(requestBody)
-        if mb_IsValidTarget(unit) then
+        local unit = max_GetUnitForPlayerName(request.body)
+        if mb_IsUnitValidTarget(unit) then
             if CheckInteractDistance(unit, 2) then
-                mb_AcceptRequest(requestId, requestType, requestBody)
+                mb_AcceptRequest(request)
             end
         end
     end
 end
 
-function mb_PromoteLeaderRequestHandler(requestId, requestType, requestBody)
+function mb_PromoteLeaderRequestHandler(request)
     if IsPartyLeader() then
         PromoteByName(mb_GetConfig()["followTarget"])
     end
 end
 
-function mb_HearthstoneRequestHandler(requestId, requestType, requestBody, from)
-    if from ~= UnitName("player") then
+function mb_HearthstoneRequestHandler(request)
+    if request.from ~= UnitName("player") then
         mb_shouldHearthstone = true
     end
 end
 
-function mb_MountRequestHandler(requestId, requestType, requestBody, from)
-    if from ~= UnitName("player") then
+function mb_MountRequestHandler(request)
+    if request.from ~= UnitName("player") then
         mb_shouldMount = true
     end
 end
 
-function mb_ReleaseCorpseRequestHandler(requestId, requestType, requestBody, from)
-    if from ~= UnitName("player") then
+function mb_ReleaseCorpseRequestHandler(request)
+    if request.from ~= UnitName("player") then
         mb_shouldReleaseCorpse = true
     end
 end
 
 function mb_DoTradeGreys()
-    TargetByName(mb_tradeGreysTarget)
     if not mb_isTrading then
-        InitiateTrade("target")
+        InitiateTrade(max_GetUnitForPlayerName(mb_tradeGreysTarget))
         return
     end
     local found, bag, slot = mb_GetTradeableItemWithQuality(0)
     if found then
         PickupContainerItem(bag, slot)
-        DropItemOnUnit("target")
+        DropItemOnUnit(max_GetUnitForPlayerName(mb_tradeGreysTarget))
     else
         mb_tradeGreysTarget = nil
     end
 end
 
 function mb_DoTradeGoodies()
-    TargetByName(mb_tradeGoodiesTarget)
     if not mb_isTrading then
-        InitiateTrade("target")
+        InitiateTrade(max_GetUnitForPlayerName(mb_tradeGreysTarget))
         return
     end
     local found, bag, slot = mb_GetTradeableItem(0)
     if found then
         PickupContainerItem(bag, slot)
-        DropItemOnUnit("target")
+        DropItemOnUnit(max_GetUnitForPlayerName(mb_tradeGreysTarget))
     else
         mb_tradeGoodiesTarget = nil
     end
 end
 
 function mb_CheckAndRequestBuffs()
+    if GetRealZoneText() == "Ironforge" or GetRealZoneText() == "Stormwind" then
+        return
+    end
     for i = 1, max_GetTableSize(mb_desiredBuffs) do
         local hasBuff = false
         for u = 1, max_GetTableSize(mb_desiredBuffs[i].textures) do
@@ -248,7 +248,7 @@ function mb_CheckAndRequestBuffs()
             end
         end
         if not hasBuff then
-            mb_MakeThrottledRequest(mb_desiredBuffs[i], UnitName("player"))
+            mb_MakeThrottledRequest(mb_desiredBuffs[i], UnitName("player"), 5)
         end
     end
 end
@@ -258,9 +258,9 @@ function mb_AddDesiredBuff(buff)
     local hasSalvation = false
     local hasSanctuary = false
     for i = 1, max_GetTableSize(mb_desiredBuffs) do
-        if mb_desiredBuffs[i].requestType == BUFF_BLESSING_OF_SALVATION.requestType then
+        if mb_desiredBuffs[i].type == BUFF_BLESSING_OF_SALVATION.type then
             hasSalvation = true
-        elseif mb_desiredBuffs[i].requestType == BUFF_BLESSING_OF_SANCTUARY.requestType then
+        elseif mb_desiredBuffs[i].type == BUFF_BLESSING_OF_SANCTUARY.type then
             hasSanctuary = true
         end
     end
@@ -277,26 +277,37 @@ function mb_RequestResurrection()
             mb_hasSaidReleasedMessage = true
         end
     else
-        mb_MakeThrottledRequest(REQUEST_RESURRECT, UnitName("player"))
+        mb_MakeThrottledRequest(REQUEST_RESURRECT, UnitName("player"), mb_GetMyResurrectionPriority())
     end
 end
 
+function mb_GetMyResurrectionPriority()
+    local myClass = max_GetClass("player")
+    if myClass == "PRIEST" or myClass == "PALADIN" then
+        return 9
+    end
+    if myClass == "ROGUE" or myClass == "WARRIOR" then
+        return 7
+    end
+    return 8
+end
+
 mb_throttleData = {}
-function mb_MakeThrottledRequest(request, requestBody)
-    if mb_throttleData[request.requestType] == nil then
-        mb_MakeRequest(request.requestType, requestBody)
-        mb_throttleData[request.requestType] = {}
-        mb_throttleData[request.requestType].nextRequestTime = GetTime() + UNACCEPTED_REQUEST_THROTTLE
-        mb_throttleData[request.requestType].acceptedThrottle = request.throttle
-    elseif mb_throttleData[request.requestType].nextRequestTime < GetTime() then
-        mb_MakeRequest(request.requestType, requestBody)
-        mb_throttleData[request.requestType].nextRequestTime = GetTime() + UNACCEPTED_REQUEST_THROTTLE
+function mb_MakeThrottledRequest(request, requestBody, requestPriority)
+    if mb_throttleData[request.type] == nil then
+        mb_MakeRequest(request.type, requestBody, requestPriority)
+        mb_throttleData[request.type] = {}
+        mb_throttleData[request.type].nextRequestTime = GetTime() + UNACCEPTED_REQUEST_THROTTLE
+        mb_throttleData[request.type].acceptedThrottle = request.throttle
+    elseif mb_throttleData[request.type].nextRequestTime < GetTime() then
+        mb_MakeRequest(request.type, requestBody, requestPriority)
+        mb_throttleData[request.type].nextRequestTime = GetTime() + UNACCEPTED_REQUEST_THROTTLE
     end
 end
 
 function mb_MyPendingRequestWasAccepted(request)
-    if mb_throttleData[request.requestType] ~= nil then
-        mb_throttleData[request.requestType].nextRequestTime = mb_throttleData[request.requestType].nextRequestTime + mb_throttleData[request.requestType].acceptedThrottle
+    if mb_throttleData[request.type] ~= nil then
+        mb_throttleData[request.type].nextRequestTime = mb_throttleData[request.type].nextRequestTime + mb_throttleData[request.type].acceptedThrottle
     end
 end
 
@@ -341,7 +352,7 @@ function mb_DoBasicCasterLogic()
 
     if not UnitAffectingCombat("player") then
         if mb_GetWaterCount() < 10 and max_GetClass("player") ~= "MAGE" then
-            mb_MakeThrottledRequest(REQUEST_WATER, UnitName("player"))
+            mb_MakeThrottledRequest(REQUEST_WATER, UnitName("player"), 6)
         end
     end
 
@@ -394,40 +405,41 @@ end
 
 function mb_HandleVendoring()
     mb_WarnForWatchedReagents()
-    if GetRepairAllCost() > GetMoney() then
-        max_SayRaid("Guys, I'm broke and can't afford my repairs :(")
-    end
-    RepairAllItems()
     local found, bag, slot = mb_GetTradeableItemWithQuality(0)
-    while found do
+    if found then
         UseContainerItem(bag, slot)
-        found, bag, slot = mb_GetTradeableItemWithQuality(0)
+    else
+        if GetRepairAllCost() > GetMoney() then
+            max_SayRaid("Guys, I'm broke and can't afford my repairs :(")
+        else
+            RepairAllItems()
+        end
+        CloseMerchant()
     end
-    CloseMerchant()
 end
 
-function mb_HaveQuestRequestHandler(requestId, requestType, requestBody)
+function mb_HaveQuestRequestHandler(request)
     for i = 1, 50 do
         local name = GetQuestLogTitle(i)
-        if name == requestBody then
-            max_SayRaid("I have quest: " .. requestBody)
+        if name == request.body then
+            max_SayRaid("I have quest: " .. request.body)
             return
         end
     end
 end
 
-function mb_DoesNotHaveQuestRequestHandler(requestId, requestType, requestBody)
+function mb_DoesNotHaveQuestRequestHandler(request)
     for i = 1, 50 do
         local name = GetQuestLogTitle(i)
-        if name == requestBody then
+        if name == request.body then
             return
         end
     end
-    max_SayRaid("I do not have quest: " .. requestBody)
+    max_SayRaid("I do not have quest: " .. request.body)
 end
 
-function mb_AreaOfEffectModeRequestHandler(requestId, requestType, requestBody)
-    mb_areaOfEffectMode = requestBody == "on"
+function mb_AreaOfEffectModeRequestHandler(request)
+    mb_areaOfEffectMode = request.body == "on"
 end
 
 mb_watchedReagents = {}

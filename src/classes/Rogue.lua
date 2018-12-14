@@ -1,6 +1,10 @@
 function mb_Rogue(commander)
     AssistByName(commander)
     CastSpellByName("attack")
+	if GetComboPoints() == 4 then
+	    CastSpellByName("Slice and Dice")
+		return
+	end
     CastSpellByName("Sinister Strike")
 end
 

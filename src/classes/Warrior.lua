@@ -6,7 +6,20 @@ function mb_Warrior(commander)
     CastSpellByName("Attack")
     CastSpellByName("Bloodthirst")
     CastSpellByName("Whirlwind")
+    --if config["specs"]["player"] == "Fury" then
+    --    CastSpellByName("Berserker Stance")
+     --   return
+   -- end
+    if max_GetHealthPercentage("target") < 25 then
+        CastSpellByName("Execute")
+        return
+    end
+    if max_GetHealthPercentage("target") < 90 then
+        CastSpellByName("Bloodrage")
+        return
+    end
 end
+
 
 function mb_Warrior_OnLoad()
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)

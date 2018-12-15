@@ -71,6 +71,16 @@ function mb_GetItemLocation(itemName)
 	return nil
 end
 
+-- True/false whether the item is on cooldown. True if item doesn't exist
+function mb_IsItemOnCooldown(itemName)
+	local bag, slot = mb_GetItemLocation(itemName)
+	if bag ~= nil then
+		local startTime, duration, isEnabled = GetContainerItemCooldown(bag, slot)
+		return startTime ~= 0
+	end
+	return true
+end
+
 -- Use item by name, returns true on success
 function mb_UseItem(itemName)
 	local bag, slot = mb_GetItemLocation(itemName)
@@ -190,7 +200,7 @@ end
 
 -- Returns true/false whether the player has the drink-buff
 function mb_IsDrinking()
-	return max_HasBuff("player", BUFF_TEXTURE_DRINK)
+	return max_HasBuff("player", BUFF_TEXTURE_DRINK) or max_HasBuff("player", BUFF_TEXTURE_DRINK_2)
 end
 
 -- Checks combat and mana and target

@@ -4,16 +4,21 @@ MAX_DEBUFFS = 16
 UNACCEPTED_REQUEST_THROTTLE = 2
 
 --- Buff textures
-BUFF_TEXTURE_POWER_WORD_FORTITUDE = "Interface\\Icons\\Spell_Holy_WordFortitude"
-BUFF_TEXTURE_DIVINE_SPIRIT = "Interface\\Icons\\Spell_Holy_DivineSpirit"
-BUFF_TEXTURE_INNER_FIRE = "Interface\\Icons\\Spell_Holy_InnerFire"
-BUFF_TEXTURE_SHADOW_PROTECTION = "Interface\\Icons\\Spell_Shadow_AntiShadow"
-BUFF_TEXTURE_RENEW = "Interface\\Icons\\Spell_Holy_Renew"
+-- Misc
+BUFF_TEXTURE_DRINK = "Interface\\Icons\\INV_Drink_07"
+BUFF_TEXTURE_DRINK_2 = "Interface\\Icons\\INV_Drink_18"
+-- Druid
 BUFF_TEXTURE_REJUVENATION = "Interface\\Icons\\Spell_Nature_Rejuvenation"
 BUFF_TEXTURE_REGROWTH = "Interface\\Icons\\Spell_Nature_ResistNature"
-BUFF_TEXTURE_SPIRIT_OF_REDEMPTION = "Interface\\Icons\\Spell_Holy_GreaterHeal"
-BUFF_TEXTURE_ABOLISH_DISEASE = "Interface\\Icons\\Spell_Nature_NullifyDisease"
+BUFF_TEXTURE_MARK_OF_THE_WILD = "Interface\\Icons\\Spell_Nature_Regeneration"
+BUFF_TEXTURE_GIFT_OF_THE_WILD = "Interface\\Icons\\Spell_Nature_Regeneration"
+-- Hunter
+-- Mage
 BUFF_TEXTURE_ARCANE_INTELLECT = "Interface\\Icons\\Spell_Holy_MagicalSentry"
+BUFF_TEXTURE_ICE_ARMOR = "Interface\\Icons\\Spell_Frost_FrostArmor02"
+-- Paladin
+BUFF_TEXTURE_DEVOTION_AURA = "Interface\\Icons\\Spell_Holy_DevotionAura"
+BUFF_TEXTURE_FIRE_RESISTANCE_AURA = "Interface\\Icons\\Spell_Fire_SealOfFire"
 BUFF_TEXTURE_BLESSING_OF_WISDOM = "Interface\\Icons\\Spell_Holy_SealOfWisdom"
 BUFF_TEXTURE_GREATER_BLESSING_OF_WISDOM = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom"
 BUFF_TEXTURE_BLESSING_OF_MIGHT = "Interface\\Icons\\Spell_Holy_FistOfJustice"
@@ -26,14 +31,23 @@ BUFF_TEXTURE_BLESSING_OF_SANCTUARY = "Interface\\Icons\\Spell_Nature_LightningSh
 BUFF_TEXTURE_GREATER_BLESSING_OF_SANCTUARY = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSanctuary"
 BUFF_TEXTURE_BLESSING_OF_SALVATION = "Interface\\Icons\\Spell_Holy_SealOfSalvation"
 BUFF_TEXTURE_GREATER_BLESSING_OF_SALVATION = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSalvation"
-BUFF_TEXTURE_DRINK = "Interface\\Icons\\INV_Drink_07"
-BUFF_TEXTURE_ICE_ARMOR = "Interface\\Icons\\Spell_Frost_FrostArmor02"
+-- Priest
+BUFF_TEXTURE_POWER_WORD_FORTITUDE = "Interface\\Icons\\Spell_Holy_WordFortitude"
+BUFF_TEXTURE_DIVINE_SPIRIT = "Interface\\Icons\\Spell_Holy_DivineSpirit"
+BUFF_TEXTURE_INNER_FIRE = "Interface\\Icons\\Spell_Holy_InnerFire"
+BUFF_TEXTURE_SHADOW_PROTECTION = "Interface\\Icons\\Spell_Shadow_AntiShadow"
+BUFF_TEXTURE_RENEW = "Interface\\Icons\\Spell_Holy_Renew"
+BUFF_TEXTURE_SPIRIT_OF_REDEMPTION = "Interface\\Icons\\Spell_Holy_GreaterHeal"
+BUFF_TEXTURE_ABOLISH_DISEASE = "Interface\\Icons\\Spell_Nature_NullifyDisease"
+-- Rogue
+-- Warlock
 BUFF_TEXTURE_DEMON_ARMOR = "Interface\\Icons\\Spell_Shadow_RagingScream"
-BUFF_TEXTURE_MARK_OF_THE_WILD = "Interface\\Icons\\Spell_Nature_Regeneration"
-BUFF_TEXTURE_GIFT_OF_THE_WILD = "Interface\\Icons\\Spell_Nature_Regeneration"
+-- Warrior
 
 --- Debuff textures
 DEBUFF_TEXTURE_WEAKENED_SOUL = "Interface\\Icons\\Spell_Holy_AshesToAshes"
+DEBUFF_TEXTURE_CURSE_OF_SHADOW = "Interface\\Icons\\Spell_Shadow_CurseOfAchimonde"
+DEBUFF_TEXTURE_CURSE_OF_THE_ELEMENTS = "Interface\\Icons\\Spell_Shadow_ChillTouch"
 
 --- Unit filters
 UNIT_FILTER_HAS_MANA = {
@@ -125,7 +139,8 @@ ITEMS_WATER = {
     "Conjured Purified Water",
     "Conjured Spring Water",
     "Conjured Mineral Water",
-    "Conjured Sparkling Water"
+    "Conjured Sparkling Water",
+    "Conjured Crystal Water"
 }
 ITEMS_MANA_GEM = {
     "Mana Agate",

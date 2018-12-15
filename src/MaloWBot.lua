@@ -210,7 +210,7 @@ function mb_OnUpdate()
 	local toBeRemovedIds = {}
 	for k, v in pairs(mb_myPendingRequests) do
 		if v.sentTime + 5 < GetTime() then
-			table.insert(toBeRemovedIds, v.requestId)
+			table.insert(toBeRemovedIds, v.id)
 		end
 	end
 	for k, v in pairs(toBeRemovedIds) do
@@ -238,9 +238,8 @@ function mb_RunBot(commander)
 end
 
 function mb_HandleIncomingRequests()
-	for i = 1, max_GetTableSize(mb_queuedIncomingRequests) do
-		local request = mb_queuedIncomingRequests[i]
-		mb_registeredRequestsHandlers[request.type](request)
+	for k, v in pairs(mb_queuedIncomingRequests) do
+		mb_registeredRequestsHandlers[v.type](v)
 	end
 	mb_queuedIncomingRequests = {}
 end
@@ -294,6 +293,9 @@ function mb_IsOnGCD()
 end
 
 function mb_ShouldAddRequestToQueue(request)
+	if max_GetTableSize(mb_queuedIncomingRequests) > 5 then
+		return
+	end
     local highestPriorityRequest = mb_GetQueuedRequest()
 	if highestPriorityRequest == nil then
 		return true
@@ -333,6 +335,10 @@ function mb_RequestCompleted(request)
     end
 end
 
+function mb_GetMySpecName()
+	return mb_GetConfig()["specs"][UnitName("player")]
+end
+
 
 -- TODO:
 --- Test out LogOut() to remove /follow, works in combat? works while casting?
@@ -370,13 +376,26 @@ end
 ---     Swiftmend
 ---     Insect Swarm
 ---     Cast/Stop-cast HT/Regrowth spam on tanks? Rejuvenation on raid?
+---		Add logic for Feral DPS and Feral tank
+---		Tank VS DPS VS Healer distinction for Sanctuary/Salvation
 ---	Paladins:
 ---		request auras
 ---		cleanse magic
+---		Add logic for ret pal
+--- Say raid, "I am literally out of X" when out of reagents and trying to buff with them.
+--- Rename followTarget to commander
+--- Performance:
+--- 	Don't need to check for buffs every frame
+---		Don't need to request water every frame
 ---
 ---
 ---
-
+---
+---
+---
+---
+---
+---
 
 
 

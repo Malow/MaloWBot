@@ -1,6 +1,3 @@
--- TODO:
----     Tank VS DPS VS Healer distinction for Sanctuary/Salvation and Might
----
 function mb_Druid(commander)
     if mb_DoBasicCasterLogic() then
         return

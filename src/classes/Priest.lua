@@ -46,12 +46,11 @@ function mb_Priest(commander)
         return
     end
 
-    local mySpec = mb_GetConfig()["specs"][UnitName("player")]
-    if mySpec == "Disc" then
+    if mb_GetMySpecName() == "Disc" then
         if mb_Priest_Disc() then
             return true
         end
-    elseif mySpec == "Holy" then
+    elseif mb_GetMySpecName() == "Holy" then
         if mb_Priest_Holy() then
             return true
         end
@@ -132,8 +131,12 @@ function mb_Priest_PrayerOfHealing()
 end
 
 function mb_Priest_OnLoad()
-    mb_RegisterForRequest(BUFF_POWER_WORD_FORTITUDE.type, mb_Priest_HandlePowerWordFortitudeRequest)
-    mb_RegisterForRequest(BUFF_DIVINE_SPIRIT.type, mb_Priest_HandleDivineSpiritRequest)
+    if mb_Priest_HasImprovedFortitude() then
+        mb_RegisterForRequest(BUFF_POWER_WORD_FORTITUDE.type, mb_Priest_HandlePowerWordFortitudeRequest)
+    end
+    if mb_Priest_HasDivineSpirit() then
+        mb_RegisterForRequest(BUFF_DIVINE_SPIRIT.type, mb_Priest_HandleDivineSpiritRequest)
+    end
     mb_RegisterForRequest(REQUEST_RESURRECT.type, mb_Priest_HandleResurrectionRequest)
     mb_RegisterForRequest(REQUEST_DISPEL.type, mb_Priest_HandleDispelRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
@@ -149,18 +152,12 @@ function mb_Priest_OnLoad()
 end
 
 function mb_Priest_HandlePowerWordFortitudeRequest(request)
-    if not mb_Priest_HasImprovedFortitude() then
-        return
-    end
     if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Power Word: Fortitude") then
         mb_AcceptRequest(request)
     end
 end
 
 function mb_Priest_HandleDivineSpiritRequest(request)
-    if not mb_Priest_HasDivineSpirit() then
-        return
-    end
     if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Divine Spirit") then
         mb_AcceptRequest(request)
     end
@@ -189,8 +186,7 @@ function mb_Priest_HasDivineSpirit()
 end
 
 function mb_Priest_AddDesiredTalents()
-    local mySpec = mb_GetConfig()["specs"][UnitName("player")]
-    if mySpec == "Disc" then
+    if mb_GetMySpecName() == "Disc" then
         mb_AddDesiredTalent(1, 1, 5) -- Unbreakable Will
         mb_AddDesiredTalent(1, 3, 3) -- Silent Resolve
         mb_AddDesiredTalent(1, 5, 3) -- Improved Power Word: Shield
@@ -206,7 +202,7 @@ function mb_Priest_AddDesiredTalents()
         mb_AddDesiredTalent(2, 10, 3) -- Improved Healing
         mb_AddDesiredTalent(2, 14, 5) -- Spiritual Guidance
         mb_AddDesiredTalent(2, 15, 5) -- Spiritual Healing
-    elseif mySpec == "Holy" then
+    elseif mb_GetMySpecName() == "Holy" then
         mb_AddDesiredTalent(1, 1, 5) -- Unbreakable Will
         mb_AddDesiredTalent(1, 4, 2) -- Improved Power Word: Fortitude
         -- Imp Fort first, out of order

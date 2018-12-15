@@ -20,6 +20,9 @@ function mb_HandleSharedBehaviour(commander)
     ConfirmAcceptQuest()
     ConfirmSummon()
     AcceptQuest()
+    if mb_shouldLearnTalents then
+        mb_LearnTalents()
+    end
     if mb_isTraining then
         mb_TrainSpells()
         return true
@@ -30,6 +33,10 @@ function mb_HandleSharedBehaviour(commander)
     end
     if mb_isVendoring then
         mb_HandleVendoring()
+        return true
+    end
+    if mb_tradeGoodiesTarget ~= nil then
+        mb_DoTradeGoodies()
         return true
     end
     if mb_HandleMassCommandRequests() then
@@ -45,11 +52,10 @@ function mb_HandleSharedBehaviour(commander)
         return true
     end
     --CancelLogout()
-    mb_CheckAndRequestBuffs()
-    mb_CheckAndRequestDispels()
-    if mb_shouldLearnTalents then
-        mb_LearnTalents()
+    if not UnitAffectingCombat("player") then
+        mb_CheckAndRequestBuffs()
     end
+    mb_CheckAndRequestDispels()
 
     if not mb_IsDrinking() and mb_shouldFollow then
         FollowByName(commander, true)
@@ -96,10 +102,6 @@ function mb_HandleQueuedSharedRequests()
             InitiateTrade(max_GetUnitForPlayerName(request.body))
             mb_RequestCompleted(request)
         end
-    end
-    if mb_tradeGoodiesTarget ~= nil then
-        mb_DoTradeGoodies()
-        return
     end
     return false
 end

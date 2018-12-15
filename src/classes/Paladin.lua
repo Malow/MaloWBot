@@ -70,6 +70,15 @@ function mb_Paladin(commander)
             max_SayRaid("Serious error, received request for " .. request.type)
         end
     end
+
+    if not mb_Paladin_HasAura then
+        CastSpellByName("Devotion Aura")
+        return
+    end
+
+    if mb_Paladin_FlashOfLight() then
+        return
+    end
 end
 
 function mb_Paladin_FlashOfLight()
@@ -77,8 +86,18 @@ function mb_Paladin_FlashOfLight()
     local healTargetUnit, missingHealth = mb_GetMostDamagedFriendly(spell)
     if missingHealth > 200 then
         max_CastSpellOnRaidMember(spell, healTargetUnit)
-        return
+        return true
     end
+    return false
+end
+
+function mb_Paladin_HasAura()
+    if max_HasBuff("player", BUFF_TEXTURE_DEVOTION_AURA) then
+        return true
+    elseif max_HasBuff("player", BUFF_TEXTURE_FIRE_RESISTANCE_AURA) then
+        return true
+    end
+    return false
 end
 
 function mb_Paladin_OnLoad()
@@ -92,12 +111,18 @@ function mb_Paladin_OnLoad()
     mb_AddDesiredBuff(BUFF_BLESSING_OF_SALVATION)
     mb_AddDesiredBuff(BUFF_DIVINE_SPIRIT)
     mb_RegisterForRequest(REQUEST_RESURRECT.type, mb_Paladin_HandleResurrectionRequest)
-    mb_RegisterForRequest(BUFF_BLESSING_OF_WISDOM.type, mb_Paladin_HandleBlessingOfWisdomRequest)
-    mb_RegisterForRequest(BUFF_BLESSING_OF_MIGHT.type, mb_Paladin_HandleBlessingOfMightRequest)
-    mb_RegisterForRequest(BUFF_BLESSING_OF_KINGS.type, mb_Paladin_HandleBlessingOfKingsRequest)
-    mb_RegisterForRequest(BUFF_BLESSING_OF_LIGHT.type, mb_Paladin_HandleBlessingOfLightRequest)
-    mb_RegisterForRequest(BUFF_BLESSING_OF_SANCTUARY.type, mb_Paladin_HandleBlessingOfSanctuaryRequest)
-    mb_RegisterForRequest(BUFF_BLESSING_OF_SALVATION.type, mb_Paladin_HandleBlessingOfSalvationRequest)
+    if mb_GetMySpecName() == "Wisdom" then
+        mb_RegisterForRequest(BUFF_BLESSING_OF_WISDOM.type, mb_Paladin_HandleBlessingOfWisdomRequest)
+    elseif mb_GetMySpecName() == "MightJudge" then
+        mb_RegisterForRequest(BUFF_BLESSING_OF_MIGHT.type, mb_Paladin_HandleBlessingOfMightRequest)
+    elseif mb_GetMySpecName() == "KingsJudge" then
+        mb_RegisterForRequest(BUFF_BLESSING_OF_KINGS.type, mb_Paladin_HandleBlessingOfKingsRequest)
+    elseif mb_GetMySpecName() == "RetLight" then
+        mb_RegisterForRequest(BUFF_BLESSING_OF_LIGHT.type, mb_Paladin_HandleBlessingOfLightRequest)
+    elseif mb_GetMySpecName() == "SanctuarySalvation" then
+        mb_RegisterForRequest(BUFF_BLESSING_OF_SALVATION.type, mb_Paladin_HandleBlessingOfSalvationRequest)
+        mb_RegisterForRequest(BUFF_BLESSING_OF_SANCTUARY.type, mb_Paladin_HandleBlessingOfSanctuaryRequest)
+    end
     mb_Paladin_AddDesiredTalents()
     mb_AddReagentWatch("Symbol of Kings", 100)
     mb_AddGCDCheckSpell("Holy Light")
@@ -110,54 +135,36 @@ function mb_Paladin_HandleResurrectionRequest(request)
 end
 
 function mb_Paladin_HandleBlessingOfWisdomRequest(request)
-    if not mb_Paladin_HasImprovedWisdom() then
-        return
-    end
     if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Greater Blessing of Wisdom") then
         mb_AcceptRequest(request)
     end
 end
 
 function mb_Paladin_HandleBlessingOfMightRequest(request)
-    if not mb_Paladin_HasImprovedMight() then
-        return
-    end
     if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Greater Blessing of Might") then
         mb_AcceptRequest(request)
     end
 end
 
 function mb_Paladin_HandleBlessingOfKingsRequest(request)
-    if not mb_Paladin_HasKings() then
-        return
-    end
     if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Greater Blessing of Kings") then
         mb_AcceptRequest(request)
     end
 end
 
 function mb_Paladin_HandleBlessingOfLightRequest(request)
-    if mb_GetConfig()["specs"][UnitName("player")] ~= "RetLight" then
-        return
-    end
     if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Greater Blessing of Light") then
         mb_AcceptRequest(request)
     end
 end
 
 function mb_Paladin_HandleBlessingOfSanctuaryRequest(request)
-    if not mb_Paladin_HasSanctuary() then
-        return
-    end
     if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Greater Blessing of Sanctuary") then
         mb_AcceptRequest(request)
     end
 end
 
 function mb_Paladin_HandleBlessingOfSalvationRequest(request)
-    if mb_GetConfig()["specs"][UnitName("player")] ~= "SanctuarySalvation" then
-        return
-    end
     if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Greater Blessing of Salvation") then
         mb_AcceptRequest(request)
     end
@@ -178,15 +185,8 @@ function mb_Paladin_HasKings()
     return currentRank == 1
 end
 
-function mb_Paladin_HasSanctuary()
-    local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(2, 12)
-    return currentRank == 1
-end
-
-
 function mb_Paladin_AddDesiredTalents()
-    local mySpec = mb_GetConfig()["specs"][UnitName("player")]
-    if mySpec == "SanctuarySalvation" then
+    if mb_GetMySpecName() == "SanctuarySalvation" then
         mb_AddDesiredTalent(2, 1, 5) -- Improved Devotion Aura
         mb_AddDesiredTalent(2, 4, 2) -- Guardian's Favor
         mb_AddDesiredTalent(2, 5, 5) -- Toughness
@@ -204,7 +204,7 @@ function mb_Paladin_AddDesiredTalents()
         mb_AddDesiredTalent(1, 9, 5) -- Illumination
         mb_AddDesiredTalent(1, 11, 1) -- Divine Favor
         mb_AddDesiredTalent(1, 13, 5) -- Holy Power
-    elseif mySpec == "KingsJudge" then
+    elseif mb_GetMySpecName() == "KingsJudge" then
         mb_AddDesiredTalent(2, 1, 5) -- Improved Devotion Aura
         mb_AddDesiredTalent(2, 4, 2) -- Guardian's Favor
         mb_AddDesiredTalent(2, 5, 3) -- Toughness
@@ -223,7 +223,7 @@ function mb_Paladin_AddDesiredTalents()
         mb_AddDesiredTalent(1, 14, 1) -- Holy Shock
         mb_AddDesiredTalent(3, 2, 5) -- Benediction
         mb_AddDesiredTalent(3, 3, 2) -- Improved Judgement
-    elseif mySpec == "Wisdom" then
+    elseif mb_GetMySpecName() == "Wisdom" then
         mb_AddDesiredTalent(1, 2, 5) -- Divine Intellect
         mb_AddDesiredTalent(1, 3, 5) -- Spiritual Focus
         mb_AddDesiredTalent(1, 5, 3) -- Healing Light
@@ -240,7 +240,7 @@ function mb_Paladin_AddDesiredTalents()
         mb_AddDesiredTalent(2, 5, 5) -- Toughness
         mb_AddDesiredTalent(2, 9, 4) -- Anticipation
         mb_AddDesiredTalent(2, 11, 3) -- Improved Concentration Aura
-    elseif mySpec == "MightJudge" then
+    elseif mb_GetMySpecName() == "MightJudge" then
         mb_AddDesiredTalent(3, 1, 5) -- Improved Blessing of Might
         -- Might first, out of order
         mb_AddDesiredTalent(1, 2, 5) -- Divine Intellect
@@ -257,7 +257,7 @@ function mb_Paladin_AddDesiredTalents()
         mb_AddDesiredTalent(3, 2, 5) -- Benediction
         mb_AddDesiredTalent(3, 3, 2) -- Improved Judgement
         mb_AddDesiredTalent(3, 9, 2) -- Pursuit of Justice
-    elseif mySpec == "RetLight" then
+    elseif mb_GetMySpecName() == "RetLight" then
         mb_AddDesiredTalent(1, 1, 5) -- Divine Strength
         mb_AddDesiredTalent(1, 2, 5) -- Divine Intellect
         mb_AddDesiredTalent(1, 6, 1) -- Consecration

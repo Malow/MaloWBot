@@ -52,6 +52,23 @@ function mb_HandleSpecialSlashCommand(msg)
                 InviteByName(name)
             end
         end
+    elseif msg == "debugRequests" then
+        mb_Print("Queued Requests: " .. max_GetTableSize(mb_queuedRequests) .. "x")
+        for k, v in pairs(mb_queuedRequests) do
+            mb_Print("    " .. v.type .. " by " .. v.from .. " with priority " .. v.priority .. " and body " .. v.body )
+        end
+        mb_Print("Outgoing Accepts: " .. max_GetTableSize(mb_myAcceptedRequests) .. "x")
+        for k, v in pairs(mb_myAcceptedRequests) do
+            mb_Print("    " .. v.type .. " by " .. v.from .. " with priority " .. v.priority .. " and body " .. v.body )
+        end
+        mb_Print("Incoming Accepted Confirmed Queued Requests: " .. max_GetTableSize(mb_queuedIncomingRequests) .. "x")
+        for k, v in pairs(mb_queuedIncomingRequests) do
+            mb_Print("    " .. v.type .. " by " .. v.from .. " with priority " .. v.priority .. " and body " .. v.body )
+        end
+        mb_Print("Pending Outgoing Queued Requests: " .. max_GetTableSize(mb_myPendingRequests) .. "x")
+        for k, v in pairs(mb_myPendingRequests) do
+            mb_Print("    " .. v.type .. " with priority " .. v.priority .. " and body " .. v.body .. ". Sent at " .. v.sentTime)
+        end
     else
         return false
     end

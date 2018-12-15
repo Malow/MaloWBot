@@ -57,6 +57,10 @@ function mb_Warlock(commander)
         return
     end
 
+    if mb_Warlock_Curse() then
+        return
+    end
+
     CastSpellByName("Shadow Bolt")
 end
 
@@ -65,11 +69,22 @@ function mb_Warlock_DrainSoul()
     if not found then
         return false
     end
-    if cur > 10000 then
+    if cur > 15000 then
         return false
     end
     if max_GetFreeBagSlots() > 5 and max_GetLevelDifferenceFromSelf("target") > -10 then
         CastSpellByName("Drain Soul")
+        return true
+    end
+    return false
+end
+
+function mb_Warlock_Curse()
+    if max_HasDebuff("target", DEBUFF_TEXTURE_CURSE_OF_THE_ELEMENTS) then
+        CastSpellByName("Curse of the Elements")
+        return true
+    elseif max_HasDebuff("target", DEBUFF_TEXTURE_CURSE_OF_SHADOW) then
+        CastSpellByName("Curse of Shadow")
         return true
     end
     return false
@@ -91,29 +106,15 @@ function mb_Warlock_OnLoad()
 end
 
 function mb_Warlock_HandleSummonRequest(request)
-    if UnitAffectingCombat("player") then
-        return
-    elseif max_GetManaPercentage("player") < 30 then
-        return
-    elseif mb_IsDrinking() then
-        return
-    end
     local soulShardCount = mb_GetItemCount("Soul Shard")
-    if soulShardCount > 0 and not mb_isCasting then
+    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.from), "Unending breath") and soulShardCount > 0 then
         mb_AcceptRequest(request)
     end
 end
 
 function mb_Warlock_HandleSoulstoneRequest(request)
-    if UnitAffectingCombat("player") then
-        return
-    elseif max_GetManaPercentage("player") < 30 then
-        return
-    elseif mb_IsDrinking() then
-        return
-    end
     local soulShardCount = mb_GetItemCount("Soul Shard")
-    if soulShardCount > 0 and not mb_isCasting then -- TODO: Add valid target and range check
+    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Unending breath") and soulShardCount > 0 then
         mb_AcceptRequest(request)
     end
 end

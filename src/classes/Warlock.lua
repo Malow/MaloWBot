@@ -10,17 +10,21 @@ function mb_Warlock(commander)
                 return
             end
             max_SayRaid("I'm summoning " .. request.body)
-            max_CastSpellOnRaidMemberByPlayerName("Ritual of Summoning", request.body)
+            TargetByName(request.body, true)
+            CastSpellByName("Ritual of Summoning")
             mb_RequestCompleted(request)
             return
         elseif request.type == "soulstone" then
-            if mb_HasItem("Major Soulstone") then
+            if mb_HasItem("Soulstone") then
+                if mb_IsOnGCD() then
+                    return
+                end
                 max_SayRaid("I'm soulstoning " .. request.body)
                 TargetByName(request.body, true)
-                mb_UseItem("Major Soulstone")
+                mb_UseItem("Soulstone")
                 mb_RequestCompleted(request)
             else
-                CastSpellByName("Create Soulstone (Major)")
+                CastSpellByName("Create Soulstone()")
             end
             return
         else
@@ -38,6 +42,7 @@ function mb_Warlock(commander)
     if UnitAffectingCombat("player") then
         if max_GetManaPercentage("player") < 10 and max_GetHealthPercentage("player") > 80 then
             CastSpellByName("Life Tap")
+            return
         end
     end
 
@@ -45,15 +50,29 @@ function mb_Warlock(commander)
 
     if max_GetHealthPercentage("player") < 25 then
         CastSpellByName("Drain Life")
-    end
-
-    CastSpellByName("Shadow Bolt") -- HAX REMOVE
-    -- TODO: Use MobHealth addon and get the unit health from that instead of : UnitHealth("target") < 20 and
-    if max_GetFreeBagSlots() > 5 and max_GetLevelDifferenceFromSelf("target") > -10 then
-        CastSpellByName("Drain Soul")
         return
     end
+
+    if mb_Warlock_DrainSoul() then
+        return
+    end
+
     CastSpellByName("Shadow Bolt")
+end
+
+function mb_Warlock_DrainSoul()
+    local cur, max, found = MobHealth3:GetUnitHealth("target")
+    if not found then
+        return false
+    end
+    if cur > 10000 then
+        return false
+    end
+    if max_GetFreeBagSlots() > 5 and max_GetLevelDifferenceFromSelf("target") > -10 then
+        CastSpellByName("Drain Soul")
+        return true
+    end
+    return false
 end
 
 function mb_Warlock_OnLoad()

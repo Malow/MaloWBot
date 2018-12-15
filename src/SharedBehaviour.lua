@@ -1,5 +1,4 @@
 mb_shouldReloadUi = false
-mb_tradeGreysTarget = nil
 mb_tradeGoodiesTarget = nil
 mb_desiredBuffs = {}
 mb_shouldHearthstone = false
@@ -9,21 +8,7 @@ mb_shouldLearnTalents = mb_GetConfig()["autoLearnTalents"]
 mb_desiredTalentTree = {}
 mb_shouldTrainSpells = false
 mb_shouldFollow = true
-
-function mb_RegisterMassCommandRequestHandlers()
-    mb_RegisterForRequest("reload", mb_ReloadRequestHandler)
-    mb_RegisterForRequest("trademegreys", mb_TradeMeGreysRequestHandler)
-    mb_RegisterForRequest("trademegoodies", mb_TradeMeGoodiesRequestHandler)
-    mb_RegisterForRequest("inventoryDump", mb_InventoryDumpRequestHandler)
-    mb_RegisterForRequest("promoteLeader", mb_PromoteLeaderRequestHandler)
-    mb_RegisterForRequest("hearthstone", mb_HearthstoneRequestHandler)
-    mb_RegisterForRequest("mount", mb_MountRequestHandler)
-    mb_RegisterForRequest("releaseCorpse", mb_ReleaseCorpseRequestHandler)
-    mb_RegisterForRequest("haveQuest", mb_HaveQuestRequestHandler)
-    mb_RegisterForRequest("doesNotHaveQuest", mb_DoesNotHaveQuestRequestHandler)
-    mb_RegisterForRequest("areaOfEffectMode", mb_AreaOfEffectModeRequestHandler)
-    mb_RegisterForRequest("followMode", mb_FollowModeRequestHandler)
-end
+mb_shouldRequestBuffs = true
 
 function mb_HandleSharedBehaviour(commander)
     AcceptGuild()
@@ -104,10 +89,7 @@ end
 function mb_HandleQueuedSharedRequests()
     local request = mb_GetQueuedRequest()
     if request ~= nil then
-        if request.type == "trademegreys" then
-            mb_tradeGreysTarget = request.body
-            mb_RequestCompleted(request)
-        elseif request.type == "trademegoodies" then
+        if request.type == "trademegoodies" then
             mb_tradeGoodiesTarget = request.body
             mb_RequestCompleted(request)
         elseif request.type == "inventoryDump" then
@@ -115,115 +97,11 @@ function mb_HandleQueuedSharedRequests()
             mb_RequestCompleted(request)
         end
     end
-    if mb_tradeGreysTarget ~= nil then
-        mb_DoTradeGreys()
-        return
-    end
     if mb_tradeGoodiesTarget ~= nil then
         mb_DoTradeGoodies()
         return
     end
     return false
-end
-
-function mb_ReloadRequestHandler(request)
-    if request.from ~= UnitName("player") then
-        mb_shouldReloadUi = true
-    end
-end
-
-function mb_TradeMeGreysRequestHandler(request)
-    if mb_tradeGreysTarget ~= nil or mb_tradeGoodiesTarget ~= nil then
-        return
-    end
-    if UnitName("player") ~= request.body then
-        local found, bag, slot = mb_GetTradeableItemWithQuality(0)
-        if not found then
-            return false
-        end
-        local unit = max_GetUnitForPlayerName(request.body)
-        if mb_IsUnitValidTarget(unit) then
-            if CheckInteractDistance(unit, 2) then
-                mb_AcceptRequest(request)
-            end
-        end
-    end
-end
-
-function mb_TradeMeGoodiesRequestHandler(request)
-    if mb_tradeGreysTarget ~= nil or mb_tradeGoodiesTarget ~= nil then
-        return
-    end
-    if UnitName("player") ~= request.body then
-        local found, bag, slot = mb_GetTradeableItem()
-        if not found then
-            return false
-        end
-        local unit = max_GetUnitForPlayerName(request.body)
-        if mb_IsUnitValidTarget(unit) then
-            if CheckInteractDistance(unit, 2) then
-                mb_AcceptRequest(request)
-            end
-        end
-    end
-end
-
-function mb_InventoryDumpRequestHandler(request)
-    if mb_tradeGreysTarget ~= nil or mb_tradeGoodiesTarget ~= nil then
-        return
-    end
-    if UnitName("player") ~= request.body then
-        if max_GetClass("player") == "WARLOCK" then
-            return
-        end
-        if max_GetFreeBagSlots() < 10 then
-            return
-        end
-        local unit = max_GetUnitForPlayerName(request.body)
-        if mb_IsUnitValidTarget(unit) then
-            if CheckInteractDistance(unit, 2) then
-                mb_AcceptRequest(request)
-            end
-        end
-    end
-end
-
-function mb_PromoteLeaderRequestHandler(request)
-    if IsPartyLeader() then
-        PromoteByName(mb_GetConfig()["followTarget"])
-    end
-end
-
-function mb_HearthstoneRequestHandler(request)
-    if request.from ~= UnitName("player") then
-        mb_shouldHearthstone = true
-    end
-end
-
-function mb_MountRequestHandler(request)
-    if request.from ~= UnitName("player") then
-        mb_shouldMount = true
-    end
-end
-
-function mb_ReleaseCorpseRequestHandler(request)
-    if request.from ~= UnitName("player") then
-        mb_shouldReleaseCorpse = true
-    end
-end
-
-function mb_DoTradeGreys()
-    if not mb_isTrading then
-        InitiateTrade(max_GetUnitForPlayerName(mb_tradeGreysTarget))
-        return
-    end
-    local found, bag, slot = mb_GetTradeableItemWithQuality(0)
-    if found then
-        PickupContainerItem(bag, slot)
-        DropItemOnUnit(max_GetUnitForPlayerName(mb_tradeGreysTarget))
-    else
-        mb_tradeGreysTarget = nil
-    end
 end
 
 function mb_DoTradeGoodies()
@@ -241,7 +119,7 @@ function mb_DoTradeGoodies()
 end
 
 function mb_CheckAndRequestBuffs()
-    if GetRealZoneText() == "Ironforge" or GetRealZoneText() == "Stormwind" then
+    if not mb_shouldRequestBuffs then
         return
     end
     for i = 1, max_GetTableSize(mb_desiredBuffs) do
@@ -425,36 +303,6 @@ function mb_HandleVendoring()
             RepairAllItems()
         end
         CloseMerchant()
-    end
-end
-
-function mb_HaveQuestRequestHandler(request)
-    for i = 1, 50 do
-        local name = GetQuestLogTitle(i)
-        if name == request.body then
-            max_SayRaid("I have quest: " .. request.body)
-            return
-        end
-    end
-end
-
-function mb_DoesNotHaveQuestRequestHandler(request)
-    for i = 1, 50 do
-        local name = GetQuestLogTitle(i)
-        if name == request.body then
-            return
-        end
-    end
-    max_SayRaid("I do not have quest: " .. request.body)
-end
-
-function mb_AreaOfEffectModeRequestHandler(request)
-    mb_areaOfEffectMode = request.body == "on"
-end
-
-function mb_FollowModeRequestHandler(request)
-    if request.from == mb_GetConfig()["followTarget"] then
-        mb_shouldFollow = request.body == "on"
     end
 end
 

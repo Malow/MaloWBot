@@ -4,7 +4,7 @@ local MY_ABBREVIATION = "MB"
 -- Frame setup for update
 local lastUpdate = GetTime()
 local function mb_Update()
-	if GetTime() >= lastUpdate + 0.1 then
+	if GetTime() >= lastUpdate + 0.5 then
 		lastUpdate = GetTime()
 		mb_OnUpdate()
     end
@@ -44,6 +44,10 @@ function mb_OnEvent()
 		mb_OnLoad()
 	elseif event == "PLAYER_LOGIN" then
 		mb_OnPostLoad()
+	elseif event == "ZONE_CHANGED_NEW_AREA" then
+		if GetRealZoneText() == "Ironforge" or GetRealZoneText() == "Stormwind" then
+			mb_shouldRequestBuffs = false
+		end
 	elseif event == "SPELLCAST_START" or event == "SPELLCAST_CHANNEL_START" then
 		mb_isCasting = true
 		mb_castStartedTime = GetTime()
@@ -77,6 +81,7 @@ f:RegisterEvent("SPELLCAST_INTERRUPTED")
 f:RegisterEvent("SPELLCAST_FAILED")
 f:RegisterEvent("CHAT_MSG_ADDON")
 f:RegisterEvent("PLAYER_LOGIN")
+f:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 f:RegisterEvent("TRADE_CLOSED")
 f:RegisterEvent("TRADE_SHOW")
 f:RegisterEvent("MERCHANT_CLOSED")
@@ -85,6 +90,8 @@ f:RegisterEvent("GOSSIP_SHOW") -- GOSSIP_CLOSE fires when clicking on a quest, u
 f:RegisterEvent("TRAINER_CLOSED")
 f:RegisterEvent("TRAINER_SHOW")
 f:SetScript("OnEvent", mb_OnEvent)
+
+
 
 mb_queuedIncomingRequests = {}
 function mb_HandleMBCommunication(arg2, arg3, arg4)
@@ -135,31 +142,43 @@ end
 function mb_OnLoad()
 end
 
+mb_classSpecificRunFunction = nil
 -- OnPostLoad, called when macros etc. are available
 function mb_OnPostLoad()
 	mb_CreateMBMacros()
-	mb_RegisterMassCommandRequestHandlers()
+	mb_RegisterSharedRequestHandlers()
 	local playerClass = max_GetClass("player")
 	if playerClass == "DRUID" then
 		mb_Druid_OnLoad()
+		mb_classSpecificRunFunction = mb_Druid
 	elseif playerClass == "HUNTER" then
 		mb_Hunter_OnLoad()
+		mb_classSpecificRunFunction = mb_Hunter
 	elseif playerClass == "MAGE" then
 		mb_Mage_OnLoad()
+		mb_classSpecificRunFunction = mb_Mage
 	elseif playerClass == "PALADIN" then
 		mb_Paladin_OnLoad()
+		mb_classSpecificRunFunction = mb_Paladin
 	elseif playerClass == "PRIEST" then
 		mb_Priest_OnLoad()
+		mb_classSpecificRunFunction = mb_Priest
 	elseif playerClass == "ROGUE" then
 		mb_Rogue_OnLoad()
+		mb_classSpecificRunFunction = mb_Rogue
 	elseif playerClass == "WARLOCK" then
 		mb_Warlock_OnLoad()
+		mb_classSpecificRunFunction = mb_Warlock
 	elseif playerClass == "WARRIOR" then
 		mb_Warrior_OnLoad()
+		mb_classSpecificRunFunction = mb_Warrior
 	else
 		mb_Print("Error, playerClass " .. tostring(playerClass) .. " not supported")
 	end
 
+	if GetRealZoneText() == "Ironforge" or GetRealZoneText() == "Stormwind" then
+		mb_shouldRequestBuffs = false
+	end
 	mb_Print("Loaded")
 end
 
@@ -187,6 +206,16 @@ function mb_OnUpdate()
 	if mb_isGossiping and mb_gossipOpenedTime + 5 < GetTime() then
 		mb_isGossiping = false
 	end
+	-- Clean up unaccepted pending requests
+	local toBeRemovedIds = {}
+	for k, v in pairs(mb_myPendingRequests) do
+		if v.sentTime + 5 < GetTime() then
+			table.insert(toBeRemovedIds, v.requestId)
+		end
+	end
+	for k, v in pairs(toBeRemovedIds) do
+		mb_myPendingRequests[v] = nil
+	end
 end
 
 -- OnCmd
@@ -205,26 +234,7 @@ function mb_RunBot(commander)
 		return
 	end
 
-	local playerClass = max_GetClass("player")
-	if playerClass == "DRUID" then
-		mb_Druid(commander)
-	elseif playerClass == "HUNTER" then
-		mb_Hunter(commander)
-	elseif playerClass == "MAGE" then
-		mb_Mage(commander)
-	elseif playerClass == "PALADIN" then
-		mb_Paladin(commander)
-	elseif playerClass == "PRIEST" then
-		mb_Priest(commander)
-	elseif playerClass == "ROGUE" then
-		mb_Rogue(commander)
-	elseif playerClass == "WARLOCK" then
-		mb_Warlock(commander)
-	elseif playerClass == "WARRIOR" then
-		mb_Warrior(commander)
-	else
-		mb_Print("Error, playerClass " .. tostring(playerClass) .. " not supported")
-	end
+	mb_classSpecificRunFunction(commander)
 end
 
 function mb_HandleIncomingRequests()
@@ -243,6 +253,7 @@ function mb_MakeRequest(requestType, requestBody, requestPriority)
 	request.body = requestBody
 	request.priority = requestPriority
     request.id = requestId
+	request.sentTime = GetTime()
 	mb_myPendingRequests[requestId] = request
 end
 
@@ -283,7 +294,6 @@ function mb_IsOnGCD()
 end
 
 function mb_ShouldAddRequestToQueue(request)
-    local queuedRequestSize = max_GetTableSize(mb_queuedRequests)
     local highestPriorityRequest = mb_GetQueuedRequest()
 	if highestPriorityRequest == nil then
 		return true
@@ -291,7 +301,7 @@ function mb_ShouldAddRequestToQueue(request)
     if request.priority > highestPriorityRequest.priority then
         return true
     end
-    if queuedRequestSize > 2 then
+    if max_GetTableSize(mb_queuedRequests) > 2 then
         return false
     end
     return true
@@ -336,8 +346,7 @@ end
 ---		Also scan the target for current health and hots and other stuff to decide if you should cancel.
 ---     Also make healers heal without targeting using non-self-cast
 ---	Owners request buffs for their pets
---- Proper range-check of spells
----	Decursing + Dispelling + Depoisoning + Dediseasing
+---	Depoisoning + Dediseasing
 --- Double-request handling can happen if the propose reaches 1 guy after the accept has already been sent. Shouldn't happen though
 --- Automatic Gold-spreading
 ---	Sit/stand logic based on error-messages, see RogueSpam addon.
@@ -361,6 +370,9 @@ end
 ---     Swiftmend
 ---     Insect Swarm
 ---     Cast/Stop-cast HT/Regrowth spam on tanks? Rejuvenation on raid?
+---	Paladins:
+---		request auras
+---		cleanse magic
 ---
 ---
 ---

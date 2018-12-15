@@ -12,13 +12,14 @@ function mb_Druid(commander)
             if mb_IsOnGCD() then
                 return
             end
+            mb_RequestCompleted(request)
             if mb_ShouldBuffGroupWide(request.body, BUFF_MARK_OF_THE_WILD) then
                 max_CastSpellOnRaidMemberByPlayerName("Gift of the Wild", request.body)
+                return
             elseif not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_MARK_OF_THE_WILD.textures) then
                 max_CastSpellOnRaidMemberByPlayerName("Mark of the Wild", request.body)
+                return
             end
-            mb_RequestCompleted(request)
-            return
         elseif request.type == REQUEST_DECURSE.type then
             if mb_IsOnGCD() then
                 return
@@ -67,8 +68,7 @@ function mb_Druid_Rejuvenation()
     unitFilter.buff = BUFF_TEXTURE_REJUVENATION
     local healTargetUnit, missingHealthOfTarget = mb_GetMostDamagedFriendly(spell, unitFilter)
     if max_GetHealthPercentage(healTargetUnit) < 75 then
-        TargetUnit(healTargetUnit)
-        CastSpellByName(spell)
+        max_CastSpellOnRaidMember(spell, healTargetUnit)
         return true
     end
     return false
@@ -80,8 +80,7 @@ function mb_Druid_Regrowth()
     unitFilter.buff = BUFF_TEXTURE_REGROWTH
     local healTargetUnit, missingHealthOfTarget = mb_GetMostDamagedFriendly(spell, unitFilter)
     if max_GetHealthPercentage(healTargetUnit) < 60 then
-        TargetUnit(healTargetUnit)
-        CastSpellByName(spell)
+        max_CastSpellOnRaidMember(spell, healTargetUnit)
         return true
     end
     return false
@@ -96,7 +95,7 @@ function mb_Druid_HandleMarkOfTheWildRequest(request)
     end
 end
 
-function mb_Mage_HandleDecurseRequest(request)
+function mb_Druid_HandleDecurseRequest(request)
     if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Remove Curse") then
         mb_AcceptRequest(request)
     end

@@ -9,20 +9,20 @@ function mb_Priest(commander)
             if mb_IsOnGCD() then
                 return
             end
+            mb_RequestCompleted(request)
             if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_POWER_WORD_FORTITUDE.textures) then
                 max_CastSpellOnRaidMemberByPlayerName("Power Word: Fortitude", request.body)
+                return
             end
-            mb_RequestCompleted(request)
-            return
         elseif request.type == BUFF_DIVINE_SPIRIT.type then
             if mb_IsOnGCD() then
                 return
             end
+            mb_RequestCompleted(request)
             if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_DIVINE_SPIRIT.textures) then
                 max_CastSpellOnRaidMemberByPlayerName("Divine Spirit", request.body)
+                return
             end
-            mb_RequestCompleted(request)
-            return
         elseif request.type == REQUEST_RESURRECT.type then
             if mb_IsOnGCD() then
                 return
@@ -97,8 +97,7 @@ function mb_Priest_PWS()
     unitFilter.debuff = DEBUFF_TEXTURE_WEAKENED_SOUL
     local healTargetUnit, healthOfTarget = mb_GetLowestHealthFriendly(spell, unitFilter)
     if max_GetHealthPercentage(healTargetUnit) < 50 then
-        TargetUnit(healTargetUnit)
-        CastSpellByName(spell)
+        max_CastSpellOnRaidMember(spell, healTargetUnit)
         return true
     end
     return false
@@ -110,8 +109,7 @@ function mb_Priest_Renew()
     unitFilter.buff = BUFF_TEXTURE_RENEW
     local healTargetUnit, missingHealthOfTarget = mb_GetMostDamagedFriendly(spell, unitFilter)
     if max_GetHealthPercentage(healTargetUnit) < 75 then
-        TargetUnit(healTargetUnit)
-        CastSpellByName(spell)
+        max_CastSpellOnRaidMember(spell, healTargetUnit)
         return true
     end
     return false

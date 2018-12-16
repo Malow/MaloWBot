@@ -67,15 +67,18 @@ function mb_Mage(commander)
     end
 
     --- Time to do some actual combat
-
-    AssistByName(commander)
-
     if mb_areaOfEffectMode then
         CastSpellByName("Arcane Explosion")
-    else
-        CastSpellByName("Frostbolt")
-        CastSpellByName("Fire Blast")
+        return
     end
+
+    max_AssistByPlayerName(commander)
+    if not UnitExists("target") or not UnitIsEnemy("player", "target") then
+        return
+    end
+
+    CastSpellByName("Frostbolt")
+    CastSpellByName("Fire Blast")
 end
 
 function mb_Mage_OnLoad()
@@ -143,7 +146,7 @@ function mb_Mage_AddDesiredTalents()
         mb_AddDesiredTalent(1, 12, 3) -- Magic Meditation
         --mb_AddDesiredTalent(1, 13, 1) -- Presence of Mind
     else
-        -- Leveling spec
+        -- Leveling/Dungeon spec
         mb_AddDesiredTalent(3, 2, 5) -- Improved Frostbolt
         mb_AddDesiredTalent(3, 5, 3) -- Frostbite
         mb_AddDesiredTalent(3, 6, 2) -- Improved Frost Nova

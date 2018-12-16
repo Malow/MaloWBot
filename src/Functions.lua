@@ -138,6 +138,10 @@ function mb_IsIgnoredTradeItem(itemName)
 
 	if itemName == "Rough Arrow" then
 		return true
+	elseif itemName == "Jagged Arrow" then
+		return true
+	elseif itemName == "Accurate Slugs" then
+		return true
 	elseif itemName == "Blacksmith Hammer" then
 		return true
 	elseif itemName == "Mining Pick" then
@@ -149,6 +153,8 @@ function mb_IsIgnoredTradeItem(itemName)
 	elseif itemName == "Wild Thornroot" then
 		return true
 	elseif itemName == "Symbol of Kings" then
+		return true
+	elseif itemName == "Rune of Portals" then
 		return true
 	end
 	for i = max_GetTableSize(ITEMS_WATER), 1, -1 do
@@ -166,7 +172,7 @@ end
 
 -- Checks if target exists, is visible, is friendly and if it's dead or ghost AND if it's in range of spell if a spell is provided.
 function mb_IsUnitValidTarget(unit, spell)
-	if UnitExists(unit) and UnitIsVisible(unit) and UnitIsFriend("player", unit) and not UnitIsDeadOrGhost(unit) and not max_HasBuff(unit, BUFF_TEXTURE_SPIRIT_OF_REDEMPTION) then
+	if UnitExists(unit) and UnitIsVisible(unit) and not UnitIsEnemy("player", unit) and not UnitIsDeadOrGhost(unit) and not max_HasBuff(unit, BUFF_TEXTURE_SPIRIT_OF_REDEMPTION) then
 		if spell ~= nil then
 			if max_IsHelpfulSpellInRange(spell, unit) then
 				return true
@@ -231,15 +237,20 @@ function mb_AcceptTradeThrottled()
 	end
 end
 
-function mb_ShouldBuffGroupWide(unitName, buff)
+-- Optional unitFilter used for Arcane Int / Divine Spirit
+function mb_ShouldBuffGroupWide(unitName, buff, unitFilter)
 	local groupUnits = max_GetGroupUnitsFor(unitName)
 	local count = 0
 	for i = 1, max_GetTableSize(groupUnits) do
 		if mb_IsUnitValidTarget(groupUnits[i]) and not max_HasBuffWithMultipleTextures(groupUnits[i], buff.textures) then
-			count = count + 1
+			if unitFilter == nil then
+				count = count + 1
+			elseif mb_CheckFilter(groupUnits[i], unitFilter) then
+				count = count + 1
+			end
 		end
 	end
-	if count > 1 then
+	if count > 2 then
 		return true
 	end
 	return false

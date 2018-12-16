@@ -39,6 +39,8 @@ mb_myPendingRequests = {}
 mb_gcdSpells = {}
 mb_queuedRequests = {}
 mb_areaOfEffectMode = false
+mb_isAutoAttacking = false
+mb_isAutoShooting = false
 function mb_OnEvent()
 	if event == "ADDON_LOADED" and arg1 == MY_NAME then
 		if mb_SV == nil then
@@ -73,6 +75,14 @@ function mb_OnEvent()
 		mb_isTraining = false
 	elseif event == "TRAINER_SHOW" then
 		mb_isTraining = true
+	elseif event == "START_AUTOREPEAT_SPELL" then
+		mb_isAutoShooting = true
+	elseif event == "STOP_AUTOREPEAT_SPELL" then
+		mb_isAutoShooting = false
+	elseif event == "PLAYER_ENTER_COMBAT" then
+		mb_isAutoAttacking = true
+	elseif event == "PLAYER_LEAVE_COMBAT" then
+		mb_isAutoAttacking = false
 	end
 end
 f:RegisterEvent("ADDON_LOADED")
@@ -92,6 +102,10 @@ f:RegisterEvent("MERCHANT_SHOW")
 f:RegisterEvent("GOSSIP_SHOW") -- GOSSIP_CLOSE fires when clicking on a quest, using time-based logic for deciding when gossip is really closed
 f:RegisterEvent("TRAINER_CLOSED")
 f:RegisterEvent("TRAINER_SHOW")
+f:RegisterEvent("START_AUTOREPEAT_SPELL")
+f:RegisterEvent("STOP_AUTOREPEAT_SPELL")
+f:RegisterEvent("PLAYER_ENTER_COMBAT")
+f:RegisterEvent("PLAYER_LEAVE_COMBAT")
 f:SetScript("OnEvent", mb_OnEvent)
 
 
@@ -189,7 +203,9 @@ end
 function mb_CreateMBMacros()
 	mb_CreateMacro("MB_Main", "/mb " .. mb_GetConfig()["followTarget"], 37, "7", "MULTIACTIONBAR4BUTTON1")
 	mb_CreateMacro("MB_ZoomIn", "/run SetView(3); CameraZoomIn(2);", 38, "8", "MULTIACTIONBAR4BUTTON2")
-	mb_CreateMacro("MB_DE", "/cast Disenchant", 39, "1", "MULTIACTIONBAR4BUTTON3")
+	if not mb_GetConfig()["followTarget"] == UnitName("player") then
+		mb_CreateMacro("MB_DE", "/cast Disenchant", 39, "1", "MULTIACTIONBAR4BUTTON3")
+	end
 end
 
 function mb_CreateMacro(name, body, actionSlot, bindingKey, bindingName)
@@ -345,12 +361,13 @@ end
 
 -- TODO:
 --- Test out LogOut() to remove /follow, works in combat? works while casting?
---- On ready-check click away buffs with less than 8 minute duration
+--- On ready-check click away buffs with less than 8 minute duration (don't forget class specific buffs like Ice Armor or sacrificed succubus.
 ---		Also decline ready-checks if missing buffs or mana or items (healthstone) (and say so in raid)
+---		Also check durability is above 10% in all slots, otherwise decline and announce in raid
 --- If a trade window is open stop assisting cuz it breaks trade
 --- Make accepted requests time out if their throttleTime - 1 has passed
 --- Figure out a way to clear up pending requests list, it will grow forever atm
----	Add healing-code. When you start healing someone with a cast-time announce that you're doing so and then listen to announces.
+---	Add proper healing-code. When you start healing someone with a cast-time announce that you're doing so and then listen to announces.
 ---		Add the announced heals to the targets current health until you see your own announcement, then decide if you want to cancel your cast or not.
 ---		Also scan the target for current health and hots and other stuff to decide if you should cancel.
 ---	Owners request buffs for their pets
@@ -358,16 +375,18 @@ end
 --- Automatic Gold-spreading
 ---	Sit/stand logic based on error-messages, see RogueSpam addon.
 ---	Implement CD-usage-logic, use CD's on CD? Or use some sort of request system?
---- Broadcast toggle-able modes every 10 secs, stuff like requestBuffsMode, so that reloaded chars gets the correct value
---- Replace AssistByName with max_AssistOrClear that clears target if the assist doesn't have a target (target commander, target target of target or clear)
 --- Expire queued accepted requests if they've been in queue their entire throttle time?
 ---	Warlock:
----		Healthstone
----		Pets
+---		Healthstone, need some specific mode for this, don't wanna use up tons of soulshards or random shitty instances
+---		Pets, 2 modes, imp-bitch or succu-sacc, swap for each warlock (using target and commands), also a pet-stay command.
+---		Deathcoil? Is Drain Life even worth it?
+---		Spellstones? 1% crit if nothing better, use for 900 spell absorb too
+---		Hellfire during AoE? Probably not while we're progressing fire-instances. Maybe in a max-burn AoE mode.
 ---	Mage:
 ---     Polymorph requests
 ---     Counterspell, might be hard, gotta scan combat log for % begins casting %, check libcast in PFUI
 ---		Wand if oom
+---		Fire/Frost ward
 --- Priest:
 ---     Buff shadow protection
 ---     Holy should be casting/stop-casting greater heals (ranked depending on incoming damage) on tanks
@@ -386,20 +405,26 @@ end
 ---		Add logic for Feral DPS and Feral tank
 ---		Tank VS DPS VS Healer distinction for Sanctuary/Salvation
 ---		Do abolish poison, check mana costs of the 2 versions
+---		Innervate, who is it best on? Priests? Use requests?
+---		Combat ress
+---			Also need to implement rebuffing after combat ress then kinda
 ---	Paladins:
 ---		request auras
 ---		Add logic for ret pal
+---		Add holy shock for the few that has it
+---		Consecration in a max-burn AoE mode?
+---		Divine Favor
 --- Hunter:
 ---		Pet-logic (reagent food, auto-feed, auto-call/revive, attacking, mend pet)
----		Add Aimed-shot to the rotation
+---			All-in-one pet macro:     /run local c=CastSpellByName if UnitExists("pet") then if UnitHealth("pet")==0 then c("Revive Pet") elseif GetPetHappiness()~=nil and GetPetHappiness()~=3 then c("Feed Pet") PickupContainerItem(0, 13) else c("Dismiss Pet") end else c("Call Pet") end
+---		Add Aimed-shot to the rotation, maybe see https://github.com/Geigerkind/OneButtonHunter/blob/master/OneButtonHunter.lua, though it seems to be bugged
 ---		Make them melee-hit with Raptor strike if in melee range.
 --- Say raid, "I am literally out of X" when out of reagents and trying to buff with them.
 --- Rename followTarget to commander
 --- Performance:
 --- 	Don't need to check for buffs every frame
 ---		Don't need to request water every frame
----	Repair-report, chars should warn in /raid if they're red in anything (or maybe has less than 10% durability in any slot cuz they will go red then)
----		Should be able to report lowest item % in /raid
+---	Repair-report, Should be able to report lowest item % in /raid
 ---
 ---
 ---
@@ -423,7 +448,8 @@ end
 -- buffs: http://www.wowwiki.com/API_GetPlayerBuff / http://www.wowwiki.com/API_GetPlayerBuffName / http://www.wowwiki.com/API_GetPlayerBuffTimeLeft / http://www.wowwiki.com/API_UnitBuff / http://www.wowwiki.com/API_UnitDebuff
 -- get time to calc with durations etc: http://www.wowwiki.com/API_GetTime
 -- Buffname list: http://www.wowwiki.com/index.php?title=Queriable_buff_effects&oldid=277417
-
+-- Tooltip scraping: https://github.com/Geigerkind/OneButtonHunter/blob/master/OneButtonHunter.lua
+--		It scrapes both %atk speed on quiver item and which action slot that is "Aimed shot"
 
 
 

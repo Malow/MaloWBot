@@ -16,20 +16,31 @@ function mb_Hunter(commander)
 		CastSpellByName("Trueshot Aura")
 	end
 
-	AssistByName(commander)
+	max_AssistByPlayerName(commander)
+	if not UnitExists("target") or not UnitIsEnemy("player", "target") then
+		return
+	end
 
 	if mb_IsClassLeader() then
 		if not max_HasDebuff("target", DEBUFF_TEXTURE_HUNTERS_MARK) then
 			CastSpellByName("Hunter's Mark")
+			return
 		end
 	end
 
-    if not UnitAffectingCombat("target") then
-        return
-    end
+	if CheckInteractDistance("target", 3) then
+		if not mb_isAutoAttacking then
+			CastSpellByName("Attack")
+			return
+		end
+	else
+		if not mb_isAutoShooting then
+			CastSpellByName("Auto Shot")
+			return
+		end
+	end
 
 	CastSpellByName("Multi-Shot")
-    --CastSpellByName("Attack")
 end
 
 mb_hunterHasWarnedForNoAmmo = false

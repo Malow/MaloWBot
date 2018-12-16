@@ -1,5 +1,6 @@
 mb_warlockIsCursingElements = false
 mb_warlockIsCursingShadow = false
+mb_warlockIsCursingRecklessness = false
 function mb_Warlock(commander)
     if mb_DoBasicCasterLogic() then
         return
@@ -39,6 +40,12 @@ function mb_Warlock(commander)
         if not max_HasBuff("player", BUFF_TEXTURE_DEMON_ARMOR) then
             CastSpellByName("Demon Armor")
             return
+        elseif not max_HasBuff("player", BUFF_TEXTURE_SACRIFICED_SUCCUBUS) and mb_shouldRequestBuffs then
+            if max_IsPetAliveAndActive() then
+                CastSpellByName("Demonic Sacrifice")
+            else
+                CastSpellByName("Summon Succubus")
+            end
         end
     end
 
@@ -49,7 +56,10 @@ function mb_Warlock(commander)
         end
     end
 
-    AssistByName(commander)
+    max_AssistByPlayerName(commander)
+    if not UnitExists("target") or not UnitIsEnemy("player", "target") then
+        return
+    end
 
     if max_GetHealthPercentage("player") < 25 then
         CastSpellByName("Drain Life")
@@ -88,6 +98,9 @@ function mb_Warlock_Curse()
         return true
     elseif mb_warlockIsCursingShadow and not max_HasDebuff("target", DEBUFF_TEXTURE_CURSE_OF_SHADOW) then
         CastSpellByName("Curse of Shadow")
+        return true
+    elseif mb_warlockIsCursingRecklessness and not max_HasDebuff("target", DEBUFF_TEXTURE_CURSE_OF_RECKLESSNESS) then
+        CastSpellByName("Curse of Recklessness")
         return true
     end
     return false
@@ -128,8 +141,8 @@ end
 
 function mb_Warlock_CreateClassSyncData()
     local classMates = mb_GetClassMates(max_GetClass("player"))
-    if max_GetTableSize(classMates) > 1 then
-        return classMates[1] .. "/" .. classMates[2]
+    if max_GetTableSize(classMates) > 2 then
+        return classMates[1] .. "/" .. classMates[2] .. "/" .. classMates[3]
     else
         return ""
     end
@@ -140,29 +153,31 @@ function mb_Warlock_ReceivedClassSyncData()
         local assignments = max_SplitString(mb_classSyncData, "/")
         mb_warlockIsCursingElements = assignments[1] == UnitName("player")
         mb_warlockIsCursingShadow = assignments[2] == UnitName("player")
+        mb_warlockIsCursingRecklessness = assignments[3] == UnitName("player")
     else
         mb_warlockIsCursingElements = false
         mb_warlockIsCursingShadow = false
+        mb_warlockIsCursingRecklessness = false
     end
 end
 
 function mb_Warlock_AddDesiredTalents()
-    -- TODO: Decide SM/Ruin or Sacrifice/Ruin, for both
-    if UnitLevel("player") == 60 then
-        -- Raiding spec
-        mb_AddDesiredTalent(3, 1, 5) -- Improved Shadow Bolt
-        mb_AddDesiredTalent(3, 2, 3) -- Cataclysm
-        mb_AddDesiredTalent(3, 3, 5) -- Bane
-        mb_AddDesiredTalent(3, 7, 5) -- Devastation
-        mb_AddDesiredTalent(3, 10, 2) -- Destructive Reach
-        mb_AddDesiredTalent(3, 14, 1) -- Ruin
-    else
-        -- Leveling spec
-        mb_AddDesiredTalent(3, 1, 5) -- Improved Shadow Bolt
-        mb_AddDesiredTalent(3, 3, 5) -- Bane
-        mb_AddDesiredTalent(3, 7, 5) -- Devastation
-        mb_AddDesiredTalent(3, 10, 2) -- Destructive Reach
-        mb_AddDesiredTalent(3, 2, 3) -- Cataclysm
-        mb_AddDesiredTalent(3, 14, 1) -- Ruin
-    end
+    -- Ordered for leveling
+    mb_AddDesiredTalent(3, 1, 5) -- Improved Shadow Bolt
+    mb_AddDesiredTalent(3, 2, 3) -- Cataclysm
+    mb_AddDesiredTalent(3, 3, 5) -- Bane
+    mb_AddDesiredTalent(3, 7, 5) -- Devastation
+    mb_AddDesiredTalent(3, 10, 2) -- Destructive Reach
+    mb_AddDesiredTalent(3, 14, 1) -- Ruin
+    mb_AddDesiredTalent(1, 1, 5) -- Suppression
+    mb_AddDesiredTalent(1, 5, 2) -- Improved Life Tap
+    mb_AddDesiredTalent(2, 1, 2) -- Improved Healthstone
+    mb_AddDesiredTalent(2, 2, 3) -- Improved Imp
+    mb_AddDesiredTalent(2, 3, 5) -- Demonic Embrace
+    mb_AddDesiredTalent(2, 6, 2) -- Demonic Embrace
+    mb_AddDesiredTalent(2, 8, 1) -- Fel Domination
+    mb_AddDesiredTalent(2, 9, 5) -- Fel Stamina
+    mb_AddDesiredTalent(2, 10, 2) -- Master Summoner
+    mb_AddDesiredTalent(2, 13, 1) -- Demonic Sacrifice
+    mb_AddDesiredTalent(3, 2, 5) -- Cataclysm (last two)
 end

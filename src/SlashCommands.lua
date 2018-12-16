@@ -2,7 +2,7 @@ function mb_HandleSpecialSlashCommand(msg)
     if msg == "r" then
         mb_MakeRequest("reload", "reload", 10)
         ReloadUI()
-    elseif msg == "trademegoodies" then
+    elseif msg == "trademegoodies" or msg == "tradeMeGoodies" then
         mb_MakeRequest("trademegoodies", UnitName("player"), 10)
     elseif msg == "inventoryDump" then
         mb_MakeRequest("inventoryDump", UnitName("player"), 10)
@@ -36,7 +36,7 @@ function mb_HandleSpecialSlashCommand(msg)
         local mode = max_SplitString(msg, " ")[2]
         mb_shouldFollow = mode == "on"
         mb_MakeRequest("requestBuffsMode", mode, 10)
-    elseif msg == "fixraidgroup" then
+    elseif msg == "fixraidgroup" or msg == "fixRaidGroup" then
         if not IsPartyLeader() then
             mb_MakeRequest("promoteLeader", "promoteLeader", 10)
         else

@@ -40,7 +40,9 @@ DEBUFF_TEXTURE_JUDGEMENT_OF_LIGHT = ""
 DEBUFF_TEXTURE_JUDGEMENT_OF_WISDOM = ""
 -- Priest
 BUFF_TEXTURE_POWER_WORD_FORTITUDE = "Interface\\Icons\\Spell_Holy_WordFortitude"
+BUFF_TEXTURE_PRAYER_OF_FORTITUDE = "Interface\\Icons\\Spell_Holy_PrayerOfFortitude"
 BUFF_TEXTURE_DIVINE_SPIRIT = "Interface\\Icons\\Spell_Holy_DivineSpirit"
+BUFF_TEXTURE_PRAYER_OF_SPIRIT = "Interface\\Icons\\Spell_Holy_PrayerofSpirit"
 BUFF_TEXTURE_INNER_FIRE = "Interface\\Icons\\Spell_Holy_InnerFire"
 BUFF_TEXTURE_SHADOW_PROTECTION = "Interface\\Icons\\Spell_Shadow_AntiShadow"
 BUFF_TEXTURE_RENEW = "Interface\\Icons\\Spell_Holy_Renew"
@@ -50,8 +52,11 @@ DEBUFF_TEXTURE_WEAKENED_SOUL = "Interface\\Icons\\Spell_Holy_AshesToAshes"
 -- Rogue
 -- Warlock
 BUFF_TEXTURE_DEMON_ARMOR = "Interface\\Icons\\Spell_Shadow_RagingScream"
+BUFF_TEXTURE_SACRIFICED_SUCCUBUS = "Interface\\Icons\\Spell_Shadow_PsychicScream"
 DEBUFF_TEXTURE_CURSE_OF_SHADOW = "Interface\\Icons\\Spell_Shadow_CurseOfAchimonde"
 DEBUFF_TEXTURE_CURSE_OF_THE_ELEMENTS = "Interface\\Icons\\Spell_Shadow_ChillTouch"
+DEBUFF_TEXTURE_CURSE_OF_RECKLESSNESS = "Interface\\Icons\\Spell_Shadow_UnholyStrength"
+DEBUFF_TEXTURE_CURSE_OF_WEAKNESS = "Interface\\Icons\\Spell_Shadow_CurseOfMannoroth"
 -- Warrior
 
 --- Unit filters
@@ -105,12 +110,12 @@ BUFF_ARCANE_INTELLECT = {
 }
 BUFF_POWER_WORD_FORTITUDE = {
     type = "buffPowerWordFortitude",
-    textures = { BUFF_TEXTURE_POWER_WORD_FORTITUDE },
+    textures = { BUFF_TEXTURE_POWER_WORD_FORTITUDE, BUFF_TEXTURE_PRAYER_OF_FORTITUDE },
     throttle = 10
 }
 BUFF_DIVINE_SPIRIT = {
     type = "buffDivineSpirit",
-    textures = { BUFF_TEXTURE_DIVINE_SPIRIT },
+    textures = { BUFF_TEXTURE_DIVINE_SPIRIT, BUFF_TEXTURE_PRAYER_OF_SPIRIT },
     throttle = 10
 }
 BUFF_BLESSING_OF_WISDOM = {

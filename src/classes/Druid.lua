@@ -38,7 +38,10 @@ function mb_Druid(commander)
     end
 
     -- Damage
-    AssistByName(commander)
+    max_AssistByPlayerName(commander)
+    if not UnitExists("target") or not UnitIsEnemy("player", "target") then
+        return
+    end
 
     if mb_Druid_InsectSwarm() then
         return
@@ -48,7 +51,7 @@ function mb_Druid(commander)
         CastSpellByName("Wrath")
     end
 
-    CastSpellByName("Attack")
+    -- CastSpellByName("Attack")
 end
 
 function mb_Druid_OnLoad()

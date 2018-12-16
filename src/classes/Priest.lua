@@ -10,7 +10,10 @@ function mb_Priest(commander)
                 return
             end
             mb_RequestCompleted(request)
-            if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_POWER_WORD_FORTITUDE.textures) then
+            if mb_ShouldBuffGroupWide(request.body, BUFF_POWER_WORD_FORTITUDE) then
+                max_CastSpellOnRaidMemberByPlayerName("Prayer of Fortitude", request.body)
+                return
+            elseif not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_POWER_WORD_FORTITUDE.textures) then
                 max_CastSpellOnRaidMemberByPlayerName("Power Word: Fortitude", request.body)
                 return
             end
@@ -19,7 +22,10 @@ function mb_Priest(commander)
                 return
             end
             mb_RequestCompleted(request)
-            if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_DIVINE_SPIRIT.textures) then
+            if mb_ShouldBuffGroupWide(request.body, BUFF_DIVINE_SPIRIT, UNIT_FILTER_HAS_MANA) then
+                max_CastSpellOnRaidMemberByPlayerName("Prayer of Spirit", request.body)
+                return
+            elseif not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_DIVINE_SPIRIT.textures) then
                 max_CastSpellOnRaidMemberByPlayerName("Divine Spirit", request.body)
                 return
             end
@@ -58,19 +64,21 @@ function mb_Priest(commander)
         max_SayRaid("Serious error, bad spec for priest: " .. mySpec)
     end
 
-
     if mb_areaOfEffectMode then
         CastSpellByName("Holy Nova")
         return
     end
 
-    AssistByName(commander)
+    max_AssistByPlayerName(commander)
+    if not UnitExists("target") or not UnitIsEnemy("player", "target") then
+        return
+    end
 
     if max_GetManaPercentage("player") > 95 then
         CastSpellByName("Smite")
     end
 
-    --CastSpellByName("Attack")
+    CastSpellByName("Attack")
 end
 
 function mb_Priest_Disc()
@@ -152,6 +160,7 @@ function mb_Priest_OnLoad()
     mb_AddDesiredBuff(BUFF_DIVINE_SPIRIT)
     mb_Priest_AddDesiredTalents()
     mb_AddGCDCheckSpell("Renew")
+    mb_AddReagentWatch("Sacred Candle", 20)
 end
 
 function mb_Priest_HandlePowerWordFortitudeRequest(request)

@@ -89,9 +89,8 @@ function mb_Paladin(commander)
         return
     end
 
-    AssistByName(commander)
-
-    if UnitIsFriend("player", "target") then
+    max_AssistByPlayerName(commander)
+    if not UnitExists("target") or not UnitIsEnemy("player", "target") then
         return
     end
 

@@ -248,3 +248,23 @@ function max_IsSpellbookIdOnCooldown(spellbookId)
 	local start, duration = GetSpellCooldown(spellbookId, "BOOKTYPE_SPELL ")
 	return start ~= 0
 end
+
+-- Targets the provided player's target. If the player doesn't have a target then clear target. If there is a target return true
+-- Also doesn't change target if the target to be set is your current target, to prevent auto-attacks from stopping
+function max_AssistByPlayerName(playerName)
+	local assistUnit = max_GetUnitForPlayerName(playerName)
+	if UnitIsUnit("target", assistUnit .. "target") then
+		return
+	end
+	if UnitExists(assistUnit .. "target") then
+		TargetUnit(assistUnit .. "target")
+		return true
+	else
+		ClearTarget()
+		return false
+	end
+end
+
+function max_IsPetAliveAndActive()
+	return UnitExists("pet") and not UnitIsDeadOrGhost("pet")
+end

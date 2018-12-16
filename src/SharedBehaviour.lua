@@ -8,12 +8,27 @@ mb_shouldLearnTalents = mb_GetConfig()["autoLearnTalents"]
 mb_desiredTalentTree = {}
 mb_shouldTrainSpells = false
 mb_shouldFollow = true
-mb_shouldRequestBuffs = true
+mb_shouldRequestBuffs = false
+mb_classSyncData = nil
 
 function mb_HandleSharedBehaviour(commander)
+    if mb_classSyncData == nil then
+        local request = REQUEST_CLASS_SYNC
+        request.type = max_GetClass("player") .. "Sync"
+        mb_MakeThrottledRequest(request, "needSync", 10)
+    end
+
     AcceptGuild()
     AcceptGroup()
     if mb_isTrading then
+        local canNotBeTradedLink = GetTradePlayerItemLink(7)
+        if canNotBeTradedLink ~= nil then
+            local canNotBeTradedItemString = max_GetItemStringFromItemLink(canNotBeTradedLink)
+            local itemName = GetItemInfo(canNotBeTradedItemString)
+            if itemName ~= nil then
+                mb_AddItemToIgnoredForTrade(itemName)
+            end
+        end
         mb_AcceptTradeThrottled()
     end
     RetrieveCorpse()
@@ -134,11 +149,16 @@ end
 function mb_CheckAndRequestDispels()
     for i = 1, MAX_DEBUFFS do
         local debuffTexture, debuffApplications, debuffDispelType = UnitDebuff("player", i)
-        if debuffDispelType and debuffDispelType == "Magic" then
-            mb_MakeThrottledRequest(REQUEST_DISPEL, UnitName("player"), 6)
-        end
-        if debuffDispelType and debuffDispelType == "Curse" then
-            mb_MakeThrottledRequest(REQUEST_DECURSE, UnitName("player"), 6)
+        if debuffDispelType ~= nil then
+            if debuffDispelType == "Magic" then
+                mb_MakeThrottledRequest(REQUEST_REMOVE_MAGIC, UnitName("player"), 6)
+            elseif debuffDispelType == "Curse" then
+                mb_MakeThrottledRequest(REQUEST_REMOVE_CURSE, UnitName("player"), 6)
+            elseif debuffDispelType == "Disease" then
+                mb_MakeThrottledRequest(REQUEST_REMOVE_DISEASE, UnitName("player"), 6)
+            elseif debuffDispelType == "Poison" then
+                mb_MakeThrottledRequest(REQUEST_REMOVE_POISON, UnitName("player"), 6)
+            end
         end
     end
 end
@@ -330,3 +350,7 @@ function mb_WarnForWatchedReagents()
     end
 end
 
+function mb_IsClassLeader()
+    local classMates = mb_GetClassMates(max_GetClass("player"))
+    return classMates[1] == UnitName("player")
+end

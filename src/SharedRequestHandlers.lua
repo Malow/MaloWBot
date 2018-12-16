@@ -1,4 +1,4 @@
-function mb_RegisterSharedRequestHandlers()
+function mb_RegisterSharedRequestHandlers(playerClass)
     mb_RegisterForRequest("reload", mb_ReloadRequestHandler)
     mb_RegisterForRequest("trademegoodies", mb_TradeMeGoodiesRequestHandler)
     mb_RegisterForRequest("inventoryDump", mb_InventoryDumpRequestHandler)
@@ -11,6 +11,7 @@ function mb_RegisterSharedRequestHandlers()
     mb_RegisterForRequest("areaOfEffectMode", mb_AreaOfEffectModeRequestHandler)
     mb_RegisterForRequest("followMode", mb_FollowModeRequestHandler)
     mb_RegisterForRequest("requestBuffsMode", mb_RequestBuffsModeRequestHandler)
+    mb_RegisterForRequest(playerClass .. "Sync", mb_ClassSyncRequestHandler)
 end
 
 function mb_ReloadRequestHandler(request)
@@ -113,4 +114,31 @@ end
 
 function mb_RequestBuffsModeRequestHandler(request)
     mb_shouldRequestBuffs = request.body == "on"
+end
+
+mb_createClassSyncDataFunction = nil
+mb_classSyncDataReceivedFunction = nil
+function mb_RegisterClassSyncDataFunctions(createDataFunction, syncDataReceivedFunction)
+    mb_createClassSyncDataFunction = createDataFunction
+    mb_classSyncDataReceivedFunction = syncDataReceivedFunction
+end
+
+function mb_ClassSyncRequestHandler(request)
+    if request.from == UnitName("player") then
+        return
+    end
+    if mb_IsClassLeader() then
+        if mb_createClassSyncDataFunction == nil then
+            mb_classSyncData = ""
+        else
+            mb_classSyncData = mb_createClassSyncDataFunction()
+            mb_classSyncDataReceivedFunction()
+        end
+        mb_MakeRequest(max_GetClass("player") .. "Sync", mb_classSyncData, 10)
+    elseif request.body ~= "needSync" then
+        mb_classSyncData = request.body
+        if mb_classSyncDataReceivedFunction ~= nil then
+            mb_classSyncDataReceivedFunction()
+        end
+    end
 end

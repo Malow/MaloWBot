@@ -17,7 +17,7 @@ function mb_Druid(commander)
                 max_CastSpellOnRaidMemberByPlayerName("Mark of the Wild", request.body)
                 return
             end
-        elseif request.type == REQUEST_DECURSE.type then
+        elseif request.type == REQUEST_REMOVE_CURSE.type then
             if mb_IsOnGCD() then
                 return
             end
@@ -37,15 +37,23 @@ function mb_Druid(commander)
         return
     end
 
+    -- Damage
+    AssistByName(commander)
+
+    if mb_Druid_InsectSwarm() then
+        return
+    end
+
     if max_GetManaPercentage("player") > 95 then
-        AssistByName(commander)
         CastSpellByName("Wrath")
     end
+
+    CastSpellByName("Attack")
 end
 
 function mb_Druid_OnLoad()
     mb_RegisterForRequest(BUFF_MARK_OF_THE_WILD.type, mb_Druid_HandleMarkOfTheWildRequest)
-    mb_RegisterForRequest(REQUEST_DECURSE.type, mb_Druid_HandleDecurseRequest)
+    mb_RegisterForRequest(REQUEST_REMOVE_CURSE.type, mb_Druid_HandleDecurseRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
@@ -78,6 +86,14 @@ function mb_Druid_Regrowth()
     local healTargetUnit, missingHealthOfTarget = mb_GetMostDamagedFriendly(spell, unitFilter)
     if max_GetHealthPercentage(healTargetUnit) < 60 then
         max_CastSpellOnRaidMember(spell, healTargetUnit)
+        return true
+    end
+    return false
+end
+
+function mb_Druid_InsectSwarm()
+    if not max_HasDebuff("target", DEBUFF_INSECT_SWARM) then
+        CastSpellByName("Insect Swarm")
         return true
     end
     return false

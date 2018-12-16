@@ -1,3 +1,5 @@
+mb_paladinIsJudgingLight = false
+mb_paladinIsJudgingWisdom = false
 function mb_Paladin(commander)
     if mb_DoBasicCasterLogic() then
         return
@@ -66,12 +68,19 @@ function mb_Paladin(commander)
             max_CastSpellOnRaidMemberByPlayerName("Redemption", request.body)
             mb_RequestCompleted(request)
             return
+        elseif request.type == REQUEST_REMOVE_MAGIC.type or request.type == REQUEST_REMOVE_DISEASE.type or request.type == REQUEST_REMOVE_POISON.type then
+            if mb_IsOnGCD() then
+                return
+            end
+            max_CastSpellOnRaidMemberByPlayerName("Cleanse", request.body)
+            mb_RequestCompleted(request)
+            return
         else
             max_SayRaid("Serious error, received request for " .. request.type)
         end
     end
 
-    if not mb_Paladin_HasAura then
+    if not mb_Paladin_HasAura() then
         CastSpellByName("Devotion Aura")
         return
     end
@@ -79,6 +88,38 @@ function mb_Paladin(commander)
     if mb_Paladin_FlashOfLight() then
         return
     end
+
+    AssistByName(commander)
+
+    if UnitIsFriend("player", "target") then
+        return
+    end
+
+    if mb_paladinIsJudgingLight then
+        if not max_HasDebuff("target", DEBUFF_TEXTURE_JUDGEMENT_OF_LIGHT) then
+            if max_HasBuff("player", BUFF_TEXTURE_SEAL_OF_LIGHT) then
+                CastSpellByName("Judgement")
+                return
+            else
+                CastSpellByName("Seal of Light")
+                return
+            end
+        end
+    end
+
+    if mb_paladinIsJudgingWisdom then
+        if not max_HasDebuff("target", DEBUFF_TEXTURE_JUDGEMENT_OF_WISDOM) then
+            if max_HasBuff("player", BUFF_TEXTURE_SEAL_OF_WISDOM) then
+                CastSpellByName("Judgement")
+                return
+            else
+                CastSpellByName("Seal of Wisdom")
+                return
+            end
+        end
+    end
+
+    --CastSpellByName("Attack")
 end
 
 function mb_Paladin_FlashOfLight()
@@ -111,6 +152,9 @@ function mb_Paladin_OnLoad()
     mb_AddDesiredBuff(BUFF_BLESSING_OF_SALVATION)
     mb_AddDesiredBuff(BUFF_DIVINE_SPIRIT)
     mb_RegisterForRequest(REQUEST_RESURRECT.type, mb_Paladin_HandleResurrectionRequest)
+    mb_RegisterForRequest(REQUEST_REMOVE_MAGIC.type, mb_Paladin_HandleCleanseRequest)
+    mb_RegisterForRequest(REQUEST_REMOVE_POISON.type, mb_Paladin_HandleCleanseRequest)
+    mb_RegisterForRequest(REQUEST_REMOVE_DISEASE.type, mb_Paladin_HandleCleanseRequest)
     if mb_GetMySpecName() == "Wisdom" then
         mb_RegisterForRequest(BUFF_BLESSING_OF_WISDOM.type, mb_Paladin_HandleBlessingOfWisdomRequest)
     elseif mb_GetMySpecName() == "MightJudge" then
@@ -126,6 +170,7 @@ function mb_Paladin_OnLoad()
     mb_Paladin_AddDesiredTalents()
     mb_AddReagentWatch("Symbol of Kings", 100)
     mb_AddGCDCheckSpell("Holy Light")
+    mb_RegisterClassSyncDataFunctions(mb_Paladin_CreateClassSyncData, mb_Paladin_ReceivedClassSyncData)
 end
 
 function mb_Paladin_HandleResurrectionRequest(request)
@@ -170,19 +215,43 @@ function mb_Paladin_HandleBlessingOfSalvationRequest(request)
     end
 end
 
-function mb_Paladin_HasImprovedWisdom()
-    local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(1, 10)
-    return currentRank == 2
+function mb_Paladin_HandleCleanseRequest(request)
+    if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Cleanse") then
+        mb_AcceptRequest(request)
+    end
 end
 
-function mb_Paladin_HasImprovedMight()
-    local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(3, 1)
-    return currentRank == 5
+function mb_Paladin_CreateClassSyncData()
+    local classMates = mb_GetClassMates(max_GetClass("player"))
+    local kingsJudger = nil
+    local mightJudger = nil
+    for k, v in pairs(mb_GetConfig()["specs"]) do
+        if v == "KingsJudge" then
+            kingsJudger = k
+        elseif v == "MightJudge" then
+            mightJudger = k
+        end
+    end
+    local data = ""
+    if kingsJudger ~= nil and max_TableContains(classMates, kingsJudger) then
+        data = data .. kingsJudger
+    end
+    data = data .. "/"
+    if mightJudger ~= nil and max_TableContains(classMates, mightJudger) then
+        data = data .. mightJudger
+    end
+    return data
 end
 
-function mb_Paladin_HasKings()
-    local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(2, 6)
-    return currentRank == 1
+function mb_Paladin_ReceivedClassSyncData()
+    if mb_classSyncData ~= "" then
+        local assignments = max_SplitString(mb_classSyncData, "/")
+        mb_paladinIsJudgingWisdom = assignments[1] == UnitName("player")
+        mb_paladinIsJudgingLight = assignments[2] == UnitName("player")
+    else
+        mb_paladinIsJudgingWisdom = false
+        mb_paladinIsJudgingLight = false
+    end
 end
 
 function mb_Paladin_AddDesiredTalents()

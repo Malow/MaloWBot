@@ -25,7 +25,7 @@ function mb_Mage(commander)
                 mb_RequestCompleted(request)
                 return
             end
-        elseif request.type == REQUEST_DECURSE.type then
+        elseif request.type == REQUEST_REMOVE_CURSE.type then
             if mb_IsOnGCD() then
                 return
             end
@@ -81,7 +81,7 @@ end
 function mb_Mage_OnLoad()
     mb_RegisterForRequest(BUFF_ARCANE_INTELLECT.type, mb_Mage_HandleArcaneIntRequest)
     mb_RegisterForRequest(REQUEST_WATER.type, mb_Mage_HandleWaterRequest)
-    mb_RegisterForRequest(REQUEST_DECURSE.type, mb_Mage_HandleDecurseRequest)
+    mb_RegisterForRequest(REQUEST_REMOVE_CURSE.type, mb_Mage_HandleDecurseRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)

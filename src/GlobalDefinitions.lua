@@ -3,7 +3,7 @@ MAX_DEBUFFS = 16
 
 UNACCEPTED_REQUEST_THROTTLE = 2
 
---- Buff textures
+--- Buff/Debuff textures
 -- Misc
 BUFF_TEXTURE_DRINK = "Interface\\Icons\\INV_Drink_07"
 BUFF_TEXTURE_DRINK_2 = "Interface\\Icons\\INV_Drink_18"
@@ -13,10 +13,15 @@ BUFF_TEXTURE_REGROWTH = "Interface\\Icons\\Spell_Nature_ResistNature"
 BUFF_TEXTURE_MARK_OF_THE_WILD = "Interface\\Icons\\Spell_Nature_Regeneration"
 BUFF_TEXTURE_GIFT_OF_THE_WILD = "Interface\\Icons\\Spell_Nature_Regeneration"
 -- Hunter
+BUFF_TEXTURE_ASPECT_OF_THE_HAWK = "Interface\\Icons\\Spell_Nature_RavenForm"
+BUFF_TEXTURE_TRUESHOT_AURA = "Interface\\Icons\\Ability_TrueShot"
+DEBUFF_TEXTURE_HUNTERS_MARK = "Interface\\Icons\\Ability_Hunter_SniperShot"
 -- Mage
 BUFF_TEXTURE_ARCANE_INTELLECT = "Interface\\Icons\\Spell_Holy_MagicalSentry"
 BUFF_TEXTURE_ICE_ARMOR = "Interface\\Icons\\Spell_Frost_FrostArmor02"
 -- Paladin
+BUFF_TEXTURE_SEAL_OF_LIGHT = "Interface\\Icons\\Spell_Holy_HealingAura"
+BUFF_TEXTURE_SEAL_OF_WISDOM = "Interface\\Icons\\Spell_Holy_RighteousnessAura"
 BUFF_TEXTURE_DEVOTION_AURA = "Interface\\Icons\\Spell_Holy_DevotionAura"
 BUFF_TEXTURE_FIRE_RESISTANCE_AURA = "Interface\\Icons\\Spell_Fire_SealOfFire"
 BUFF_TEXTURE_BLESSING_OF_WISDOM = "Interface\\Icons\\Spell_Holy_SealOfWisdom"
@@ -31,6 +36,8 @@ BUFF_TEXTURE_BLESSING_OF_SANCTUARY = "Interface\\Icons\\Spell_Nature_LightningSh
 BUFF_TEXTURE_GREATER_BLESSING_OF_SANCTUARY = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSanctuary"
 BUFF_TEXTURE_BLESSING_OF_SALVATION = "Interface\\Icons\\Spell_Holy_SealOfSalvation"
 BUFF_TEXTURE_GREATER_BLESSING_OF_SALVATION = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSalvation"
+DEBUFF_TEXTURE_JUDGEMENT_OF_LIGHT = ""
+DEBUFF_TEXTURE_JUDGEMENT_OF_WISDOM = ""
 -- Priest
 BUFF_TEXTURE_POWER_WORD_FORTITUDE = "Interface\\Icons\\Spell_Holy_WordFortitude"
 BUFF_TEXTURE_DIVINE_SPIRIT = "Interface\\Icons\\Spell_Holy_DivineSpirit"
@@ -39,15 +46,13 @@ BUFF_TEXTURE_SHADOW_PROTECTION = "Interface\\Icons\\Spell_Shadow_AntiShadow"
 BUFF_TEXTURE_RENEW = "Interface\\Icons\\Spell_Holy_Renew"
 BUFF_TEXTURE_SPIRIT_OF_REDEMPTION = "Interface\\Icons\\Spell_Holy_GreaterHeal"
 BUFF_TEXTURE_ABOLISH_DISEASE = "Interface\\Icons\\Spell_Nature_NullifyDisease"
+DEBUFF_TEXTURE_WEAKENED_SOUL = "Interface\\Icons\\Spell_Holy_AshesToAshes"
 -- Rogue
 -- Warlock
 BUFF_TEXTURE_DEMON_ARMOR = "Interface\\Icons\\Spell_Shadow_RagingScream"
--- Warrior
-
---- Debuff textures
-DEBUFF_TEXTURE_WEAKENED_SOUL = "Interface\\Icons\\Spell_Holy_AshesToAshes"
 DEBUFF_TEXTURE_CURSE_OF_SHADOW = "Interface\\Icons\\Spell_Shadow_CurseOfAchimonde"
 DEBUFF_TEXTURE_CURSE_OF_THE_ELEMENTS = "Interface\\Icons\\Spell_Shadow_ChillTouch"
+-- Warrior
 
 --- Unit filters
 UNIT_FILTER_HAS_MANA = {
@@ -63,6 +68,10 @@ UNIT_FILTER_DOES_NOT_HAVE_BUFF = {
 }
 
 --- Requests
+REQUEST_CLASS_SYNC = {
+    type = "TO-BE-SET",
+    throttle = 60
+}
 REQUEST_RESURRECT = {
     type = "resurrect",
     throttle = 12
@@ -71,12 +80,20 @@ REQUEST_WATER = {
     type = "water",
     throttle = 10
 }
-REQUEST_DISPEL = {
-    type = "dispel",
+REQUEST_REMOVE_MAGIC = {
+    type = "removeMagic",
     throttle = 10
 }
-REQUEST_DECURSE = {
-    type = "decurse",
+REQUEST_REMOVE_CURSE = {
+    type = "removeCurse",
+    throttle = 10
+}
+REQUEST_REMOVE_POISON = {
+    type = "removePoison",
+    throttle = 10
+}
+REQUEST_REMOVE_DISEASE = {
+    type = "removeDisease",
     throttle = 10
 }
 

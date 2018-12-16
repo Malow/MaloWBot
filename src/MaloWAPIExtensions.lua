@@ -80,8 +80,11 @@ function max_GetItemStringFromItemLink(itemLink)
 end
 
 -- Returns true if said spell is in range to unit. NEEDS auto self-cast off.
-function max_IsSpellInRange(spell, unit)
+function max_IsHelpfulSpellInRange(spell, unit)
 	if UnitIsFriend("player", "target") then
+		if unit == "target" then
+			unit = max_GetUnitForPlayerName(UnitName("target"))
+		end
 		ClearTarget()
 	end
 
@@ -188,6 +191,16 @@ function max_GetTableSize(t)
 	local count = 0
 	for _ in pairs(t) do count = count + 1 end
 	return count
+end
+
+-- Returns true / false depending on if any element in the table == the provided element
+function max_TableContains(table, element)
+	for _, item in pairs(table) do
+		if item == element then
+			return true
+		end
+	end
+	return false
 end
 
 -- Returns which subgroup the unit with the specified raidIndex is in

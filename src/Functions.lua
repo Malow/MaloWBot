@@ -121,16 +121,22 @@ function mb_GetWaterCount()
 	return totalItemCount
 end
 
+function mb_AddItemToIgnoredForTrade(itemName)
+	if mb_SV.ignoredTradeItems == nil then
+		mb_SV.ignoredTradeItems = {}
+	end
+	table.insert(mb_SV.ignoredTradeItems, itemName)
+end
 
--- Contains a list of items that are ignored for trading, returns true/false
+-- Contains a list of items that are ignored for trading, returns true/false. Any BOP-items should be added to the mb_SV.ignoredTradeItems automatically in SharedBehaviour
 function mb_IsIgnoredTradeItem(itemName)
-	if itemName == "Soul Shard" then
-		return true
-	elseif itemName == "Hearthstone" then
-		return true
-	elseif itemName == "Rough Arrow" then
-		return true
-	elseif itemName == "Runed Copper Rod" then
+	if mb_SV.ignoredTradeItems ~= nil then
+		if max_TableContains(mb_SV.ignoredTradeItems, itemName) then
+			return true
+		end
+	end
+
+	if itemName == "Rough Arrow" then
 		return true
 	elseif itemName == "Blacksmith Hammer" then
 		return true
@@ -138,21 +144,7 @@ function mb_IsIgnoredTradeItem(itemName)
 		return true
 	elseif itemName == "Skinning Knife" then
 		return true
-	elseif itemName == "Thieves' Tools" then
-		return true
-	elseif itemName == "Core Fragment" then
-		return true
-	elseif itemName == "Blackhand's Command" then
-		return true
-	elseif itemName == "Major Soulstone" then
-		return true
-	elseif itemName == "General Drakkisath's Command" then
-		return true
-	elseif itemName == "Bijou's Information" then
-		return true
 	elseif itemName == "Unadorned Seal of Ascension" then
-		return true
-	elseif itemName == "Doomshot" then
 		return true
 	elseif itemName == "Wild Thornroot" then
 		return true
@@ -176,7 +168,7 @@ end
 function mb_IsUnitValidTarget(unit, spell)
 	if UnitExists(unit) and UnitIsVisible(unit) and UnitIsFriend("player", unit) and not UnitIsDeadOrGhost(unit) and not max_HasBuff(unit, BUFF_TEXTURE_SPIRIT_OF_REDEMPTION) then
 		if spell ~= nil then
-			if max_IsSpellInRange(spell, unit) then
+			if max_IsHelpfulSpellInRange(spell, unit) then
 				return true
 			end
 		else
@@ -212,7 +204,7 @@ function mb_CanResurrectUnitWithSpell(unit, spell)
 	elseif mb_IsDrinking() then
 		return false
 	end
-	if UnitExists(unit) and UnitIsVisible(unit) and UnitIsFriend("player", unit) and UnitIsDead(unit) and max_IsSpellInRange(spell, unit) then
+	if UnitExists(unit) and UnitIsVisible(unit) and UnitIsFriend("player", unit) and UnitIsDead(unit) and max_IsHelpfulSpellInRange(spell, unit) then
 		return true
 	end
 end
@@ -251,4 +243,18 @@ function mb_ShouldBuffGroupWide(unitName, buff)
 		return true
 	end
 	return false
+end
+
+function mb_GetClassMates(class)
+	local classMates = {}
+	local members = max_GetNumPartyOrRaidMembers()
+	for i = 1, members do
+		local unit = max_GetUnitFromPartyOrRaidIndex(i)
+		if max_GetClass(unit) == class then
+			local unitName = UnitName(unit)
+			table.insert(classMates, unitName)
+		end
+	end
+	table.sort(classMates)
+	return classMates
 end

@@ -41,6 +41,9 @@ mb_queuedRequests = {}
 mb_areaOfEffectMode = false
 function mb_OnEvent()
 	if event == "ADDON_LOADED" and arg1 == MY_NAME then
+		if mb_SV == nil then
+			mb_SV = {}
+		end
 		mb_OnLoad()
 	elseif event == "PLAYER_LOGIN" then
 		mb_OnPostLoad()
@@ -108,9 +111,10 @@ function mb_HandleMBCommunication(arg2, arg3, arg4)
         request.priority = tonumber(strings[5])
         request.from = from
         if mb_registeredRequestsHandlers[request.type] ~= nil then
-			if mb_ShouldAddRequestToQueue(request) then
-				table.insert(mb_queuedIncomingRequests, request)
+			if max_GetTableSize(mb_queuedIncomingRequests) > 20 then
+				mb_queuedIncomingRequests = {} -- If bot is not running then prevent thousands of requests from queueing up.
 			end
+			table.insert(mb_queuedIncomingRequests, request)
         end
     elseif messageType == "acceptRequest" then
         local requestId = strings[2]
@@ -146,8 +150,8 @@ mb_classSpecificRunFunction = nil
 -- OnPostLoad, called when macros etc. are available
 function mb_OnPostLoad()
 	mb_CreateMBMacros()
-	mb_RegisterSharedRequestHandlers()
 	local playerClass = max_GetClass("player")
+	mb_RegisterSharedRequestHandlers(playerClass)
 	if playerClass == "DRUID" then
 		mb_Druid_OnLoad()
 		mb_classSpecificRunFunction = mb_Druid
@@ -228,7 +232,7 @@ function mb_OnCmd(msg)
 end
 
 function mb_RunBot(commander)
-	mb_HandleIncomingRequests()
+	mb_HandleQueuedIncomingRequests()
 
 	if mb_HandleSharedBehaviour(commander) then
 		return
@@ -237,9 +241,11 @@ function mb_RunBot(commander)
 	mb_classSpecificRunFunction(commander)
 end
 
-function mb_HandleIncomingRequests()
+function mb_HandleQueuedIncomingRequests()
 	for k, v in pairs(mb_queuedIncomingRequests) do
-		mb_registeredRequestsHandlers[v.type](v)
+		if mb_ShouldAddRequestToQueue(v) then
+			mb_registeredRequestsHandlers[v.type](v)
+		end
 	end
 	mb_queuedIncomingRequests = {}
 end
@@ -293,9 +299,6 @@ function mb_IsOnGCD()
 end
 
 function mb_ShouldAddRequestToQueue(request)
-	if max_GetTableSize(mb_queuedIncomingRequests) > 5 then
-		return
-	end
     local highestPriorityRequest = mb_GetQueuedRequest()
 	if highestPriorityRequest == nil then
 		return true
@@ -350,19 +353,21 @@ end
 ---	Add healing-code. When you start healing someone with a cast-time announce that you're doing so and then listen to announces.
 ---		Add the announced heals to the targets current health until you see your own announcement, then decide if you want to cancel your cast or not.
 ---		Also scan the target for current health and hots and other stuff to decide if you should cancel.
----     Also make healers heal without targeting using non-self-cast
 ---	Owners request buffs for their pets
----	Depoisoning + Dediseasing
 --- Double-request handling can happen if the propose reaches 1 guy after the accept has already been sent. Shouldn't happen though
 --- Automatic Gold-spreading
 ---	Sit/stand logic based on error-messages, see RogueSpam addon.
+---	Implement CD-usage-logic, use CD's on CD? Or use some sort of request system?
+--- Broadcast toggle-able modes every 10 secs, stuff like requestBuffsMode, so that reloaded chars gets the correct value
+--- Replace AssistByName with max_AssistOrClear that clears target if the assist doesn't have a target (target commander, target target of target or clear)
+--- Expire queued accepted requests if they've been in queue their entire throttle time?
 ---	Warlock:
 ---		Healthstone
 ---		Pets
----		Curses
 ---	Mage:
 ---     Polymorph requests
 ---     Counterspell, might be hard, gotta scan combat log for % begins casting %, check libcast in PFUI
+---		Wand if oom
 --- Priest:
 ---     Buff shadow protection
 ---     Holy should be casting/stop-casting greater heals (ranked depending on incoming damage) on tanks
@@ -370,24 +375,31 @@ end
 ---     All priests should be keeping renew up 24/7 on tanking tanks
 ---     PW:S if below X health or tank below % HP
 ---     Can swap groups in combat? If so priests could be spamming PoH with swapping people in who need it.
+---		Do abolish disease, check mana costs of the 2 versions
+---		Fear ward request
+---		Wand instead of attack if ranged, (does wand cause GCD?)
 --- Druids:
 ---     Tranquility like PoH in priest
 ---     Rejuvenation and Regrowth on tanking tanks 24/7
 ---     Swiftmend
----     Insect Swarm
 ---     Cast/Stop-cast HT/Regrowth spam on tanks? Rejuvenation on raid?
 ---		Add logic for Feral DPS and Feral tank
 ---		Tank VS DPS VS Healer distinction for Sanctuary/Salvation
+---		Do abolish poison, check mana costs of the 2 versions
 ---	Paladins:
 ---		request auras
----		cleanse magic
 ---		Add logic for ret pal
+--- Hunter:
+---		Pet-logic (reagent food, auto-feed, auto-call/revive, attacking, mend pet)
+---		Add Aimed-shot to the rotation
+---		Make them melee-hit with Raptor strike if in melee range.
 --- Say raid, "I am literally out of X" when out of reagents and trying to buff with them.
 --- Rename followTarget to commander
 --- Performance:
 --- 	Don't need to check for buffs every frame
 ---		Don't need to request water every frame
----
+---	Repair-report, chars should warn in /raid if they're red in anything (or maybe has less than 10% durability in any slot cuz they will go red then)
+---		Should be able to report lowest item % in /raid
 ---
 ---
 ---

@@ -1,3 +1,5 @@
+mb_warlockIsCursingElements = false
+mb_warlockIsCursingShadow = false
 function mb_Warlock(commander)
     if mb_DoBasicCasterLogic() then
         return
@@ -22,6 +24,7 @@ function mb_Warlock(commander)
                 max_SayRaid("I'm soulstoning " .. request.body)
                 TargetByName(request.body, true)
                 mb_UseItem("Soulstone")
+                mb_SV.warlockLastSoulstone = GetTime()
                 mb_RequestCompleted(request)
             else
                 CastSpellByName("Create Soulstone()")
@@ -80,10 +83,10 @@ function mb_Warlock_DrainSoul()
 end
 
 function mb_Warlock_Curse()
-    if max_HasDebuff("target", DEBUFF_TEXTURE_CURSE_OF_THE_ELEMENTS) then
+    if mb_warlockIsCursingElements and not max_HasDebuff("target", DEBUFF_TEXTURE_CURSE_OF_THE_ELEMENTS) then
         CastSpellByName("Curse of the Elements")
         return true
-    elseif max_HasDebuff("target", DEBUFF_TEXTURE_CURSE_OF_SHADOW) then
+    elseif mb_warlockIsCursingShadow and not max_HasDebuff("target", DEBUFF_TEXTURE_CURSE_OF_SHADOW) then
         CastSpellByName("Curse of Shadow")
         return true
     end
@@ -103,6 +106,7 @@ function mb_Warlock_OnLoad()
     mb_AddDesiredBuff(BUFF_DIVINE_SPIRIT)
     mb_Warlock_AddDesiredTalents()
     mb_AddGCDCheckSpell("Shadow Bolt")
+    mb_RegisterClassSyncDataFunctions(mb_Warlock_CreateClassSyncData, mb_Warlock_ReceivedClassSyncData)
 end
 
 function mb_Warlock_HandleSummonRequest(request)
@@ -113,9 +117,32 @@ function mb_Warlock_HandleSummonRequest(request)
 end
 
 function mb_Warlock_HandleSoulstoneRequest(request)
+    if mb_SV.warlockLastSoulstone ~= nil and mb_SV.warlockLastSoulstone + 1800 > GetTime()then
+        return
+    end
     local soulShardCount = mb_GetItemCount("Soul Shard")
     if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Unending breath") and soulShardCount > 0 then
         mb_AcceptRequest(request)
+    end
+end
+
+function mb_Warlock_CreateClassSyncData()
+    local classMates = mb_GetClassMates(max_GetClass("player"))
+    if max_GetTableSize(classMates) > 1 then
+        return classMates[1] .. "/" .. classMates[2]
+    else
+        return ""
+    end
+end
+
+function mb_Warlock_ReceivedClassSyncData()
+    if mb_classSyncData ~= "" then
+        local assignments = max_SplitString(mb_classSyncData, "/")
+        mb_warlockIsCursingElements = assignments[1] == UnitName("player")
+        mb_warlockIsCursingShadow = assignments[2] == UnitName("player")
+    else
+        mb_warlockIsCursingElements = false
+        mb_warlockIsCursingShadow = false
     end
 end
 

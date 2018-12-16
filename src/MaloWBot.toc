@@ -4,6 +4,7 @@
 ## Notes: MaloWs Bot
 ## Version 1
 ## Author: MaloW
+## SavedVariables: mb_SV
 
 CombatLogModule.lua
 Config.lua

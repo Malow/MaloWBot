@@ -30,7 +30,7 @@ function mb_Priest(commander)
             max_CastSpellOnRaidMemberByPlayerName("Resurrection", request.body)
             mb_RequestCompleted(request)
             return
-        elseif request.type == REQUEST_DISPEL.type then
+        elseif request.type == REQUEST_REMOVE_MAGIC.type then
             if mb_IsOnGCD() then
                 return
             end
@@ -64,10 +64,13 @@ function mb_Priest(commander)
         return
     end
 
+    AssistByName(commander)
+
     if max_GetManaPercentage("player") > 95 then
-        AssistByName(commander)
         CastSpellByName("Smite")
     end
+
+    --CastSpellByName("Attack")
 end
 
 function mb_Priest_Disc()
@@ -138,7 +141,7 @@ function mb_Priest_OnLoad()
         mb_RegisterForRequest(BUFF_DIVINE_SPIRIT.type, mb_Priest_HandleDivineSpiritRequest)
     end
     mb_RegisterForRequest(REQUEST_RESURRECT.type, mb_Priest_HandleResurrectionRequest)
-    mb_RegisterForRequest(REQUEST_DISPEL.type, mb_Priest_HandleDispelRequest)
+    mb_RegisterForRequest(REQUEST_REMOVE_MAGIC.type, mb_Priest_HandleDispelRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)

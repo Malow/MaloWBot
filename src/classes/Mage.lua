@@ -96,6 +96,8 @@ function mb_Mage_OnLoad()
 
     mb_Mage_AddDesiredTalents()
     mb_AddGCDCheckSpell("Frostbolt")
+    mb_RegisterRangeCheckSpell("Arcane Intellect")
+    mb_RegisterRangeCheckSpell("Remove Lesser Curse")
 end
 
 function mb_Mage_HandleArcaneIntRequest(request)

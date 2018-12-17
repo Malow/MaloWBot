@@ -61,7 +61,7 @@ function mb_Warlock(commander)
         return
     end
 
-    if max_GetHealthPercentage("player") < 25 then
+    if max_GetHealthPercentage("player") < 25 and mb_IsSpellInRange("Drain Life", "target") then
         CastSpellByName("Drain Life")
         return
     end
@@ -78,6 +78,9 @@ function mb_Warlock(commander)
 end
 
 function mb_Warlock_DrainSoul()
+    if not mb_IsSpellInRange("Drain Soul", "target") then
+        return false
+    end
     local cur, max, found = MobHealth3:GetUnitHealth("target")
     if not found then
         return false
@@ -93,6 +96,9 @@ function mb_Warlock_DrainSoul()
 end
 
 function mb_Warlock_Curse()
+    if not mb_IsSpellInRange("Curse of the Elements", "target") then
+        return false
+    end
     if mb_warlockIsCursingElements and not max_HasDebuff("target", DEBUFF_TEXTURE_CURSE_OF_THE_ELEMENTS) then
         CastSpellByName("Curse of the Elements")
         return true
@@ -120,6 +126,10 @@ function mb_Warlock_OnLoad()
     mb_Warlock_AddDesiredTalents()
     mb_AddGCDCheckSpell("Shadow Bolt")
     mb_RegisterClassSyncDataFunctions(mb_Warlock_CreateClassSyncData, mb_Warlock_ReceivedClassSyncData)
+    mb_RegisterRangeCheckSpell("Unending breath")
+    mb_RegisterRangeCheckSpell("Drain Life")
+    mb_RegisterRangeCheckSpell("Drain Soul")
+    mb_RegisterRangeCheckSpell("Curse of the Elements")
 end
 
 function mb_Warlock_HandleSummonRequest(request)

@@ -79,24 +79,6 @@ function max_GetItemStringFromItemLink(itemLink)
 	return itemString
 end
 
--- Returns true if said spell is in range to unit. NEEDS auto self-cast off.
-function max_IsHelpfulSpellInRange(spell, unit)
-	if UnitIsFriend("player", "target") then
-		if unit == "target" then
-			unit = max_GetUnitForPlayerName(UnitName("target"))
-		end
-		ClearTarget()
-	end
-
-	local can = false
-	CastSpellByName(spell, false)
-	if SpellCanTargetUnit(unit) then
-		can = true
-	end
-	SpellStopTargeting()
-	return can
-end
-
 -- Casts the spell on the unit-reference, doesn't work with target. NEEDS auto self-cast off.
 function max_CastSpellOnRaidMember(spellName, unit)
 	if UnitIsFriend("player", "target") then
@@ -107,12 +89,7 @@ function max_CastSpellOnRaidMember(spellName, unit)
 end
 
 function max_CastSpellOnRaidMemberByPlayerName(spellName, playerName)
-	local unit = max_GetUnitForPlayerName(playerName)
-	if UnitIsFriend("player", "target") then
-		ClearTarget()
-	end
-	CastSpellByName(spellName, false)
-	SpellTargetUnit(unit)
+	max_CastSpellOnRaidMember(spellName, max_GetUnitForPlayerName(playerName))
 end
 
 function max_GetLevelDifferenceFromSelf(unit)

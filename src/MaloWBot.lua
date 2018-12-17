@@ -360,7 +360,7 @@ end
 
 
 -- TODO:
---- Test out LogOut() to remove /follow, works in combat? works while casting?
+--- Test out LogOut() to remove /follow, works in combat? works while casting? If so use it before casting important spells like Evocation
 --- On ready-check click away buffs with less than 8 minute duration (don't forget class specific buffs like Ice Armor or sacrificed succubus.
 ---		Also decline ready-checks if missing buffs or mana or items (healthstone) (and say so in raid)
 ---		Also check durability is above 10% in all slots, otherwise decline and announce in raid
@@ -425,7 +425,7 @@ end
 --- 	Don't need to check for buffs every frame
 ---		Don't need to request water every frame
 ---	Repair-report, Should be able to report lowest item % in /raid
----
+--- Blacklist LoS targets when using mb_IsSpellInRange for 1 sec, use the Rogue-Spam way to detect error message of LoS
 ---
 ---
 ---

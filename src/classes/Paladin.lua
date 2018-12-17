@@ -118,7 +118,10 @@ function mb_Paladin(commander)
         end
     end
 
-    --CastSpellByName("Attack")
+    if not mb_isAutoAttacking then
+        CastSpellByName("Attack")
+        return
+    end
 end
 
 function mb_Paladin_FlashOfLight()
@@ -156,20 +159,29 @@ function mb_Paladin_OnLoad()
     mb_RegisterForRequest(REQUEST_REMOVE_DISEASE.type, mb_Paladin_HandleCleanseRequest)
     if mb_GetMySpecName() == "Wisdom" then
         mb_RegisterForRequest(BUFF_BLESSING_OF_WISDOM.type, mb_Paladin_HandleBlessingOfWisdomRequest)
+        mb_RegisterRangeCheckSpell("Greater Blessing of Wisdom")
     elseif mb_GetMySpecName() == "MightJudge" then
         mb_RegisterForRequest(BUFF_BLESSING_OF_MIGHT.type, mb_Paladin_HandleBlessingOfMightRequest)
+        mb_RegisterRangeCheckSpell("Greater Blessing of Might")
     elseif mb_GetMySpecName() == "KingsJudge" then
         mb_RegisterForRequest(BUFF_BLESSING_OF_KINGS.type, mb_Paladin_HandleBlessingOfKingsRequest)
+        mb_RegisterRangeCheckSpell("Greater Blessing of Kings")
     elseif mb_GetMySpecName() == "RetLight" then
         mb_RegisterForRequest(BUFF_BLESSING_OF_LIGHT.type, mb_Paladin_HandleBlessingOfLightRequest)
+        mb_RegisterRangeCheckSpell("Greater Blessing of Light")
     elseif mb_GetMySpecName() == "SanctuarySalvation" then
         mb_RegisterForRequest(BUFF_BLESSING_OF_SALVATION.type, mb_Paladin_HandleBlessingOfSalvationRequest)
         mb_RegisterForRequest(BUFF_BLESSING_OF_SANCTUARY.type, mb_Paladin_HandleBlessingOfSanctuaryRequest)
+        mb_RegisterRangeCheckSpell("Greater Blessing of Salvation")
+        mb_RegisterRangeCheckSpell("Greater Blessing of Sanctuary")
     end
     mb_Paladin_AddDesiredTalents()
     mb_AddReagentWatch("Symbol of Kings", 100)
     mb_AddGCDCheckSpell("Holy Light")
     mb_RegisterClassSyncDataFunctions(mb_Paladin_CreateClassSyncData, mb_Paladin_ReceivedClassSyncData)
+    mb_RegisterRangeCheckSpell("Flash of Light")
+    mb_RegisterRangeCheckSpell("Cleanse")
+    mb_RegisterRangeCheckSpell("Redemption")
 end
 
 function mb_Paladin_HandleResurrectionRequest(request)

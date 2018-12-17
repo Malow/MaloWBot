@@ -78,7 +78,10 @@ function mb_Priest(commander)
         CastSpellByName("Smite")
     end
 
-    CastSpellByName("Attack")
+    if not mb_isAutoAttacking then
+        CastSpellByName("Attack")
+        return
+    end
 end
 
 function mb_Priest_Disc()
@@ -144,9 +147,13 @@ end
 function mb_Priest_OnLoad()
     if mb_Priest_HasImprovedFortitude() then
         mb_RegisterForRequest(BUFF_POWER_WORD_FORTITUDE.type, mb_Priest_HandlePowerWordFortitudeRequest)
+        mb_RegisterRangeCheckSpell("Power Word: Fortitude")
+        mb_RegisterRangeCheckSpell("Prayer of Fortitude")
     end
     if mb_Priest_HasDivineSpirit() then
         mb_RegisterForRequest(BUFF_DIVINE_SPIRIT.type, mb_Priest_HandleDivineSpiritRequest)
+        mb_RegisterRangeCheckSpell("Divine Spirit")
+        mb_RegisterRangeCheckSpell("Prayer of Spirit")
     end
     mb_RegisterForRequest(REQUEST_RESURRECT.type, mb_Priest_HandleResurrectionRequest)
     mb_RegisterForRequest(REQUEST_REMOVE_MAGIC.type, mb_Priest_HandleDispelRequest)
@@ -161,6 +168,10 @@ function mb_Priest_OnLoad()
     mb_Priest_AddDesiredTalents()
     mb_AddGCDCheckSpell("Renew")
     mb_AddReagentWatch("Sacred Candle", 20)
+    mb_RegisterRangeCheckSpell("Resurrection")
+    mb_RegisterRangeCheckSpell("Dispel Magic")
+    mb_RegisterRangeCheckSpell("Renew")
+    mb_RegisterRangeCheckSpell("Power Word: Shield")
 end
 
 function mb_Priest_HandlePowerWordFortitudeRequest(request)

@@ -10,6 +10,7 @@ mb_shouldTrainSpells = false
 mb_shouldFollow = true
 mb_shouldRequestBuffs = false
 mb_classSyncData = nil
+mb_registeredRangeCheckSpells = {}
 
 function mb_HandleSharedBehaviour(commander)
     if mb_classSyncData == nil then
@@ -353,4 +354,37 @@ end
 function mb_IsClassLeader()
     local classMates = mb_GetClassMates(max_GetClass("player"))
     return classMates[1] == UnitName("player")
+end
+
+function mb_RegisterRangeCheckSpell(spellName)
+    local slot = max_GetTableSize(mb_registeredRangeCheckSpells) + 25
+    if slot > 36 then
+        max_SayRaid("Serious error, I have too many spells registered for range-check")
+    end
+    mb_registeredRangeCheckSpells[spellName] = slot
+    PickupSpell(max_GetSpellbookId(spellName), "BOOKTYPE_SPELL ")
+    PlaceAction(slot)
+    ClearCursor()
+end
+
+-- Changes target if you don't try to use it on your existing target, will break auto-attacks
+function mb_IsSpellInRange(spellName, unit)
+    if mb_registeredRangeCheckSpells[spellName] == nil then
+        max_SayRaid("Serious error, don't have spell " .. spellName .. " registered for rangeCheck, but still tried to check range with it.")
+    end
+    if UnitIsUnit("target", unit) then
+        return IsActionInRange(mb_registeredRangeCheckSpells[spellName])
+    end
+
+    local hadTarget = UnitExists("target")
+
+    TargetUnit(unit)
+    local isInRange = IsActionInRange(mb_registeredRangeCheckSpells[spellName])
+
+    if hadTarget then
+        TargetLastTarget()
+    else
+        ClearTarget()
+    end
+    return isInRange
 end

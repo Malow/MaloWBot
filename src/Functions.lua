@@ -174,7 +174,7 @@ end
 function mb_IsUnitValidTarget(unit, spell)
 	if UnitExists(unit) and UnitIsVisible(unit) and not UnitIsEnemy("player", unit) and not UnitIsDeadOrGhost(unit) and not max_HasBuff(unit, BUFF_TEXTURE_SPIRIT_OF_REDEMPTION) then
 		if spell ~= nil then
-			if max_IsHelpfulSpellInRange(spell, unit) then
+			if mb_IsSpellInRange(spell, unit) then
 				return true
 			end
 		else
@@ -210,7 +210,7 @@ function mb_CanResurrectUnitWithSpell(unit, spell)
 	elseif mb_IsDrinking() then
 		return false
 	end
-	if UnitExists(unit) and UnitIsVisible(unit) and UnitIsFriend("player", unit) and UnitIsDead(unit) and max_IsHelpfulSpellInRange(spell, unit) then
+	if UnitExists(unit) and UnitIsVisible(unit) and UnitIsFriend("player", unit) and UnitIsDead(unit) and mb_IsSpellInRange(spell, unit) then
 		return true
 	end
 end
@@ -268,4 +268,23 @@ function mb_GetClassMates(class)
 	end
 	table.sort(classMates)
 	return classMates
+end
+
+-- Returns true if said spell is in range to unit. NEEDS auto self-cast off. Returns false if you're on GCD or if you're already casting something
+-- Only benefit of using this over mb_IsSpellInRange is that it returns false if you're LoS of the unit
+function mb_CanHelpfulSpellBeCastOn(spell, unit)
+	if UnitIsFriend("player", "target") then
+		if unit == "target" then
+			unit = max_GetUnitForPlayerName(UnitName("target"))
+		end
+		ClearTarget()
+	end
+
+	local can = false
+	CastSpellByName(spell, false)
+	if SpellCanTargetUnit(unit) then
+		can = true
+	end
+	SpellStopTargeting()
+	return can
 end

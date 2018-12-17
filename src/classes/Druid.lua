@@ -51,7 +51,10 @@ function mb_Druid(commander)
         CastSpellByName("Wrath")
     end
 
-    -- CastSpellByName("Attack")
+    if not mb_isAutoAttacking then
+        CastSpellByName("Attack")
+        return
+    end
 end
 
 function mb_Druid_OnLoad()
@@ -68,6 +71,11 @@ function mb_Druid_OnLoad()
     mb_Druid_AddDesiredTalents()
     mb_AddReagentWatch("Wild Thornroot", 20)
     mb_AddGCDCheckSpell("Rejuvenation")
+    mb_RegisterRangeCheckSpell("Mark of the Wild")
+    mb_RegisterRangeCheckSpell("Gift of the Wild")
+    mb_RegisterRangeCheckSpell("Remove Curse")
+    mb_RegisterRangeCheckSpell("Rejuvenation")
+    mb_RegisterRangeCheckSpell("Regrowth")
 end
 
 function mb_Druid_Rejuvenation()

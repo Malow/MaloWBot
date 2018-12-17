@@ -1,11 +1,19 @@
 mb_paladinIsJudgingLight = false
 mb_paladinIsJudgingWisdom = false
+mb_paladinCurrentHealTarget = nil
 function mb_Paladin(commander)
     if mb_DoBasicCasterLogic() then
         return
     end
     if mb_isCasting then
+        if mb_paladinCurrentHealTarget ~= nil then
+            if max_GetMissingHealth(mb_paladinCurrentHealTarget) < 300 then
+                SpellStopCasting()
+            end
+        end
         return
+    else
+        mb_paladinCurrentHealTarget = nil
     end
 
     local request = mb_GetQueuedRequest(true)
@@ -76,8 +84,9 @@ end
 function mb_Paladin_FlashOfLight()
     local spell = "Flash of Light"
     local healTargetUnit, missingHealth = mb_GetMostDamagedFriendly(spell)
-    if missingHealth > 200 then
+    if missingHealth > 300 then
         max_CastSpellOnRaidMember(spell, healTargetUnit)
+        mb_paladinCurrentHealTarget = healTargetUnit
         return true
     end
     return false

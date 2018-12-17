@@ -75,7 +75,7 @@ UNIT_FILTER_DOES_NOT_HAVE_BUFF = {
 --- Requests
 REQUEST_CLASS_SYNC = {
     type = "TO-BE-SET",
-    throttle = 60
+    throttle = 10
 }
 REQUEST_RESURRECT = {
     type = "resurrect",

@@ -16,18 +16,14 @@ function mb_HandleSpecialSlashCommand(msg)
         mb_MakeRequest("mount", "mount", 10)
     elseif msg == "releaseCorpse" then
         mb_MakeRequest("releaseCorpse", "releaseCorpse", 10)
-    elseif string.find(msg, "haveQuest") then
-        local questLogId = GetQuestLogSelection()
-        local questName = GetQuestLogTitle(questLogId)
-        mb_MakeRequest("haveQuest", questName, 10)
+    elseif msg == "haveQuest" then
+        mb_MakeRequest("haveQuest", GetQuestLogTitle(GetQuestLogSelection()), 10)
+    elseif msg == "doesNotHaveQuest" then
+        mb_MakeRequest("doesNotHaveQuest", GetQuestLogTitle(GetQuestLogSelection()), 10)
     elseif string.find(msg, "aoe") then
         local mode = max_SplitString(msg, " ")[2]
         mb_areaOfEffectMode = mode == "on"
         mb_MakeRequest("areaOfEffectMode", mode, 10)
-    elseif string.find(msg, "doesNotHaveQuest") then
-        local questLogId = GetQuestLogSelection()
-        local questName = GetQuestLogTitle(questLogId)
-        mb_MakeRequest("doesNotHaveQuest", questName, 10)
     elseif string.find(msg, "follow") then
         local mode = max_SplitString(msg, " ")[2]
         mb_shouldFollow = mode == "on"

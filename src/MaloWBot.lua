@@ -407,6 +407,7 @@ end
 ---		Do abolish disease, check mana costs of the 2 versions
 ---		Fear ward request
 ---		Wand instead of attack if ranged, (does wand cause GCD?)
+---		Improve PoH logic, instead of checking if 3 or more members miss 1k health, include the 2 other guys even if they only miss 500 and check for total amount healed.
 --- Druids:
 ---     Tranquility like PoH in priest
 ---     Rejuvenation and Regrowth on tanking tanks 24/7
@@ -428,7 +429,7 @@ end
 ---		Pet-logic (reagent food, auto-feed, auto-call/revive, attacking, mend pet)
 ---			All-in-one pet macro:     /run local c=CastSpellByName if UnitExists("pet") then if UnitHealth("pet")==0 then c("Revive Pet") elseif GetPetHappiness()~=nil and GetPetHappiness()~=3 then c("Feed Pet") PickupContainerItem(0, 13) else c("Dismiss Pet") end else c("Call Pet") end
 ---		Add Aimed-shot to the rotation, maybe see https://github.com/Geigerkind/OneButtonHunter/blob/master/OneButtonHunter.lua, though it seems to be bugged
----		Make them melee-hit with Raptor strike if in melee range.
+---		Make them melee-hit with Raptor strike and mongoose bite if in melee range?
 --- Say raid, "I am literally out of X" when out of reagents and trying to buff with them.
 --- Rename followTarget to commander
 --- Performance:

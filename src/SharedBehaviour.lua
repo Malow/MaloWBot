@@ -243,10 +243,6 @@ function mb_LearnTalents()
 end
 
 function mb_DoBasicCasterLogic()
-    if mb_isCasting then
-        return true
-    end
-
     if mb_IsDrinking() then
         if max_GetManaPercentage("player") < 95 then
             return true
@@ -387,4 +383,45 @@ function mb_IsSpellInRange(spellName, unit)
         ClearTarget()
     end
     return isInRange
+end
+
+function mb_GetBuffWithType(type)
+    for k, v in pairs(All_BUFFS) do
+        if type == v.type then
+            return v
+        end
+    end
+    return nil
+end
+
+-- Buffs the player with the buff if it can, returns true if it buffs
+function mb_CompleteStandardBuffRequest(request)
+    local buff = mb_GetBuffWithType(request.type)
+    if buff == nil then
+        return false
+    end
+    if mb_IsOnGCD() then
+        return false
+    end
+    mb_RequestCompleted(request)
+    if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), buff.textures) then
+        if buff.groupWideSpellName ~= nil and mb_ShouldBuffGroupWide(request.body, buff) then
+            max_CastSpellOnRaidMemberByPlayerName(buff.groupWideSpellName, request.body)
+        else
+            max_CastSpellOnRaidMemberByPlayerName(buff.spellName, request.body)
+        end
+        return true
+    end
+end
+
+function mb_HandleStandardBuffRequest(request)
+    local buff = mb_GetBuffWithType(request.type)
+    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), buff.spellName) then
+        mb_AcceptRequest(request)
+    end
+end
+
+function mb_RegisterForStandardBuffRequest(buff)
+    mb_RegisterForRequest(buff.type, mb_HandleStandardBuffRequest)
+    mb_RegisterRangeCheckSpell(buff.spellName)
 end

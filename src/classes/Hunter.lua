@@ -2,6 +2,9 @@ function mb_Hunter(commander)
 	if mb_DoBasicCasterLogic() then
 		return
 	end
+    if mb_isCasting then
+        return
+    end
 
 	if mb_Hunter_IsEmptyOnAmmo() then
 		return

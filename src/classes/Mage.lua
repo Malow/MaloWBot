@@ -2,8 +2,11 @@ function mb_Mage(commander)
     if mb_DoBasicCasterLogic() then
         return
     end
+    if mb_isCasting then
+        return
+    end
 
-    local request = mb_GetQueuedRequest()
+    local request = mb_GetQueuedRequest(true)
     if request ~= nil then
         if request.type == BUFF_ARCANE_INTELLECT.type then
             if mb_IsOnGCD() then
@@ -32,8 +35,6 @@ function mb_Mage(commander)
             max_CastSpellOnRaidMemberByPlayerName("Remove Lesser Curse", request.body)
             mb_RequestCompleted(request)
             return
-        else
-            max_SayRaid("Serious error, received request for " .. request.type)
         end
     end
 
@@ -82,6 +83,7 @@ function mb_Mage(commander)
 end
 
 function mb_Mage_OnLoad()
+    mb_RegisterForStandardBuffRequest(BUFF_ARCANE_INTELLECT)
     mb_RegisterForRequest(BUFF_ARCANE_INTELLECT.type, mb_Mage_HandleArcaneIntRequest)
     mb_RegisterForRequest(REQUEST_WATER.type, mb_Mage_HandleWaterRequest)
     mb_RegisterForRequest(REQUEST_REMOVE_CURSE.type, mb_Mage_HandleDecurseRequest)
@@ -98,12 +100,6 @@ function mb_Mage_OnLoad()
     mb_AddGCDCheckSpell("Frostbolt")
     mb_RegisterRangeCheckSpell("Arcane Intellect")
     mb_RegisterRangeCheckSpell("Remove Lesser Curse")
-end
-
-function mb_Mage_HandleArcaneIntRequest(request)
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Arcane Intellect") then
-        mb_AcceptRequest(request)
-    end
 end
 
 function mb_Mage_HandleWaterRequest(request)

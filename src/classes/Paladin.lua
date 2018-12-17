@@ -4,63 +4,14 @@ function mb_Paladin(commander)
     if mb_DoBasicCasterLogic() then
         return
     end
+    if mb_isCasting then
+        return
+    end
 
-    local request = mb_GetQueuedRequest()
+    local request = mb_GetQueuedRequest(true)
     if request ~= nil then
-        if request.type == BUFF_BLESSING_OF_WISDOM.type then
-            if mb_IsOnGCD() then
-                return
-            end
-            mb_RequestCompleted(request)
-            if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_BLESSING_OF_WISDOM.textures) then
-                max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Wisdom", request.body)
-                return
-            end
-        elseif request.type == BUFF_BLESSING_OF_MIGHT.type then
-            if mb_IsOnGCD() then
-                return
-            end
-            mb_RequestCompleted(request)
-            if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_BLESSING_OF_MIGHT.textures) then
-                max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Might", request.body)
-                return
-            end
-        elseif request.type == BUFF_BLESSING_OF_KINGS.type then
-            if mb_IsOnGCD() then
-                return
-            end
-            mb_RequestCompleted(request)
-            if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_BLESSING_OF_KINGS.textures) then
-                max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Kings", request.body)
-                return
-            end
-        elseif request.type == BUFF_BLESSING_OF_LIGHT.type then
-            if mb_IsOnGCD() then
-                return
-            end
-            mb_RequestCompleted(request)
-            if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_BLESSING_OF_LIGHT.textures) then
-                max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Light", request.body)
-                return
-            end
-        elseif request.type == BUFF_BLESSING_OF_SANCTUARY.type then
-            if mb_IsOnGCD() then
-                return
-            end
-            mb_RequestCompleted(request)
-            if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_BLESSING_OF_SANCTUARY.textures) then
-                max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Sanctuary", request.body)
-                return
-            end
-        elseif request.type == BUFF_BLESSING_OF_SALVATION.type then
-            if mb_IsOnGCD() then
-                return
-            end
-            mb_RequestCompleted(request)
-            if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_BLESSING_OF_SALVATION.textures) then
-                max_CastSpellOnRaidMemberByPlayerName("Greater Blessing of Salvation", request.body)
-                return
-            end
+        if mb_CompleteStandardBuffRequest(request) then
+            return
         elseif request.type == REQUEST_RESURRECT.type then
             if mb_IsOnGCD() then
                 return
@@ -75,8 +26,6 @@ function mb_Paladin(commander)
             max_CastSpellOnRaidMemberByPlayerName("Cleanse", request.body)
             mb_RequestCompleted(request)
             return
-        else
-            max_SayRaid("Serious error, received request for " .. request.type)
         end
     end
 
@@ -158,22 +107,16 @@ function mb_Paladin_OnLoad()
     mb_RegisterForRequest(REQUEST_REMOVE_POISON.type, mb_Paladin_HandleCleanseRequest)
     mb_RegisterForRequest(REQUEST_REMOVE_DISEASE.type, mb_Paladin_HandleCleanseRequest)
     if mb_GetMySpecName() == "Wisdom" then
-        mb_RegisterForRequest(BUFF_BLESSING_OF_WISDOM.type, mb_Paladin_HandleBlessingOfWisdomRequest)
-        mb_RegisterRangeCheckSpell("Greater Blessing of Wisdom")
+        mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_WISDOM)
     elseif mb_GetMySpecName() == "MightJudge" then
-        mb_RegisterForRequest(BUFF_BLESSING_OF_MIGHT.type, mb_Paladin_HandleBlessingOfMightRequest)
-        mb_RegisterRangeCheckSpell("Greater Blessing of Might")
+        mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_MIGHT)
     elseif mb_GetMySpecName() == "KingsJudge" then
-        mb_RegisterForRequest(BUFF_BLESSING_OF_KINGS.type, mb_Paladin_HandleBlessingOfKingsRequest)
-        mb_RegisterRangeCheckSpell("Greater Blessing of Kings")
+        mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_KINGS)
     elseif mb_GetMySpecName() == "RetLight" then
-        mb_RegisterForRequest(BUFF_BLESSING_OF_LIGHT.type, mb_Paladin_HandleBlessingOfLightRequest)
-        mb_RegisterRangeCheckSpell("Greater Blessing of Light")
+        mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_LIGHT)
     elseif mb_GetMySpecName() == "SanctuarySalvation" then
-        mb_RegisterForRequest(BUFF_BLESSING_OF_SALVATION.type, mb_Paladin_HandleBlessingOfSalvationRequest)
-        mb_RegisterForRequest(BUFF_BLESSING_OF_SANCTUARY.type, mb_Paladin_HandleBlessingOfSanctuaryRequest)
-        mb_RegisterRangeCheckSpell("Greater Blessing of Salvation")
-        mb_RegisterRangeCheckSpell("Greater Blessing of Sanctuary")
+        mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_SALVATION)
+        mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_SANCTUARY)
     end
     mb_Paladin_AddDesiredTalents()
     mb_AddReagentWatch("Symbol of Kings", 100)
@@ -186,42 +129,6 @@ end
 
 function mb_Paladin_HandleResurrectionRequest(request)
     if mb_CanResurrectUnitWithSpell(max_GetUnitForPlayerName(request.body), "Redemption") then
-        mb_AcceptRequest(request)
-    end
-end
-
-function mb_Paladin_HandleBlessingOfWisdomRequest(request)
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Greater Blessing of Wisdom") then
-        mb_AcceptRequest(request)
-    end
-end
-
-function mb_Paladin_HandleBlessingOfMightRequest(request)
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Greater Blessing of Might") then
-        mb_AcceptRequest(request)
-    end
-end
-
-function mb_Paladin_HandleBlessingOfKingsRequest(request)
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Greater Blessing of Kings") then
-        mb_AcceptRequest(request)
-    end
-end
-
-function mb_Paladin_HandleBlessingOfLightRequest(request)
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Greater Blessing of Light") then
-        mb_AcceptRequest(request)
-    end
-end
-
-function mb_Paladin_HandleBlessingOfSanctuaryRequest(request)
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Greater Blessing of Sanctuary") then
-        mb_AcceptRequest(request)
-    end
-end
-
-function mb_Paladin_HandleBlessingOfSalvationRequest(request)
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Greater Blessing of Salvation") then
         mb_AcceptRequest(request)
     end
 end
@@ -355,6 +262,6 @@ function mb_Paladin_AddDesiredTalents()
         mb_AddDesiredTalent(3, 13, 1) -- Sanctity Aura
         mb_AddDesiredTalent(3, 14, 5) -- Vengeance
     else
-        max_SayRaid("Serious error, bad spec for paladin: " .. mySpec)
+        max_SayRaid("Serious error, bad spec for paladin: " .. mb_GetMySpecName())
     end
 end

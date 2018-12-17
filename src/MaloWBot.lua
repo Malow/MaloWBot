@@ -328,7 +328,7 @@ function mb_ShouldAddRequestToQueue(request)
     return true
 end
 
-function mb_GetQueuedRequest()
+function mb_GetQueuedRequest(countAttempts)
     local queuedRequestSize = max_GetTableSize(mb_queuedRequests)
 	if queuedRequestSize == 0 then
 		return nil
@@ -339,6 +339,16 @@ function mb_GetQueuedRequest()
 			highestPriorityRequest = v
 		elseif v.priority > highestPriorityRequest.priority then
 			highestPriorityRequest = v
+		end
+	end
+	if countAttempts then
+		if highestPriorityRequest.attempts == nil then
+			highestPriorityRequest.attempts = 1
+		else
+			highestPriorityRequest.attempts = highestPriorityRequest.attempts + 1
+		end
+		if highestPriorityRequest.attempts > 100 then
+			max_SayRaid("Warning, request of type " .. highestPriorityRequest.type .. " has been attempted " .. highestPriorityRequest.attempts .. " times.")
 		end
 	end
     return highestPriorityRequest

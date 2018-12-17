@@ -106,52 +106,78 @@ REQUEST_REMOVE_DISEASE = {
 BUFF_ARCANE_INTELLECT = {
     type = "buffArcaneIntellect",
     textures = { BUFF_TEXTURE_ARCANE_INTELLECT },
-    throttle = 10
+    throttle = 10,
+    spellName = "Arcane Intellect"
 }
 BUFF_POWER_WORD_FORTITUDE = {
     type = "buffPowerWordFortitude",
     textures = { BUFF_TEXTURE_POWER_WORD_FORTITUDE, BUFF_TEXTURE_PRAYER_OF_FORTITUDE },
-    throttle = 10
+    throttle = 10,
+    spellName = "Power Word: Fortitude",
+    groupWideSpellName = "Prayer of Fortitude"
 }
 BUFF_DIVINE_SPIRIT = {
     type = "buffDivineSpirit",
     textures = { BUFF_TEXTURE_DIVINE_SPIRIT, BUFF_TEXTURE_PRAYER_OF_SPIRIT },
-    throttle = 10
+    throttle = 10,
+    spellName = "Divine Spirit",
+    groupWideSpellName = "Prayer of Spirit"
 }
 BUFF_BLESSING_OF_WISDOM = {
     type = "buffBlessingOfWisdom",
     textures = { BUFF_TEXTURE_BLESSING_OF_WISDOM, BUFF_TEXTURE_GREATER_BLESSING_OF_WISDOM },
-    throttle = 10
+    throttle = 10,
+    spellName = "Greater Blessing of Wisdom"
 }
 BUFF_BLESSING_OF_MIGHT = {
     type = "buffBlessingOfMight",
     textures = { BUFF_TEXTURE_BLESSING_OF_MIGHT, BUFF_TEXTURE_GREATER_BLESSING_OF_MIGHT },
-    throttle = 10
+    throttle = 10,
+    spellName = "Greater Blessing of Might"
 }
 BUFF_BLESSING_OF_KINGS = {
     type = "buffBlessingOfKings",
     textures = { BUFF_TEXTURE_BLESSING_OF_KINGS, BUFF_TEXTURE_GREATER_BLESSING_OF_KINGS },
-    throttle = 10
+    throttle = 10,
+    spellName = "Greater Blessing of Kings"
 }
 BUFF_BLESSING_OF_LIGHT = {
     type = "buffBlessingOfLight",
     textures = { BUFF_TEXTURE_BLESSING_OF_LIGHT, BUFF_TEXTURE_GREATER_BLESSING_OF_LIGHT },
-    throttle = 10
+    throttle = 10,
+    spellName = "Greater Blessing of Light"
 }
 BUFF_BLESSING_OF_SANCTUARY = {
     type = "buffBlessingOfSanctuary",
     textures = { BUFF_TEXTURE_BLESSING_OF_SANCTUARY, BUFF_TEXTURE_GREATER_BLESSING_OF_SANCTUARY },
-    throttle = 10
+    throttle = 10,
+    spellName = "Greater Blessing of Sanctuary"
 }
 BUFF_BLESSING_OF_SALVATION = {
     type = "buffBlessingOfSalvation",
     textures = { BUFF_TEXTURE_BLESSING_OF_SALVATION, BUFF_TEXTURE_GREATER_BLESSING_OF_SALVATION },
-    throttle = 10
+    throttle = 10,
+    spellName = "Greater Blessing of Salvation"
 }
 BUFF_MARK_OF_THE_WILD = {
     type = "buffMarkOfTheWild",
     textures = { BUFF_TEXTURE_MARK_OF_THE_WILD, BUFF_TEXTURE_GIFT_OF_THE_WILD },
-    throttle = 10
+    throttle = 10,
+    spellName = "Mark of the Wild",
+    groupWideSpellName = "Gift of the Wild"
+}
+
+All_BUFFS = {
+    BUFF_ARCANE_INTELLECT,
+    BUFF_POWER_WORD_FORTITUDE,
+    BUFF_DIVINE_SPIRIT,
+    BUFF_BLESSING_OF_WISDOM,
+    BUFF_BLESSING_OF_MIGHT,
+    BUFF_BLESSING_OF_KINGS,
+    BUFF_BLESSING_OF_LIGHT,
+    BUFF_BLESSING_OF_SANCTUARY,
+    BUFF_BLESSING_OF_SALVATION,
+    BUFF_MARK_OF_THE_WILD
 }
 
 --- Items

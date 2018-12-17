@@ -5,8 +5,11 @@ function mb_Warlock(commander)
     if mb_DoBasicCasterLogic() then
         return
     end
+    if mb_isCasting then
+        return
+    end
 
-    local request = mb_GetQueuedRequest()
+    local request = mb_GetQueuedRequest(true)
     if request ~= nil then
         if request.type == "summon" then
             if mb_IsOnGCD() then
@@ -31,8 +34,6 @@ function mb_Warlock(commander)
                 CastSpellByName("Create Soulstone()")
             end
             return
-        else
-            max_SayRaid("Serious error, received request for " .. request.type)
         end
     end
 

@@ -2,33 +2,14 @@ function mb_Priest(commander)
     if mb_DoBasicCasterLogic() then
         return
     end
+    if mb_isCasting then
+        return
+    end
 
-    local request = mb_GetQueuedRequest()
+    local request = mb_GetQueuedRequest(true)
     if request ~= nil then
-        if request.type == BUFF_POWER_WORD_FORTITUDE.type then
-            if mb_IsOnGCD() then
-                return
-            end
-            mb_RequestCompleted(request)
-            if mb_ShouldBuffGroupWide(request.body, BUFF_POWER_WORD_FORTITUDE) then
-                max_CastSpellOnRaidMemberByPlayerName("Prayer of Fortitude", request.body)
-                return
-            elseif not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_POWER_WORD_FORTITUDE.textures) then
-                max_CastSpellOnRaidMemberByPlayerName("Power Word: Fortitude", request.body)
-                return
-            end
-        elseif request.type == BUFF_DIVINE_SPIRIT.type then
-            if mb_IsOnGCD() then
-                return
-            end
-            mb_RequestCompleted(request)
-            if mb_ShouldBuffGroupWide(request.body, BUFF_DIVINE_SPIRIT, UNIT_FILTER_HAS_MANA) then
-                max_CastSpellOnRaidMemberByPlayerName("Prayer of Spirit", request.body)
-                return
-            elseif not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_DIVINE_SPIRIT.textures) then
-                max_CastSpellOnRaidMemberByPlayerName("Divine Spirit", request.body)
-                return
-            end
+        if mb_CompleteStandardBuffRequest(request) then
+            return
         elseif request.type == REQUEST_RESURRECT.type then
             if mb_IsOnGCD() then
                 return
@@ -43,8 +24,6 @@ function mb_Priest(commander)
             max_CastSpellOnRaidMemberByPlayerName("Dispel Magic", request.body)
             mb_RequestCompleted(request)
             return
-        else
-            max_SayRaid("Serious error, received request for " .. request.type)
         end
     end
 
@@ -76,6 +55,7 @@ function mb_Priest(commander)
 
     if max_GetManaPercentage("player") > 95 then
         CastSpellByName("Smite")
+        return
     end
 
     if not mb_isAutoAttacking then
@@ -146,14 +126,10 @@ end
 
 function mb_Priest_OnLoad()
     if mb_Priest_HasImprovedFortitude() then
-        mb_RegisterForRequest(BUFF_POWER_WORD_FORTITUDE.type, mb_Priest_HandlePowerWordFortitudeRequest)
-        mb_RegisterRangeCheckSpell("Power Word: Fortitude")
-        mb_RegisterRangeCheckSpell("Prayer of Fortitude")
+        mb_RegisterForStandardBuffRequest(BUFF_POWER_WORD_FORTITUDE)
     end
     if mb_Priest_HasDivineSpirit() then
-        mb_RegisterForRequest(BUFF_DIVINE_SPIRIT.type, mb_Priest_HandleDivineSpiritRequest)
-        mb_RegisterRangeCheckSpell("Divine Spirit")
-        mb_RegisterRangeCheckSpell("Prayer of Spirit")
+        mb_RegisterForStandardBuffRequest(BUFF_DIVINE_SPIRIT)
     end
     mb_RegisterForRequest(REQUEST_RESURRECT.type, mb_Priest_HandleResurrectionRequest)
     mb_RegisterForRequest(REQUEST_REMOVE_MAGIC.type, mb_Priest_HandleDispelRequest)
@@ -172,18 +148,6 @@ function mb_Priest_OnLoad()
     mb_RegisterRangeCheckSpell("Dispel Magic")
     mb_RegisterRangeCheckSpell("Renew")
     mb_RegisterRangeCheckSpell("Power Word: Shield")
-end
-
-function mb_Priest_HandlePowerWordFortitudeRequest(request)
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Power Word: Fortitude") then
-        mb_AcceptRequest(request)
-    end
-end
-
-function mb_Priest_HandleDivineSpiritRequest(request)
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Divine Spirit") then
-        mb_AcceptRequest(request)
-    end
 end
 
 function mb_Priest_HandleResurrectionRequest(request)

@@ -2,21 +2,14 @@ function mb_Druid(commander)
     if mb_DoBasicCasterLogic() then
         return
     end
+    if mb_isCasting then
+        return
+    end
 
-    local request = mb_GetQueuedRequest()
+    local request = mb_GetQueuedRequest(true)
     if request ~= nil then
-        if request.type == BUFF_MARK_OF_THE_WILD.type then
-            if mb_IsOnGCD() then
-                return
-            end
-            mb_RequestCompleted(request)
-            if mb_ShouldBuffGroupWide(request.body, BUFF_MARK_OF_THE_WILD) then
-                max_CastSpellOnRaidMemberByPlayerName("Gift of the Wild", request.body)
-                return
-            elseif not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_MARK_OF_THE_WILD.textures) then
-                max_CastSpellOnRaidMemberByPlayerName("Mark of the Wild", request.body)
-                return
-            end
+        if mb_CompleteStandardBuffRequest(request) then
+            return
         elseif request.type == REQUEST_REMOVE_CURSE.type then
             if mb_IsOnGCD() then
                 return
@@ -24,8 +17,6 @@ function mb_Druid(commander)
             max_CastSpellOnRaidMemberByPlayerName("Remove Curse", request.body)
             mb_RequestCompleted(request)
             return
-        else
-            max_SayRaid("Serious error, received request for " .. request.type)
         end
     end
 
@@ -49,6 +40,7 @@ function mb_Druid(commander)
 
     if max_GetManaPercentage("player") > 95 then
         CastSpellByName("Wrath")
+        return
     end
 
     if not mb_isAutoAttacking then
@@ -58,7 +50,9 @@ function mb_Druid(commander)
 end
 
 function mb_Druid_OnLoad()
-    mb_RegisterForRequest(BUFF_MARK_OF_THE_WILD.type, mb_Druid_HandleMarkOfTheWildRequest)
+    if mb_Druid_HasImprovedMOTW() then
+        mb_RegisterForStandardBuffRequest(BUFF_MARK_OF_THE_WILD)
+    end
     mb_RegisterForRequest(REQUEST_REMOVE_CURSE.type, mb_Druid_HandleDecurseRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
@@ -71,8 +65,6 @@ function mb_Druid_OnLoad()
     mb_Druid_AddDesiredTalents()
     mb_AddReagentWatch("Wild Thornroot", 20)
     mb_AddGCDCheckSpell("Rejuvenation")
-    mb_RegisterRangeCheckSpell("Mark of the Wild")
-    mb_RegisterRangeCheckSpell("Gift of the Wild")
     mb_RegisterRangeCheckSpell("Remove Curse")
     mb_RegisterRangeCheckSpell("Rejuvenation")
     mb_RegisterRangeCheckSpell("Regrowth")
@@ -110,21 +102,11 @@ function mb_Druid_InsectSwarm()
     return false
 end
 
-function mb_Druid_HandleMarkOfTheWildRequest(request)
-    if not mb_Druid_HasImprovedMOTW() then
-        return
-    end
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Mark of the Wild") then
-        mb_AcceptRequest(request)
-    end
-end
-
 function mb_Druid_HandleDecurseRequest(request)
     if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Remove Curse") then
         mb_AcceptRequest(request)
     end
 end
-
 
 function mb_Druid_HasImprovedMOTW()
     local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(3, 1)

@@ -122,6 +122,7 @@ function mb_Warrior_OnLoad()
     mb_AddDesiredBuff(BUFF_BLESSING_OF_LIGHT)
     mb_AddDesiredBuff(BUFF_BLESSING_OF_SANCTUARY)
     mb_Warrior_AddDesiredTalents()
+	mb_AddGCDCheckSpell("Sunder Armor")
     if mb_warriorIsTank then
         mb_CombatLogModule_EnableDTPS()
     end

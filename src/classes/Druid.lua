@@ -17,7 +17,14 @@ function mb_Druid(commander)
             max_CastSpellOnRaidMemberByPlayerName("Remove Curse", request.body)
             mb_RequestCompleted(request)
             return
+        elseif request.type == "HoT" then
+            mb_HealingModule_CompleteHoTRequest(request)
+            return
         end
+    end
+
+    if mb_Druid_TankHealing() then
+        return
     end
 
     if mb_Druid_Rejuvenation() then
@@ -68,6 +75,13 @@ function mb_Druid_OnLoad()
     mb_RegisterRangeCheckSpell("Remove Curse")
     mb_RegisterRangeCheckSpell("Rejuvenation")
     mb_RegisterRangeCheckSpell("Regrowth")
+    mb_HealingModule_Enable()
+    mb_HealingModule_RegisterHoT("Rejuvenation", BUFF_TEXTURE_REJUVENATION, 335)
+    mb_HealingModule_RegisterHoT("Regrowth", BUFF_TEXTURE_REGROWTH, 880)
+end
+
+function mb_Druid_TankHealing()
+
 end
 
 function mb_Druid_Rejuvenation()

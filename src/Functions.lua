@@ -256,6 +256,7 @@ function mb_ShouldBuffGroupWide(unitName, buff, unitFilter)
 	return false
 end
 
+-- Returns an alphabetically sorted list of the names of the players in your raid with the same class as you
 function mb_GetClassMates(class)
 	local classMates = {}
 	local members = max_GetNumPartyOrRaidMembers()
@@ -287,4 +288,19 @@ function mb_CanHelpfulSpellBeCastOn(spell, unit)
 	end
 	SpellStopTargeting()
 	return can
+end
+
+-- Returns the number of HoTs on the unit.
+function mb_GetHoTCount(unit)
+	local hotCount = 0
+	if max_HasBuff(unit, BUFF_TEXTURE_RENEW) then
+		hotCount = hotCount + 1
+	end
+	if max_HasBuff(unit, BUFF_TEXTURE_REJUVENATION) then
+		hotCount = hotCount + 1
+	end
+	if max_HasBuff(unit, BUFF_TEXTURE_REGROWTH) then
+		hotCount = hotCount + 1
+	end
+	return hotCount
 end

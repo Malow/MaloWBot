@@ -15,22 +15,19 @@ function mb_Paladin(commander)
     else
         mb_paladinCurrentHealTarget = nil
     end
+    if mb_IsOnGCD() then
+        return
+    end
 
     local request = mb_GetQueuedRequest(true)
     if request ~= nil then
         if mb_CompleteStandardBuffRequest(request) then
             return
         elseif request.type == REQUEST_RESURRECT.type then
-            if mb_IsOnGCD() then
-                return
-            end
             max_CastSpellOnRaidMemberByPlayerName("Redemption", request.body)
             mb_RequestCompleted(request)
             return
         elseif request.type == REQUEST_REMOVE_MAGIC.type or request.type == REQUEST_REMOVE_DISEASE.type or request.type == REQUEST_REMOVE_POISON.type then
-            if mb_IsOnGCD() then
-                return
-            end
             max_CastSpellOnRaidMemberByPlayerName("Cleanse", request.body)
             mb_RequestCompleted(request)
             return
@@ -83,9 +80,12 @@ end
 
 function mb_Paladin_FlashOfLight()
     local spell = "Flash of Light"
-    local healTargetUnit, missingHealth = mb_GetMostDamagedFriendly(spell)
+    local healTargetUnit, missingHealth = mb_HealingModule_GetRaidHealTarget(spell)
     if missingHealth > 300 then
-        max_CastSpellOnRaidMember(spell, healTargetUnit)
+        --max_SayRaid("Started FoL on " .. UnitName(healTargetUnit) .. ". Current missing health: " .. max_GetMissingHealth(healTargetUnit) .. " - Calculated missing health: " .. missingHealth)
+        local callBacks = {}
+        callBacks.onStart = function(spellCast) mb_HealingModule_SendData(UnitName(spellCast.target), 500, spellCast.startTime + 1.5) end
+        mb_CastSpellByNameOnRaidMemberWithCallbacks(spell, healTargetUnit, callBacks)
         mb_paladinCurrentHealTarget = healTargetUnit
         return true
     end
@@ -134,6 +134,7 @@ function mb_Paladin_OnLoad()
     mb_RegisterRangeCheckSpell("Flash of Light")
     mb_RegisterRangeCheckSpell("Cleanse")
     mb_RegisterRangeCheckSpell("Redemption")
+    mb_HealingModule_Enable()
 end
 
 function mb_Paladin_HandleResurrectionRequest(request)

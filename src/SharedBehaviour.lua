@@ -365,17 +365,18 @@ end
 
 -- Changes target if you don't try to use it on your existing target, will break auto-attacks
 function mb_IsSpellInRange(spellName, unit)
+    SpellStopTargeting()
     if mb_registeredRangeCheckSpells[spellName] == nil then
         max_SayRaid("Serious error, don't have spell " .. spellName .. " registered for rangeCheck, but still tried to check range with it.")
     end
     if UnitIsUnit("target", unit) then
-        return IsActionInRange(mb_registeredRangeCheckSpells[spellName])
+        return IsActionInRange(mb_registeredRangeCheckSpells[spellName]) == 1
     end
 
     local hadTarget = UnitExists("target")
 
     TargetUnit(unit)
-    local isInRange = IsActionInRange(mb_registeredRangeCheckSpells[spellName])
+    local isInRange = IsActionInRange(mb_registeredRangeCheckSpells[spellName]) == 1
 
     if hadTarget then
         TargetLastTarget()

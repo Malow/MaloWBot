@@ -6,7 +6,6 @@
 ## Author: MaloW
 ## SavedVariables: mb_SV
 
-CombatLogModule.lua
 Config.lua
 Functions.lua
 GlobalDefinitions.lua
@@ -26,3 +25,6 @@ classes\Priest.lua
 classes\Rogue.lua
 classes\Warlock.lua
 classes\Warrior.lua
+
+modules\CombatLogModule.lua
+modules\HealingModule.lua

@@ -25,10 +25,10 @@ function max_GetUnitFromPartyOrRaidIndex(index)
 end
 
 -- Returns true/false depending on if the unit has the buff
-function max_HasBuff(unit, buff)
+function max_HasBuff(unit, buffTexture)
 	for i = 1, MAX_BUFFS do
 		local b = UnitBuff(unit, i)
-		if b and b == buff then
+		if b and b == buffTexture then
 			return true
 		end
 	end
@@ -46,14 +46,25 @@ function max_HasBuffWithMultipleTextures(unit, textures)
 end
 
 -- Returns true/false depending on if the unit has the buff
-function max_HasDebuff(unit, debuff)
+function max_HasDebuff(unit, debuffTexture)
 	for i = 1, MAX_DEBUFFS do
 		local b = UnitDebuff(unit, i)
-		if b and b == debuff then
+		if b and b == debuffTexture then
 			return true
 		end
 	end
 	return false
+end
+
+-- Get number of Debuff Stacks
+function max_GetDebuffStackCount(unit, debuffTexture)
+	for i = 1, MAX_DEBUFFS do
+		local b, stacks = UnitDebuff(unit, i)
+		if b and b == debuffTexture then
+			return stacks
+		end
+	end
+	return 0
 end
 
 -- Calculates missing health from maxHealth - currentHealth
@@ -86,6 +97,7 @@ function max_CastSpellOnRaidMember(spellName, unit)
 	end
 	CastSpellByName(spellName, false)
 	SpellTargetUnit(unit)
+	SpellStopTargeting()
 end
 
 function max_CastSpellOnRaidMemberByPlayerName(spellName, playerName)
@@ -244,4 +256,14 @@ end
 
 function max_IsPetAliveAndActive()
 	return UnitExists("pet") and not UnitIsDeadOrGhost("pet")
+end
+
+function max_GetActiveStance()
+	for i = 1, 10 do
+		local icon, name, active, castable = GetShapeshiftFormInfo(i);
+		if active then
+			return i
+		end
+	end
+	return nil
 end

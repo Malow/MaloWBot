@@ -1,9 +1,24 @@
+
+mb_priestCurrentHealTarget = nil
+mb_priestStoppedCastingTime = 0
 function mb_Priest(commander)
     if mb_DoBasicCasterLogic() then
         return
     end
-    if mb_isCasting then
+    if mb_priestStoppedCastingTime + 0.25 > GetTime() then
         return
+    end
+    if mb_isCasting then
+        if mb_priestCurrentHealTarget ~= nil and mb_castStartedTime + 2 < GetTime() then
+            if max_GetMissingHealth(mb_priestCurrentHealTarget) < 1200 then
+                SpellStopCasting()
+                mb_priestCurrentHealTarget = nil
+                mb_priestStoppedCastingTime = GetTime()
+            end
+        end
+        return
+    else
+        mb_priestCurrentHealTarget = nil
     end
 
     local request = mb_GetQueuedRequest(true)
@@ -24,10 +39,18 @@ function mb_Priest(commander)
             max_CastSpellOnRaidMemberByPlayerName("Dispel Magic", request.body)
             mb_RequestCompleted(request)
             return
+        elseif request.type == "HoT" then
+            mb_HealingModule_CompleteHoTRequest(request)
+            return
         end
     end
 
     if mb_Priest_PrayerOfHealing() then
+        return
+    end
+
+    if mb_areaOfEffectMode then
+        CastSpellByName("Holy Nova")
         return
     end
 
@@ -41,11 +64,6 @@ function mb_Priest(commander)
         end
     else
         max_SayRaid("Serious error, bad spec for priest: " .. mySpec)
-    end
-
-    if mb_areaOfEffectMode then
-        CastSpellByName("Holy Nova")
-        return
     end
 
     max_AssistByPlayerName(commander)
@@ -64,6 +82,18 @@ function mb_Priest(commander)
     end
 end
 
+function mb_Priest_TankHealing()
+    local tankUnit = mb_HealingModule_GetValidTankUnitWithHighestFutureMissingHealth("Greater Heal")
+    if tankUnit ~= nil then
+        local callBacks = {}
+        callBacks.onStart = function(spellCast) mb_HealingModule_SendData(UnitName(spellCast.target), 1100, spellCast.startTime + 2.5) end
+        mb_CastSpellByNameOnRaidMemberWithCallbacks("Greater Heal(Rank 1)", tankUnit, callBacks)
+        mb_priestCurrentHealTarget = tankUnit
+        return true
+    end
+    return false
+end
+
 function mb_Priest_Disc()
     if mb_Priest_PWS() then
         return true
@@ -75,6 +105,10 @@ function mb_Priest_Disc()
 end
 
 function mb_Priest_Holy()
+    if mb_Priest_TankHealing() then
+        return true
+    end
+
     if mb_Priest_Renew() then
         return true
     end
@@ -148,6 +182,9 @@ function mb_Priest_OnLoad()
     mb_RegisterRangeCheckSpell("Dispel Magic")
     mb_RegisterRangeCheckSpell("Renew")
     mb_RegisterRangeCheckSpell("Power Word: Shield")
+    mb_RegisterRangeCheckSpell("Greater Heal")
+    mb_HealingModule_Enable()
+    mb_HealingModule_RegisterHoT("Renew", BUFF_TEXTURE_RENEW, 365)
 end
 
 function mb_Priest_HandleResurrectionRequest(request)

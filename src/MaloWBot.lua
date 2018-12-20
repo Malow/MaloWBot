@@ -55,9 +55,18 @@ function mb_OnEvent()
 		end
 	elseif event == "SPELLCAST_START" or event == "SPELLCAST_CHANNEL_START" then
 		mb_isCasting = true
+		if mb_lastAttemptedCast ~= nil and mb_lastAttemptedCast.onStartCallback ~= nil then
+			mb_lastAttemptedCast.onStartCallback(mb_lastAttemptedCast)
+		end
 		mb_castStartedTime = GetTime()
 	elseif event == "SPELLCAST_STOP" or event == "SPELLCAST_CHANNEL_STOP" or event == "SPELLCAST_INTERRUPTED" or event == "SPELLCAST_FAILED" then
 		mb_isCasting = false
+		if event == "SPELLCAST_INTERRUPTED" or event == "SPELLCAST_FAILED" then
+			if mb_lastAttemptedCast ~= nil and mb_lastAttemptedCast.onFailCallback ~= nil then
+				mb_lastAttemptedCast.onFailCallback(mb_lastAttemptedCast)
+			end
+		end
+		mb_lastAttemptedCast = nil
 	elseif event == "CHAT_MSG_ADDON" and arg1 == "MB" then
         mb_HandleMBCommunication(arg2, arg3, arg4)
 	elseif event == "TRADE_CLOSED" then
@@ -364,8 +373,26 @@ function mb_RequestCompleted(request)
     end
 end
 
-function mb_GetMySpecName()
-	return mb_GetConfig()["specs"][UnitName("player")]
+mb_lastAttemptedCast = nil
+function mb_CastSpellByNameWithCallbacks(spellName, target, callbacks)
+	mb_lastAttemptedCast = {}
+	mb_lastAttemptedCast.spellName = spellName
+	mb_lastAttemptedCast.startTime = GetTime()
+	mb_lastAttemptedCast.target = target
+	if callbacks ~= nil then
+		mb_lastAttemptedCast.onStartCallback = callbacks.onStart
+		mb_lastAttemptedCast.onFailCallback = callbacks.onFail
+	end
+	CastSpellByName(spellName, false)
+end
+
+function mb_CastSpellByNameOnRaidMemberWithCallbacks(spellName, target, callbacks)
+	if UnitIsFriend("player", "target") then
+		ClearTarget()
+	end
+	mb_CastSpellByNameWithCallbacks(spellName, target, callbacks)
+	SpellTargetUnit(target)
+	SpellStopTargeting()
 end
 
 
@@ -376,7 +403,6 @@ end
 ---		Also check durability is above 10% in all slots, otherwise decline and announce in raid
 --- If a trade window is open stop assisting cuz it breaks trade
 --- Make accepted requests time out if their throttleTime - 1 has passed
---- Figure out a way to clear up pending requests list, it will grow forever atm
 ---	Add proper healing-code. When you start healing someone with a cast-time announce that you're doing so and then listen to announces.
 ---		Add the announced heals to the targets current health until you see your own announcement, then decide if you want to cancel your cast or not.
 ---		Also scan the target for current health and hots and other stuff to decide if you should cancel.
@@ -430,6 +456,16 @@ end
 ---			All-in-one pet macro:     /run local c=CastSpellByName if UnitExists("pet") then if UnitHealth("pet")==0 then c("Revive Pet") elseif GetPetHappiness()~=nil and GetPetHappiness()~=3 then c("Feed Pet") PickupContainerItem(0, 13) else c("Dismiss Pet") end else c("Call Pet") end
 ---		Add Aimed-shot to the rotation, maybe see https://github.com/Geigerkind/OneButtonHunter/blob/master/OneButtonHunter.lua, though it seems to be bugged
 ---		Make them melee-hit with Raptor strike and mongoose bite if in melee range?
+---	Warrior:
+---		Prot:
+---			Battle-shout, make it smart so that it rebuffs party mates within range if needed and not only self. Also make non-tanking tanks refresh it when it has like 5 sec duration left to prevent tanking tanks from wasting the rage
+---			Demo shout
+---			Thunder clap
+---			Mocking blow taunt if Taunt is on CD
+---			Is rend ever worth using as prot?
+---			Intercept/charge, gonna make picking shit up way easier if they actually charge their targets, intercept too for resisted taunts so the mob runs away
+---			Dual-tank mode, use cleave then and swap between both targets and check actual threat.
+---			Berserker rage zerk stance dance? Both as fear ward kinda and to increase rage.
 --- Say raid, "I am literally out of X" when out of reagents and trying to buff with them.
 --- Rename followTarget to commander
 --- Performance:
@@ -461,6 +497,15 @@ end
 -- Buffname list: http://www.wowwiki.com/index.php?title=Queriable_buff_effects&oldid=277417
 -- Tooltip scraping: https://github.com/Geigerkind/OneButtonHunter/blob/master/OneButtonHunter.lua
 --		It scrapes both %atk speed on quiver item and which action slot that is "Aimed shot"
+
+-- To parse error-texts:
+-- 		PostLoad:
+--			RS_Old_UIErrorsFrame_OnEvent = UIErrorsFrame_OnEvent
+-- 			UIErrorsFrame_OnEvent = RS_New_UIErrorsFrame_OnEvent
+--	function RS_New_UIErrorsFrame_OnEvent(event, message, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
+--    	--mb_Print(message)
+--    	RS_Old_UIErrorsFrame_OnEvent(event, message, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
+--	end
 
 
 

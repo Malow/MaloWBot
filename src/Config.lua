@@ -21,6 +21,7 @@ function mb_GetConfig()
     config["specs"]["Bondrin"] = "Holy"
     config["specs"]["Silmelin"] = "Holy"
     config["specs"]["Noldralda"] = "Disc"
+    config["specs"]["Devun"]= "WarrTank"
 	config["specs"]["Garret"]= "WarrTank"
 	config["specs"]["Elery"]= "WarrTank"
 	config["specs"]["Kalman"]= "WarrTank"
@@ -28,4 +29,8 @@ function mb_GetConfig()
 	config["specs"]["Hammond"]= "Fury"
 	config["specs"]["Davrice"]= "Fury"
     return config
+end
+
+function mb_GetMySpecName()
+    return mb_GetConfig()["specs"][UnitName("player")]
 end

@@ -1,40 +1,40 @@
 function mb_HandleSpecialSlashCommand(msg)
     if msg == "r" then
-        mb_MakeRequest("reload", "reload", 10)
+        mb_MakeRequest("reload", "reload", REQUEST_PRIORITY.COMMAND)
         ReloadUI()
     elseif msg == "trademegoodies" or msg == "tradeMeGoodies" then
-        mb_MakeRequest("trademegoodies", UnitName("player"), 10)
+        mb_MakeRequest("trademegoodies", UnitName("player"), REQUEST_PRIORITY.COMMAND)
     elseif msg == "inventoryDump" then
-        mb_MakeRequest("inventoryDump", UnitName("player"), 10)
+        mb_MakeRequest("inventoryDump", UnitName("player"), REQUEST_PRIORITY.COMMAND)
     elseif msg == "summon" then
-        mb_MakeRequest("summon", UnitName("target"), 10)
+        mb_MakeRequest("summon", UnitName("target"), REQUEST_PRIORITY.COMMAND)
     elseif msg == "soulstone" then
-        mb_MakeRequest("soulstone", UnitName("target"), 10)
+        mb_MakeRequest("soulstone", UnitName("target"), REQUEST_PRIORITY.COMMAND)
     elseif msg == "hearthstone" then
-        mb_MakeRequest("hearthstone", "hearthstone", 10)
+        mb_MakeRequest("hearthstone", "hearthstone", REQUEST_PRIORITY.COMMAND)
     elseif msg == "mount" then
-        mb_MakeRequest("mount", "mount", 10)
+        mb_MakeRequest("mount", "mount", REQUEST_PRIORITY.COMMAND)
     elseif msg == "releaseCorpse" then
-        mb_MakeRequest("releaseCorpse", "releaseCorpse", 10)
+        mb_MakeRequest("releaseCorpse", "releaseCorpse", REQUEST_PRIORITY.COMMAND)
     elseif msg == "haveQuest" then
-        mb_MakeRequest("haveQuest", GetQuestLogTitle(GetQuestLogSelection()), 10)
+        mb_MakeRequest("haveQuest", GetQuestLogTitle(GetQuestLogSelection()), REQUEST_PRIORITY.COMMAND)
     elseif msg == "doesNotHaveQuest" then
-        mb_MakeRequest("doesNotHaveQuest", GetQuestLogTitle(GetQuestLogSelection()), 10)
+        mb_MakeRequest("doesNotHaveQuest", GetQuestLogTitle(GetQuestLogSelection()), REQUEST_PRIORITY.COMMAND)
     elseif string.find(msg, "aoe") then
         local mode = max_SplitString(msg, " ")[2]
         mb_areaOfEffectMode = mode == "on"
-        mb_MakeRequest("areaOfEffectMode", mode, 10)
+        mb_MakeRequest("areaOfEffectMode", mode, REQUEST_PRIORITY.COMMAND)
     elseif string.find(msg, "follow") then
         local mode = max_SplitString(msg, " ")[2]
         mb_shouldFollow = mode == "on"
-        mb_MakeRequest("followMode", mode, 10)
+        mb_MakeRequest("followMode", mode, REQUEST_PRIORITY.COMMAND)
     elseif string.find(msg, "requestBuffs") then
         local mode = max_SplitString(msg, " ")[2]
-        mb_shouldFollow = mode == "on"
-        mb_MakeRequest("requestBuffsMode", mode, 10)
+        mb_shouldRequestBuffs = mode == "on"
+        mb_MakeRequest("requestBuffsMode", mode, REQUEST_PRIORITY.COMMAND)
     elseif msg == "fixraidgroup" or msg == "fixRaidGroup" then
         if not IsPartyLeader() then
-            mb_MakeRequest("promoteLeader", "promoteLeader", 10)
+            mb_MakeRequest("promoteLeader", "promoteLeader", REQUEST_PRIORITY.COMMAND)
         else
             local members = max_GetNumPartyOrRaidMembers()
             for i = 1, members do

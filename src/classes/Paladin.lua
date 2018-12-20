@@ -39,6 +39,12 @@ function mb_Paladin(commander)
         return
     end
 
+    local debuffTarget = mb_GetDebuffedRaidMember("Cleanse", "Magic", "Poison", "Disease")
+    if debuffTarget ~= nil then
+        max_CastSpellOnRaidMember("Cleanse", debuffTarget)
+        return
+    end
+
     if mb_Paladin_FlashOfLight() then
         return
     end
@@ -128,7 +134,7 @@ function mb_Paladin_OnLoad()
         mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_SANCTUARY)
     end
     mb_Paladin_AddDesiredTalents()
-    mb_AddReagentWatch("Symbol of Kings", 100)
+    mb_AddReagentWatch("Symbol of Kings", 200)
     mb_AddGCDCheckSpell("Holy Light")
     mb_RegisterClassSyncDataFunctions(mb_Paladin_CreateClassSyncData, mb_Paladin_ReceivedClassSyncData)
     mb_RegisterRangeCheckSpell("Flash of Light")
@@ -144,7 +150,7 @@ function mb_Paladin_HandleResurrectionRequest(request)
 end
 
 function mb_Paladin_HandleCleanseRequest(request)
-    if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Cleanse") then
+    if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Cleanse") and UnitMana("player") > 500 then
         mb_AcceptRequest(request)
     end
 end

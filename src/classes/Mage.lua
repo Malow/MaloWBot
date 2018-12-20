@@ -56,8 +56,9 @@ function mb_Mage(commander)
     end
 
     if UnitAffectingCombat("player") then
-        if max_GetManaPercentage("player") < 10 then
+        if max_GetManaPercentage("player") < 10 and not max_IsSpellNameOnCooldown("Evocation") then
             CastSpellByName("Evocation")
+            return
         elseif max_GetManaPercentage("player") < 20 then
             for i = max_GetTableSize(ITEMS_MANA_GEM), 1, -1 do
                 if mb_UseItem(ITEMS_MANA_GEM[i]) then
@@ -65,6 +66,12 @@ function mb_Mage(commander)
                 end
             end
         end
+    end
+
+    local debuffTarget = mb_GetDebuffedRaidMember("Remove Lesser Curse", "Curse")
+    if debuffTarget ~= nil then
+        max_CastSpellOnRaidMember("Remove Lesser Curse", debuffTarget)
+        return
     end
 
     --- Time to do some actual combat
@@ -115,7 +122,7 @@ function mb_Mage_HandleWaterRequest(request)
 end
 
 function mb_Mage_HandleDecurseRequest(request)
-    if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Remove Lesser Curse") then
+    if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Remove Lesser Curse") and UnitMana("player") > 500 then
         mb_AcceptRequest(request)
     end
 end

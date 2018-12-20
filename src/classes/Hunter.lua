@@ -82,9 +82,9 @@ function mb_Hunter_OnLoad()
 	local itemName, itemLink, itemQuality, itemLevel, itemType, itemSubType, itemCount, itemTexture = GetItemInfo(rangedWeaponItemString)
 	if itemSubType ~= nil then
 		if itemSubType == "Bows" or itemSubType == "Crossbows" then
-			mb_AddReagentWatch("Jagged Arrow", 800)
+			mb_AddReagentWatch("Jagged Arrow", 2000)
 		elseif itemSubType == "Guns" then
-			mb_AddReagentWatch("Accurate Slugs", 800)
+			mb_AddReagentWatch("Accurate Slugs", 2000)
 		end
 	end
 

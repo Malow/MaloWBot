@@ -172,7 +172,7 @@ end
 
 -- Checks if target exists, is visible, is friendly and if it's dead or ghost AND if it's in range of spell if a spell is provided.
 function mb_IsUnitValidTarget(unit, spell)
-	if UnitExists(unit) and UnitIsVisible(unit) and not UnitIsEnemy("player", unit) and not UnitIsDeadOrGhost(unit) and not max_HasBuff(unit, BUFF_TEXTURE_SPIRIT_OF_REDEMPTION) then
+	if UnitExists(unit) and UnitIsVisible(unit) and not UnitIsDeadOrGhost(unit) and not max_HasBuff(unit, BUFF_TEXTURE_SPIRIT_OF_REDEMPTION) then -- and not UnitIsEnemy("player", unit) -- removed for Lucifron MC
 		if spell ~= nil then
 			if mb_IsSpellInRange(spell, unit) then
 				return true
@@ -202,7 +202,7 @@ function mb_IsDrinking()
 end
 
 -- Checks combat and mana and target
-function mb_CanResurrectUnitWithSpell(unit, spell)
+function mb_CanResurrectUnitWithSpell(unit, spellName)
 	if UnitAffectingCombat("player") then
 		return false
 	elseif max_GetManaPercentage("player") < 30 then
@@ -210,7 +210,7 @@ function mb_CanResurrectUnitWithSpell(unit, spell)
 	elseif mb_IsDrinking() then
 		return false
 	end
-	if UnitExists(unit) and UnitIsVisible(unit) and UnitIsFriend("player", unit) and UnitIsDead(unit) and mb_IsSpellInRange(spell, unit) then
+	if UnitExists(unit) and UnitIsVisible(unit) and UnitIsFriend("player", unit) and UnitIsDead(unit) and CheckInteractDistance(unit, 4) then --mb_IsSpellInRange(spellName, unit) then
 		return true
 	end
 end

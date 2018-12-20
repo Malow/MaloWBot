@@ -197,3 +197,20 @@ ITEMS_MANA_GEM = {
     "Mana Citrine",
     "Mana Ruby"
 }
+
+--- Request priorities
+REQUEST_PRIORITY = {
+    COMMAND = 101,
+    TANKING_BROADCAST = 101,
+    HEALING_OVER_TIME = 101,
+    HEALER_MODULE_DATA = 101,
+    CLASS_SYNC = 101,
+    -- Anything with over 100 priority is never skipped
+    DISPEL = 80,
+    RESURRECT_RESURRECTER = 70,
+    RESURRECT_CASTER = 60,
+    RESURRECT_MELEE = 50,
+    WATER = 20,
+    BUFF = 10
+}
+

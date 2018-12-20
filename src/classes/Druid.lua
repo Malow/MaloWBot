@@ -1,9 +1,24 @@
+
+mb_druidCurrentHealTarget = nil
+mb_druidStoppedCastingTime = 0
 function mb_Druid(commander)
     if mb_DoBasicCasterLogic() then
         return
     end
-    if mb_isCasting then
+    if mb_druidStoppedCastingTime + 0.3 > GetTime() then
         return
+    end
+    if mb_isCasting then
+        if mb_druidCurrentHealTarget ~= nil and mb_castStartedTime + 2 < GetTime() then
+            if max_GetMissingHealth(mb_druidCurrentHealTarget) < 1500 then
+                SpellStopCasting()
+                mb_druidCurrentHealTarget = nil
+                mb_druidStoppedCastingTime = GetTime()
+            end
+        end
+        return
+    else
+        mb_druidCurrentHealTarget = nil
     end
 
     local request = mb_GetQueuedRequest(true)
@@ -23,15 +38,22 @@ function mb_Druid(commander)
         end
     end
 
+    if not max_IsSpellNameOnCooldown("Innervate") and max_GetManaPercentage("player") < 10 then
+        max_CastSpellOnRaidMember("Innervate", "player")
+        return
+    end
+
+    local debuffTarget = mb_GetDebuffedRaidMember("Remove Curse", "Curse")
+    if debuffTarget ~= nil then
+        max_CastSpellOnRaidMember("Remove Curse", debuffTarget)
+        return
+    end
+
     if mb_Druid_TankHealing() then
         return
     end
 
     if mb_Druid_Rejuvenation() then
-        return
-    end
-
-    if mb_Druid_Regrowth() then
         return
     end
 
@@ -70,18 +92,26 @@ function mb_Druid_OnLoad()
     mb_AddDesiredBuff(BUFF_BLESSING_OF_SALVATION)
     mb_AddDesiredBuff(BUFF_DIVINE_SPIRIT)
     mb_Druid_AddDesiredTalents()
-    mb_AddReagentWatch("Wild Thornroot", 20)
+    mb_AddReagentWatch("Wild Thornroot", 40)
     mb_AddGCDCheckSpell("Rejuvenation")
     mb_RegisterRangeCheckSpell("Remove Curse")
     mb_RegisterRangeCheckSpell("Rejuvenation")
     mb_RegisterRangeCheckSpell("Regrowth")
     mb_HealingModule_Enable()
     mb_HealingModule_RegisterHoT("Rejuvenation", BUFF_TEXTURE_REJUVENATION, 335)
-    mb_HealingModule_RegisterHoT("Regrowth", BUFF_TEXTURE_REGROWTH, 880)
+    -- mb_HealingModule_RegisterHoT("Regrowth", BUFF_TEXTURE_REGROWTH, 880)
 end
 
 function mb_Druid_TankHealing()
-
+    local tankUnit = mb_HealingModule_GetValidTankUnitWithHighestFutureMissingHealth("Regrowth")
+    if tankUnit ~= nil then
+        local callBacks = {}
+        callBacks.onStart = function(spellCast) mb_HealingModule_SendData(UnitName(spellCast.target), 1000, spellCast.startTime + 2) end
+        mb_CastSpellByNameOnRaidMemberWithCallbacks("Regrowth", tankUnit, callBacks)
+        mb_druidCurrentHealTarget = tankUnit
+        return true
+    end
+    return false
 end
 
 function mb_Druid_Rejuvenation()
@@ -89,19 +119,7 @@ function mb_Druid_Rejuvenation()
     local unitFilter = UNIT_FILTER_DOES_NOT_HAVE_BUFF
     unitFilter.buff = BUFF_TEXTURE_REJUVENATION
     local healTargetUnit, missingHealthOfTarget = mb_GetMostDamagedFriendly(spell, unitFilter)
-    if max_GetHealthPercentage(healTargetUnit) < 75 then
-        max_CastSpellOnRaidMember(spell, healTargetUnit)
-        return true
-    end
-    return false
-end
-
-function mb_Druid_Regrowth()
-    local spell = "Regrowth"
-    local unitFilter = UNIT_FILTER_DOES_NOT_HAVE_BUFF
-    unitFilter.buff = BUFF_TEXTURE_REGROWTH
-    local healTargetUnit, missingHealthOfTarget = mb_GetMostDamagedFriendly(spell, unitFilter)
-    if max_GetHealthPercentage(healTargetUnit) < 60 then
+    if max_GetHealthPercentage(healTargetUnit) < 50 then
         max_CastSpellOnRaidMember(spell, healTargetUnit)
         return true
     end
@@ -117,7 +135,7 @@ function mb_Druid_InsectSwarm()
 end
 
 function mb_Druid_HandleDecurseRequest(request)
-    if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Remove Curse") then
+    if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Remove Curse") and UnitMana("player") > 500 then
         mb_AcceptRequest(request)
     end
 end

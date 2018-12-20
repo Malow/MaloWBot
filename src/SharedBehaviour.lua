@@ -16,7 +16,7 @@ function mb_HandleSharedBehaviour(commander)
     if mb_classSyncData == nil then
         local request = REQUEST_CLASS_SYNC
         request.type = max_GetClass("player") .. "Sync"
-        mb_MakeThrottledRequest(request, "needSync", 10)
+        mb_MakeThrottledRequest(request, "needSync", REQUEST_PRIORITY.CLASS_SYNC)
     end
 
     AcceptGuild()
@@ -142,26 +142,27 @@ function mb_CheckAndRequestBuffs()
     end
     for i = 1, max_GetTableSize(mb_desiredBuffs) do
         if not max_HasBuffWithMultipleTextures("player", mb_desiredBuffs[i].textures) then
-            mb_MakeThrottledRequest(mb_desiredBuffs[i], UnitName("player"), 1)
+            mb_MakeThrottledRequest(mb_desiredBuffs[i], UnitName("player"), REQUEST_PRIORITY.BUFF)
         end
     end
 end
 
 function mb_CheckAndRequestDispels()
-    for i = 1, MAX_DEBUFFS do
+    return -- Disabled for now
+    --[[for i = 1, MAX_DEBUFFS do
         local debuffTexture, debuffApplications, debuffDispelType = UnitDebuff("player", i)
         if debuffDispelType ~= nil then
             if debuffDispelType == "Magic" then
-                mb_MakeThrottledRequest(REQUEST_REMOVE_MAGIC, UnitName("player"), 6)
+                mb_MakeThrottledRequest(REQUEST_REMOVE_MAGIC, UnitName("player"), REQUEST_PRIORITY.DISPEL)
             elseif debuffDispelType == "Curse" then
-                mb_MakeThrottledRequest(REQUEST_REMOVE_CURSE, UnitName("player"), 6)
+                mb_MakeThrottledRequest(REQUEST_REMOVE_CURSE, UnitName("player"), REQUEST_PRIORITY.DISPEL)
             elseif debuffDispelType == "Disease" then
-                mb_MakeThrottledRequest(REQUEST_REMOVE_DISEASE, UnitName("player"), 6)
+                mb_MakeThrottledRequest(REQUEST_REMOVE_DISEASE, UnitName("player"), REQUEST_PRIORITY.DISPEL)
             elseif debuffDispelType == "Poison" then
-                mb_MakeThrottledRequest(REQUEST_REMOVE_POISON, UnitName("player"), 6)
+                mb_MakeThrottledRequest(REQUEST_REMOVE_POISON, UnitName("player"), REQUEST_PRIORITY.DISPEL)
             end
         end
-    end
+    end]]
 end
 
 function mb_AddDesiredBuff(buff)
@@ -195,12 +196,12 @@ end
 function mb_GetMyResurrectionPriority()
     local myClass = max_GetClass("player")
     if myClass == "PRIEST" or myClass == "PALADIN" then
-        return 9
+        return REQUEST_PRIORITY.RESURRECT_RESURRECTER
     end
     if myClass == "ROGUE" or myClass == "WARRIOR" then
-        return 7
+        return REQUEST_PRIORITY.RESURRECT_MELEE
     end
-    return 8
+    return REQUEST_PRIORITY.RESURRECT_CASTER
 end
 
 mb_throttleData = {}
@@ -259,7 +260,7 @@ function mb_DoBasicCasterLogic()
 
     if not UnitAffectingCombat("player") then
         if mb_GetWaterCount() < 10 and max_GetClass("player") ~= "MAGE" then
-            mb_MakeThrottledRequest(REQUEST_WATER, UnitName("player"), 6)
+            mb_MakeThrottledRequest(REQUEST_WATER, UnitName("player"), REQUEST_PRIORITY.WATER)
         end
     end
 

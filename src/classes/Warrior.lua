@@ -60,7 +60,7 @@ function mb_Warrior_Tank()
 
     if mb_Warrior_lastTankingBroadcast + 5 < GetTime() then
         mb_Warrior_lastTankingBroadcast = GetTime()
-        mb_MakeRequest("tankingBroadcast", mb_CombatLogModule_GetDTPS(10), 10)
+        mb_MakeRequest("tankingBroadcast", mb_CombatLogModule_GetDTPS(10), REQUEST_PRIORITY.TANKING_BROADCAST)
     end
 
     CastSpellByName("Revenge")
@@ -104,12 +104,12 @@ end
 mb_Warrior_lastHoTRequest = 0
 function mb_Warrior_RequestHoTs()
     local myHotCount = mb_GetHoTCount("player")
-    if myHotCount == 3 then
+    if myHotCount > 1 then
         return
     end
     local HoTValue = mb_CombatLogModule_GetDTPS(10) / (myHotCount + 1) -- +1 to avoid diving by zero
     if HoTValue > 100 and mb_Warrior_lastHoTRequest + 2.5 < GetTime() then
-        mb_MakeRequest("HoT", UnitName("player"), 11)
+        mb_MakeRequest("HoT", UnitName("player"), REQUEST_PRIORITY.HEALING_OVER_TIME)
         mb_Warrior_lastHoTRequest = GetTime()
     end
 end

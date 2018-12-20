@@ -48,6 +48,23 @@ function mb_GetLowestHealthFriendly(spell, unitFilter)
     end
 end
 
+-- Returns the unit of a raid-member that has a debuff of the specific type and that you can cast the specific spell on.
+function mb_GetDebuffedRaidMember(spell, debuffType1, debuffType2, debuffType3)
+    local members = max_GetNumPartyOrRaidMembers()
+    for i = 1, members do
+        local unit = max_GetUnitFromPartyOrRaidIndex(i)
+        for u = 1, MAX_DEBUFFS do
+            local debuffTexture, debuffApplications, debuffDispelType = UnitDebuff(unit, u)
+            if debuffDispelType ~= nil and (debuffDispelType == debuffType1 or debuffDispelType == debuffType2 or debuffDispelType == debuffType3) then
+                if mb_IsUnitValidTarget(unit, spell) then
+                    return unit
+                end
+            end
+        end
+    end
+    return nil
+end
+
 -- Checks the unit against the unitFilter, returns true if the unit passes (is not filtered)
 function mb_CheckFilter(unit, unitFilter)
     if unitFilter.name == UNIT_FILTER_HAS_MANA.name then

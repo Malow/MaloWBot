@@ -92,6 +92,9 @@ function mb_OnEvent()
 		mb_isAutoAttacking = true
 	elseif event == "PLAYER_LEAVE_COMBAT" then
 		mb_isAutoAttacking = false
+	elseif event == "PLAYER_DEAD" and mb_GetConfig()["followTarget"] == UnitName("player") then
+		mb_shouldRequestBuffs = false
+		mb_MakeRequest("requestBuffsMode", "off", REQUEST_PRIORITY.COMMAND)
 	end
 end
 f:RegisterEvent("ADDON_LOADED")
@@ -115,9 +118,8 @@ f:RegisterEvent("START_AUTOREPEAT_SPELL")
 f:RegisterEvent("STOP_AUTOREPEAT_SPELL")
 f:RegisterEvent("PLAYER_ENTER_COMBAT")
 f:RegisterEvent("PLAYER_LEAVE_COMBAT")
+f:RegisterEvent("PLAYER_DEAD")
 f:SetScript("OnEvent", mb_OnEvent)
-
-
 
 mb_queuedIncomingRequests = {}
 function mb_HandleMBCommunication(arg2, arg3, arg4)
@@ -324,6 +326,9 @@ function mb_IsOnGCD()
 end
 
 function mb_ShouldAddRequestToQueue(request)
+	if request.priority > 100 then
+		return true
+	end
     local highestPriorityRequest = mb_GetQueuedRequest()
 	if highestPriorityRequest == nil then
 		return true
@@ -331,7 +336,7 @@ function mb_ShouldAddRequestToQueue(request)
     if request.priority > highestPriorityRequest.priority then
         return true
     end
-    if max_GetTableSize(mb_queuedRequests) > 2 then
+    if max_GetTableSize(mb_queuedRequests) > 0 then
         return false
     end
     return true

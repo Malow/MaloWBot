@@ -109,12 +109,13 @@ function mb_HealingModule_GetFutureMissingHealth(unit)
             missingHealth = missingHealth - mb_HealingModule_incomingHeals[playerName][i].healAmount
         end
     end
+    missingHealth = missingHealth - (mb_GetHoTCount(unit) * 500)
     return missingHealth
 end
 
 function mb_HealingModule_SendData(targetPlayerName, healAmount, finishTime)
     local healData = targetPlayerName .. "/" .. healAmount .. "/" .. finishTime
-    mb_MakeRequest("healerModuleData", healData, 10)
+    mb_MakeRequest("healerModuleData", healData, REQUEST_PRIORITY.HEALER_MODULE_DATA)
 end
 
 function mb_HealingModule_GetRaidHealTarget(spell, unitFilter)

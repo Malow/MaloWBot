@@ -5,7 +5,7 @@ function mb_Priest(commander)
     if mb_DoBasicCasterLogic() then
         return
     end
-    if mb_priestStoppedCastingTime + 0.25 > GetTime() then
+    if mb_priestStoppedCastingTime + 0.3 > GetTime() then
         return
     end
     if mb_isCasting then
@@ -43,6 +43,12 @@ function mb_Priest(commander)
             mb_HealingModule_CompleteHoTRequest(request)
             return
         end
+    end
+
+    local debuffTarget = mb_GetDebuffedRaidMember("Dispel Magic", "Magic")
+    if debuffTarget ~= nil then
+        max_CastSpellOnRaidMember("Dispel Magic", debuffTarget)
+        return
     end
 
     if mb_Priest_PrayerOfHealing() then
@@ -123,7 +129,7 @@ function mb_Priest_PWS()
     local unitFilter = UNIT_FILTER_DOES_NOT_HAVE_DEBUFF
     unitFilter.debuff = DEBUFF_TEXTURE_WEAKENED_SOUL
     local healTargetUnit, healthOfTarget = mb_GetLowestHealthFriendly(spell, unitFilter)
-    if max_GetHealthPercentage(healTargetUnit) < 50 then
+    if max_GetHealthPercentage(healTargetUnit) < 40 then
         max_CastSpellOnRaidMember(spell, healTargetUnit)
         return true
     end
@@ -135,7 +141,7 @@ function mb_Priest_Renew()
     local unitFilter = UNIT_FILTER_DOES_NOT_HAVE_BUFF
     unitFilter.buff = BUFF_TEXTURE_RENEW
     local healTargetUnit, missingHealthOfTarget = mb_GetMostDamagedFriendly(spell, unitFilter)
-    if max_GetHealthPercentage(healTargetUnit) < 75 then
+    if max_GetHealthPercentage(healTargetUnit) < 50 then
         max_CastSpellOnRaidMember(spell, healTargetUnit)
         return true
     end
@@ -177,7 +183,7 @@ function mb_Priest_OnLoad()
     mb_AddDesiredBuff(BUFF_DIVINE_SPIRIT)
     mb_Priest_AddDesiredTalents()
     mb_AddGCDCheckSpell("Renew")
-    mb_AddReagentWatch("Sacred Candle", 20)
+    mb_AddReagentWatch("Sacred Candle", 60)
     mb_RegisterRangeCheckSpell("Resurrection")
     mb_RegisterRangeCheckSpell("Dispel Magic")
     mb_RegisterRangeCheckSpell("Renew")
@@ -194,7 +200,7 @@ function mb_Priest_HandleResurrectionRequest(request)
 end
 
 function mb_Priest_HandleDispelRequest(request)
-    if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Dispel Magic") then
+    if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Dispel Magic") and UnitMana("player") > 500 then
         mb_AcceptRequest(request)
     end
 end

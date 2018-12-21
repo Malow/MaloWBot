@@ -9,19 +9,31 @@ function mb_Warrior(commander)
     end
 
     AssistByName(commander)
-    CastSpellByName("Attack")
-    CastSpellByName("Bloodthirst")
-    CastSpellByName("Whirlwind")
-    --if config["specs"]["player"] == "Fury" then
-    --    CastSpellByName("Berserker Stance")
-     --   return
-   -- end
-    if max_GetHealthPercentage("target") < 25 then
-        CastSpellByName("Execute")
+
+    if not UnitExists("target") or not UnitIsEnemy("player", "target") then
         return
     end
-    if max_GetHealthPercentage("target") < 90 then
+
+    if UnitAffectingCombat("player") and max_GetHealthPercentage("player") > 80 then
         CastSpellByName("Bloodrage")
+    end
+
+    if not mb_isAutoAttacking then
+        CastSpellByName("Attack")
+    end
+
+    if mb_Warrior_BattleShout() then
+        return
+    end
+
+    CastSpellByName("Bloodthirst")
+    CastSpellByName("Whirlwind")
+
+    if max_GetActiveStance() ~= 3 then
+        CastSpellByName("Berserker Stance")
+    end
+    if max_GetHealthPercentage("target") < 25 then
+        CastSpellByName("Execute")
         return
     end
 end
@@ -29,10 +41,6 @@ end
 mb_Warrior_lastTankingBroadcast = 0
 mb_Warrior_lastSunder = 0
 function mb_Warrior_Tank()
-    if max_GetActiveStance() ~= 2 then
-        CastSpellByName("Defensive Stance")
-    end
-
     if not UnitExists("target") or not UnitIsEnemy("player", "target") then
         return
     end
@@ -43,7 +51,19 @@ function mb_Warrior_Tank()
 
     if UnitExists("targettarget") then
         local targetOfTargetName = UnitName("targettarget")
-        if mb_GetConfig()["specs"][targetOfTargetName] ~= "WarrTank" then
+        if mb_GetConfig()["specs"][targetOfTargetName] == "WarrTank" then
+            if UnitIsUnit("player", "targettarget") then
+                if max_GetActiveStance() ~= 2 then
+                    CastSpellByName("Defensive Stance")
+                end
+            else
+                mb_Warrior_DpsTank()
+                return
+            end
+        else
+            if max_GetActiveStance() ~= 2 then
+                CastSpellByName("Defensive Stance")
+            end
             CastSpellByName("Taunt")
         end
     end
@@ -66,6 +86,10 @@ function mb_Warrior_Tank()
     CastSpellByName("Revenge")
 
     if mb_IsOnGCD() then
+        return
+    end
+
+    if mb_Warrior_BattleShout() then
         return
     end
 
@@ -101,6 +125,20 @@ function mb_Warrior_Tank()
     end
 end
 
+function mb_Warrior_DpsTank()
+    if max_GetActiveStance() ~= 1 then
+        CastSpellByName("Battle Stance")
+    end
+    if not max_HasDebuff("target", DEBUFF_TEXTURE_DEMORALIZING_SHOUT) and CheckInteractDistance("target", 3) then
+        CastSpellByName("Demoralizing Shout")
+        return
+    end
+    if not max_HasDebuff("target", DEBUFF_TEXTURE_THUNDER_CLAP) and CheckInteractDistance("target", 3) then
+        CastSpellByName("Thunder Clap")
+        return
+    end
+end
+
 mb_Warrior_lastHoTRequest = 0
 function mb_Warrior_RequestHoTs()
     local myHotCount = mb_GetHoTCount("player")
@@ -114,6 +152,14 @@ function mb_Warrior_RequestHoTs()
     end
 end
 
+function mb_Warrior_BattleShout()
+    if not max_HasBuff("player", BUFF_TEXTURE_BATTLE_SHOUT) then
+        CastSpellByName("Battle Shout")
+        return true
+    end
+    return false
+end
+
 function mb_Warrior_OnLoad()
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
@@ -121,6 +167,7 @@ function mb_Warrior_OnLoad()
     mb_AddDesiredBuff(BUFF_BLESSING_OF_KINGS)
     mb_AddDesiredBuff(BUFF_BLESSING_OF_LIGHT)
     mb_AddDesiredBuff(BUFF_BLESSING_OF_SANCTUARY)
+    mb_AddDesiredBuff(BUFF_SHADOW_PROTECTION)
     mb_Warrior_AddDesiredTalents()
 	mb_AddGCDCheckSpell("Sunder Armor")
     if mb_warriorIsTank then

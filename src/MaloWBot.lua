@@ -429,29 +429,25 @@ end
 ---		Wand if oom
 ---		Fire/Frost ward
 --- Priest:
----     Buff shadow protection
+---		Fear ward request
 ---     Holy should be casting/stop-casting greater heals (ranked depending on incoming damage) on tanks
 ---     Disc priest will probably have little to do, should be a bit more aggressive with renewing raid I guess
----     All priests should be keeping renew up 24/7 on tanking tanks
 ---     PW:S if below X health or tank below % HP
 ---     Can swap groups in combat? If so priests could be spamming PoH with swapping people in who need it.
 ---		Do abolish disease, check mana costs of the 2 versions
----		Fear ward request
 ---		Wand instead of attack if ranged, (does wand cause GCD?)
 ---		Improve PoH logic, instead of checking if 3 or more members miss 1k health, include the 2 other guys even if they only miss 500 and check for total amount healed.
 --- Druids:
 ---     Tranquility like PoH in priest
 ---     Rejuvenation and Regrowth on tanking tanks 24/7
 ---     Swiftmend
----     Cast/Stop-cast HT/Regrowth spam on tanks? Rejuvenation on raid?
 ---		Add logic for Feral DPS and Feral tank
----		Tank VS DPS VS Healer distinction for Sanctuary/Salvation
 ---		Do abolish poison, check mana costs of the 2 versions
 ---		Innervate, who is it best on? Priests? Use requests?
 ---		Combat ress
 ---			Also need to implement rebuffing after combat ress then kinda
 ---	Paladins:
----		request auras
+---		request specific auras
 ---		Add logic for ret pal
 ---		Add holy shock for the few that has it
 ---		Consecration in a max-burn AoE mode?
@@ -462,10 +458,9 @@ end
 ---		Add Aimed-shot to the rotation, maybe see https://github.com/Geigerkind/OneButtonHunter/blob/master/OneButtonHunter.lua, though it seems to be bugged
 ---		Make them melee-hit with Raptor strike and mongoose bite if in melee range?
 ---	Warrior:
+---		Only warriors with specced imp demo should cast it, right now no1 is specced that though...
+---		Battle-shout, make it smart so that it rebuffs party mates within range if needed and not only self. Also make non-tanking tanks refresh it when it has like 5 sec duration left to prevent tanking tanks from wasting the rage
 ---		Prot:
----			Battle-shout, make it smart so that it rebuffs party mates within range if needed and not only self. Also make non-tanking tanks refresh it when it has like 5 sec duration left to prevent tanking tanks from wasting the rage
----			Demo shout
----			Thunder clap
 ---			Mocking blow taunt if Taunt is on CD
 ---			Is rend ever worth using as prot?
 ---			Intercept/charge, gonna make picking shit up way easier if they actually charge their targets, intercept too for resisted taunts so the mob runs away
@@ -478,7 +473,7 @@ end
 ---		Don't need to request water every frame
 ---	Repair-report, Should be able to report lowest item % in /raid
 --- Blacklist LoS targets when using mb_IsSpellInRange for 1 sec, use the Rogue-Spam way to detect error message of LoS
----
+--- IsActionInRange fails for resses, spend some more time looking into it to see if we can fix it
 ---
 ---
 ---

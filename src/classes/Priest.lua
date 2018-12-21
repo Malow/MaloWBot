@@ -104,7 +104,7 @@ function mb_Priest_Disc()
     if mb_Priest_PWS() then
         return true
     end
-    if mb_Priest_Renew() then
+    if mb_Priest_Renew(60) then
         return true
     end
     return false
@@ -115,7 +115,7 @@ function mb_Priest_Holy()
         return true
     end
 
-    if mb_Priest_Renew() then
+    if mb_Priest_Renew(40) then
         return true
     end
     return false
@@ -136,12 +136,12 @@ function mb_Priest_PWS()
     return false
 end
 
-function mb_Priest_Renew()
+function mb_Priest_Renew(healthPercentage)
     local spell = "Renew"
     local unitFilter = UNIT_FILTER_DOES_NOT_HAVE_BUFF
     unitFilter.buff = BUFF_TEXTURE_RENEW
     local healTargetUnit, missingHealthOfTarget = mb_GetMostDamagedFriendly(spell, unitFilter)
-    if max_GetHealthPercentage(healTargetUnit) < 50 then
+    if max_GetHealthPercentage(healTargetUnit) < healthPercentage then
         max_CastSpellOnRaidMember(spell, healTargetUnit)
         return true
     end
@@ -165,11 +165,13 @@ function mb_Priest_PrayerOfHealing()
 end
 
 function mb_Priest_OnLoad()
-    if mb_Priest_HasImprovedFortitude() then
-        mb_RegisterForStandardBuffRequest(BUFF_POWER_WORD_FORTITUDE)
-    end
     if mb_Priest_HasDivineSpirit() then
         mb_RegisterForStandardBuffRequest(BUFF_DIVINE_SPIRIT)
+    else
+        if mb_Priest_HasImprovedFortitude() then
+            mb_RegisterForStandardBuffRequest(BUFF_POWER_WORD_FORTITUDE)
+        end
+        mb_RegisterForStandardBuffRequest(BUFF_SHADOW_PROTECTION)
     end
     mb_RegisterForRequest(REQUEST_RESURRECT.type, mb_Priest_HandleResurrectionRequest)
     mb_RegisterForRequest(REQUEST_REMOVE_MAGIC.type, mb_Priest_HandleDispelRequest)
@@ -181,6 +183,7 @@ function mb_Priest_OnLoad()
     mb_AddDesiredBuff(BUFF_BLESSING_OF_LIGHT)
     mb_AddDesiredBuff(BUFF_BLESSING_OF_SALVATION)
     mb_AddDesiredBuff(BUFF_DIVINE_SPIRIT)
+    mb_AddDesiredBuff(BUFF_SHADOW_PROTECTION)
     mb_Priest_AddDesiredTalents()
     mb_AddGCDCheckSpell("Renew")
     mb_AddReagentWatch("Sacred Candle", 60)

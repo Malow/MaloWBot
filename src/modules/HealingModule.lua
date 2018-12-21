@@ -65,12 +65,15 @@ function mb_HealingModule_HandleTankBroadcastRequest(request)
     mb_HealingModule_tankingTanks[request.from].lastReceived = GetTime()
 end
 
-function mb_HealingModule_GetValidTankUnitWithHighestFutureMissingHealth(spellName)
+function mb_HealingModule_GetValidTankUnitWithHighestFutureMissingHealth(spellName, unitFilter)
     mb_HealingModule_ExpireTankingTanks()
     local lowestTank = nil
     local futureMissingHealth = nil
     for tankName, tankData in pairs(mb_HealingModule_tankingTanks) do
         local unit = max_GetUnitForPlayerName(tankName)
+        if unitFilter ~= nil and not mb_CheckFilter(unit, unitFilter) then
+            break
+        end
         if mb_IsUnitValidTarget(unit, spellName) then
             local missingHealth = mb_HealingModule_GetFutureMissingHealth(unit)
             missingHealth = missingHealth + (tankData.dtps * 3)

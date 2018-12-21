@@ -91,6 +91,7 @@ function mb_Druid_OnLoad()
     mb_AddDesiredBuff(BUFF_BLESSING_OF_LIGHT)
     mb_AddDesiredBuff(BUFF_BLESSING_OF_SALVATION)
     mb_AddDesiredBuff(BUFF_DIVINE_SPIRIT)
+    mb_AddDesiredBuff(BUFF_SHADOW_PROTECTION)
     mb_Druid_AddDesiredTalents()
     mb_AddReagentWatch("Wild Thornroot", 40)
     mb_AddGCDCheckSpell("Rejuvenation")
@@ -99,11 +100,12 @@ function mb_Druid_OnLoad()
     mb_RegisterRangeCheckSpell("Regrowth")
     mb_HealingModule_Enable()
     mb_HealingModule_RegisterHoT("Rejuvenation", BUFF_TEXTURE_REJUVENATION, 335)
-    -- mb_HealingModule_RegisterHoT("Regrowth", BUFF_TEXTURE_REGROWTH, 880)
 end
 
 function mb_Druid_TankHealing()
-    local tankUnit = mb_HealingModule_GetValidTankUnitWithHighestFutureMissingHealth("Regrowth")
+    local unitFilter = UNIT_FILTER_DOES_NOT_HAVE_BUFF
+    unitFilter.buff = BUFF_TEXTURE_REGROWTH
+    local tankUnit = mb_HealingModule_GetValidTankUnitWithHighestFutureMissingHealth("Regrowth", unitFilter)
     if tankUnit ~= nil then
         local callBacks = {}
         callBacks.onStart = function(spellCast) mb_HealingModule_SendData(UnitName(spellCast.target), 1000, spellCast.startTime + 2) end
@@ -111,6 +113,7 @@ function mb_Druid_TankHealing()
         mb_druidCurrentHealTarget = tankUnit
         return true
     end
+    -- TODO: Do healing touch instead
     return false
 end
 

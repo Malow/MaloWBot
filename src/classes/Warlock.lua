@@ -51,7 +51,7 @@ function mb_Warlock(commander)
     end
 
     if UnitAffectingCombat("player") then
-        if max_GetManaPercentage("player") < 10 and max_GetHealthPercentage("player") > 80 then
+        if max_GetManaPercentage("player") < 10 and max_GetHealthPercentage("player") > 75 then
             CastSpellByName("Life Tap")
             return
         end
@@ -124,6 +124,7 @@ function mb_Warlock_OnLoad()
     mb_AddDesiredBuff(BUFF_BLESSING_OF_LIGHT)
     mb_AddDesiredBuff(BUFF_BLESSING_OF_SALVATION)
     mb_AddDesiredBuff(BUFF_DIVINE_SPIRIT)
+    mb_AddDesiredBuff(BUFF_SHADOW_PROTECTION)
     mb_Warlock_AddDesiredTalents()
     mb_AddGCDCheckSpell("Shadow Bolt")
     mb_RegisterClassSyncDataFunctions(mb_Warlock_CreateClassSyncData, mb_Warlock_ReceivedClassSyncData)
@@ -134,6 +135,9 @@ function mb_Warlock_OnLoad()
 end
 
 function mb_Warlock_HandleSummonRequest(request)
+    if mb_isCasting then
+        return
+    end
     local soulShardCount = mb_GetItemCount("Soul Shard")
     if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.from), "Unending Breath") and soulShardCount > 0 then
         mb_AcceptRequest(request)

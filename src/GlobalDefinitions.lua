@@ -19,6 +19,7 @@ DEBUFF_TEXTURE_HUNTERS_MARK = "Interface\\Icons\\Ability_Hunter_SniperShot"
 -- Mage
 BUFF_TEXTURE_ARCANE_INTELLECT = "Interface\\Icons\\Spell_Holy_MagicalSentry"
 BUFF_TEXTURE_ICE_ARMOR = "Interface\\Icons\\Spell_Frost_FrostArmor02"
+BUFF_TEXTURE_MAGE_ARMOR = "Interface\\Icons\\Spell_MageArmor"
 -- Paladin
 BUFF_TEXTURE_SEAL_OF_LIGHT = "Interface\\Icons\\Spell_Holy_HealingAura"
 BUFF_TEXTURE_SEAL_OF_WISDOM = "Interface\\Icons\\Spell_Holy_RighteousnessAura"
@@ -45,6 +46,7 @@ BUFF_TEXTURE_DIVINE_SPIRIT = "Interface\\Icons\\Spell_Holy_DivineSpirit"
 BUFF_TEXTURE_PRAYER_OF_SPIRIT = "Interface\\Icons\\Spell_Holy_PrayerofSpirit"
 BUFF_TEXTURE_INNER_FIRE = "Interface\\Icons\\Spell_Holy_InnerFire"
 BUFF_TEXTURE_SHADOW_PROTECTION = "Interface\\Icons\\Spell_Shadow_AntiShadow"
+BUFF_TEXTURE_PRAYER_OF_SHADOW_PROTECTION = "Interface\\Icons\\Spell_Holy_PrayerofShadowProtection"
 BUFF_TEXTURE_RENEW = "Interface\\Icons\\Spell_Holy_Renew"
 BUFF_TEXTURE_SPIRIT_OF_REDEMPTION = "Interface\\Icons\\Spell_Holy_GreaterHeal"
 BUFF_TEXTURE_ABOLISH_DISEASE = "Interface\\Icons\\Spell_Nature_NullifyDisease"
@@ -58,7 +60,10 @@ DEBUFF_TEXTURE_CURSE_OF_THE_ELEMENTS = "Interface\\Icons\\Spell_Shadow_ChillTouc
 DEBUFF_TEXTURE_CURSE_OF_RECKLESSNESS = "Interface\\Icons\\Spell_Shadow_UnholyStrength"
 DEBUFF_TEXTURE_CURSE_OF_WEAKNESS = "Interface\\Icons\\Spell_Shadow_CurseOfMannoroth"
 -- Warrior
+BUFF_TEXTURE_BATTLE_SHOUT = "Interface\\Icons\\Ability_Warrior_BattleShout"
 DEBUFF_TEXTURE_SUNDER_ARMOR = "Interface\\Icons\\Ability_Warrior_Sunder"
+DEBUFF_TEXTURE_DEMORALIZING_SHOUT = "Interface\\Icons\\Ability_Warrior_WarCry"
+DEBUFF_TEXTURE_THUNDER_CLAP = "Interface\\Icons\\Spell_Nature_ThunderClap"
 
 --- Unit filters
 UNIT_FILTER_HAS_MANA = {
@@ -166,6 +171,13 @@ BUFF_MARK_OF_THE_WILD = {
     throttle = 10,
     spellName = "Mark of the Wild",
     groupWideSpellName = "Gift of the Wild"
+}
+BUFF_SHADOW_PROTECTION = {
+    type = "buffShadowProtection",
+    textures = { BUFF_TEXTURE_SHADOW_PROTECTION, BUFF_TEXTURE_PRAYER_OF_SHADOW_PROTECTION },
+    throttle = 10,
+    spellName = "Shadow Protection",
+    groupWideSpellName = "Prayer of Shadow Protection"
 }
 
 All_BUFFS = {

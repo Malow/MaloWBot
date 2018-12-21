@@ -49,8 +49,8 @@ function mb_Mage(commander)
                 return
             end
         end
-        if not max_HasBuff("player", BUFF_TEXTURE_ICE_ARMOR) then
-            CastSpellByName("Ice Armor")
+        if not max_HasBuff("player", BUFF_TEXTURE_MAGE_ARMOR) then
+            CastSpellByName("Mage Armor")
             return
         end
     end
@@ -102,6 +102,7 @@ function mb_Mage_OnLoad()
     mb_AddDesiredBuff(BUFF_BLESSING_OF_LIGHT)
     mb_AddDesiredBuff(BUFF_BLESSING_OF_SALVATION)
     mb_AddDesiredBuff(BUFF_DIVINE_SPIRIT)
+    mb_AddDesiredBuff(BUFF_SHADOW_PROTECTION)
 
     mb_Mage_AddDesiredTalents()
     mb_AddGCDCheckSpell("Frostbolt")

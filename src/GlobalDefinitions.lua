@@ -18,6 +18,7 @@ BUFF_TEXTURE_TRUESHOT_AURA = "Interface\\Icons\\Ability_TrueShot"
 DEBUFF_TEXTURE_HUNTERS_MARK = "Interface\\Icons\\Ability_Hunter_SniperShot"
 -- Mage
 BUFF_TEXTURE_ARCANE_INTELLECT = "Interface\\Icons\\Spell_Holy_MagicalSentry"
+BUFF_TEXTURE_ARCANE_BRILLIANCE = "Interface\\Icons\\Spell_Holy_ArcaneIntellect"
 BUFF_TEXTURE_ICE_ARMOR = "Interface\\Icons\\Spell_Frost_FrostArmor02"
 BUFF_TEXTURE_MAGE_ARMOR = "Interface\\Icons\\Spell_MageArmor"
 -- Paladin
@@ -112,9 +113,10 @@ REQUEST_REMOVE_DISEASE = {
 --- Buff Requests
 BUFF_ARCANE_INTELLECT = {
     type = "buffArcaneIntellect",
-    textures = { BUFF_TEXTURE_ARCANE_INTELLECT },
+    textures = { BUFF_TEXTURE_ARCANE_INTELLECT, BUFF_TEXTURE_ARCANE_BRILLIANCE },
     throttle = 10,
-    spellName = "Arcane Intellect"
+    spellName = "Arcane Intellect",
+    groupWideSpellName = "Arcane Brilliance"
 }
 BUFF_POWER_WORD_FORTITUDE = {
     type = "buffPowerWordFortitude",
@@ -191,7 +193,8 @@ All_BUFFS = {
     BUFF_BLESSING_OF_LIGHT,
     BUFF_BLESSING_OF_SANCTUARY,
     BUFF_BLESSING_OF_SALVATION,
-    BUFF_MARK_OF_THE_WILD
+    BUFF_MARK_OF_THE_WILD,
+    BUFF_SHADOW_PROTECTION
 }
 
 --- Items

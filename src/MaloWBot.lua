@@ -362,7 +362,7 @@ function mb_GetQueuedRequest(countAttempts)
 			highestPriorityRequest.attempts = highestPriorityRequest.attempts + 1
 		end
 		if highestPriorityRequest.attempts > 100 then
-			max_SayRaid("Warning, request of type " .. highestPriorityRequest.type .. " has been attempted " .. highestPriorityRequest.attempts .. " times.")
+			max_SayRaid("Warning, request of type " .. highestPriorityRequest.type .. " from " .. highestPriorityRequest.from .. " has been attempted " .. highestPriorityRequest.attempts .. " times.")
 		end
 	end
     return highestPriorityRequest

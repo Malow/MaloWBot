@@ -13,7 +13,11 @@ mb_classSyncData = nil
 mb_registeredRangeCheckSpells = {}
 
 function mb_HandleSharedBehaviour(commander)
-    if mb_classSyncData == nil then
+    if mb_HandleMassCommandRequests() then
+        return true
+    end
+
+    if mb_createClassSyncDataFunction ~= nil and mb_classSyncData == nil then
         local request = REQUEST_CLASS_SYNC
         request.type = max_GetClass("player") .. "Sync"
         mb_MakeThrottledRequest(request, "needSync", REQUEST_PRIORITY.CLASS_SYNC)
@@ -53,9 +57,6 @@ function mb_HandleSharedBehaviour(commander)
     end
     if mb_tradeGoodiesTarget ~= nil then
         mb_DoTradeGoodies()
-        return true
-    end
-    if mb_HandleMassCommandRequests() then
         return true
     end
     if UnitIsDeadOrGhost("player") then

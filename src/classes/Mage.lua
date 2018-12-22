@@ -8,15 +8,8 @@ function mb_Mage(commander)
 
     local request = mb_GetQueuedRequest(true)
     if request ~= nil then
-        if request.type == BUFF_ARCANE_INTELLECT.type then
-            if mb_IsOnGCD() then
-                return
-            end
-            mb_RequestCompleted(request)
-            if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), BUFF_ARCANE_INTELLECT.textures) then
-                max_CastSpellOnRaidMemberByPlayerName("Arcane Intellect", request.body)
-                return
-            end
+        if mb_CompleteStandardBuffRequest(request) then
+            return
         elseif request.type == REQUEST_WATER.type then
             if not CursorHasItem() then
                 local bag, slot = mb_LocateWaterInBags()
@@ -91,7 +84,6 @@ end
 
 function mb_Mage_OnLoad()
     mb_RegisterForStandardBuffRequest(BUFF_ARCANE_INTELLECT)
-    mb_RegisterForRequest(BUFF_ARCANE_INTELLECT.type, mb_Mage_HandleArcaneIntRequest)
     mb_RegisterForRequest(REQUEST_WATER.type, mb_Mage_HandleWaterRequest)
     mb_RegisterForRequest(REQUEST_REMOVE_CURSE.type, mb_Mage_HandleDecurseRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
@@ -108,6 +100,7 @@ function mb_Mage_OnLoad()
     mb_AddGCDCheckSpell("Frostbolt")
     mb_RegisterRangeCheckSpell("Arcane Intellect")
     mb_RegisterRangeCheckSpell("Remove Lesser Curse")
+    mb_AddReagentWatch("Arcane Powder", 40)
 end
 
 function mb_Mage_HandleWaterRequest(request)

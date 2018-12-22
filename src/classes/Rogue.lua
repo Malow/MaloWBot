@@ -4,7 +4,8 @@ function mb_Rogue(commander)
     if not mb_isAutoAttacking then
         CastSpellByName("Attack")
     end
-    if GetComboPoints() == 4 then
+    mb_Rogue_AdrenalineRush()
+    if not max_HasBuff("player", BUFF_TEXTURE_SLICE_AND_DICE) and GetComboPoints() > 0 then
         CastSpellByName("Slice and Dice")
         return
     end
@@ -62,6 +63,15 @@ function mb_Rogue_ApplyPoison()
             return true
         end
         return false
+    end
+end
+
+function mb_Rogue_CheckAdrenalineRush()
+    if max_IsSpellNameOnCooldown("Adrenaline Rush") == true then
+        return
+    elseif UnitIsEnemy("Player", "target") and CheckInteractDistance("target", 3) and max_GetHealthPercentage("Target") < 90 then
+        CastSpellByName("Adrenaline Rush")
+        return
     end
 end
 

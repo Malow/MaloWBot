@@ -52,6 +52,7 @@ BUFF_TEXTURE_SPIRIT_OF_REDEMPTION = "Interface\\Icons\\Spell_Holy_GreaterHeal"
 BUFF_TEXTURE_ABOLISH_DISEASE = "Interface\\Icons\\Spell_Nature_NullifyDisease"
 DEBUFF_TEXTURE_WEAKENED_SOUL = "Interface\\Icons\\Spell_Holy_AshesToAshes"
 -- Rogue
+BUFF_TEXTURE_SLICE_AND_DICE = "Interface\\Icons\\Ability_Rogue_SliceDice"
 -- Warlock
 BUFF_TEXTURE_DEMON_ARMOR = "Interface\\Icons\\Spell_Shadow_RagingScream"
 BUFF_TEXTURE_SACRIFICED_SUCCUBUS = "Interface\\Icons\\Spell_Shadow_PsychicScream"

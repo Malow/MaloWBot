@@ -226,6 +226,17 @@ function max_GetSpellbookId(spellName)
 	max_SayRaid("Serious error, I don't know the spell: " .. tostring(spellName))
 end
 
+-- Returns true/false depending on if you know that spell
+function max_HasSpell(spellName)
+	for i = 1, 200 do
+		local name, rank = GetSpellName(i, "BOOKTYPE_SPELL")
+		if name == spellName then
+			return true
+		end
+	end
+	return false
+end
+
 -- Returns true/false depending on if the spell with this name is on cooldown
 function max_IsSpellNameOnCooldown(spellName)
 	local start, duration = GetSpellCooldown(max_GetSpellbookId(spellName), "BOOKTYPE_SPELL ")

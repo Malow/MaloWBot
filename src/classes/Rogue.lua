@@ -1,10 +1,15 @@
 mb_Rogue_usesDaggers = false
 function mb_Rogue(commander)
+    if mb_Rogue_ApplyPoison() then
+        return
+    end
     AssistByName(commander)
     if not mb_isAutoAttacking then
         CastSpellByName("Attack")
     end
-    mb_Rogue_AdrenalineRush()
+    if mb_Rogue_AdrenalineRush() then
+        return
+    end
     if not max_HasBuff("player", BUFF_TEXTURE_SLICE_AND_DICE) and GetComboPoints() > 0 then
         CastSpellByName("Slice and Dice")
         return
@@ -25,54 +30,49 @@ function mb_Rogue_ApplyPoison()
         if hasMainHandEnchant == 0 then
             mb_UseItem("Instant Poison VI")
             PickupInventoryItem(16)
-           -- mb_Print("1")
             return true
         end
         if hasOffHandEnchant == 0 then
             mb_UseItem("Instant Poison VI")
             PickupInventoryItem(17)
-           -- mb_Print("2")
             return true
         end
         if mainHandCharges == nil or mainHandCharges <= 20 then
             mb_UseItem("Instant Poison VI")
             PickupInventoryItem(16)
             ReplaceEnchant()
-            --mb_Print("3")
             return true
         end
         if offHandCharges == nil or offHandCharges <= 20 then
             mb_UseItem("Instant Poison VI")
             PickupInventoryItem(17)
             ReplaceEnchant()
-            --mb_Print("4")
             return true
         end
         if mainHandExpiration <= 300000 then
             mb_UseItem("Instant Poison VI")
             PickupInventoryItem(16)
             ReplaceEnchant()
-            --mb_Print("5")
             return true
         end
         if offHandExpiration <= 300000 then
             mb_UseItem("Instant Poison VI")
             PickupInventoryItem(17)
             ReplaceEnchant()
-            --mb_Print("6")
             return true
         end
-        return false
     end
+    return false
 end
 
-function mb_Rogue_CheckAdrenalineRush()
+function mb_Rogue_AdrenalineRush()
     if max_IsSpellNameOnCooldown("Adrenaline Rush") == true then
-        return
+        return false
     elseif UnitIsEnemy("Player", "target") and CheckInteractDistance("target", 3) and max_GetHealthPercentage("Target") < 90 then
         CastSpellByName("Adrenaline Rush")
-        return
+        return true
     end
+    return false
 end
 
 function mb_Rogue_OnLoad()

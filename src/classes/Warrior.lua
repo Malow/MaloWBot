@@ -25,17 +25,23 @@ function mb_Warrior(commander)
     if mb_Warrior_BattleShout() then
         return
     end
-
-    CastSpellByName("Bloodthirst")
-    CastSpellByName("Whirlwind")
-
-    if max_GetActiveStance() ~= 3 then
-        CastSpellByName("Berserker Stance")
-    end
     if max_GetHealthPercentage("target") < 25 then
         CastSpellByName("Execute")
         return
     end
+
+    CastSpellByName("Bloodthirst")
+
+    if  UnitIsEnemy("player","target") and CheckInteractDistance("target", 3) and max_GetHealthPercentage() > 25 then
+        CastSpellByName("Whirlwind")
+        return
+    end
+
+    if max_GetActiveStance() ~= 3 then
+        CastSpellByName("Berserker Stance")
+    end
+
+
 end
 
 mb_Warrior_lastTankingBroadcast = 0

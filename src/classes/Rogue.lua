@@ -3,18 +3,26 @@ function mb_Rogue(commander)
     if mb_Rogue_ApplyPoison() then
         return
     end
+
     AssistByName(commander)
+
+    if not UnitExists("target") or not UnitIsEnemy("player", "target") then
+        return
+    end
+
     if not mb_isAutoAttacking then
         CastSpellByName("Attack")
     end
+
     if mb_Rogue_AdrenalineRush() then
         return
     end
+
     if not max_HasBuff("player", BUFF_TEXTURE_SLICE_AND_DICE) and GetComboPoints() > 0 then
         CastSpellByName("Slice and Dice")
         return
     end
-    if mb_Rogue_usesDaggers == true then
+    if mb_Rogue_usesDaggers then
         CastSpellByName("Backstab")
         return
     end

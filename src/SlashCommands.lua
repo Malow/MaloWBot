@@ -10,6 +10,8 @@ function mb_HandleSpecialSlashCommand(msg)
         mb_MakeRequest("summon", UnitName("target"), REQUEST_PRIORITY.COMMAND)
     elseif msg == "soulstone" then
         mb_MakeRequest("soulstone", UnitName("target"), REQUEST_PRIORITY.COMMAND)
+    elseif msg == "healthstone" then
+        mb_MakeRequest("healthstone", UnitName("target"), REQUEST_PRIORITY.COMMAND)
     elseif msg == "hearthstone" then
         mb_MakeRequest("hearthstone", "hearthstone", REQUEST_PRIORITY.COMMAND)
     elseif msg == "mount" then

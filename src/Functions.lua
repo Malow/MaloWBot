@@ -26,8 +26,6 @@ function mb_GetTradeableItemWithQuality(desiredQuality)
 	for bag = 0, 4 do
 		for slot = 1, GetContainerNumSlots(bag) do
 			local texture, itemCount, locked, quality, readable = GetContainerItemInfo(bag, slot)
-			if texture ~= nil then
-			end
 			if texture ~= nil and desiredQuality == quality and not locked then
 				local name = GetItemInfo(max_GetItemStringFromItemLink(GetContainerItemLink(bag, slot)))
 				if not mb_IsIgnoredTradeItem(name) then
@@ -239,7 +237,7 @@ end
 
 mb_lastAcceptedTrade = 0
 function mb_AcceptTradeThrottled()
-	if mb_lastAcceptedTrade + 0.5 < GetTime() then
+	if mb_lastAcceptedTrade + 1 < GetTime() then
 		mb_lastAcceptedTrade = GetTime()
 		AcceptTrade()
 	end

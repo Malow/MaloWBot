@@ -7,7 +7,7 @@ function mb_Paladin(commander)
     end
     if mb_isCasting then
         if mb_paladinCurrentHealTarget ~= nil then
-            if max_GetMissingHealth(mb_paladinCurrentHealTarget) < 300 then
+            if max_GetMissingHealth(mb_paladinCurrentHealTarget) < 500 then
                 SpellStopCasting()
             end
         end
@@ -87,10 +87,10 @@ end
 function mb_Paladin_FlashOfLight()
     local spell = "Flash of Light"
     local healTargetUnit, missingHealth = mb_HealingModule_GetRaidHealTarget(spell)
-    if missingHealth > 300 then
+    if missingHealth > 500 then
         --max_SayRaid("Started FoL on " .. UnitName(healTargetUnit) .. ". Current missing health: " .. max_GetMissingHealth(healTargetUnit) .. " - Calculated missing health: " .. missingHealth)
         local callBacks = {}
-        callBacks.onStart = function(spellCast) mb_HealingModule_SendData(UnitName(spellCast.target), 500, spellCast.startTime + 1.5) end
+        callBacks.onStart = function(spellCast) mb_HealingModule_SendData(UnitName(spellCast.target), 600, spellCast.startTime + 1.5) end
         mb_CastSpellByNameOnRaidMemberWithCallbacks(spell, healTargetUnit, callBacks)
         mb_paladinCurrentHealTarget = healTargetUnit
         return true

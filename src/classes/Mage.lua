@@ -11,6 +11,10 @@ function mb_Mage(commander)
         if mb_CompleteStandardBuffRequest(request) then
             return
         elseif request.type == REQUEST_WATER.type then
+            if request.attempts > 50 then
+                mb_RequestCompleted(request)
+                return
+            end
             if not CursorHasItem() then
                 local bag, slot = mb_LocateWaterInBags()
                 PickupContainerItem(bag, slot)

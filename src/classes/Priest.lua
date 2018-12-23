@@ -43,6 +43,7 @@ function mb_Priest(commander)
             if mb_IsOnGCD() then
                 return
             end
+            max_SayRaid("I'm Fear Warding " .. request.body)
             max_CastSpellOnRaidMemberByPlayerName("Fear Ward", request.body)
             mb_RequestCompleted(request)
             return

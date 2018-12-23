@@ -21,18 +21,33 @@ function mb_Warlock(commander)
             mb_RequestCompleted(request)
             return
         elseif request.type == "soulstone" then
-            if mb_HasItem("Soulstone") then
+            if mb_HasItem("Major Soulstone") then
                 if mb_IsOnGCD() then
                     return
                 end
                 max_SayRaid("I'm soulstoning " .. request.body)
                 TargetByName(request.body, true)
-                mb_UseItem("Soulstone")
+                mb_UseItem("Major Soulstone")
                 mb_RequestCompleted(request)
             else
-                CastSpellByName("Create Soulstone()")
+                CastSpell(max_GetSpellbookId("Create Soulstone (Major)"), "BOOKTYPE_SPELL")
             end
             return
+        elseif request.type == "healthstone" then
+            if request.attempts > 50 then
+                mb_RequestCompleted(request)
+                return
+            end
+            if not CursorHasItem() then
+                local bag, slot = mb_GetItemLocation("Major Healthstone")
+                PickupContainerItem(bag, slot)
+                InitiateTrade(max_GetUnitForPlayerName(request.body))
+                return
+            else
+                DropItemOnUnit(max_GetUnitForPlayerName(request.body))
+                mb_RequestCompleted(request)
+                return
+            end
         end
     end
 
@@ -50,12 +65,12 @@ function mb_Warlock(commander)
                     return
                 end
             end
-            if not mb_HasItem("Soulstone") then
-                CastSpellByName("Create Soulstone()")
+            if not mb_HasItem("Major Soulstone") then
+                CastSpell(max_GetSpellbookId("Create Soulstone (Major)"), "BOOKTYPE_SPELL")
                 return
             end
             if not mb_HasItem("Major Healthstone") then
-                CastSpellByName("Create Healthstone()")
+                CastSpell(max_GetSpellbookId("Create Healthstone (Major)"), "BOOKTYPE_SPELL")
                 return
             end
         end
@@ -127,6 +142,7 @@ end
 function mb_Warlock_OnLoad()
     mb_RegisterForRequest("summon", mb_Warlock_HandleSummonRequest)
     mb_RegisterForRequest("soulstone", mb_Warlock_HandleSoulstoneRequest)
+    mb_RegisterForRequest("healthstone", mb_Warlock_HandleHealthstoneRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
@@ -156,11 +172,24 @@ function mb_Warlock_HandleSummonRequest(request)
 end
 
 function mb_Warlock_HandleSoulstoneRequest(request)
-    if mb_IsItemOnCooldown("Greater Soulstone") then
+    if not mb_HasItem("Major Soulstone") then
+        return
+    end
+    if mb_IsItemOnCooldown("Major Soulstone") then
         return
     end
     local soulShardCount = mb_GetItemCount("Soul Shard")
     if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Unending Breath") and soulShardCount > 0 then
+        mb_AcceptRequest(request)
+    end
+end
+
+function mb_Warlock_HandleHealthstoneRequest(request)
+    if not mb_HasItem("Major Healthstone") then
+        return
+    end
+    local soulShardCount = mb_GetItemCount("Soul Shard")
+    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Unending Breath") and soulShardCount > 10 then
         mb_AcceptRequest(request)
     end
 end

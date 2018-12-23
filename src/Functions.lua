@@ -140,6 +140,8 @@ function mb_IsIgnoredTradeItem(itemName)
 		return true
 	elseif itemName == "Jagged Arrow" then
 		return true
+	elseif itemName == "Instant Poison VI" then
+	    return true
 	elseif itemName == "Accurate Slugs" then
 		return true
 	elseif itemName == "Blacksmith Hammer" then

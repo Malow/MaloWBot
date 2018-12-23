@@ -20,6 +20,8 @@ function mb_HandleSpecialSlashCommand(msg)
         mb_MakeRequest("haveQuest", GetQuestLogTitle(GetQuestLogSelection()), REQUEST_PRIORITY.COMMAND)
     elseif msg == "doesNotHaveQuest" then
         mb_MakeRequest("doesNotHaveQuest", GetQuestLogTitle(GetQuestLogSelection()), REQUEST_PRIORITY.COMMAND)
+    elseif msg == "fearWard" then
+        mb_MakeRequest("fearWard", UnitName("target"), REQUEST_PRIORITY.COMMAND)
     elseif string.find(msg, "aoe") then
         local mode = max_SplitString(msg, " ")[2]
         mb_areaOfEffectMode = mode == "on"
@@ -27,7 +29,13 @@ function mb_HandleSpecialSlashCommand(msg)
     elseif string.find(msg, "follow") then
         local mode = max_SplitString(msg, " ")[2]
         mb_shouldFollow = mode == "on"
-        mb_MakeRequest("followMode", mode, REQUEST_PRIORITY.COMMAND)
+        local requestBody = mode
+        if UnitExists("target") then
+            if max_GetRaidIndexForPlayerName(UnitName("target")) ~= nil then
+                requestBody = requestBody .. "/" .. UnitName("target")
+            end
+        end
+        mb_MakeRequest("followMode", requestBody, REQUEST_PRIORITY.COMMAND)
     elseif string.find(msg, "requestBuffs") then
         local mode = max_SplitString(msg, " ")[2]
         mb_shouldRequestBuffs = mode == "on"

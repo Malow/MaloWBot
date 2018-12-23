@@ -92,7 +92,7 @@ function mb_OnEvent()
 		mb_isAutoAttacking = true
 	elseif event == "PLAYER_LEAVE_COMBAT" then
 		mb_isAutoAttacking = false
-	elseif event == "PLAYER_DEAD" and mb_GetConfig()["followTarget"] == UnitName("player") then
+	elseif event == "PLAYER_DEAD" and mb_GetMyCommanderName() == UnitName("player") then
 		mb_shouldRequestBuffs = false
 		mb_MakeRequest("requestBuffsMode", "off", REQUEST_PRIORITY.COMMAND)
 	end
@@ -212,9 +212,9 @@ function mb_OnPostLoad()
 end
 
 function mb_CreateMBMacros()
-	mb_CreateMacro("MB_Main", "/mb " .. mb_GetConfig()["followTarget"], 37, "7", "MULTIACTIONBAR4BUTTON1")
+	mb_CreateMacro("MB_Main", "/mb " .. mb_GetMyCommanderName(), 37, "7", "MULTIACTIONBAR4BUTTON1")
 	mb_CreateMacro("MB_ZoomIn", "/run SetView(3); CameraZoomIn(2);", 38, "8", "MULTIACTIONBAR4BUTTON2")
-	if not mb_GetConfig()["followTarget"] == UnitName("player") then
+	if mb_GetMyCommanderName() ~= UnitName("player") then
 		mb_CreateMacro("MB_DE", "/cast Disenchant", 39, "1", "MULTIACTIONBAR4BUTTON3")
 	end
 end
@@ -326,6 +326,11 @@ function mb_IsOnGCD()
 end
 
 function mb_ShouldAddRequestToQueue(request)
+	if request.priority == nil then
+		mb_Print(request.type)
+		mb_Print(request.from)
+		return
+	end
 	if request.priority > 100 then
 		return true
 	end
@@ -406,11 +411,6 @@ end
 --- On ready-check click away buffs with less than 8 minute duration (don't forget class specific buffs like Ice Armor or sacrificed succubus.
 ---		Also decline ready-checks if missing buffs or mana or items (healthstone) (and say so in raid)
 ---		Also check durability is above 10% in all slots, otherwise decline and announce in raid
---- If a trade window is open stop assisting cuz it breaks trade
---- Make accepted requests time out if their throttleTime - 1 has passed
----	Add proper healing-code. When you start healing someone with a cast-time announce that you're doing so and then listen to announces.
----		Add the announced heals to the targets current health until you see your own announcement, then decide if you want to cancel your cast or not.
----		Also scan the target for current health and hots and other stuff to decide if you should cancel.
 ---	Owners request buffs for their pets
 --- Double-request handling can happen if the propose reaches 1 guy after the accept has already been sent. Shouldn't happen though
 --- Automatic Gold-spreading
@@ -418,31 +418,27 @@ end
 ---	Implement CD-usage-logic, use CD's on CD? Or use some sort of request system?
 --- Expire queued accepted requests if they've been in queue their entire throttle time?
 ---	Warlock:
----		Healthstone, need some specific mode for this, don't wanna use up tons of soulshards or random shitty instances
 ---		Pets, 2 modes, imp-bitch or succu-sacc, swap for each warlock (using target and commands), also a pet-stay command.
 ---		Deathcoil? Is Drain Life even worth it?
 ---		Spellstones? 1% crit if nothing better, use for 900 spell absorb too
 ---		Hellfire during AoE? Probably not while we're progressing fire-instances. Maybe in a max-burn AoE mode.
 ---	Mage:
 ---     Polymorph requests
----     Counterspell, might be hard, gotta scan combat log for % begins casting %, check libcast in PFUI
+---     Counterspell, might be hard, gotta scan combat log for % begins casting %, check libcast in PFUI. Better as request?
 ---		Wand if oom
 ---		Fire/Frost ward
 --- Priest:
----		Fear ward request
----     Holy should be casting/stop-casting greater heals (ranked depending on incoming damage) on tanks
 ---     Disc priest will probably have little to do, should be a bit more aggressive with renewing raid I guess
 ---     PW:S if below X health or tank below % HP
 ---     Can swap groups in combat? If so priests could be spamming PoH with swapping people in who need it.
----		Do abolish disease, check mana costs of the 2 versions
+---		Do abolish disease, check mana costs of the 2 versions, though it's kinda messy since you can't just spam do it since it's a buff, so multiple druids can hit the same target...
 ---		Wand instead of attack if ranged, (does wand cause GCD?)
 ---		Improve PoH logic, instead of checking if 3 or more members miss 1k health, include the 2 other guys even if they only miss 500 and check for total amount healed.
 --- Druids:
 ---     Tranquility like PoH in priest
----     Rejuvenation and Regrowth on tanking tanks 24/7
 ---     Swiftmend
 ---		Add logic for Feral DPS and Feral tank
----		Do abolish poison, check mana costs of the 2 versions
+---		Do abolish poison, though it's kinda messy since you can't just spam do it since it's a buff, so multiple druids can hit the same target...
 ---		Innervate, who is it best on? Priests? Use requests?
 ---		Combat ress
 ---			Also need to implement rebuffing after combat ress then kinda
@@ -474,7 +470,8 @@ end
 ---	Repair-report, Should be able to report lowest item % in /raid
 --- Blacklist LoS targets when using mb_IsSpellInRange for 1 sec, use the Rogue-Spam way to detect error message of LoS
 --- IsActionInRange fails for resses, spend some more time looking into it to see if we can fix it
----
+---	Self-playing mode where the bot doesn't play by itself, but it still makes broadcasts and requests stuff. (kinda hard due to for example warrior DTPS broad-casting is deep in the class-specific function)
+--- Enable/disable healthstone trades modes?
 ---
 ---
 ---

@@ -4,7 +4,7 @@
 mb_warriorIsTank = mb_GetMySpecName() == "WarrTank"
 function mb_Warrior(commander)
     if mb_warriorIsTank then
-        mb_Warrior_Tank()
+        mb_Warrior_Tank(commander)
         return
     end
 
@@ -40,7 +40,10 @@ end
 
 mb_Warrior_lastTankingBroadcast = 0
 mb_Warrior_lastSunder = 0
-function mb_Warrior_Tank()
+function mb_Warrior_Tank(commander)
+    if not UnitExists("target") or not UnitIsEnemy("player", "target") or UnitIsDead("target") then
+        AssistByName(commander)
+    end
     if not UnitExists("target") or not UnitIsEnemy("player", "target") then
         return
     end
@@ -57,7 +60,7 @@ function mb_Warrior_Tank()
                     CastSpellByName("Defensive Stance")
                 end
             else
-                mb_Warrior_DpsTank()
+                mb_Warrior_DpsTank(commander)
                 return
             end
         else

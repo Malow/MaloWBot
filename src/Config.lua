@@ -3,7 +3,7 @@
 function mb_GetConfig()
     local config = mb_GetPersonalizedConfig()
     if config["followTarget"] == nil then
-        config["followTarget"] = "Malow"
+        config["followTarget"] = "targetThatCantBeFound"
     end
     if config["autoLearnTalents"] == nil then
         config["autoLearnTalents"] = false
@@ -33,4 +33,8 @@ end
 
 function mb_GetMySpecName()
     return mb_GetConfig()["specs"][UnitName("player")]
+end
+
+function mb_GetMyCommanderName()
+    return mb_GetConfig()["followTarget"]
 end

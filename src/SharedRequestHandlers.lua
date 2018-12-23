@@ -15,7 +15,7 @@ function mb_RegisterSharedRequestHandlers(playerClass)
 end
 
 function mb_ReloadRequestHandler(request)
-    if request.from ~= UnitName("player") then
+    if request.from ~= UnitName("player") and request.from == mb_GetMyCommanderName() then
         mb_shouldReloadUi = true
     end
 end
@@ -60,7 +60,7 @@ end
 
 function mb_PromoteLeaderRequestHandler(request)
     if IsPartyLeader() then
-        PromoteByName(mb_GetConfig()["followTarget"])
+        PromoteByName(mb_GetMyCommanderName())
     end
 end
 
@@ -107,8 +107,14 @@ function mb_AreaOfEffectModeRequestHandler(request)
 end
 
 function mb_FollowModeRequestHandler(request)
-    if request.from == mb_GetConfig()["followTarget"] then
-        mb_shouldFollow = request.body == "on"
+    if request.from == mb_GetMyCommanderName() then
+        local parts = max_SplitString(request.body, "/")
+        if max_GetTableSize(parts) > 1 then
+            if UnitName("player") ~= parts[2] then
+                return
+            end
+        end
+        mb_shouldFollow = parts[1] == "on"
     end
 end
 

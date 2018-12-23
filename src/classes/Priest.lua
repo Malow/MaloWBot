@@ -39,6 +39,13 @@ function mb_Priest(commander)
             max_CastSpellOnRaidMemberByPlayerName("Dispel Magic", request.body)
             mb_RequestCompleted(request)
             return
+        elseif request.type == "fearWard" then
+            if mb_IsOnGCD() then
+                return
+            end
+            max_CastSpellOnRaidMemberByPlayerName("Fear Ward", request.body)
+            mb_RequestCompleted(request)
+            return
         elseif request.type == "HoT" then
             mb_HealingModule_CompleteHoTRequest(request)
             return
@@ -173,6 +180,7 @@ function mb_Priest_OnLoad()
         end
         mb_RegisterForStandardBuffRequest(BUFF_SHADOW_PROTECTION)
     end
+    mb_RegisterForRequest("fearWard", mb_Priest_HandleFearWardRequest)
     mb_RegisterForRequest(REQUEST_RESURRECT.type, mb_Priest_HandleResurrectionRequest)
     mb_RegisterForRequest(REQUEST_REMOVE_MAGIC.type, mb_Priest_HandleDispelRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
@@ -192,8 +200,18 @@ function mb_Priest_OnLoad()
     mb_RegisterRangeCheckSpell("Renew")
     mb_RegisterRangeCheckSpell("Power Word: Shield")
     mb_RegisterRangeCheckSpell("Greater Heal")
+    mb_RegisterRangeCheckSpell("Fear Ward")
     mb_HealingModule_Enable()
     mb_HealingModule_RegisterHoT("Renew", BUFF_TEXTURE_RENEW, 365)
+end
+
+function mb_Priest_HandleFearWardRequest(request)
+    if max_IsSpellNameOnCooldown("Fear Ward") then
+        return
+    end
+    if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Fear Ward") then
+        mb_AcceptRequest(request)
+    end
 end
 
 function mb_Priest_HandleResurrectionRequest(request)

@@ -28,7 +28,6 @@ function mb_Warlock(commander)
                 max_SayRaid("I'm soulstoning " .. request.body)
                 TargetByName(request.body, true)
                 mb_UseItem("Soulstone")
-                mb_SV.warlockLastSoulstone = GetTime()
                 mb_RequestCompleted(request)
             else
                 CastSpellByName("Create Soulstone()")
@@ -41,11 +40,23 @@ function mb_Warlock(commander)
         if not max_HasBuff("player", BUFF_TEXTURE_DEMON_ARMOR) then
             CastSpellByName("Demon Armor")
             return
-        elseif not max_HasBuff("player", BUFF_TEXTURE_SACRIFICED_SUCCUBUS) and mb_shouldRequestBuffs then
-            if max_IsPetAliveAndActive() then
-                CastSpellByName("Demonic Sacrifice")
-            else
-                CastSpellByName("Summon Succubus")
+        elseif mb_shouldRequestBuffs then
+            if not max_HasBuff("player", BUFF_TEXTURE_SACRIFICED_SUCCUBUS) then
+                if max_IsPetAliveAndActive() then
+                    CastSpellByName("Demonic Sacrifice")
+                    return
+                else
+                    CastSpellByName("Summon Succubus")
+                    return
+                end
+            end
+            if not mb_HasItem("Soulstone") then
+                CastSpellByName("Create Soulstone()")
+                return
+            end
+            if not mb_HasItem("Major Healthstone") then
+                CastSpellByName("Create Healthstone()")
+                return
             end
         end
     end
@@ -145,7 +156,7 @@ function mb_Warlock_HandleSummonRequest(request)
 end
 
 function mb_Warlock_HandleSoulstoneRequest(request)
-    if mb_SV.warlockLastSoulstone ~= nil and mb_SV.warlockLastSoulstone + 1800 > GetTime()then
+    if mb_IsItemOnCooldown("Greater Soulstone") then
         return
     end
     local soulShardCount = mb_GetItemCount("Soul Shard")

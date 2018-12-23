@@ -13,6 +13,12 @@ mb_classSyncData = nil
 mb_registeredRangeCheckSpells = {}
 
 function mb_HandleSharedBehaviour(commander)
+    if UnitAffectingCombat("player") then
+        if max_GetHealthPercentage("player") < 25 then
+            mb_UseItem("Major Healthstone")
+        end
+    end
+
     if mb_HandleMassCommandRequests() then
         return true
     end
@@ -408,7 +414,7 @@ function mb_CompleteStandardBuffRequest(request)
     end
     mb_RequestCompleted(request)
     if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), buff.textures) then
-        if buff.groupWideSpellName ~= nil and mb_ShouldBuffGroupWide(request.body, buff) then
+        if buff.groupWideSpellName ~= nil and mb_ShouldBuffGroupWide(request.body, buff, buff.unitFilter) then
             max_CastSpellOnRaidMemberByPlayerName(buff.groupWideSpellName, request.body)
         else
             max_CastSpellOnRaidMemberByPlayerName(buff.spellName, request.body)
@@ -419,6 +425,11 @@ end
 
 function mb_HandleStandardBuffRequest(request)
     local buff = mb_GetBuffWithType(request.type)
+    if buff.groupWideSpellName ~= nil then
+        if not max_HasSpell(buff.groupWideSpellName) then
+            return
+        end
+    end
     if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), buff.spellName) then
         mb_AcceptRequest(request)
     end

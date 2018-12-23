@@ -116,7 +116,8 @@ BUFF_ARCANE_INTELLECT = {
     textures = { BUFF_TEXTURE_ARCANE_INTELLECT, BUFF_TEXTURE_ARCANE_BRILLIANCE },
     throttle = 10,
     spellName = "Arcane Intellect",
-    groupWideSpellName = "Arcane Brilliance"
+    groupWideSpellName = "Arcane Brilliance",
+    unitFilter = UNIT_FILTER_HAS_MANA
 }
 BUFF_POWER_WORD_FORTITUDE = {
     type = "buffPowerWordFortitude",
@@ -130,7 +131,8 @@ BUFF_DIVINE_SPIRIT = {
     textures = { BUFF_TEXTURE_DIVINE_SPIRIT, BUFF_TEXTURE_PRAYER_OF_SPIRIT },
     throttle = 10,
     spellName = "Divine Spirit",
-    groupWideSpellName = "Prayer of Spirit"
+    groupWideSpellName = "Prayer of Spirit",
+    unitFilter = UNIT_FILTER_HAS_MANA
 }
 BUFF_BLESSING_OF_WISDOM = {
     type = "buffBlessingOfWisdom",

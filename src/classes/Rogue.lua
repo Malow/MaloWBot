@@ -74,7 +74,7 @@ function mb_Rogue_ApplyPoison()
 end
 
 function mb_Rogue_AdrenalineRush()
-    if max_IsSpellNameOnCooldown("Adrenaline Rush") == true then
+    if max_IsSpellNameOnCooldown("Adrenaline Rush") or UnitHealthMax("target") < 40000 then
         return false
     elseif UnitIsEnemy("Player", "target") and CheckInteractDistance("target", 3) and max_GetHealthPercentage("Target") < 90 then
         CastSpellByName("Adrenaline Rush")

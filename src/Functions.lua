@@ -162,6 +162,8 @@ function mb_IsIgnoredTradeItem(itemName)
 		return true
 	elseif itemName == "Arcane Powder" then
 		return true
+	elseif itemName == "Major Healthstone" then
+		return true
 	end
 	for i = max_GetTableSize(ITEMS_WATER), 1, -1 do
 		if itemName == ITEMS_WATER[i] then
@@ -309,4 +311,23 @@ function mb_GetHoTCount(unit)
 		hotCount = hotCount + 1
 	end
 	return hotCount
+end
+
+-- Returns a number between 0.0 and 5.0 depending on how effective the group-heal would be, also returns a list of playerNames for the targets it will hit
+function mb_GetGroupHealEffect(healValue, rangeCheckSpell)
+    local groupUnits = max_GetGroupUnitsFor(UnitName("player"))
+    local totalHealEffect = 0
+    local affectedPlayers = {}
+    for i = 1, max_GetTableSize(groupUnits) do
+        if mb_IsUnitValidTarget(groupUnits[i], rangeCheckSpell) then
+            local healEffect = max_GetMissingHealth(groupUnits[i]) / healValue
+            if healEffect > 1.0 then
+                healEffect = 1.0
+            end
+			local unitName = UnitName(groupUnits[i])
+            table.insert(affectedPlayers, unitName)
+            totalHealEffect = totalHealEffect + healEffect
+        end
+    end
+    return totalHealEffect, affectedPlayers
 end

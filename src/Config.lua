@@ -11,6 +11,9 @@ function mb_GetConfig()
     if config["autoTrainSpells"] == nil then
         config["autoTrainSpells"] = true -- Automatically train all class and profession skills when Gossip-panel is opened for an NPC that can teach you something.
     end
+    if config["groupConfiguration"] == nil then
+        config["groupConfiguration"] = mb_GetGroupConfiguration()
+    end
     config["specs"] = {}
     config["specs"]["Kaladin"] = "RetLight"
     config["specs"]["Malow"] = "SanctuarySalvation"
@@ -37,4 +40,65 @@ end
 
 function mb_GetMyCommanderName()
     return mb_GetConfig()["followTarget"]
+end
+
+function mb_GetGroupConfiguration()
+    local groups = {}
+    local group = {}
+    table.insert(group, "Malow")
+    table.insert(group, "Devun")
+    table.insert(group, "Garret")
+    table.insert(group, "Maligna")
+    table.insert(group, "Elbereth")
+    table.insert(groups, group)
+    group = {}
+    table.insert(group, "Charnel")
+    table.insert(group, "Arethel")
+    table.insert(group, "Skyler")
+    table.insert(group, "Kalman")
+    table.insert(group, "Elery")
+    table.insert(groups, group)
+    group = {}
+    table.insert(group, "Tinuviel")
+    table.insert(group, "Kaladin")
+    table.insert(group, "Carin")
+    table.insert(group, "Davrice")
+    table.insert(group, "Amorine")
+    table.insert(groups, group)
+    group = {}
+    table.insert(group, "Villetta")
+    table.insert(group, "Gwethriel")
+    table.insert(group, "Elleni")
+    table.insert(group, "Hammond")
+    table.insert(group, "Thana")
+    table.insert(groups, group)
+    group = {}
+    table.insert(group, "Silmelin")
+    table.insert(group, "Emilee")
+    table.insert(group, "Verne")
+    table.insert(group, "Laurelia")
+    table.insert(group, "Robbin")
+    table.insert(groups, group)
+    group = {}
+    table.insert(group, "Kimmy")
+    table.insert(group, "Rosita")
+    table.insert(group, "Bondrin")
+    table.insert(group, "Necria")
+    table.insert(group, "Clemidge")
+    table.insert(groups, group)
+    group = {}
+    table.insert(group, "Trudy")
+    table.insert(group, "Kita")
+    table.insert(group, "Nell")
+    table.insert(group, "Odia")
+    table.insert(group, "Hardrac")
+    table.insert(groups, group)
+    group = {}
+    table.insert(group, "Gaily")
+    table.insert(group, "Connie")
+    table.insert(group, "Noldralda")
+    table.insert(group, "Madeleina")
+    table.insert(group, "Ticey")
+    table.insert(groups, group)
+    return groups
 end

@@ -1,6 +1,8 @@
+MB_PRIEST_POH_HEAL_AMOUNT = 1200
 
 mb_priestCurrentHealTarget = nil
 mb_priestStoppedCastingTime = 0
+mb_priestIsCastingPoH = false
 function mb_Priest(commander)
     if mb_DoBasicCasterLogic() then
         return
@@ -16,9 +18,17 @@ function mb_Priest(commander)
                 mb_priestStoppedCastingTime = GetTime()
             end
         end
+        if mb_priestIsCastingPoH then
+            if mb_GetGroupHealEffect(MB_PRIEST_POH_HEAL_AMOUNT, "Dispel Magic") < 2.5 then
+                SpellStopCasting()
+                mb_priestIsCastingPoH = false
+                mb_priestStoppedCastingTime = GetTime()
+            end
+        end
         return
     else
         mb_priestCurrentHealTarget = nil
+        mb_priestIsCastingPoH = false
     end
 
     local request = mb_GetQueuedRequest(true)
@@ -61,6 +71,20 @@ function mb_Priest(commander)
 
     if mb_Priest_PrayerOfHealing() then
         return
+    end
+
+    if not UnitAffectingCombat("player") then
+        if not max_HasBuff("player", BUFF_TEXTURE_INNER_FIRE) then
+            CastSpellByName("Inner Fire")
+            return
+        end
+    end
+
+    if UnitAffectingCombat("player") and max_GetHealthPercentage("player") < 30 then
+        if not max_IsSpellNameOnCooldown("Desperate Prayer") then
+            CastSpellByName("Desperate Prayer")
+            return
+        end
     end
 
     if mb_areaOfEffectMode then
@@ -109,7 +133,7 @@ function mb_Priest_TankHealing()
 end
 
 function mb_Priest_Disc()
-    if mb_Priest_PWS() then
+    if mb_Priest_PWS(40) then
         return true
     end
     if mb_Priest_Renew(60) then
@@ -119,17 +143,17 @@ function mb_Priest_Disc()
 end
 
 function mb_Priest_Holy()
-    if mb_Priest_TankHealing() then
+    if mb_Priest_Renew(40) then
         return true
     end
 
-    if mb_Priest_Renew(40) then
+    if mb_Priest_TankHealing() then
         return true
     end
     return false
 end
 
-function mb_Priest_PWS()
+function mb_Priest_PWS(healthPercentage)
     local spell = "Power Word: Shield"
     if max_IsSpellNameOnCooldown(spell) then
         return false
@@ -137,7 +161,7 @@ function mb_Priest_PWS()
     local unitFilter = UNIT_FILTER_DOES_NOT_HAVE_DEBUFF
     unitFilter.debuff = DEBUFF_TEXTURE_WEAKENED_SOUL
     local healTargetUnit, healthOfTarget = mb_GetLowestHealthFriendly(spell, unitFilter)
-    if max_GetHealthPercentage(healTargetUnit) < 40 then
+    if max_GetHealthPercentage(healTargetUnit) < healthPercentage then
         max_CastSpellOnRaidMember(spell, healTargetUnit)
         return true
     end
@@ -157,16 +181,16 @@ function mb_Priest_Renew(healthPercentage)
 end
 
 function mb_Priest_PrayerOfHealing()
-    local groupUnits = max_GetGroupUnitsFor(UnitName("player"))
-    local count = 0
-    for i = 1, max_GetTableSize(groupUnits) do
-        if mb_IsUnitValidTarget(groupUnits[i], "Dispel Magic") and max_GetMissingHealth(groupUnits[i]) > 1000 then
-            -- Using Dispel Magic, a 30yd range spell, as range-check for the 36-yard effect of PoH
-            count = count + 1
+    local healEffect, affectedPlayers = mb_GetGroupHealEffect(MB_PRIEST_POH_HEAL_AMOUNT, "Dispel Magic")
+    if healEffect > 3.0 then
+        if not max_IsSpellNameOnCooldown("Inner Focus") then
+            CastSpellByName("Inner Focus")
+            return true
         end
-    end
-    if count > 3 then
-        CastSpellByName("Prayer of Healing")
+        local callBacks = {}
+        callBacks.onStart = function(spellCast) mb_HealingModule_SendData(affectedPlayers, MB_PRIEST_POH_HEAL_AMOUNT, spellCast.startTime + 3) end
+        mb_CastSpellByNameOnRaidMemberWithCallbacks("Prayer of Healing", "player", callBacks)
+        mb_priestIsCastingPoH = true
         return true
     end
     return false

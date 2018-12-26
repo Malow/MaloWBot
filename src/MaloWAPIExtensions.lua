@@ -198,7 +198,7 @@ function max_GetSubgroupForRaidIndex(raidIndex)
 	return subgroup
 end
 
--- Returns a list of names of units of the group that the provided unit's name is part of
+-- Returns a list of units of the group that the provided unit's name is part of
 function max_GetGroupUnitsFor(unitName)
 	local targetRaidIndex = max_GetRaidIndexForPlayerName(unitName)
 	local targetSubGroup = max_GetSubgroupForRaidIndex(targetRaidIndex)
@@ -277,4 +277,20 @@ function max_GetActiveStance()
 		end
 	end
 	return nil
+end
+
+function max_GetPlayerNamesInSubgroup(subGroup)
+	local names = {}
+	local members = max_GetNumPartyOrRaidMembers()
+	for i = 1, members do
+		local name, rank, group, level, class, fileName, zone, online, isDead = GetRaidRosterInfo(i)
+		if subGroup == group then
+			table.insert(names, name)
+		end
+	end
+	return names
+end
+
+function max_IsTable(t)
+    return type(t) == "table"
 end

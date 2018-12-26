@@ -44,15 +44,17 @@ end
 function mb_HealingModule_HandleDataRequest(request)
     if request.from ~= UnitName("player") then
         local parts = max_SplitString(request.body, "/")
-        local playerName = parts[1]
-        if mb_HealingModule_incomingHeals[playerName] == nil then
-            mb_HealingModule_incomingHeals[playerName] = {}
-        end
         local incomingHeal = {}
         incomingHeal.healAmount = tonumber(parts[2])
         incomingHeal.finishTime = tonumber(parts[3])
         incomingHeal.from = request.from
-        table.insert(mb_HealingModule_incomingHeals[playerName], incomingHeal)
+        local playerNames = max_SplitString(parts[1], "#")
+        for k, playerName in pairs(playerNames) do
+            if mb_HealingModule_incomingHeals[playerName] == nil then
+                mb_HealingModule_incomingHeals[playerName] = {}
+            end
+            table.insert(mb_HealingModule_incomingHeals[playerName], incomingHeal)
+        end
     end
 end
 
@@ -116,9 +118,20 @@ function mb_HealingModule_GetFutureMissingHealth(unit)
     return missingHealth
 end
 
+-- targetPlayerName can be either a string or a table of strings if the spell will hit multiple targets
 function mb_HealingModule_SendData(targetPlayerName, healAmount, finishTime)
-    local healData = targetPlayerName .. "/" .. healAmount .. "/" .. finishTime
-    mb_MakeRequest("healerModuleData", healData, REQUEST_PRIORITY.HEALER_MODULE_DATA)
+    if max_IsTable(targetPlayerName) then
+        local targetPlayers = ""
+        for _, playerName in pairs(targetPlayerName) do
+            targetPlayers = targetPlayers .. playerName .. "#"
+        end
+        targetPlayers = string.sub(targetPlayers, 1, string.len(targetPlayers) - 1)
+        local healData = targetPlayers .. "/" .. healAmount .. "/" .. finishTime
+        mb_MakeRequest("healerModuleData", healData, REQUEST_PRIORITY.HEALER_MODULE_DATA)
+    else
+        local healData = targetPlayerName .. "/" .. healAmount .. "/" .. finishTime
+        mb_MakeRequest("healerModuleData", healData, REQUEST_PRIORITY.HEALER_MODULE_DATA)
+    end
 end
 
 function mb_HealingModule_GetRaidHealTarget(spell, unitFilter)

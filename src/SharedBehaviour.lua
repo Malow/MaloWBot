@@ -405,8 +405,10 @@ end
 
 -- Buffs the player with the buff if it can, returns true if it buffs
 function mb_CompleteStandardBuffRequest(request)
+    mb_Print("Trying to complete " .. request.type .. " from " .. request.body)
     local buff = mb_GetBuffWithType(request.type)
     if buff == nil then
+        mb_Print("Not buff found " .. request.type .. " from " .. request.body)
         return false
     end
     if mb_IsOnGCD() then
@@ -414,9 +416,12 @@ function mb_CompleteStandardBuffRequest(request)
     end
     mb_RequestCompleted(request)
     if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), buff.textures) then
+        mb_Print("target doesn't have buff " .. request.type .. " from " .. request.body)
         if buff.groupWideSpellName ~= nil and mb_ShouldBuffGroupWide(request.body, buff, buff.unitFilter) then
+            mb_Print("Castomg group buff " .. request.type .. " from " .. request.body)
             max_CastSpellOnRaidMemberByPlayerName(buff.groupWideSpellName, request.body)
         else
+            mb_Print("Castomg single buff " .. request.type .. " from " .. request.body)
             max_CastSpellOnRaidMemberByPlayerName(buff.spellName, request.body)
         end
         return true
@@ -431,6 +436,7 @@ function mb_HandleStandardBuffRequest(request)
         end
     end
     if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), buff.spellName) then
+        mb_Print("I accepted " .. request.type .. " from " .. request.body)
         mb_AcceptRequest(request)
     end
 end

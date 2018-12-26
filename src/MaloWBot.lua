@@ -397,12 +397,17 @@ function mb_CastSpellByNameWithCallbacks(spellName, target, callbacks)
 end
 
 function mb_CastSpellByNameOnRaidMemberWithCallbacks(spellName, target, callbacks)
+	local retarget = false
 	if UnitIsFriend("player", "target") then
 		ClearTarget()
+		retarget = true
 	end
 	mb_CastSpellByNameWithCallbacks(spellName, target, callbacks)
 	SpellTargetUnit(target)
 	SpellStopTargeting()
+	if retarget then
+		TargetLastTarget()
+	end
 end
 
 
@@ -428,12 +433,11 @@ end
 ---		Wand if oom
 ---		Fire/Frost ward
 --- Priest:
----     Disc priest will probably have little to do, should be a bit more aggressive with renewing raid I guess
 ---     PW:S if below X health or tank below % HP
 ---     Can swap groups in combat? If so priests could be spamming PoH with swapping people in who need it.
 ---		Do abolish disease, check mana costs of the 2 versions, though it's kinda messy since you can't just spam do it since it's a buff, so multiple druids can hit the same target...
 ---		Wand instead of attack if ranged, (does wand cause GCD?)
----		Improve PoH logic, instead of checking if 3 or more members miss 1k health, include the 2 other guys even if they only miss 500 and check for total amount healed.
+---		On aggro cast Fade
 --- Druids:
 ---     Tranquility like PoH in priest
 ---     Swiftmend

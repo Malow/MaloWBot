@@ -43,21 +43,7 @@ function mb_HandleSpecialSlashCommand(msg)
         mb_shouldRequestBuffs = mode == "on"
         mb_MakeRequest("requestBuffsMode", mode, REQUEST_PRIORITY.COMMAND)
     elseif msg == "fixraidgroup" or msg == "fixRaidGroup" then
-        if not IsPartyLeader() then
-            mb_MakeRequest("promoteLeader", "promoteLeader", REQUEST_PRIORITY.COMMAND)
-        else
-            local members = max_GetNumPartyOrRaidMembers()
-            for i = 1, members do
-                local unit = max_GetUnitFromPartyOrRaidIndex(i)
-                PromoteToAssistant(UnitName(unit))
-            end
-        end
-        for i = 1, 40 do
-            local name, rank, rankIndex, level, class, zone, group, note, officernote, online = GetGuildRosterInfo(i)
-            if name ~= nil then
-                InviteByName(name)
-            end
-        end
+        mb_FixRaidGroup()
     elseif msg == "debugRequests" then
         mb_Print("Queued Requests: " .. max_GetTableSize(mb_queuedRequests) .. "x")
         for k, v in pairs(mb_queuedRequests) do
@@ -79,4 +65,59 @@ function mb_HandleSpecialSlashCommand(msg)
         return false
     end
     return true
+end
+
+function mb_FixRaidGroup()
+    if not IsPartyLeader() then
+        mb_MakeRequest("promoteLeader", "promoteLeader", REQUEST_PRIORITY.COMMAND)
+        return
+    end
+    local members = max_GetNumPartyOrRaidMembers()
+    for i = 1, members do
+        local name, rank, subgroup, level, class, fileName, zone, online, isDead = GetRaidRosterInfo(i)
+        if rank == 0 then
+            local unit = max_GetUnitFromPartyOrRaidIndex(i)
+            PromoteToAssistant(UnitName(unit))
+        end
+    end
+    if members < 40 then
+        for i = 1, 100 do
+            local name, rank, rankIndex, level, class, zone, group, note, officernote, online = GetGuildRosterInfo(i)
+            if name ~= nil and online == 1 then
+                InviteByName(name)
+            end
+        end
+        return
+    end
+
+    for i = 1, members do
+        local name, rank, subgroup, level, class, fileName, zone, online, isDead = GetRaidRosterInfo(i)
+        local desiredSubgroup = mb_GetDesiredSubgroupForPlayerName(name)
+        if desiredSubgroup == nil then
+            max_SayRaid("Error, couldn't find desired subgroup for player: " .. name)
+            return
+        end
+        if desiredSubgroup ~= subgroup then
+            local swapTargets = max_GetPlayerNamesInSubgroup(desiredSubgroup)
+            for k, swapName in pairs(swapTargets) do
+                if mb_GetDesiredSubgroupForPlayerName(swapName) ~= desiredSubgroup then
+                    SwapRaidSubgroup(max_GetRaidIndexForPlayerName(name), max_GetRaidIndexForPlayerName(swapName))
+                    return
+                end
+            end
+        end
+    end
+end
+
+function mb_GetDesiredSubgroupForPlayerName(playerName)
+    local groupNumber = 1
+    for k, group in pairs(mb_GetConfig()["groupConfiguration"]) do
+        for k, name in pairs(group) do
+            if name == playerName then
+                return groupNumber
+            end
+        end
+        groupNumber = groupNumber + 1
+    end
+    return nil
 end

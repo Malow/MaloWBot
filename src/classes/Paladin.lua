@@ -7,7 +7,8 @@ function mb_Paladin(commander)
     end
     if mb_isCasting then
         if mb_paladinCurrentHealTarget ~= nil then
-            if max_GetMissingHealth(mb_paladinCurrentHealTarget) < 500 then
+            local targetMissingHealth = max_GetMissingHealth(mb_paladinCurrentHealTarget)
+            if (targetMissingHealth - (mb_GetHoTCount(mb_paladinCurrentHealTarget) * 500)) < 500 then
                 SpellStopCasting()
             end
         end

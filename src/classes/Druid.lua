@@ -9,8 +9,8 @@ function mb_Druid(commander)
         return
     end
     if mb_isCasting then
-        if mb_druidCurrentHealTarget ~= nil and mb_castStartedTime + 2 < GetTime() then
-            if max_GetMissingHealth(mb_druidCurrentHealTarget) < 1500 then
+        if mb_druidCurrentHealTarget ~= nil and mb_castStartedTime + 1.5 < GetTime() then
+            if max_GetMissingHealth(mb_druidCurrentHealTarget) < 1500 or max_HasBuff(mb_druidCurrentHealTarget, BUFF_TEXTURE_REGROWTH) then
                 SpellStopCasting()
                 mb_druidCurrentHealTarget = nil
                 mb_druidStoppedCastingTime = GetTime()
@@ -108,7 +108,7 @@ function mb_Druid_TankHealing()
     local tankUnit = mb_HealingModule_GetValidTankUnitWithHighestFutureMissingHealth("Regrowth", unitFilter)
     if tankUnit ~= nil then
         local callBacks = {}
-        callBacks.onStart = function(spellCast) mb_HealingModule_SendData(UnitName(spellCast.target), 1000, spellCast.startTime + 2) end
+        callBacks.onStart = function(spellCast) mb_HealingModule_SendData(UnitName(spellCast.target), 1200, spellCast.startTime + 2) end
         mb_CastSpellByNameOnRaidMemberWithCallbacks("Regrowth", tankUnit, callBacks)
         mb_druidCurrentHealTarget = tankUnit
         return true
@@ -131,7 +131,7 @@ end
 
 function mb_Druid_InsectSwarm()
     if not max_HasDebuff("target", DEBUFF_INSECT_SWARM) then
-        CastSpellByName("Insect Swarm")
+        CastSpellByName("Insect Swarm(Rank 1)")
         return true
     end
     return false

@@ -1,25 +1,25 @@
-local f = CreateFrame("frame", "MaloWBotCombatLogModuleFrame", UIParent)
-f:Show()
+mb_CombatLogModule_Frame = CreateFrame("frame", "MaloWBotCombatLogModuleFrame", UIParent)
+mb_CombatLogModule_Frame:Show()
 
-mb_CombatLogModule_DTPSEnabled = false
-mb_CombatLogModule_FriendlyGainsEnabled = false
-mb_CombatLogModule_damageTakenLog = {}
+mb_CombatLogModule_callbacks = {}
 function mb_CombatLogModule_OnEvent()
-    if event == "PLAYER_REGEN_DISABLED" then
-        mb_CombatLogModule_damageTakenLog = {}
-    elseif event == "CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS" or event == "CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE" or event == "CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE" then
-        mb_CombatLogModule_damageTakenLog[GetTime()] = mb_CombatLogModule_ExtractDamage(arg1)
-    elseif event == "CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_BUFFS" or event == "CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS" then
-        local spellName = mb_CombatLogModule_ExtractFriendlyGainsName(arg1)
-        if spellName ~= nil then
-            -- Maybe do something in the future
+    if mb_CombatLogModule_callbacks[event] ~= nil then
+        for k, v in pairs(mb_CombatLogModule_callbacks[event]) do
+            v(arg1)
         end
-    else
-        mb_Print("Error in CombatLogModule, missed event: " .. event .. " (" .. arg1 .. ")")
     end
 end
-f:SetScript("OnEvent", mb_CombatLogModule_OnEvent)
+mb_CombatLogModule_Frame:SetScript("OnEvent", mb_CombatLogModule_OnEvent)
 
+function mb_CombatLogModule_AddCallback(eventName, func)
+    if mb_CombatLogModule_callbacks[eventName] == nil then
+        mb_CombatLogModule_callbacks[eventName] = {}
+        mb_CombatLogModule_Frame:RegisterEvent(eventName)
+    end
+    table.insert(mb_CombatLogModule_callbacks[eventName], func)
+end
+
+--- Extractors, extracts a specific part of a string
 function mb_CombatLogModule_ExtractDamage(str)
     local start = string.find(arg1, "for %d+") -- Hits you for X
     if start == nil then
@@ -33,7 +33,7 @@ function mb_CombatLogModule_ExtractDamage(str)
     return tonumber(string.sub(firstPartRemoved, 1, stop))
 end
 
-function mb_CombatLogModule_ExtractFriendlyGainsName(str)
+function mb_CombatLogModule_ExtractGainsSpellName(str)
     local start = string.find(arg1, "gain %a+") -- You gain
     if start == nil then
         start = string.find(arg1, "ains %a+") -- X gains
@@ -43,35 +43,4 @@ function mb_CombatLogModule_ExtractFriendlyGainsName(str)
     end
     local firstPartRemoved = string.sub(str, start + 5)
     return string.sub(firstPartRemoved, 1, string.len(firstPartRemoved) - 1)
-end
-
-function mb_CombatLogModule_GetDTPS(averageOverPastSeconds)
-    local damageTaken = 0
-    local now = GetTime()
-    for k, v in pairs(mb_CombatLogModule_damageTakenLog) do
-        if k > now - averageOverPastSeconds then
-            damageTaken = damageTaken + v
-        end
-    end
-    return damageTaken / averageOverPastSeconds
-end
-
-function mb_CombatLogModule_EnableDTPS()
-    if mb_CombatLogModule_DTPSEnabled then
-        return
-    end
-    f:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS")
-    f:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE")
-    f:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE")
-    f:RegisterEvent("PLAYER_REGEN_DISABLED")
-    mb_CombatLogModule_DTPSEnabled = true
-end
-
-function mb_CombatLogModule_EnableFriendlyGainsTracker()
-    if mb_CombatLogModule_FriendlyGainsEnabled then
-        return
-    end
-    f:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_BUFFS")
-    f:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS")
-    mb_CombatLogModule_FriendlyGainsEnabled = true
 end

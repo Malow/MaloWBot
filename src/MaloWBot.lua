@@ -176,7 +176,7 @@ mb_classSpecificRunFunction = nil
 function mb_OnPostLoad()
 	mb_CreateMBMacros()
 	local playerClass = max_GetClass("player")
-	mb_RegisterSharedRequestHandlers(playerClass)
+	mb_HandleSharedBehaviourPostLoad(playerClass)
 	if playerClass == "DRUID" then
 		mb_Druid_OnLoad()
 		mb_classSpecificRunFunction = mb_Druid

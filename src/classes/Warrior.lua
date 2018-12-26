@@ -89,7 +89,7 @@ function mb_Warrior_Tank(commander)
 
     if mb_Warrior_lastTankingBroadcast + 5 < GetTime() then
         mb_Warrior_lastTankingBroadcast = GetTime()
-        mb_MakeRequest("tankingBroadcast", mb_CombatLogModule_GetDTPS(10), REQUEST_PRIORITY.TANKING_BROADCAST)
+        mb_MakeRequest("tankingBroadcast", mb_CombatLogModule_DamageTakenPerSecond_GetDTPS(10), REQUEST_PRIORITY.TANKING_BROADCAST)
     end
 
     CastSpellByName("Revenge")
@@ -154,7 +154,7 @@ function mb_Warrior_RequestHoTs()
     if myHotCount > 1 then
         return
     end
-    local HoTValue = mb_CombatLogModule_GetDTPS(10) / (myHotCount + 1) -- +1 to avoid diving by zero
+    local HoTValue = mb_CombatLogModule_DamageTakenPerSecond_GetDTPS(10) / (myHotCount + 1) -- +1 to avoid diving by zero
     if HoTValue > 100 and mb_Warrior_lastHoTRequest + 2.5 < GetTime() then
         mb_MakeRequest("HoT", UnitName("player"), REQUEST_PRIORITY.HEALING_OVER_TIME)
         mb_Warrior_lastHoTRequest = GetTime()
@@ -180,7 +180,7 @@ function mb_Warrior_OnLoad()
     mb_Warrior_AddDesiredTalents()
 	mb_AddGCDCheckSpell("Sunder Armor")
     if mb_warriorIsTank then
-        mb_CombatLogModule_EnableDTPS()
+        mb_CombatLogModule_DamageTakenPerSecond_Enable()
     end
 end
 

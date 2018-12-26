@@ -28,3 +28,9 @@ classes\Warrior.lua
 
 modules\CombatLogModule.lua
 modules\HealingModule.lua
+modules\MoveOutModule.lua
+
+modules\CombatLogSubModules\DamageTakenPerSecond.lua
+modules\CombatLogSubModules\FriendlyGainsWatch.lua
+modules\CombatLogSubModules\PeriodicSelfDamageWatch.lua
+

@@ -78,7 +78,10 @@ function mb_HandleSharedBehaviour(commander)
     if not UnitAffectingCombat("player") then
         mb_CheckAndRequestBuffs()
     end
-    mb_CheckAndRequestDispels()
+
+    if mb_MoveOutModule_Update() then
+        return true
+    end
 
     if not mb_IsDrinking() and mb_shouldFollow then
         FollowByName(commander, true)
@@ -444,4 +447,9 @@ end
 function mb_RegisterForStandardBuffRequest(buff)
     mb_RegisterForRequest(buff.type, mb_HandleStandardBuffRequest)
     mb_RegisterRangeCheckSpell(buff.spellName)
+end
+
+function mb_HandleSharedBehaviourPostLoad(playerClass)
+    mb_RegisterSharedRequestHandlers(playerClass)
+    mb_MoveOutModule_Load()
 end

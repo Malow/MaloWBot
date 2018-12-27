@@ -24,19 +24,18 @@ function mb_Hunter(commander)
 		return
 	end
 
-	if mb_IsClassLeader() then
-		if not max_HasDebuff("target", DEBUFF_TEXTURE_HUNTERS_MARK) then
-			CastSpellByName("Hunter's Mark")
-			return
-		end
-	end
-
 	if CheckInteractDistance("target", 3) then
 		if not mb_isAutoAttacking then
 			CastSpellByName("Attack")
 			return
 		end
 	else
+		if mb_IsClassLeader() then
+			if not max_HasDebuff("target", DEBUFF_TEXTURE_HUNTERS_MARK) then
+				CastSpellByName("Hunter's Mark")
+				return
+			end
+		end
 		if not mb_isAutoShooting then
 			CastSpellByName("Auto Shot")
 			return

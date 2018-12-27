@@ -22,6 +22,8 @@ function mb_HandleSpecialSlashCommand(msg)
         mb_MakeRequest("haveQuest", GetQuestLogTitle(GetQuestLogSelection()), REQUEST_PRIORITY.COMMAND)
     elseif msg == "doesNotHaveQuest" then
         mb_MakeRequest("doesNotHaveQuest", GetQuestLogTitle(GetQuestLogSelection()), REQUEST_PRIORITY.COMMAND)
+    elseif msg == "goldDistribution" then
+        mb_MakeRequest("goldDistribution", "goldDistribution", REQUEST_PRIORITY.COMMAND)
     elseif msg == "fearWard" then
         mb_MakeRequest("fearWard", UnitName("target"), REQUEST_PRIORITY.COMMAND)
     elseif string.find(msg, "aoe") then

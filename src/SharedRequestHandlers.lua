@@ -11,6 +11,7 @@ function mb_RegisterSharedRequestHandlers(playerClass)
     mb_RegisterForRequest("areaOfEffectMode", mb_AreaOfEffectModeRequestHandler)
     mb_RegisterForRequest("followMode", mb_FollowModeRequestHandler)
     mb_RegisterForRequest("requestBuffsMode", mb_RequestBuffsModeRequestHandler)
+    mb_RegisterForRequest("goldDistribution", mb_GoldDistributionRequestHandler)
     mb_RegisterForRequest(playerClass .. "Sync", mb_ClassSyncRequestHandler)
 end
 
@@ -120,6 +121,18 @@ end
 
 function mb_RequestBuffsModeRequestHandler(request)
     mb_shouldRequestBuffs = request.body == "on"
+end
+
+function mb_GoldDistributionRequestHandler(request)
+    if request.from == UnitName("player") then
+        return
+    end
+    if GetMoney() > 400000 then
+        mb_AcceptRequest(request)
+    end
+    if GetMoney() < 200000 then
+        mb_AcceptRequest(request)
+    end
 end
 
 mb_createClassSyncDataFunction = nil

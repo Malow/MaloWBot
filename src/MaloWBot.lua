@@ -418,7 +418,8 @@ end
 ---		Also check durability is above 10% in all slots, otherwise decline and announce in raid
 ---	Owners request buffs for their pets
 --- Double-request handling can happen if the propose reaches 1 guy after the accept has already been sent. Shouldn't happen though
---- Automatic Gold-spreading
+--- Automatic Gold-spreading to one guy, automatic reagent-spreading from one guy, one guy is enough to open reagent vendor to buy everything the whole raid needs.
+---		Need a new type of request for this where he asks for orders, waits 1 sec, and then buys everything, and then he automatically trades it when possible
 ---	Sit/stand logic based on error-messages, see RogueSpam addon.
 ---	Implement CD-usage-logic, use CD's on CD? Or use some sort of request system?
 --- Expire queued accepted requests if they've been in queue their entire throttle time?

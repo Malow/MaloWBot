@@ -127,6 +127,20 @@ function mb_HandleQueuedSharedRequests()
         elseif request.type == "inventoryDump" then
             InitiateTrade(max_GetUnitForPlayerName(request.body))
             mb_RequestCompleted(request)
+        elseif request.type == "goldDistribution" then
+            if not mb_isTrading then
+                InitiateTrade(max_GetUnitForPlayerName(mb_GetMyCommanderName()))
+                return
+            end
+            if GetMoney() < 200000 then
+                local moneyNeeded = (200000 - GetMoney()) / 10000
+                moneyNeeded = moneyNeeded + 10 -- get 10g more than the lower limit
+                max_SayRaid("I need " .. moneyNeeded .. "g.")
+            elseif GetMoney() > 400000 then
+                local moneyToBeTraded = GetMoney() - 400000
+                SetTradeMoney(moneyToBeTraded + 100000) -- trade 10g more than the upper limit
+            end
+            mb_RequestCompleted(request)
         end
     end
     return false
@@ -152,6 +166,7 @@ function mb_CheckAndRequestBuffs()
     end
     for i = 1, max_GetTableSize(mb_desiredBuffs) do
         if not max_HasBuffWithMultipleTextures("player", mb_desiredBuffs[i].textures) then
+            mb_Print("requesting: " .. mb_desiredBuffs[i].type)
             mb_MakeThrottledRequest(mb_desiredBuffs[i], UnitName("player"), REQUEST_PRIORITY.BUFF)
         end
     end

@@ -49,6 +49,10 @@ function mb_Druid(commander)
         return
     end
 
+    if mb_Druid_InsectSwarm() then
+        return
+    end
+
     if mb_Druid_TankHealing() then
         return
     end
@@ -60,10 +64,6 @@ function mb_Druid(commander)
     -- Damage
     max_AssistByPlayerName(commander)
     if not UnitExists("target") or not UnitIsEnemy("player", "target") then
-        return
-    end
-
-    if mb_Druid_InsectSwarm() then
         return
     end
 

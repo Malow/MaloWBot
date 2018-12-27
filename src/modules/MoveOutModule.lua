@@ -5,6 +5,7 @@ MB_MOVE_OUT_MODULE_DEBUFFS = {
 function mb_MoveOutModule_Load()
     local spellNames = {}
     table.insert(spellNames, "Flamestrike")
+    table.insert(spellNames, "Rain of Fire")
     mb_CombatLogModule_PeriodicSelfDamageWatch_Enable(spellNames)
 end
 

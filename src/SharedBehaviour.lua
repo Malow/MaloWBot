@@ -423,6 +423,7 @@ end
 
 -- Buffs the player with the buff if it can, returns true if it buffs
 function mb_CompleteStandardBuffRequest(request)
+    -- TODO: WE DON'T EVEN GET HERE WHEN IT BUGS OUT
     mb_Print("Trying to complete " .. request.type .. " from " .. request.body)
     local buff = mb_GetBuffWithType(request.type)
     if buff == nil then

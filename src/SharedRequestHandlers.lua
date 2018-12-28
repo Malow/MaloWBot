@@ -127,6 +127,12 @@ function mb_GoldDistributionRequestHandler(request)
     if request.from == UnitName("player") then
         return
     end
+    if request.from ~= mb_GetMyCommanderName() then
+        return
+    end
+    if not CheckInteractDistance(max_GetUnitForPlayerName(request.from), 2) then
+        return
+    end
     if GetMoney() > 400000 then
         mb_AcceptRequest(request)
     end

@@ -295,13 +295,6 @@ end
 mb_saidQuestCompleteHelpMessageTime = 0
 function mb_HandleGossiping()
     -- QuestHaste addon takes care of accepting/completing of quests.
-
-    if GetNumQuestChoices() > 1 and mb_saidQuestCompleteHelpMessageTime + 10 < GetTime() then
-        max_SayRaid("I need help deciding which quest-reward to pick.")
-        mb_hasSaidQuestCompleteHelpMessage = GetTime()
-        return
-    end
-
     local _, gossip1, _, gossip2, _, gossip3, _, gossip4, _, gossip5 = GetGossipOptions()
     if mb_GetConfig()["autoTrainSpells"] then
         if gossip1 == "trainer" then

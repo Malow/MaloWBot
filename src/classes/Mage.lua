@@ -53,6 +53,10 @@ function mb_Mage(commander)
     end
 
     if UnitAffectingCombat("player") then
+        if max_GetHealthPercentage("player") < 30 and not max_IsSpellNameOnCooldown("Ice Block") then
+            CastSpellByName("Ice Block")
+            return
+        end
         if max_GetManaPercentage("player") < 10 and not max_IsSpellNameOnCooldown("Evocation") then
             CastSpellByName("Evocation")
             return

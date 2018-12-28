@@ -56,8 +56,10 @@ function mb_MoveOutModule_FindFollowTarget()
     local members = max_GetNumPartyOrRaidMembers()
     for i = 1, members do
         local unit = max_GetUnitFromPartyOrRaidIndex(i)
-        if not CheckInteractDistance(unit, 2) and CheckInteractDistance(unit, 4) then
-            return unit
+        if UnitExists(unit) and UnitIsVisible(unit) and not UnitIsDeadOrGhost(unit) and not max_HasBuff(unit, BUFF_TEXTURE_SPIRIT_OF_REDEMPTION) then
+            if not CheckInteractDistance(unit, 2) and CheckInteractDistance(unit, 4) then
+                return unit
+            end
         end
     end
     return nil

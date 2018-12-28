@@ -433,6 +433,7 @@ end
 ---     Counterspell, might be hard, gotta scan combat log for % begins casting %, check libcast in PFUI. Better as request?
 ---		Wand if oom
 ---		Fire/Frost ward
+---		Cold snap
 --- Priest:
 ---     PW:S if below X health or tank below % HP
 ---     Can swap groups in combat? If so priests could be spamming PoH with swapping people in who need it.
@@ -473,13 +474,27 @@ end
 --- 	Don't need to check for buffs every frame
 ---		Don't need to request water every frame
 ---	Repair-report, Should be able to report lowest item % in /raid
+---	Bag-space report, each responds with how many bag spaces free, not as SayRaid but by responding to the request kinda and then the guy requesting sees the printout.
 --- Blacklist LoS targets when using mb_IsSpellInRange for 1 sec, use the Rogue-Spam way to detect error message of LoS
 --- IsActionInRange fails for resses, spend some more time looking into it to see if we can fix it
----	Self-playing mode where the bot doesn't play by itself, but it still makes broadcasts and requests stuff. (kinda hard due to for example warrior DTPS broad-casting is deep in the class-specific function)
+---	Manual-playing mode where the bot doesn't play by itself, but it still makes broadcasts and requests stuff. (kinda hard due to for example warrior DTPS broad-casting is deep in the class-specific function)
 --- Enable/disable healthstone trades modes?
+--- Consumables
+---		Add a watch for it.
+---		Add them to be ignored for trade over a certain quantity (don't want them to trade all their pots when they're inventory dumpers)
+---		"Try-hard mode" on/off, which uses flasks and shit, and potions in combat.
+--- Crown-control
+---		Request target to be CCd, people the raid will automatically accept depending on what kind of target it is and if they can CC.
+---			No such thing as focus, gonna need to either TargetNearestEnemy (only works in cone in front) or use TargetLastTarget/Enemy and then like after every assist and using DPS spell doing that to retarget the CC target.
+---	iscasting logic is a mess, mb_isCasting, started cast etc. Then also "lastAttemptedSpell", clear it up
+---	Auto-target mode. TargetNearestEnemy spam and just attack whatever is possible. For DPS maybe 1 person should be the "leader" and set skull, and the rest should follow that.
+---		Tanks should automatically pick up untanked targets with this
+---	Don't DPS if you risk overthreat, use KLM API? Need a way to disable it for solo/5-mans
 ---
----
----
+---	Heal-visualizer, shows each broadcasted heal from each healer in a list and their target.
+--- Enemy-target logic, frame that displays enemy targets and who "has" that target (tank or CC)
+---		Automatic marking of raid-symbol and a commander does "/mb target tank" or "/mb target cc"
+---		Automatic DPSing of these targets in order, using assist on the tank who has it, or on the guy who CCs it.
 ---
 ---
 

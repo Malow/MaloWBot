@@ -2,6 +2,8 @@ MB_MOVE_OUT_MODULE_DEBUFFS = {
     "Example"
 }
 
+mb_MoveOutModule_enabled = true
+
 function mb_MoveOutModule_Load()
     local spellNames = {}
     table.insert(spellNames, "Flamestrike")
@@ -9,9 +11,20 @@ function mb_MoveOutModule_Load()
     mb_CombatLogModule_PeriodicSelfDamageWatch_Enable(spellNames)
 end
 
+function mb_MoveOutModule_Enable()
+    mb_MoveOutModule_enabled = true
+end
+
+function mb_MoveOutModule_Disable()
+    mb_MoveOutModule_enabled = false
+end
+
 mb_MoveOutModule_startedFollowing = nil
 mb_MoveOutModule_warnedNoTarget = nil
 function mb_MoveOutModule_Update()
+    if not mb_MoveOutModule_enabled then
+        return false
+    end
     if mb_shouldFollow then
         return false
     end
@@ -56,9 +69,11 @@ function mb_MoveOutModule_FindFollowTarget()
     local members = max_GetNumPartyOrRaidMembers()
     for i = 1, members do
         local unit = max_GetUnitFromPartyOrRaidIndex(i)
-        if UnitExists(unit) and UnitIsVisible(unit) and not UnitIsDeadOrGhost(unit) and not max_HasBuff(unit, BUFF_TEXTURE_SPIRIT_OF_REDEMPTION) then
-            if not CheckInteractDistance(unit, 2) and CheckInteractDistance(unit, 4) then
-                return unit
+        if max_GetClass(unit) ~= "ROGUE" and max_GetClass(unit) ~= "WARRIOR" then
+            if UnitExists(unit) and UnitIsVisible(unit) and not UnitIsDeadOrGhost(unit) and not max_HasBuff(unit, BUFF_TEXTURE_SPIRIT_OF_REDEMPTION) then
+                if not CheckInteractDistance(unit, 2) and CheckInteractDistance(unit, 4) then
+                    return unit
+                end
             end
         end
     end

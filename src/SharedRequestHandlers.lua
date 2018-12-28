@@ -12,6 +12,7 @@ function mb_RegisterSharedRequestHandlers(playerClass)
     mb_RegisterForRequest("followMode", mb_FollowModeRequestHandler)
     mb_RegisterForRequest("requestBuffsMode", mb_RequestBuffsModeRequestHandler)
     mb_RegisterForRequest("goldDistribution", mb_GoldDistributionRequestHandler)
+    mb_RegisterForRequest("moveOutModule", mb_MoveOutModuleRequestHandler)
     mb_RegisterForRequest(playerClass .. "Sync", mb_ClassSyncRequestHandler)
 end
 
@@ -138,6 +139,17 @@ function mb_GoldDistributionRequestHandler(request)
     end
     if GetMoney() < 200000 then
         mb_AcceptRequest(request)
+    end
+end
+
+function mb_MoveOutModuleRequestHandler(request)
+    if request.from == mb_GetMyCommanderName() then
+        local parts = max_SplitString(request.body, "/")
+        if parts[1] == "on" then
+            mb_MoveOutModule_Enable()
+        else
+            mb_MoveOutModule_Disable()
+        end
     end
 end
 

@@ -25,6 +25,12 @@ function mb_Print(msg)
 	ChatFrame1:AddMessage(MY_ABBREVIATION .. ": " .. tostring(msg))
 end
 
+function mb_DebugPrint(msg)
+    if max_GetClass("player") == "PRIEST" then
+        mb_Print("Debug: " .. tostring(msg))
+    end
+end
+
 -- Events
 mb_castStartedTime = nil
 mb_isCasting = false
@@ -41,6 +47,7 @@ mb_queuedRequests = {}
 mb_areaOfEffectMode = false
 mb_isAutoAttacking = false
 mb_isAutoShooting = false
+mb_isReadyChecking = false
 function mb_OnEvent()
 	if event == "ADDON_LOADED" and arg1 == MY_NAME then
 		if mb_SV == nil then
@@ -95,6 +102,8 @@ function mb_OnEvent()
 	elseif event == "PLAYER_DEAD" and mb_GetMyCommanderName() == UnitName("player") then
 		mb_shouldRequestBuffs = false
 		mb_MakeRequest("requestBuffsMode", "off", REQUEST_PRIORITY.COMMAND)
+	elseif event == "READY_CHECK" then
+		mb_isReadyChecking = true
 	end
 end
 f:RegisterEvent("ADDON_LOADED")
@@ -119,6 +128,7 @@ f:RegisterEvent("STOP_AUTOREPEAT_SPELL")
 f:RegisterEvent("PLAYER_ENTER_COMBAT")
 f:RegisterEvent("PLAYER_LEAVE_COMBAT")
 f:RegisterEvent("PLAYER_DEAD")
+f:RegisterEvent("READY_CHECK")
 f:SetScript("OnEvent", mb_OnEvent)
 
 mb_queuedIncomingRequests = {}

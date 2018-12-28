@@ -14,6 +14,9 @@ function mb_HealingModule_RegisterHoT(spellName, texture, manaCost)
 end
 
 function mb_HealingModule_HandleHoTRequest(request)
+    if UnitIsDead("player") then
+        return
+    end
     local unit = max_GetUnitForPlayerName(request.body)
     for k, v in pairs(mb_HealingModule_registeredHoTs) do
         if not max_HasBuff(unit, v.texture) then

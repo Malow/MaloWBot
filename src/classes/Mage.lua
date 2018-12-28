@@ -112,6 +112,9 @@ function mb_Mage_OnLoad()
 end
 
 function mb_Mage_HandleWaterRequest(request)
+    if UnitIsDead("player") then
+        return
+    end
     if mb_GetWaterCount() < 25 then
         return
     end
@@ -124,6 +127,9 @@ function mb_Mage_HandleWaterRequest(request)
 end
 
 function mb_Mage_HandleDecurseRequest(request)
+    if UnitIsDead("player") then
+        return
+    end
     if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Remove Lesser Curse") and UnitMana("player") > 500 then
         mb_AcceptRequest(request)
     end

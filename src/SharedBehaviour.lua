@@ -13,6 +13,10 @@ mb_classSyncData = nil
 mb_registeredRangeCheckSpells = {}
 
 function mb_HandleSharedBehaviour(commander)
+    if mb_isReadyChecking then
+        mb_isReadyChecking = false
+        mb_HandleReadyCheck()
+    end
     if UnitAffectingCombat("player") then
         if max_GetHealthPercentage("player") < 25 then
             mb_UseItem("Major Healthstone")
@@ -79,9 +83,9 @@ function mb_HandleSharedBehaviour(commander)
         mb_CheckAndRequestBuffs()
     end
 
-    --if mb_MoveOutModule_Update() then
-    --    return true
-    --end
+    if mb_MoveOutModule_Update() then
+        return true
+    end
 
     if not mb_IsDrinking() and mb_shouldFollow then
         FollowByName(commander, true)
@@ -166,7 +170,6 @@ function mb_CheckAndRequestBuffs()
     end
     for i = 1, max_GetTableSize(mb_desiredBuffs) do
         if not max_HasBuffWithMultipleTextures("player", mb_desiredBuffs[i].textures) then
-            mb_Print("requesting: " .. mb_desiredBuffs[i].type)
             mb_MakeThrottledRequest(mb_desiredBuffs[i], UnitName("player"), REQUEST_PRIORITY.BUFF)
         end
     end
@@ -294,6 +297,10 @@ end
 
 mb_saidQuestCompleteHelpMessageTime = 0
 function mb_HandleGossiping()
+    local topGossipText = GetGossipText()
+    if topGossipText ~= nil and string.find(topGossipText, "The fabric of which") then
+        SelectGossipOption(1)
+    end
     -- QuestHaste addon takes care of accepting/completing of quests.
     local _, gossip1, _, gossip2, _, gossip3, _, gossip4, _, gossip5 = GetGossipOptions()
     if mb_GetConfig()["autoTrainSpells"] then
@@ -388,7 +395,7 @@ function mb_IsSpellInRange(spellName, unit)
     if mb_registeredRangeCheckSpells[spellName] == nil then
         max_SayRaid("Serious error, don't have spell " .. spellName .. " registered for rangeCheck, but still tried to check range with it.")
     end
-    if UnitIsUnit("target", unit) then
+    if unit == nil or UnitIsUnit("target", unit) then
         return IsActionInRange(mb_registeredRangeCheckSpells[spellName]) == 1
     end
 
@@ -416,11 +423,10 @@ end
 
 -- Buffs the player with the buff if it can, returns true if it buffs
 function mb_CompleteStandardBuffRequest(request)
-    -- TODO: WE DON'T EVEN GET HERE WHEN IT BUGS OUT
-    mb_Print("Trying to complete " .. request.type .. " from " .. request.body)
+    mb_DebugPrint("Trying to complete " .. request.type .. " from " .. request.body)
     local buff = mb_GetBuffWithType(request.type)
     if buff == nil then
-        mb_Print("Not buff found " .. request.type .. " from " .. request.body)
+        mb_DebugPrint("Not buff found " .. request.type .. " from " .. request.body)
         return false
     end
     if mb_IsOnGCD() then
@@ -428,12 +434,12 @@ function mb_CompleteStandardBuffRequest(request)
     end
     mb_RequestCompleted(request)
     if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), buff.textures) then
-        mb_Print("target doesn't have buff " .. request.type .. " from " .. request.body)
+        mb_DebugPrint("target doesn't have buff " .. request.type .. " from " .. request.body)
         if buff.groupWideSpellName ~= nil and mb_ShouldBuffGroupWide(request.body, buff, buff.unitFilter) then
-            mb_Print("Castomg group buff " .. request.type .. " from " .. request.body)
+            mb_DebugPrint("Castomg group buff " .. request.type .. " from " .. request.body)
             max_CastSpellOnRaidMemberByPlayerName(buff.groupWideSpellName, request.body)
         else
-            mb_Print("Castomg single buff " .. request.type .. " from " .. request.body)
+            mb_DebugPrint("Castomg single buff " .. request.type .. " from " .. request.body)
             max_CastSpellOnRaidMemberByPlayerName(buff.spellName, request.body)
         end
         return true
@@ -441,14 +447,16 @@ function mb_CompleteStandardBuffRequest(request)
 end
 
 function mb_HandleStandardBuffRequest(request)
+    mb_DebugPrint("Received request " .. request.type .. " from " .. request.body)
     local buff = mb_GetBuffWithType(request.type)
     if buff.groupWideSpellName ~= nil then
         if not max_HasSpell(buff.groupWideSpellName) then
+            mb_DebugPrint("Declined request " .. request.type .. " from " .. request.body .. ", I don't have: " .. buff.groupWideSpellName)
             return
         end
     end
     if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), buff.spellName) then
-        mb_Print("I accepted " .. request.type .. " from " .. request.body)
+        mb_DebugPrint("I accepted " .. request.type .. " from " .. request.body)
         mb_AcceptRequest(request)
     end
 end
@@ -461,4 +469,40 @@ end
 function mb_HandleSharedBehaviourPostLoad(playerClass)
     mb_RegisterSharedRequestHandlers(playerClass)
     mb_MoveOutModule_Load()
+end
+
+function mb_HandleReadyCheck()
+    local isReady = true
+
+    if mb_CancelExpiringBuffs(8) then
+        isReady = false
+        max_SayRaid("I need rebuffs, I cancelled the ones with less than 8 minutes left")
+    end
+
+    if isReady then
+        ConfirmReadyCheck(1)
+    else
+        ConfirmReadyCheck(nil)
+    end
+end
+
+function mb_CancelExpiringBuffs(minutes)
+    local didCancel = false
+    for buffIndex = MAX_BUFFS, 1, -1 do
+        local b = UnitBuff("player", buffIndex)
+        if b ~= nil then
+            for _, buff in pairs(All_BUFFS) do
+                for _, buffTexture in pairs(buff.textures) do
+                    if b == buffTexture then
+                        local timeLeft = GetPlayerBuffTimeLeft(buffIndex - 1)
+                        if timeLeft < minutes * 60 then
+                            CancelPlayerBuff(buffIndex - 1)
+                            didCancel = true
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return didCancel
 end

@@ -33,6 +33,7 @@ function mb_Priest(commander)
 
     local request = mb_GetQueuedRequest(true)
     if request ~= nil then
+        mb_DebugPrint("Dealing with request .. " .. request.type .. " from " .. request.from)
         if mb_CompleteStandardBuffRequest(request) then
             return
         elseif request.type == REQUEST_RESURRECT.type then
@@ -234,6 +235,9 @@ function mb_Priest_HandleFearWardRequest(request)
     if max_IsSpellNameOnCooldown("Fear Ward") then
         return
     end
+    if UnitIsDead("player") then
+        return
+    end
     if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Fear Ward") then
         mb_AcceptRequest(request)
     end
@@ -246,6 +250,9 @@ function mb_Priest_HandleResurrectionRequest(request)
 end
 
 function mb_Priest_HandleDispelRequest(request)
+    if UnitIsDead("player") then
+        return
+    end
     if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Dispel Magic") and UnitMana("player") > 500 then
         mb_AcceptRequest(request)
     end

@@ -152,6 +152,9 @@ function mb_Paladin_HandleResurrectionRequest(request)
 end
 
 function mb_Paladin_HandleCleanseRequest(request)
+    if UnitIsDead("player") then
+        return
+    end
     if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Cleanse") and UnitMana("player") > 500 then
         mb_AcceptRequest(request)
     end

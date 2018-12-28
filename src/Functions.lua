@@ -221,6 +221,8 @@ function mb_CanResurrectUnitWithSpell(unit, spellName)
 		return false
 	elseif mb_IsDrinking() then
 		return false
+	elseif UnitIsDead("player") then
+		return false
 	end
 	if UnitExists(unit) and UnitIsVisible(unit) and UnitIsFriend("player", unit) and UnitIsDead(unit) and CheckInteractDistance(unit, 4) then --mb_IsSpellInRange(spellName, unit) then
 		return true
@@ -235,6 +237,8 @@ function mb_CanBuffUnitWithSpell(unit, spell)
 		return false
 	elseif mb_IsDrinking() then
 		return false
+	elseif UnitIsDead("player") then
+		return
 	end
 	if mb_IsUnitValidTarget(unit, spell) and max_GetLevelDifferenceFromSelf(unit) > -8 then
 		return true

@@ -10,6 +10,25 @@ function mb_Hunter(commander)
 		return
 	end
 
+	if mb_IsClassLeader() and mb_Hunter_TargetNeedsTranquilizing() then
+		if mb_Hunter_DoOrRequestTranquilizingShot() then
+			return
+		end
+	end
+
+	local request = mb_GetQueuedRequest(true)
+	if request ~= nil then
+		if request.type == REQUEST_TRANQUILIZING_SHOT.type then
+			if mb_IsOnGCD() then
+				return
+			end
+			CastSpellByName("Tranquilizing Shot")
+			max_SayRaid("Tranquilizing " .. tostring(UnitName("target")))
+			mb_RequestCompleted(request)
+			return
+		end
+	end
+
 	if not mb_Hunter_HasAspect() then
 		CastSpellByName("Aspect of the Hawk")
 		return
@@ -76,6 +95,9 @@ function mb_Hunter_OnLoad()
 	mb_AddDesiredBuff(BUFF_BLESSING_OF_SALVATION)
 	mb_AddDesiredBuff(BUFF_DIVINE_SPIRIT)
     mb_AddDesiredBuff(BUFF_SHADOW_PROTECTION)
+	mb_AddGCDCheckSpell("Serpent Sting")
+	mb_RegisterRangeCheckSpell("Tranquilizing Shot")
+	mb_RegisterForRequest(REQUEST_TRANQUILIZING_SHOT.type, mb_Hunter_HandleTranquilizingShotRequest)
 
 	local rangedWeaponItemLink = GetInventoryItemLink("player", GetInventorySlotInfo("RangedSlot"))
 	local rangedWeaponItemString = max_GetItemStringFromItemLink(rangedWeaponItemLink)
@@ -91,6 +113,46 @@ function mb_Hunter_OnLoad()
 	mb_Hunter_AddDesiredTalents()
 end
 
+function mb_Hunter_HandleTranquilizingShotRequest(request)
+	if request.from == UnitName("player") then
+		return
+	end
+	if mb_Hunter_CanDoTranquilizingShot() then
+		mb_AcceptRequest(request)
+	end
+end
+
+function mb_Hunter_DoOrRequestTranquilizingShot()
+	if mb_Hunter_CanDoTranquilizingShot() then
+		CastSpellByName("Tranquilizing Shot")
+		max_SayRaid("Tranquilizing " .. tostring(UnitName("target")))
+		return true
+	end
+	mb_MakeThrottledRequest(REQUEST_TRANQUILIZING_SHOT, "tranqItYoBeastBeCrazy", REQUEST_PRIORITY.COMMAND)
+	return false
+end
+
+function mb_Hunter_CanDoTranquilizingShot()
+	if UnitIsDead("player") then
+		return false
+	end
+	if max_IsSpellNameOnCooldown("Tranquilizing Shot") then
+		return false
+	end
+	if mb_IsSpellInRange("Tranquilizing Shot") and UnitMana("player") > 500 then
+		return true
+	end
+	return false
+end
+
+function mb_Hunter_TargetNeedsTranquilizing()
+	for _, buffTexture in pairs(BUFF_TEXTURES_TRANQUILIZING_SHOT) do
+		if max_HasBuff("target", buffTexture) then
+			return true
+		end
+	end
+	return false
+end
 
 function mb_Hunter_AddDesiredTalents()
 	mb_AddDesiredTalent(1, 1, 2) -- Improved Aspect of the Hawk

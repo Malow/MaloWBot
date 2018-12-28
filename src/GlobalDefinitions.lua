@@ -16,6 +16,8 @@ BUFF_TEXTURE_GIFT_OF_THE_WILD = "Interface\\Icons\\Spell_Nature_Regeneration"
 BUFF_TEXTURE_ASPECT_OF_THE_HAWK = "Interface\\Icons\\Spell_Nature_RavenForm"
 BUFF_TEXTURE_TRUESHOT_AURA = "Interface\\Icons\\Ability_TrueShot"
 DEBUFF_TEXTURE_HUNTERS_MARK = "Interface\\Icons\\Ability_Hunter_SniperShot"
+BUFF_TEXTURE_MAGMADAR_ENRAGE = ""
+BUFF_TEXTURES_TRANQUILIZING_SHOT = { BUFF_TEXTURE_MAGMADAR_ENRAGE }
 -- Mage
 BUFF_TEXTURE_ARCANE_INTELLECT = "Interface\\Icons\\Spell_Holy_MagicalSentry"
 BUFF_TEXTURE_ARCANE_BRILLIANCE = "Interface\\Icons\\Spell_Holy_ArcaneIntellect"
@@ -108,6 +110,10 @@ REQUEST_REMOVE_POISON = {
 REQUEST_REMOVE_DISEASE = {
     type = "removeDisease",
     throttle = 10
+}
+REQUEST_TRANQUILIZING_SHOT = {
+    type = "tranquilizingShot",
+    throttle = 1
 }
 
 --- Buff Requests

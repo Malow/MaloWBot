@@ -1,0 +1,382 @@
+<Ui>
+	<Frame name="MaloWBotCommanderFrame" hidden="false" enableMouse="true" movable="true">
+		<Size><AbsDimension x="200" y="300"/></Size>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Scripts>
+			<OnLoad> 
+				MaloWBotCommanderFrame:SetScale(0.8);
+			</OnLoad>	
+			<OnMouseUp>
+			 if ( this.isMoving ) then
+			  this:StopMovingOrSizing();
+			  this.isMoving = false;
+			 end
+			</OnMouseUp>
+			<OnMouseDown>
+			 if ( ( ( not this.isLocked ) or ( this.isLocked == 0 ) ) and ( arg1 == "LeftButton" ) ) then
+			  this:StartMoving();
+			  this.isMoving = true;
+			 end
+			</OnMouseDown>
+			<OnHide>
+			 if ( this.isMoving ) then
+			  this:StopMovingOrSizing();
+			  this.isMoving = false;
+			 end
+			</OnHide>
+		</Scripts>
+				
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackgroundBorder">
+					<Color r="0.0" g="0.0" b="0.0" a="1.0"/>
+					<Size><AbsDimension x="200" y="300"/></Size>
+					<Anchors>
+						<Anchor point="TOP"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString text="MaloWBotCommander" inherits="GameFontNormal">
+					<Size x="100" y="10"/>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="5" y="-5"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				
+				
+				<FontString text="AoE-Mode:" inherits="GameFontNormal">
+					<Size x="100" y="10"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT">
+							<Offset>
+								<AbsDimension x="-100" y="-189"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString text="Follow-Mode:" inherits="GameFontNormal">
+					<Size x="100" y="10"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT">
+							<Offset>
+								<AbsDimension x="-100" y="-211"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString text="Request Buffs:" inherits="GameFontNormal">
+					<Size x="100" y="10"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT">
+							<Offset>
+								<AbsDimension x="-100" y="-233"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString text="MoveOutModule:" inherits="GameFontNormal">
+					<Size x="100" y="10"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT">
+							<Offset>
+								<AbsDimension x="-100" y="-255"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">	
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="ReloadUI">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("r"); </OnClick>
+				</Scripts>
+			</Button>
+			
+			
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="TradeMeGoodies">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="-22"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("tradeMeGoodies"); </OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="InventoryDump">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-100" y="-22"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("inventoryDump"); </OnClick>
+				</Scripts>
+			</Button>
+			
+			
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="Summon">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="-44"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("summon"); </OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="Soulstone">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-100" y="-44"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("soulstone"); </OnClick>
+				</Scripts>
+			</Button>
+			
+			
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="Hearthstone">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="-66"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("hearthstone"); </OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="Mount">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-100" y="-66"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("mount"); </OnClick>
+				</Scripts>
+			</Button>
+			
+			
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="ReleaseCorpse">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="-88"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("releaseCorpse"); </OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="FixRaidGroup">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-100" y="-88"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("fixRaidGroup"); </OnClick>
+				</Scripts>
+			</Button>
+			
+			
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="DontHaveQuest">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="-110"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("doesNotHaveQuest"); </OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="HaveQuest">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-100" y="-110"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("haveQuest"); </OnClick>
+				</Scripts>
+			</Button>
+			
+			
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="GoldDistribution">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="-132"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("goldDistribution"); </OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="GoldDistribution">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-100" y="-132"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("goldDistribution"); </OnClick>
+				</Scripts>
+			</Button>
+			
+			
+			
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="Off">
+				<Size><AbsDimension x="50" y="20"/></Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="-184"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("aoe off"); </OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="On">
+				<Size><AbsDimension x="50" y="20"/></Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-50" y="-184"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("aoe on"); </OnClick>
+				</Scripts>
+			</Button>
+			
+			
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="Off">
+				<Size><AbsDimension x="50" y="20"/></Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="-206"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("follow off"); </OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="On">
+				<Size><AbsDimension x="50" y="20"/></Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-50" y="-206"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("follow on"); </OnClick>
+				</Scripts>
+			</Button>
+			
+			
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="Off">
+				<Size><AbsDimension x="50" y="20"/></Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="-228"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("requestBuffs off"); </OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="On">
+				<Size><AbsDimension x="50" y="20"/></Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-50" y="-228"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("requestBuffs on"); </OnClick>
+				</Scripts>
+			</Button>
+			
+			
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="Off">
+				<Size><AbsDimension x="50" y="20"/></Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="-250"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("moveOutModule off"); </OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="On">
+				<Size><AbsDimension x="50" y="20"/></Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-50" y="-250"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("moveOutModule on"); </OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+	</Frame>
+</Ui>

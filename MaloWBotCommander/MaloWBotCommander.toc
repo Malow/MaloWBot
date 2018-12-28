@@ -1,0 +1,8 @@
+## Interface: 30300
+## Title: MaloWBotCommander
+## DefaultState: enabled
+## Notes: MaloWs Bot Commander
+## Version 1
+## Author: MaloW
+
+MaloWBotCommander.xml

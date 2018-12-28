@@ -79,9 +79,9 @@ function mb_HandleSharedBehaviour(commander)
         mb_CheckAndRequestBuffs()
     end
 
-    if mb_MoveOutModule_Update() then
-        return true
-    end
+    --if mb_MoveOutModule_Update() then
+    --    return true
+    --end
 
     if not mb_IsDrinking() and mb_shouldFollow then
         FollowByName(commander, true)

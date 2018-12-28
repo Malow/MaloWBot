@@ -133,10 +133,10 @@ function mb_Priest_TankHealing()
 end
 
 function mb_Priest_Disc()
-    if mb_Priest_PWS(40) then
+    if mb_Priest_PWS(50) then
         return true
     end
-    if mb_Priest_Renew(60) then
+    if mb_Priest_Renew(70) then
         return true
     end
     return false

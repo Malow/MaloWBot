@@ -127,7 +127,7 @@ function mb_Druid_Rejuvenation()
     local unitFilter = UNIT_FILTER_DOES_NOT_HAVE_BUFF
     unitFilter.buff = BUFF_TEXTURE_REJUVENATION
     local healTargetUnit, missingHealthOfTarget = mb_GetMostDamagedFriendly(spell, unitFilter)
-    if max_GetHealthPercentage(healTargetUnit) < 50 then
+    if max_GetHealthPercentage(healTargetUnit) < 65 then
         max_CastSpellOnRaidMember(spell, healTargetUnit)
         return true
     end

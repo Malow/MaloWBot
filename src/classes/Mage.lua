@@ -18,6 +18,7 @@ function mb_Mage(commander)
         max_AssistByPlayerName(request.from)
         max_SayRaid("Interrupting " .. tostring(UnitName("target")))
         CastSpellByName("Counterspell")
+        mb_RequestCompleted(request)
     end
 
     if mb_isCasting then

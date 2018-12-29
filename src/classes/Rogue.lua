@@ -3,16 +3,20 @@ function mb_Rogue(commander)
     local request = mb_GetQueuedRequest(true)
     if request ~= nil then
         if request.type == REQUEST_INTERRUPT.type then
-            if request.attempts > 50 then
+            if request.attempts > 90 then
                 mb_RequestCompleted(request)
                 return
             end
             if mb_IsOnGCD() then
                 return
             end
+            if UnitMana("player") < 25 then
+                return
+            end
             max_AssistByPlayerName(request.from)
             max_SayRaid("Interrupting " .. tostring(UnitName("target")))
             CastSpellByName("Kick")
+            mb_RequestCompleted(request)
             return
         end
     end

@@ -113,7 +113,7 @@ function mb_Paladin_OnLoad()
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
     mb_AddDesiredBuff(BUFF_BLESSING_OF_WISDOM)
-    mb_AddDesiredBuff(BUFF_BLESSING_OF_MIGHT)
+    --mb_AddDesiredBuff(BUFF_BLESSING_OF_MIGHT)
     mb_AddDesiredBuff(BUFF_BLESSING_OF_KINGS)
     mb_AddDesiredBuff(BUFF_BLESSING_OF_LIGHT)
     mb_AddDesiredBuff(BUFF_BLESSING_OF_SALVATION)
@@ -125,6 +125,7 @@ function mb_Paladin_OnLoad()
     mb_RegisterForRequest(REQUEST_REMOVE_DISEASE.type, mb_Paladin_HandleCleanseRequest)
     if mb_GetMySpecName() == "Wisdom" then
         mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_WISDOM)
+        mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_MIGHT)
     elseif mb_GetMySpecName() == "MightJudge" then
         mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_MIGHT)
     elseif mb_GetMySpecName() == "KingsJudge" then

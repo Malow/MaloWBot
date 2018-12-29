@@ -435,22 +435,14 @@ function mb_OnUIErrorEvent(event, message, arg1, arg2, arg3, arg4, arg5, arg6, a
 end
 
 mb_shouldFuckOffAt = 0
-mb_previousFollowMode = true
 function mb_RebindMovementKeyIfNeeded()
-	if mb_shouldFuckOffAt + 5 > GetTime() then
+	if mb_shouldFuckOffAt + 3 > GetTime() then
 		SetBinding("9", "MOVEFORWARD")
 		return
 	end
 	if mb_lastFacingWrongWayTime + 0.5 > GetTime() then
 		SetBinding("9", "TURNLEFT")
 		return
-	end
-	if mb_shouldFuckOffAt ~= 0 then
-		mb_shouldFollow = mb_previousFollowMode
-		if mb_shouldFollow then
-			max_SayRaid("Putting follow back on")
-		end
-		mb_shouldFuckOffAt = 0
 	end
 	SetBinding("9", nil)
 end

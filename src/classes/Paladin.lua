@@ -162,6 +162,9 @@ end
 
 function mb_Paladin_CreateClassSyncData()
     local classMates = mb_GetClassMates(max_GetClass("player"))
+    if max_GetTableSize(classMates) < 2 then
+        return ""
+    end
     local kingsJudger = nil
     local mightJudger = nil
     for k, v in pairs(mb_GetConfig()["specs"]) do

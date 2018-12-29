@@ -13,6 +13,7 @@ function mb_RegisterSharedRequestHandlers(playerClass)
     mb_RegisterForRequest("requestBuffsMode", mb_RequestBuffsModeRequestHandler)
     mb_RegisterForRequest("goldDistribution", mb_GoldDistributionRequestHandler)
     mb_RegisterForRequest("moveOutModule", mb_MoveOutModuleRequestHandler)
+    mb_RegisterForRequest("fuckOff", mb_FuckOffRequestHandler)
     mb_RegisterForRequest(playerClass .. "Sync", mb_ClassSyncRequestHandler)
 end
 
@@ -150,6 +151,15 @@ function mb_MoveOutModuleRequestHandler(request)
         else
             mb_MoveOutModule_Disable()
         end
+    end
+end
+
+function mb_FuckOffRequestHandler(request)
+    if request.body == UnitName("player") then
+        mb_shouldFuckOffAt = GetTime()
+        mb_previousFollowMode = mb_shouldFollow
+        mb_shouldFollow = false
+        max_SayRaid("I'm fucking off!")
     end
 end
 

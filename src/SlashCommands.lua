@@ -28,6 +28,8 @@ function mb_HandleSpecialSlashCommand(msg)
         mb_MakeRequest("fearWard", UnitName("target"), REQUEST_PRIORITY.COMMAND)
     elseif msg == "interrupt" then
         mb_MakeRequest(REQUEST_INTERRUPT.type, "interrupt", REQUEST_PRIORITY.COMMAND)
+    elseif msg == "fuckOff" then
+        mb_MakeRequest("fuckOff", UnitName("targettarget"), REQUEST_PRIORITY.COMMAND)
     elseif string.find(msg, "aoe") then
         local mode = max_SplitString(msg, " ")[2]
         mb_areaOfEffectMode = mode == "on"
@@ -94,7 +96,7 @@ function mb_FixRaidGroup()
     end
     if members < 40 then
         for i = 1, 100 do
-            local name, rank, rankIndex, level, class, zone, group, note, officernote, online = GetGuildRosterInfo(i)
+            local name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i)
             if name ~= nil and online == 1 then
                 InviteByName(name)
             end

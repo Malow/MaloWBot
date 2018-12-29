@@ -48,7 +48,6 @@ mb_areaOfEffectMode = false
 mb_isAutoAttacking = false
 mb_isAutoShooting = false
 mb_isReadyChecking = false
-mb_lastFacingWrongWayTime = 0
 function mb_OnEvent()
 	if event == "ADDON_LOADED" and arg1 == MY_NAME then
 		if mb_SV == nil then
@@ -427,6 +426,7 @@ function mb_CastSpellByNameOnRaidMemberWithCallbacks(spellName, target, callback
 	end
 end
 
+mb_lastFacingWrongWayTime = 0
 function mb_OnUIErrorEvent(event, message, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
 	if message == "Target needs to be in front of you" then
 		mb_lastFacingWrongWayTime = GetTime()
@@ -434,12 +434,25 @@ function mb_OnUIErrorEvent(event, message, arg1, arg2, arg3, arg4, arg5, arg6, a
 	mb_OriginalOnUIErrorEventFunction(event, message, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
 end
 
+mb_shouldFuckOffAt = 0
+mb_previousFollowMode = true
 function mb_RebindMovementKeyIfNeeded()
+	if mb_shouldFuckOffAt + 5 > GetTime() then
+		SetBinding("9", "MOVEFORWARD")
+		return
+	end
 	if mb_lastFacingWrongWayTime + 0.5 > GetTime() then
 		SetBinding("9", "TURNLEFT")
-	else
-		SetBinding("9", nil)
+		return
 	end
+	if mb_shouldFuckOffAt ~= 0 then
+		mb_shouldFollow = mb_previousFollowMode
+		if mb_shouldFollow then
+			max_SayRaid("Putting follow back on")
+		end
+		mb_shouldFuckOffAt = 0
+	end
+	SetBinding("9", nil)
 end
 
 

@@ -26,6 +26,8 @@ function mb_HandleSpecialSlashCommand(msg)
         mb_MakeRequest("goldDistribution", "goldDistribution", REQUEST_PRIORITY.COMMAND)
     elseif msg == "fearWard" then
         mb_MakeRequest("fearWard", UnitName("target"), REQUEST_PRIORITY.COMMAND)
+    elseif msg == "interrupt" then
+        mb_MakeRequest(REQUEST_INTERRUPT.type, "interrupt", REQUEST_PRIORITY.COMMAND)
     elseif string.find(msg, "aoe") then
         local mode = max_SplitString(msg, " ")[2]
         mb_areaOfEffectMode = mode == "on"

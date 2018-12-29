@@ -2,11 +2,28 @@ function mb_Mage(commander)
     if mb_DoBasicCasterLogic() then
         return
     end
+    local request = mb_GetQueuedRequest(true)
+    if request ~= nil and request.type == REQUEST_INTERRUPT.type then
+        if request.attempts > 50 then
+            mb_RequestCompleted(request)
+            return
+        end
+        if mb_isCasting then
+            SpellStopCasting()
+            return
+        end
+        if mb_IsOnGCD() then
+            return
+        end
+        max_AssistByPlayerName(request.from)
+        max_SayRaid("Interrupting " .. tostring(UnitName("target")))
+        CastSpellByName("Counterspell")
+    end
+
     if mb_isCasting then
         return
     end
 
-    local request = mb_GetQueuedRequest(true)
     if request ~= nil then
         if mb_CompleteStandardBuffRequest(request) then
             return
@@ -95,6 +112,7 @@ function mb_Mage_OnLoad()
     mb_RegisterForStandardBuffRequest(BUFF_ARCANE_INTELLECT)
     mb_RegisterForRequest(REQUEST_WATER.type, mb_Mage_HandleWaterRequest)
     mb_RegisterForRequest(REQUEST_REMOVE_CURSE.type, mb_Mage_HandleDecurseRequest)
+    mb_RegisterForRequest(REQUEST_INTERRUPT.type, mb_Mage_HandleInterruptRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
@@ -109,6 +127,7 @@ function mb_Mage_OnLoad()
     mb_AddGCDCheckSpell("Frostbolt")
     mb_RegisterRangeCheckSpell("Arcane Intellect")
     mb_RegisterRangeCheckSpell("Remove Lesser Curse")
+    mb_RegisterRangeCheckSpell("Counterspell")
     mb_AddReagentWatch("Arcane Powder", 40)
 end
 
@@ -132,6 +151,22 @@ function mb_Mage_HandleDecurseRequest(request)
         return
     end
     if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Remove Lesser Curse") and UnitMana("player") > 500 then
+        mb_AcceptRequest(request)
+    end
+end
+
+function mb_Mage_HandleInterruptRequest(request)
+    if UnitIsDead("player") then
+        return
+    end
+    max_AssistByPlayerName(request.from)
+    if not mb_IsSpellInRange("Counterspell", "target") then
+        return
+    end
+    if max_IsSpellNameOnCooldown("Counterspell") then
+        return
+    end
+    if UnitMana("player") > 500 then
         mb_AcceptRequest(request)
     end
 end

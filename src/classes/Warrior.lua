@@ -146,6 +146,10 @@ function mb_Warrior_DpsTank()
         CastSpellByName("Thunder Clap")
         return
     end
+    if max_GetManaPercentage("player") > 50 and not max_IsSpellNameOnCooldown("Shield Slam") then
+        CastSpellByName("Shield Slam")
+        return
+    end
 end
 
 mb_Warrior_lastHoTRequest = 0

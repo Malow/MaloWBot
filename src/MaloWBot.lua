@@ -48,6 +48,7 @@ mb_areaOfEffectMode = false
 mb_isAutoAttacking = false
 mb_isAutoShooting = false
 mb_isReadyChecking = false
+mb_lastFacingWrongWayTime = 0
 function mb_OnEvent()
 	if event == "ADDON_LOADED" and arg1 == MY_NAME then
 		if mb_SV == nil then
@@ -185,6 +186,7 @@ mb_classSpecificRunFunction = nil
 -- OnPostLoad, called when macros etc. are available
 function mb_OnPostLoad()
 	mb_CreateMBMacros()
+	SetBinding("0","TURNORACTION")
 	local playerClass = max_GetClass("player")
 	mb_HandleSharedBehaviourPostLoad(playerClass)
 	if playerClass == "DRUID" then
@@ -218,6 +220,10 @@ function mb_OnPostLoad()
 	if GetRealZoneText() == "Ironforge" or GetRealZoneText() == "Stormwind" then
 		mb_shouldRequestBuffs = false
 	end
+
+	mb_OriginalOnUIErrorEventFunction = UIErrorsFrame_OnEvent
+	UIErrorsFrame_OnEvent = mb_OnUIErrorEvent
+
 	mb_Print("Loaded")
 end
 
@@ -269,6 +275,7 @@ function mb_OnCmd(msg)
 end
 
 function mb_RunBot(commander)
+	mb_RebindMovementKeyIfNeeded()
 	mb_HandleQueuedIncomingRequests()
 
 	if mb_HandleSharedBehaviour(commander) then
@@ -420,6 +427,21 @@ function mb_CastSpellByNameOnRaidMemberWithCallbacks(spellName, target, callback
 	end
 end
 
+function mb_OnUIErrorEvent(event, message, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
+	if message == "Target needs to be in front of you" then
+		mb_lastFacingWrongWayTime = GetTime()
+	end
+	mb_OriginalOnUIErrorEventFunction(event, message, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
+end
+
+function mb_RebindMovementKeyIfNeeded()
+	if mb_lastFacingWrongWayTime + 0.5 > GetTime() then
+		SetBinding("9", "TURNLEFT")
+	else
+		SetBinding("9", nil)
+	end
+end
+
 
 -- TODO:
 --- Test out LogOut() to remove /follow, works in combat? works while casting? If so use it before casting important spells like Evocation
@@ -525,14 +547,7 @@ end
 -- Tooltip scraping: https://github.com/Geigerkind/OneButtonHunter/blob/master/OneButtonHunter.lua
 --		It scrapes both %atk speed on quiver item and which action slot that is "Aimed shot"
 
--- To parse error-texts:
--- 		PostLoad:
---			RS_Old_UIErrorsFrame_OnEvent = UIErrorsFrame_OnEvent
--- 			UIErrorsFrame_OnEvent = RS_New_UIErrorsFrame_OnEvent
---	function RS_New_UIErrorsFrame_OnEvent(event, message, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
---    	--mb_Print(message)
---    	RS_Old_UIErrorsFrame_OnEvent(event, message, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
---	end
+
 
 
 

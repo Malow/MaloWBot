@@ -12,6 +12,7 @@ BUFF_TEXTURE_REJUVENATION = "Interface\\Icons\\Spell_Nature_Rejuvenation"
 BUFF_TEXTURE_REGROWTH = "Interface\\Icons\\Spell_Nature_ResistNature"
 BUFF_TEXTURE_MARK_OF_THE_WILD = "Interface\\Icons\\Spell_Nature_Regeneration"
 BUFF_TEXTURE_GIFT_OF_THE_WILD = "Interface\\Icons\\Spell_Nature_Regeneration"
+DEBUFF_TEXTURE_FAERIE_FIRE = "Interface\\Icons\\Spell_Nature_FaerieFire"
 -- Hunter
 BUFF_TEXTURE_ASPECT_OF_THE_HAWK = "Interface\\Icons\\Spell_Nature_RavenForm"
 BUFF_TEXTURE_TRUESHOT_AURA = "Interface\\Icons\\Ability_TrueShot"
@@ -114,6 +115,9 @@ REQUEST_REMOVE_DISEASE = {
 REQUEST_TRANQUILIZING_SHOT = {
     type = "tranquilizingShot",
     throttle = 1
+}
+REQUEST_INTERRUPT = {
+    type = "interrupt"
 }
 
 --- Buff Requests

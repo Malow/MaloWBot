@@ -49,8 +49,13 @@ function mb_Druid(commander)
         return
     end
 
-    if mb_Druid_InsectSwarm() then
-        return
+    if mb_IsClassLeader() then
+        if mb_Druid_InsectSwarm() then
+            return
+        end
+        if mb_Druid_FaerieFire() then
+            return
+        end
     end
 
     if mb_Druid_TankHealing() then
@@ -132,6 +137,14 @@ end
 function mb_Druid_InsectSwarm()
     if not max_HasDebuff("target", DEBUFF_INSECT_SWARM) then
         CastSpellByName("Insect Swarm(Rank 1)")
+        return true
+    end
+    return false
+end
+
+function mb_Druid_FaerieFire()
+    if not max_HasDebuff("target", DEBUFF_TEXTURE_FAERIE_FIRE) then
+        CastSpellByName("Faerie Fire")
         return true
     end
     return false

@@ -1,5 +1,22 @@
 mb_Rogue_usesDaggers = false
 function mb_Rogue(commander)
+    local request = mb_GetQueuedRequest(true)
+    if request ~= nil then
+        if request.type == REQUEST_INTERRUPT.type then
+            if request.attempts > 50 then
+                mb_RequestCompleted(request)
+                return
+            end
+            if mb_IsOnGCD() then
+                return
+            end
+            max_AssistByPlayerName(request.from)
+            max_SayRaid("Interrupting " .. tostring(UnitName("target")))
+            CastSpellByName("Kick")
+            return
+        end
+    end
+
     if mb_Rogue_ApplyPoison() then
         return
     end
@@ -83,6 +100,22 @@ function mb_Rogue_AdrenalineRush()
     return false
 end
 
+function mb_Rogue_HandleInterruptRequest(request)
+    if UnitIsDead("player") then
+        return
+    end
+    max_AssistByPlayerName(request.from)
+    if not mb_IsSpellInRange("Kick", "target") then
+        return
+    end
+    if max_IsSpellNameOnCooldown("Kick") then
+        return
+    end
+    if UnitMana("player") > 5 then
+        mb_AcceptRequest(request)
+    end
+end
+
 function mb_Rogue_OnLoad()
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
@@ -100,6 +133,9 @@ function mb_Rogue_OnLoad()
         end
     end
     mb_Rogue_AddDesiredTalents()
+    mb_RegisterRangeCheckSpell("Kick")
+    mb_AddGCDCheckSpell("Sinister Strike")
+    mb_RegisterForRequest(REQUEST_INTERRUPT.type, mb_Rogue_HandleInterruptRequest)
 end
 
 function mb_Rogue_AddDesiredTalents()

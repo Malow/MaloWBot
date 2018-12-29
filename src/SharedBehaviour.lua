@@ -479,6 +479,29 @@ function mb_HandleReadyCheck()
         max_SayRaid("I need rebuffs, I cancelled the ones with less than 8 minutes left")
     end
 
+    local playerClass = max_GetClass("player")
+    if playerClass == "DRUID" then
+    elseif playerClass == "HUNTER" then
+        if not mb_Hunter_IsReady() then
+            isReady = false
+        end
+    elseif playerClass == "MAGE" then
+        if not mb_Mage_IsReady() then
+            isReady = false
+        end
+    elseif playerClass == "PALADIN" then
+    elseif playerClass == "PRIEST" then
+        if not mb_Priest_IsReady() then
+            isReady = false
+        end
+    elseif playerClass == "ROGUE" then
+    elseif playerClass == "WARLOCK" then
+        if not mb_Warlock_IsReady() then
+            isReady = false
+        end
+    elseif playerClass == "WARRIOR" then
+    end
+
     if isReady then
         ConfirmReadyCheck(1)
     else
@@ -488,19 +511,25 @@ end
 
 function mb_CancelExpiringBuffs(minutes)
     local didCancel = false
+    for _, buff in pairs(All_BUFFS) do
+        for _, buffTexture in pairs(buff.textures) do
+            if mb_CancelExpiringBuffWithTexture(buffTexture, minutes) then
+                didCancel = true
+            end
+        end
+    end
+    return didCancel
+end
+
+function mb_CancelExpiringBuffWithTexture(buffTexture, minutes)
+    local didCancel = false
     for buffIndex = MAX_BUFFS, 1, -1 do
         local b = UnitBuff("player", buffIndex)
-        if b ~= nil then
-            for _, buff in pairs(All_BUFFS) do
-                for _, buffTexture in pairs(buff.textures) do
-                    if b == buffTexture then
-                        local timeLeft = GetPlayerBuffTimeLeft(buffIndex - 1)
-                        if timeLeft < minutes * 60 then
-                            CancelPlayerBuff(buffIndex - 1)
-                            didCancel = true
-                        end
-                    end
-                end
+        if b ~= nil and b == buffTexture then
+            local timeLeft = GetPlayerBuffTimeLeft(buffIndex - 1)
+            if timeLeft < minutes * 60 then
+                CancelPlayerBuff(buffIndex - 1)
+                didCancel = true
             end
         end
     end

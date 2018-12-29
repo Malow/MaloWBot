@@ -194,6 +194,13 @@ function mb_Warlock_HandleHealthstoneRequest(request)
     end
 end
 
+function mb_Warlock_IsReady()
+    if mb_CancelExpiringBuffWithTexture(BUFF_TEXTURE_SACRIFICED_SUCCUBUS, 8) then
+        return false
+    end
+    return true
+end
+
 function mb_Warlock_CreateClassSyncData()
     local classMates = mb_GetClassMates(max_GetClass("player"))
     if max_GetTableSize(classMates) > 2 then

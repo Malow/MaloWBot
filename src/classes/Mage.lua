@@ -35,6 +35,11 @@ function mb_Mage(commander)
         end
     end
 
+    if not max_HasBuff("player", BUFF_TEXTURE_MAGE_ARMOR) then
+        CastSpellByName("Mage Armor")
+        return
+    end
+
     if not UnitAffectingCombat("player") then
         if mb_GetWaterCount() < 60 then
             CastSpellByName("Conjure Water")
@@ -45,10 +50,6 @@ function mb_Mage(commander)
                 CastSpellByName("Conjure " .. ITEMS_MANA_GEM[i])
                 return
             end
-        end
-        if not max_HasBuff("player", BUFF_TEXTURE_MAGE_ARMOR) then
-            CastSpellByName("Mage Armor")
-            return
         end
     end
 
@@ -133,6 +134,13 @@ function mb_Mage_HandleDecurseRequest(request)
     if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Remove Lesser Curse") and UnitMana("player") > 500 then
         mb_AcceptRequest(request)
     end
+end
+
+function mb_Mage_IsReady()
+    if mb_CancelExpiringBuffWithTexture(BUFF_TEXTURE_MAGE_ARMOR, 8) then
+        return false
+    end
+    return true
 end
 
 function mb_Mage_AddDesiredTalents()

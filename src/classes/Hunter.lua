@@ -154,6 +154,13 @@ function mb_Hunter_TargetNeedsTranquilizing()
 	return false
 end
 
+function mb_Hunter_IsReady()
+	if mb_CancelExpiringBuffWithTexture(BUFF_TEXTURE_TRUESHOT_AURA, 8) then
+		return false
+	end
+	return true
+end
+
 function mb_Hunter_AddDesiredTalents()
 	mb_AddDesiredTalent(1, 1, 2) -- Improved Aspect of the Hawk
 	mb_AddDesiredTalent(2, 2, 5) -- Efficiency

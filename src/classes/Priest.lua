@@ -258,6 +258,13 @@ function mb_Priest_HandleDispelRequest(request)
     end
 end
 
+function mb_Priest_IsReady()
+    if mb_CancelExpiringBuffWithTexture(BUFF_TEXTURE_INNER_FIRE, 8) then
+        return false
+    end
+    return true
+end
+
 function mb_Priest_HasImprovedFortitude()
     local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(1, 4)
     return currentRank == 2

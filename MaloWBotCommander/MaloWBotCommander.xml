@@ -252,7 +252,7 @@
 					<OnClick> mb_OnCmd("goldDistribution"); </OnClick>
 				</Scripts>
 			</Button>
-			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="GoldDistribution">
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="Healthstone">
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
@@ -261,7 +261,7 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnClick> mb_OnCmd("goldDistribution"); </OnClick>
+					<OnClick> mb_OnCmd("healthstone"); </OnClick>
 				</Scripts>
 			</Button>
 			

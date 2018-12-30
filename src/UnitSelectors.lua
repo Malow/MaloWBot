@@ -40,11 +40,11 @@ function mb_GetLowestHealthFriendly(spell, unitFilter)
                 healTarget = i
             end
         end
-        if healTarget == 0 then
-            return "player", healthOfTarget
-        else
-            return max_GetUnitFromPartyOrRaidIndex(healTarget), healthOfTarget
-        end
+    end
+    if healTarget == 0 then
+        return "player", healthOfTarget
+    else
+        return max_GetUnitFromPartyOrRaidIndex(healTarget), healthOfTarget
     end
 end
 

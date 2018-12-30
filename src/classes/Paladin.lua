@@ -55,28 +55,8 @@ function mb_Paladin(commander)
         return
     end
 
-    if mb_paladinIsJudgingLight then
-        if not max_HasDebuff("target", DEBUFF_TEXTURE_JUDGEMENT_OF_LIGHT) then
-            if max_HasBuff("player", BUFF_TEXTURE_SEAL_OF_LIGHT) then
-                CastSpellByName("Judgement")
-                return
-            else
-                CastSpellByName("Seal of Light")
-                return
-            end
-        end
-    end
-
-    if mb_paladinIsJudgingWisdom then
-        if not max_HasDebuff("target", DEBUFF_TEXTURE_JUDGEMENT_OF_WISDOM) then
-            if max_HasBuff("player", BUFF_TEXTURE_SEAL_OF_WISDOM) then
-                CastSpellByName("Judgement")
-                return
-            else
-                CastSpellByName("Seal of Wisdom")
-                return
-            end
-        end
+    if mb_Paladin_Judge() then
+        return
     end
 
     if not mb_isAutoAttacking then
@@ -159,6 +139,38 @@ function mb_Paladin_HandleCleanseRequest(request)
     if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Cleanse") and UnitMana("player") > 500 then
         mb_AcceptRequest(request)
     end
+end
+
+function mb_Paladin_Judge()
+    local cur, max, found = MobHealth3:GetUnitHealth("target")
+    if not found or cur < APPLY_DEBUFFS_HEALTH_ABOVE then
+        return false
+    end
+
+    if mb_paladinIsJudgingLight then
+        if not max_HasDebuff("target", DEBUFF_TEXTURE_JUDGEMENT_OF_LIGHT) then
+            if max_HasBuff("player", BUFF_TEXTURE_SEAL_OF_LIGHT) then
+                CastSpellByName("Judgement")
+                return true
+            else
+                CastSpellByName("Seal of Light")
+                return true
+            end
+        end
+    end
+
+    if mb_paladinIsJudgingWisdom then
+        if not max_HasDebuff("target", DEBUFF_TEXTURE_JUDGEMENT_OF_WISDOM) then
+            if max_HasBuff("player", BUFF_TEXTURE_SEAL_OF_WISDOM) then
+                CastSpellByName("Judgement")
+                return true
+            else
+                CastSpellByName("Seal of Wisdom")
+                return true
+            end
+        end
+    end
+    return false
 end
 
 function mb_Paladin_CreateClassSyncData()

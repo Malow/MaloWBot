@@ -99,9 +99,12 @@ function mb_OnEvent()
 		mb_isAutoAttacking = true
 	elseif event == "PLAYER_LEAVE_COMBAT" then
 		mb_isAutoAttacking = false
-	elseif event == "PLAYER_DEAD" and mb_GetMyCommanderName() == UnitName("player") then
-		mb_shouldRequestBuffs = false
-		mb_MakeRequest("requestBuffsMode", "off", REQUEST_PRIORITY.COMMAND)
+	elseif event == "PLAYER_DEAD" then
+		mb_areaOfEffectMode = false
+		if mb_GetMyCommanderName() == UnitName("player") then
+			mb_shouldRequestBuffs = false
+			mb_MakeRequest("requestBuffsMode", "off", REQUEST_PRIORITY.COMMAND)
+		end
 	elseif event == "READY_CHECK" then
 		mb_isReadyChecking = true
 	end
@@ -497,7 +500,6 @@ end
 ---		Add Aimed-shot to the rotation, maybe see https://github.com/Geigerkind/OneButtonHunter/blob/master/OneButtonHunter.lua, though it seems to be bugged
 ---		Make them melee-hit with Raptor strike and mongoose bite if in melee range?
 ---	Warrior:
----		Only warriors with specced imp demo should cast it, right now no1 is specced that though...
 ---		Battle-shout, make it smart so that it rebuffs party mates within range if needed and not only self. Also make non-tanking tanks refresh it when it has like 5 sec duration left to prevent tanking tanks from wasting the rage
 ---		Prot:
 ---			Mocking blow taunt if Taunt is on CD

@@ -109,10 +109,7 @@ function mb_Warlock_DrainSoul()
         return false
     end
     local cur, max, found = MobHealth3:GetUnitHealth("target")
-    if not found then
-        return false
-    end
-    if cur > 15000 then
+    if not found or cur > APPLY_DEBUFFS_HEALTH_ABOVE then
         return false
     end
     if max_GetFreeBagSlots() > 5 and max_GetLevelDifferenceFromSelf("target") > -10 then
@@ -123,6 +120,10 @@ function mb_Warlock_DrainSoul()
 end
 
 function mb_Warlock_Curse()
+    local cur, max, found = MobHealth3:GetUnitHealth("target")
+    if not found or cur < APPLY_DEBUFFS_HEALTH_ABOVE then
+        return false
+    end
     if not mb_IsSpellInRange("Curse of the Elements", "target") then
         return false
     end

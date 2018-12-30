@@ -476,7 +476,6 @@ function mb_HandleReadyCheck()
 
     if mb_CancelExpiringBuffs(8) then
         isReady = false
-        max_SayRaid("I need rebuffs, I cancelled the ones with less than 8 minutes left")
     end
 
     local playerClass = max_GetClass("player")
@@ -500,6 +499,14 @@ function mb_HandleReadyCheck()
             isReady = false
         end
     elseif playerClass == "WARRIOR" then
+    end
+
+    if playerClass ~= "ROGUE" and playerClass ~= "WARRIOR" then
+        if max_GetManaPercentage("player") < 95 then
+            if mb_DrinkIfPossible() then
+                return true
+            end
+        end
     end
 
     if isReady then

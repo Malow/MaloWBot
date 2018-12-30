@@ -98,38 +98,36 @@ function mb_Warrior_Tank(commander)
         return
     end
 
+    if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) < 5 or mb_Warrior_lastSunder + 20 < GetTime() then
+        if max_GetManaPercentage("player") >= 12 then
+            CastSpellByName("Sunder Armor")
+            mb_Warrior_lastSunder = GetTime()
+        end
+        return
+    end
+
     if mb_Warrior_BattleShout() then
         return
     end
 
-    if max_GetManaPercentage("player") > 11 then
-        if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) < 5 then
-            CastSpellByName("Sunder Armor")
-            mb_Warrior_lastSunder = GetTime()
-            return
-        elseif mb_Warrior_lastSunder + 20 < GetTime() then
-            CastSpellByName("Sunder Armor")
-            mb_Warrior_lastSunder = GetTime()
-            return
+    if not max_IsSpellNameOnCooldown("Shield Slam") then
+        if max_GetManaPercentage("player") >= 20 then
+            CastSpellByName("Shield Slam")
         end
-    end
-
-    if max_GetManaPercentage("player") > 20 and not max_IsSpellNameOnCooldown("Shield Slam") then
-        CastSpellByName("Shield Slam")
         return
     end
 
-    if max_GetManaPercentage("player") > 10 and not max_IsSpellNameOnCooldown("Shield Block") then
+    if max_GetManaPercentage("player") >= 10 and not max_IsSpellNameOnCooldown("Shield Block") then
         CastSpellByName("Shield Block")
         return
     end
 
-    if max_GetManaPercentage("player") > 11 then
+    if max_GetManaPercentage("player") >= 12 then
         CastSpellByName("Sunder Armor")
         mb_Warrior_lastSunder = GetTime()
     end
 
-    if max_GetManaPercentage("player") > 40 then
+    if max_GetManaPercentage("player") >= 40 then
         CastSpellByName("Heroic Strike")
     end
 end
@@ -138,17 +136,25 @@ function mb_Warrior_DpsTank()
     if max_GetActiveStance() ~= 1 then
         CastSpellByName("Battle Stance")
     end
-    if not max_HasDebuff("target", DEBUFF_TEXTURE_DEMORALIZING_SHOUT) and CheckInteractDistance("target", 3) then
-        CastSpellByName("Demoralizing Shout")
+    if mb_Warrior_BattleShout() then
         return
+    end
+    if not max_HasDebuff("target", DEBUFF_TEXTURE_DEMORALIZING_SHOUT) and CheckInteractDistance("target", 3) then
+        if mb_Warrior_HasImprovedDemoralizingShout() then
+            CastSpellByName("Demoralizing Shout")
+            return
+        end
     end
     if not max_HasDebuff("target", DEBUFF_TEXTURE_THUNDER_CLAP) and CheckInteractDistance("target", 3) then
         CastSpellByName("Thunder Clap")
         return
     end
-    if max_GetManaPercentage("player") > 50 and not max_IsSpellNameOnCooldown("Shield Slam") then
+    if max_GetManaPercentage("player") >= 40 and not max_IsSpellNameOnCooldown("Shield Slam") then
         CastSpellByName("Shield Slam")
         return
+    end
+    if max_GetManaPercentage("player") >= 80 then
+        CastSpellByName("Heroic Strike")
     end
 end
 
@@ -186,6 +192,11 @@ function mb_Warrior_OnLoad()
     if mb_warriorIsTank then
         mb_CombatLogModule_DamageTakenPerSecond_Enable()
     end
+end
+
+function mb_Warrior_HasImprovedDemoralizingShout()
+    local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(2, 3)
+    return currentRank == 5
 end
 
 function mb_Warrior_AddDesiredTalents()

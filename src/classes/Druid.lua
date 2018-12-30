@@ -126,7 +126,7 @@ function mb_Druid_Rejuvenation()
     local spell = "Rejuvenation"
     local unitFilter = UNIT_FILTER_DOES_NOT_HAVE_BUFF
     unitFilter.buff = BUFF_TEXTURE_REJUVENATION
-    local healTargetUnit, missingHealthOfTarget = mb_GetMostDamagedFriendly(spell, unitFilter)
+    local healTargetUnit, missingHealthOfTarget = mb_HealingModule_GetRaidHealTarget(spell, unitFilter)
     if max_GetHealthPercentage(healTargetUnit) < 65 then
         max_CastSpellOnRaidMember(spell, healTargetUnit)
         return true
@@ -135,6 +135,10 @@ function mb_Druid_Rejuvenation()
 end
 
 function mb_Druid_InsectSwarm()
+    local cur, max, found = MobHealth3:GetUnitHealth("target")
+    if not found or cur < APPLY_DEBUFFS_HEALTH_ABOVE then
+        return false
+    end
     if not max_HasDebuff("target", DEBUFF_INSECT_SWARM) then
         CastSpellByName("Insect Swarm(Rank 1)")
         return true
@@ -143,6 +147,10 @@ function mb_Druid_InsectSwarm()
 end
 
 function mb_Druid_FaerieFire()
+    local cur, max, found = MobHealth3:GetUnitHealth("target")
+    if not found or cur < APPLY_DEBUFFS_HEALTH_ABOVE then
+        return false
+    end
     if not max_HasDebuff("target", DEBUFF_TEXTURE_FAERIE_FIRE) then
         CastSpellByName("Faerie Fire")
         return true

@@ -130,6 +130,7 @@ function mb_Mage_OnLoad()
     mb_RegisterRangeCheckSpell("Remove Lesser Curse")
     mb_RegisterRangeCheckSpell("Counterspell")
     mb_AddReagentWatch("Arcane Powder", 40)
+    mb_AddReagentWatch("Rune of Portals", 10)
 end
 
 function mb_Mage_HandleWaterRequest(request)

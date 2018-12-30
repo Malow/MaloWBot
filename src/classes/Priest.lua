@@ -134,10 +134,10 @@ function mb_Priest_TankHealing()
 end
 
 function mb_Priest_Disc()
-    if mb_Priest_PWS(60) then
+    if mb_Priest_PWS(50) then
         return true
     end
-    if mb_Priest_Renew(75) then
+    if mb_Priest_Renew(60) then
         return true
     end
     return false
@@ -173,7 +173,7 @@ function mb_Priest_Renew(healthPercentage)
     local spell = "Renew"
     local unitFilter = UNIT_FILTER_DOES_NOT_HAVE_BUFF
     unitFilter.buff = BUFF_TEXTURE_RENEW
-    local healTargetUnit, missingHealthOfTarget = mb_GetMostDamagedFriendly(spell, unitFilter)
+    local healTargetUnit, missingHealthOfTarget = mb_HealingModule_GetRaidHealTarget(spell, unitFilter)
     if max_GetHealthPercentage(healTargetUnit) < healthPercentage then
         max_CastSpellOnRaidMember(spell, healTargetUnit)
         return true

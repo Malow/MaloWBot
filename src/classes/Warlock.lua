@@ -88,8 +88,8 @@ function mb_Warlock(commander)
         return
     end
 
-    if max_GetHealthPercentage("player") < 25 and mb_IsSpellInRange("Drain Life", "target") then
-        CastSpellByName("Drain Life")
+    if max_GetHealthPercentage("player") < 30 and mb_IsSpellInRange("Death Coil", "target") and not max_IsSpellNameOnCooldown("Death Coil") then
+        CastSpellByName("Death Coil")
         return
     end
 
@@ -115,7 +115,7 @@ function mb_Warlock_DrainSoul()
     if not found or cur > APPLY_DEBUFFS_HEALTH_ABOVE then
         return false
     end
-    if max_GetFreeBagSlots() > 5 and max_GetLevelDifferenceFromSelf("target") > -10 then
+    if max_GetFreeBagSlots() > 8 and max_GetLevelDifferenceFromSelf("target") > -10 then
         CastSpellByName("Drain Soul")
         return true
     end
@@ -160,7 +160,7 @@ function mb_Warlock_OnLoad()
     mb_AddGCDCheckSpell("Shadow Bolt")
     mb_RegisterClassSyncDataFunctions(mb_Warlock_CreateClassSyncData, mb_Warlock_ReceivedClassSyncData)
     mb_RegisterRangeCheckSpell("Unending Breath")
-    mb_RegisterRangeCheckSpell("Drain Life")
+    mb_RegisterRangeCheckSpell("Death Coil")
     mb_RegisterRangeCheckSpell("Drain Soul")
     mb_RegisterRangeCheckSpell("Curse of the Elements")
 end
@@ -193,7 +193,7 @@ function mb_Warlock_HandleHealthstoneRequest(request)
         return
     end
     local soulShardCount = mb_GetItemCount("Soul Shard")
-    if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), "Unending Breath") and soulShardCount > 10 then
+    if CheckInteractDistance(max_GetUnitForPlayerName(request.body), 3) and soulShardCount > 10 then
         mb_AcceptRequest(request)
     end
 end

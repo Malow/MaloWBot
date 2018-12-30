@@ -26,6 +26,7 @@ BUFF_TEXTURE_ARCANE_INTELLECT = "Interface\\Icons\\Spell_Holy_MagicalSentry"
 BUFF_TEXTURE_ARCANE_BRILLIANCE = "Interface\\Icons\\Spell_Holy_ArcaneIntellect"
 BUFF_TEXTURE_ICE_ARMOR = "Interface\\Icons\\Spell_Frost_FrostArmor02"
 BUFF_TEXTURE_MAGE_ARMOR = "Interface\\Icons\\Spell_MageArmor"
+DEBUFF_TEXTURE_WINTERS_CHILL = "Interface\\Icons\\Spell_Frost_ChillingBlast"
 -- Paladin
 BUFF_TEXTURE_SEAL_OF_LIGHT = "Interface\\Icons\\Spell_Holy_HealingAura"
 BUFF_TEXTURE_SEAL_OF_WISDOM = "Interface\\Icons\\Spell_Holy_RighteousnessAura"

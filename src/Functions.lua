@@ -233,9 +233,7 @@ end
 
 -- Checks combat and mana and target
 function mb_CanBuffUnitWithSpell(unit, spell)
-	if UnitAffectingCombat("player") then
-		return false
-	elseif max_GetManaPercentage("player") < 50 then
+	if max_GetManaPercentage("player") < 50 then
 		return false
 	elseif mb_IsDrinking() then
 		return false

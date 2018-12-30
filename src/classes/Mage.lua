@@ -69,16 +69,30 @@ function mb_Mage(commander)
                 return
             end
         end
+        if mb_Mage_HasIceBarrier() then
+            if not max_IsSpellNameOnCooldown("Ice Barrier") then
+                CastSpellByName("Ice Barrier")
+                return
+            end
+        end
     end
 
     if UnitAffectingCombat("player") then
-        if max_IsSpellNameOnCooldown("Ice Block") and not max_IsSpellNameOnCooldown("Cold Snap") then
-            CastSpellByName("Cold Snap")
-            return
+        if mb_Mage_HasIceBlock() then
+            if max_IsSpellNameOnCooldown("Ice Block") and not max_IsSpellNameOnCooldown("Cold Snap") then
+                CastSpellByName("Cold Snap")
+                return
+            end
+            if max_GetHealthPercentage("player") < 30 and not max_IsSpellNameOnCooldown("Ice Block") then
+                CastSpellByName("Ice Block")
+                return
+            end
         end
-        if max_GetHealthPercentage("player") < 30 and not max_IsSpellNameOnCooldown("Ice Block") then
-            CastSpellByName("Ice Block")
-            return
+        if mb_Mage_HasIceBarrier() then
+            if max_GetHealthPercentage("player") < 30 and not max_IsSpellNameOnCooldown("Ice Barrier") then
+                CastSpellByName("Ice Barrier")
+                return
+            end
         end
         if max_GetManaPercentage("player") < 10 and not max_IsSpellNameOnCooldown("Evocation") then
             CastSpellByName("Evocation")
@@ -110,8 +124,14 @@ function mb_Mage(commander)
         return
     end
 
-    max_UseEquippedItemIfReady("Trinket0Slot")
-    max_UseEquippedItemIfReady("Trinket1Slot")
+    if UnitAffectingCombat("player") and mb_Mage_HasPresenceOfMind() and mb_IsMoving() and not max_IsSpellNameOnCooldown("Presence of Mind") then
+        CastSpellByName("Presence of Mind")
+    end
+
+    if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_WINTERS_CHILL) == 5 and max_GetManaPercentage("player") > 10 and not mb_IsMoving() then
+        max_UseEquippedItemIfReady("Trinket0Slot")
+        max_UseEquippedItemIfReady("Trinket1Slot")
+    end
 
     CastSpellByName("Frostbolt")
     CastSpellByName("Fire Blast")
@@ -188,29 +208,62 @@ function mb_Mage_IsReady()
     return true
 end
 
+function mb_Mage_HasIceBlock()
+    local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(3, 14)
+    return currentRank == 1
+end
+
+function mb_Mage_HasPresenceOfMind()
+    local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(1, 13)
+    return currentRank == 1
+end
+
+function mb_Mage_HasIceBarrier()
+    local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(3, 17)
+    return currentRank == 1
+end
+
 function mb_Mage_AddDesiredTalents()
     if UnitLevel("player") == 60 then
-        -- Raiding spec
-        -- TODO: Decide between Ice Barrier and Presence of Mind, probably depends on whether or not we can detect movement (use the error text like the rogue addon for that?)
-        mb_AddDesiredTalent(3, 2, 5) -- Improved Frostbolt
-        mb_AddDesiredTalent(3, 3, 3) -- Elemental Precision
-        mb_AddDesiredTalent(3, 4, 5) -- Ice Shards
-        mb_AddDesiredTalent(3, 7, 3) -- Permafrost
-        mb_AddDesiredTalent(3, 8, 3) -- Piercing Ice
-        mb_AddDesiredTalent(3, 9, 1) -- Cold Snap
-        mb_AddDesiredTalent(3, 10, 3) -- Improved Blizzard
-        mb_AddDesiredTalent(3, 11, 2) -- Arctic reach
-        mb_AddDesiredTalent(3, 12, 3) -- Frost Channeling
-        mb_AddDesiredTalent(3, 14, 1) -- Ice Block
-        mb_AddDesiredTalent(3, 16, 1) -- Winter's Chill
-        -- mb_AddDesiredTalent(3, 14, 1) -- Ice Barrier
-        mb_AddDesiredTalent(1, 1, 2) -- Arcane Subtlety
-        mb_AddDesiredTalent(1, 2, 3) -- Arcane Focus
-        mb_AddDesiredTalent(1, 5, 5) -- Magic Absorption
-        mb_AddDesiredTalent(1, 6, 5) -- Arcane Concentration
-        mb_AddDesiredTalent(1, 7, 2) -- Magic Attunement
-        mb_AddDesiredTalent(1, 12, 3) -- Magic Meditation
-        --mb_AddDesiredTalent(1, 13, 1) -- Presence of Mind
+        -- Raiding specs
+        if mb_GetMySpecName() == "ImpBlizzWC" then
+            mb_AddDesiredTalent(3, 2, 5) -- Improved Frostbolt
+            mb_AddDesiredTalent(3, 3, 3) -- Elemental Precision
+            mb_AddDesiredTalent(3, 4, 5) -- Ice Shards
+            mb_AddDesiredTalent(3, 7, 3) -- Permafrost
+            mb_AddDesiredTalent(3, 8, 3) -- Piercing Ice
+            mb_AddDesiredTalent(3, 9, 1) -- Cold Snap
+            mb_AddDesiredTalent(3, 10, 3) -- Improved Blizzard
+            mb_AddDesiredTalent(3, 11, 2) -- Arctic reach
+            mb_AddDesiredTalent(3, 12, 3) -- Frost Channeling
+            mb_AddDesiredTalent(3, 14, 1) -- Ice Block
+            mb_AddDesiredTalent(3, 16, 3) -- Winter's Chill
+            mb_AddDesiredTalent(3, 17, 1) -- Ice Barrier
+            mb_AddDesiredTalent(1, 1, 2) -- Arcane Subtlety
+            mb_AddDesiredTalent(1, 2, 3) -- Arcane Focus
+            mb_AddDesiredTalent(1, 5, 5) -- Magic Absorption
+            mb_AddDesiredTalent(1, 6, 5) -- Arcane Concentration
+            mb_AddDesiredTalent(1, 12, 3) -- Magic Meditation
+        elseif  mb_GetMySpecName() == "ArcaneInstability" then
+            mb_AddDesiredTalent(3, 2, 5) -- Improved Frostbolt
+            mb_AddDesiredTalent(3, 3, 3) -- Elemental Precision
+            mb_AddDesiredTalent(3, 4, 5) -- Ice Shards
+            mb_AddDesiredTalent(3, 8, 3) -- Piercing Ice
+            mb_AddDesiredTalent(3, 9, 1) -- Cold Snap
+            mb_AddDesiredTalent(3, 11, 2) -- Arctic reach
+            mb_AddDesiredTalent(3, 12, 3) -- Frost Channeling
+            mb_AddDesiredTalent(3, 14, 1) -- Ice Block
+            mb_AddDesiredTalent(1, 1, 2) -- Arcane Subtlety
+            mb_AddDesiredTalent(1, 2, 3) -- Arcane Focus
+            mb_AddDesiredTalent(1, 5, 5) -- Magic Absorption
+            mb_AddDesiredTalent(1, 6, 5) -- Arcane Concentration
+            mb_AddDesiredTalent(1, 8, 3) -- Improved Arcane Explosion
+            mb_AddDesiredTalent(1, 9, 1) -- Arcane Resilience
+            mb_AddDesiredTalent(1, 12, 3) -- Magic Meditation
+            mb_AddDesiredTalent(1, 13, 1) -- Presence of Mind
+            mb_AddDesiredTalent(1, 14, 2) -- Arcane Mind
+            mb_AddDesiredTalent(1, 15, 3) -- Arcane Instability
+        end
     else
         -- Leveling/Dungeon spec
         mb_AddDesiredTalent(3, 2, 5) -- Improved Frostbolt

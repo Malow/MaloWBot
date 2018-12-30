@@ -31,6 +31,14 @@ function mb_GetConfig()
 	config["specs"]["Verne"]= "Fury"
 	config["specs"]["Hammond"]= "Fury"
 	config["specs"]["Davrice"]= "Fury"
+    config["specs"]["Trudy"]= "ImpBlizzWC"
+    config["specs"]["Connie"]= "ImpBlizzWC"
+    config["specs"]["Gaily"]= "ImpBlizzWC"
+    config["specs"]["Kimmy"]= "ArcaneInstability"
+    config["specs"]["Kita"]= "ArcaneInstability"
+    config["specs"]["Clemidge"]= "ArcaneInstability"
+    config["specs"]["Ticey"]= "ArcaneInstability"
+    config["specs"]["Nell"]= "ArcaneInstability"
     return config
 end
 

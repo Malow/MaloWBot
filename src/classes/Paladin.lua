@@ -35,6 +35,15 @@ function mb_Paladin(commander)
         end
     end
 
+    if UnitAffectingCombat("player") and max_GetHealthPercentage("player") < 30 and not max_IsSpellNameOnCooldown("Divine Shield") then
+        CastSpellByName("Divine Shield")
+        return
+    end
+
+    if UnitAffectingCombat("player") and max_GetManaPercentage("player") < 80 then
+        CastSpellByName("Divine Favor")
+    end
+
     if not mb_Paladin_HasAura() then
         CastSpellByName("Devotion Aura")
         return

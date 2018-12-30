@@ -429,12 +429,19 @@ function mb_CastSpellByNameOnRaidMemberWithCallbacks(spellName, target, callback
 	end
 end
 
+mb_lastTimeMoving = 0
 mb_lastFacingWrongWayTime = 0
 function mb_OnUIErrorEvent(event, message, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
 	if message == "Target needs to be in front of you" then
 		mb_lastFacingWrongWayTime = GetTime()
+	elseif message == "Can't do that while moving" then
+		mb_lastTimeMoving = GetTime()
 	end
 	mb_OriginalOnUIErrorEventFunction(event, message, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
+end
+
+function mb_IsMoving()
+	return mb_lastTimeMoving + 0.5 > GetTime()
 end
 
 mb_shouldFuckOffAt = 0
@@ -452,26 +459,23 @@ end
 
 
 -- TODO:
---- Test out LogOut() to remove /follow, works in combat? works while casting? If so use it before casting important spells like Evocation
---- On ready-check click away buffs with less than 8 minute duration (don't forget class specific buffs like Ice Armor or sacrificed succubus.
----		Also decline ready-checks if missing buffs or mana or items (healthstone) (and say so in raid)
----		Also check durability is above 10% in all slots, otherwise decline and announce in raid
----	Owners request buffs for their pets
+---
+--- Stop following, rebind 9 to movefoward for 1 frame, before casting important spells like evocation
+--- On ready-check check durability is above 10% in all slots, otherwise decline and announce in raid
 --- Double-request handling can happen if the propose reaches 1 guy after the accept has already been sent. Shouldn't happen though
 --- Automatic Gold-spreading to one guy, automatic reagent-spreading from one guy, one guy is enough to open reagent vendor to buy everything the whole raid needs.
 ---		Need a new type of request for this where he asks for orders, waits 1 sec, and then buys everything, and then he automatically trades it when possible
 ---	Sit/stand logic based on error-messages, see RogueSpam addon.
----	Implement CD-usage-logic, use CD's on CD? Or use some sort of request system?
 --- Expire queued accepted requests if they've been in queue their entire throttle time?
 ---	Warlock:
 ---		Pets, 2 modes, imp-bitch or succu-sacc, swap for each warlock (using target and commands), also a pet-stay command.
----		Deathcoil? Is Drain Life even worth it?
 ---		Spellstones? 1% crit if nothing better, use for 900 spell absorb too
 ---		Hellfire during AoE? Probably not while we're progressing fire-instances. Maybe in a max-burn AoE mode.
 ---	Mage:
 ---     Polymorph requests
 ---		Wand if oom
 ---		Fire/Frost ward
+---		Have a think about Dampen / Amplify, if it should be used ever, and if they should be specced in it then.
 --- Priest:
 ---     PW:S if below X health or tank below % HP
 ---     Can swap groups in combat? If so priests could be spamming PoH with swapping people in who need it.
@@ -491,9 +495,10 @@ end
 ---		Add logic for ret pal
 ---		Add holy shock for the few that has it
 ---		Consecration in a max-burn AoE mode?
----		Divine Favor
+---		Blessing of Protection (request re-bless after?)
 --- Hunter:
 ---		Pet-logic (reagent food, auto-feed, auto-call/revive, attacking, mend pet)
+---			Owners request buffs for their pets
 ---			All-in-one pet macro:     /run local c=CastSpellByName if UnitExists("pet") then if UnitHealth("pet")==0 then c("Revive Pet") elseif GetPetHappiness()~=nil and GetPetHappiness()~=3 then c("Feed Pet") PickupContainerItem(0, 13) else c("Dismiss Pet") end else c("Call Pet") end
 ---		Add Aimed-shot to the rotation, maybe see https://github.com/Geigerkind/OneButtonHunter/blob/master/OneButtonHunter.lua, though it seems to be bugged
 ---		Make them melee-hit with Raptor strike and mongoose bite if in melee range?

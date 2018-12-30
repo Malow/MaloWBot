@@ -294,3 +294,38 @@ end
 function max_IsTable(t)
     return type(t) == "table"
 end
+
+--"HeadSlot"
+--"NeckSlot"
+--"ShoulderSlot"
+--"BackSlot"
+--"ChestSlot"
+--"ShirtSlot"
+--"TabardSlot"
+--"WristSlot"
+--"HandsSlot"
+--"WaistSlot"
+--"LegsSlot"
+--"FeetSlot"
+--"Finger0Slot"
+--"Finger1Slot"
+--"Trinket0Slot"
+--"Trinket1Slot"
+--"MainHandSlot"
+--"SecondaryHandSlot"
+--"RangedSlot"
+--"AmmoSlot"
+--"Bag0Slot"
+--"Bag1Slot"
+--"Bag2Slot"
+--"Bag3Slot"
+function max_UseEquippedItemIfReady(itemSlotName)
+	local slotId, textureName = GetInventorySlotInfo(itemSlotName)
+	local start, duration, enable = GetInventoryItemCooldown("player", slotId)
+	if start == 0 then
+		UseInventoryItem(slotId)
+		return true
+	end
+	return false
+end
+

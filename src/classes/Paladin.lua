@@ -123,6 +123,7 @@ function mb_Paladin_OnLoad()
     mb_RegisterRangeCheckSpell("Flash of Light")
     mb_RegisterRangeCheckSpell("Cleanse")
     mb_RegisterRangeCheckSpell("Redemption")
+    mb_RegisterRangeCheckSpell("Judgement")
     mb_HealingModule_Enable()
 end
 
@@ -144,6 +145,10 @@ end
 function mb_Paladin_Judge()
     local cur, max, found = MobHealth3:GetUnitHealth("target")
     if not found or cur < APPLY_DEBUFFS_HEALTH_ABOVE then
+        return false
+    end
+
+    if not mb_IsSpellInRange("Judgement", "target") then
         return false
     end
 

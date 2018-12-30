@@ -470,10 +470,8 @@ end
 ---		Hellfire during AoE? Probably not while we're progressing fire-instances. Maybe in a max-burn AoE mode.
 ---	Mage:
 ---     Polymorph requests
----     Counterspell, might be hard, gotta scan combat log for % begins casting %, check libcast in PFUI. Better as request?
 ---		Wand if oom
 ---		Fire/Frost ward
----		Cold snap
 --- Priest:
 ---     PW:S if below X health or tank below % HP
 ---     Can swap groups in combat? If so priests could be spamming PoH with swapping people in who need it.
@@ -528,7 +526,7 @@ end
 ---	iscasting logic is a mess, mb_isCasting, started cast etc. Then also "lastAttemptedSpell", clear it up
 ---	Auto-target mode. TargetNearestEnemy spam and just attack whatever is possible. For DPS maybe 1 person should be the "leader" and set skull, and the rest should follow that.
 ---		Tanks should automatically pick up untanked targets with this
----	Don't DPS if you risk overthreat, use KLM API? Need a way to disable it for solo/5-mans
+---	Don't DPS if you risk overthreat, use KTM API? Need a way to disable it for solo/5-mans
 ---
 ---	Heal-visualizer, shows each broadcasted heal from each healer in a list and their target.
 --- Enemy-target logic, frame that displays enemy targets and who "has" that target (tank or CC)

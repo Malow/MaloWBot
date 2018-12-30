@@ -34,10 +34,10 @@ function mb_GetLowestHealthFriendly(spell, unitFilter)
             break
         end
         local health = UnitHealth(unit)
-        if mb_IsUnitValidTarget(unit, spell) then
-            if health < healthOfTarget then
-                healthOfTarget = health
-                healTarget = i
+        if health < healthOfTarget then
+            if mb_IsUnitValidTarget(unit, spell) then
+                    healthOfTarget = health
+                    healTarget = i
             end
         end
     end

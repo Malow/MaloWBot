@@ -96,8 +96,10 @@ function mb_Hunter_OnLoad()
 	mb_AddDesiredBuff(BUFF_DIVINE_SPIRIT)
     mb_AddDesiredBuff(BUFF_SHADOW_PROTECTION)
 	mb_AddGCDCheckSpell("Serpent Sting")
-	mb_RegisterRangeCheckSpell("Tranquilizing Shot")
-	mb_RegisterForRequest(REQUEST_TRANQUILIZING_SHOT.type, mb_Hunter_HandleTranquilizingShotRequest)
+	if max_HasSpell("Tranquilizing Shot") then
+		mb_RegisterRangeCheckSpell("Tranquilizing Shot")
+		mb_RegisterForRequest(REQUEST_TRANQUILIZING_SHOT.type, mb_Hunter_HandleTranquilizingShotRequest)
+	end
 
 	local rangedWeaponItemLink = GetInventoryItemLink("player", GetInventorySlotInfo("RangedSlot"))
 	local rangedWeaponItemString = max_GetItemStringFromItemLink(rangedWeaponItemLink)
@@ -133,6 +135,9 @@ function mb_Hunter_DoOrRequestTranquilizingShot()
 end
 
 function mb_Hunter_CanDoTranquilizingShot()
+	if not max_HasSpell("Tranquilizing Shot") then
+		return false
+	end
 	if UnitIsDead("player") then
 		return false
 	end

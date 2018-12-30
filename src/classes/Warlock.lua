@@ -101,6 +101,9 @@ function mb_Warlock(commander)
         return
     end
 
+    max_UseEquippedItemIfReady("Trinket0Slot")
+    max_UseEquippedItemIfReady("Trinket1Slot")
+
     CastSpellByName("Shadow Bolt")
 end
 

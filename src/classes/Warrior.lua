@@ -10,6 +10,10 @@ function mb_Warrior(commander)
 
     AssistByName(commander)
 
+    if max_GetActiveStance() ~= 3 then
+        CastSpellByName("Berserker Stance")
+    end
+
     if not UnitExists("target") or not UnitIsEnemy("player", "target") then
         return
     end
@@ -32,16 +36,10 @@ function mb_Warrior(commander)
 
     CastSpellByName("Bloodthirst")
 
-    if  UnitIsEnemy("player","target") and CheckInteractDistance("target", 3) and max_GetHealthPercentage() > 25 then
+    if UnitIsEnemy("player","target") and CheckInteractDistance("target", 3) then
         CastSpellByName("Whirlwind")
         return
     end
-
-    if max_GetActiveStance() ~= 3 then
-        CastSpellByName("Berserker Stance")
-    end
-
-
 end
 
 mb_Warrior_lastTankingBroadcast = 0
@@ -191,6 +189,7 @@ function mb_Warrior_OnLoad()
 	mb_AddGCDCheckSpell("Sunder Armor")
     if mb_warriorIsTank then
         mb_CombatLogModule_DamageTakenPerSecond_Enable()
+        mb_AddDesiredBuff(BUFF_THORNS)
     end
 end
 

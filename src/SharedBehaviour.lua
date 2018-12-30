@@ -503,9 +503,8 @@ function mb_HandleReadyCheck()
 
     if playerClass ~= "ROGUE" and playerClass ~= "WARRIOR" then
         if max_GetManaPercentage("player") < 95 then
-            if mb_DrinkIfPossible() then
-                return true
-            end
+            mb_DrinkIfPossible()
+            isReady = false
         end
     end
 

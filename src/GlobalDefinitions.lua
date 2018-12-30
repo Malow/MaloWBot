@@ -13,6 +13,7 @@ BUFF_TEXTURE_REJUVENATION = "Interface\\Icons\\Spell_Nature_Rejuvenation"
 BUFF_TEXTURE_REGROWTH = "Interface\\Icons\\Spell_Nature_ResistNature"
 BUFF_TEXTURE_MARK_OF_THE_WILD = "Interface\\Icons\\Spell_Nature_Regeneration"
 BUFF_TEXTURE_GIFT_OF_THE_WILD = "Interface\\Icons\\Spell_Nature_Regeneration"
+BUFF_TEXTURE_THORNS = "Interface\\Icons\\Spell_Nature_Thorns"
 DEBUFF_TEXTURE_FAERIE_FIRE = "Interface\\Icons\\Spell_Nature_FaerieFire"
 -- Hunter
 BUFF_TEXTURE_ASPECT_OF_THE_HAWK = "Interface\\Icons\\Spell_Nature_RavenForm"
@@ -195,6 +196,12 @@ BUFF_SHADOW_PROTECTION = {
     spellName = "Shadow Protection",
     groupWideSpellName = "Prayer of Shadow Protection"
 }
+BUFF_THORNS = {
+    type = "buffThorns",
+    textures = { BUFF_TEXTURE_THORNS },
+    throttle = 10,
+    spellName = "Thorns"
+}
 
 All_BUFFS = {
     BUFF_ARCANE_INTELLECT,
@@ -207,7 +214,8 @@ All_BUFFS = {
     BUFF_BLESSING_OF_SANCTUARY,
     BUFF_BLESSING_OF_SALVATION,
     BUFF_MARK_OF_THE_WILD,
-    BUFF_SHADOW_PROTECTION
+    BUFF_SHADOW_PROTECTION,
+    BUFF_THORNS
 }
 
 --- Items

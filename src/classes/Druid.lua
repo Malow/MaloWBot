@@ -87,6 +87,7 @@ function mb_Druid_OnLoad()
     if mb_Druid_HasImprovedMOTW() then
         mb_RegisterForStandardBuffRequest(BUFF_MARK_OF_THE_WILD)
     end
+    mb_RegisterForStandardBuffRequest(BUFF_THORNS)
     mb_RegisterForRequest(REQUEST_REMOVE_CURSE.type, mb_Druid_HandleDecurseRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
@@ -103,6 +104,8 @@ function mb_Druid_OnLoad()
     mb_RegisterRangeCheckSpell("Remove Curse")
     mb_RegisterRangeCheckSpell("Rejuvenation")
     mb_RegisterRangeCheckSpell("Regrowth")
+    mb_RegisterRangeCheckSpell("Insect Swarm")
+    mb_RegisterRangeCheckSpell("Faerie Fire")
     mb_HealingModule_Enable()
     mb_HealingModule_RegisterHoT("Rejuvenation", BUFF_TEXTURE_REJUVENATION, 335)
 end
@@ -139,7 +142,7 @@ function mb_Druid_InsectSwarm()
     if not found or cur < APPLY_DEBUFFS_HEALTH_ABOVE then
         return false
     end
-    if not max_HasDebuff("target", DEBUFF_INSECT_SWARM) then
+    if not max_HasDebuff("target", DEBUFF_INSECT_SWARM) and mb_IsSpellInRange("Insect Swarm", "target") then
         CastSpellByName("Insect Swarm(Rank 1)")
         return true
     end
@@ -151,7 +154,7 @@ function mb_Druid_FaerieFire()
     if not found or cur < APPLY_DEBUFFS_HEALTH_ABOVE then
         return false
     end
-    if not max_HasDebuff("target", DEBUFF_TEXTURE_FAERIE_FIRE) then
+    if not max_HasDebuff("target", DEBUFF_TEXTURE_FAERIE_FIRE) and mb_IsSpellInRange("Faerie Fire", "target")  then
         CastSpellByName("Faerie Fire")
         return true
     end

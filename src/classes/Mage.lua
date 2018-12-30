@@ -72,6 +72,10 @@ function mb_Mage(commander)
     end
 
     if UnitAffectingCombat("player") then
+        if max_IsSpellNameOnCooldown("Ice Block") and not max_IsSpellNameOnCooldown("Cold Snap") then
+            CastSpellByName("Cold Snap")
+            return
+        end
         if max_GetHealthPercentage("player") < 30 and not max_IsSpellNameOnCooldown("Ice Block") then
             CastSpellByName("Ice Block")
             return
@@ -94,8 +98,9 @@ function mb_Mage(commander)
         return
     end
 
-    --- Time to do some actual combat
     if mb_areaOfEffectMode then
+        max_UseEquippedItemIfReady("Trinket0Slot")
+        max_UseEquippedItemIfReady("Trinket1Slot")
         CastSpellByName("Arcane Explosion")
         return
     end
@@ -104,6 +109,9 @@ function mb_Mage(commander)
     if not UnitExists("target") or not UnitIsEnemy("player", "target") then
         return
     end
+
+    max_UseEquippedItemIfReady("Trinket0Slot")
+    max_UseEquippedItemIfReady("Trinket1Slot")
 
     CastSpellByName("Frostbolt")
     CastSpellByName("Fire Blast")

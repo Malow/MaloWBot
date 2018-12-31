@@ -19,8 +19,7 @@ DEBUFF_TEXTURE_FAERIE_FIRE = "Interface\\Icons\\Spell_Nature_FaerieFire"
 BUFF_TEXTURE_ASPECT_OF_THE_HAWK = "Interface\\Icons\\Spell_Nature_RavenForm"
 BUFF_TEXTURE_TRUESHOT_AURA = "Interface\\Icons\\Ability_TrueShot"
 DEBUFF_TEXTURE_HUNTERS_MARK = "Interface\\Icons\\Ability_Hunter_SniperShot"
-BUFF_TEXTURE_MAGMADAR_ENRAGE = ""
-BUFF_TEXTURES_TRANQUILIZING_SHOT = { BUFF_TEXTURE_MAGMADAR_ENRAGE }
+BUFF_TEXTURES_TRANQUILIZING_SHOT = { "" }
 -- Mage
 BUFF_TEXTURE_ARCANE_INTELLECT = "Interface\\Icons\\Spell_Holy_MagicalSentry"
 BUFF_TEXTURE_ARCANE_BRILLIANCE = "Interface\\Icons\\Spell_Holy_ArcaneIntellect"

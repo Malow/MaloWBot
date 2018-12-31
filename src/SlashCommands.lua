@@ -29,7 +29,11 @@ function mb_HandleSpecialSlashCommand(msg)
     elseif msg == "interrupt" then
         mb_MakeRequest(REQUEST_INTERRUPT.type, "interrupt", REQUEST_PRIORITY.COMMAND)
     elseif msg == "fuckOff" then
-        mb_MakeRequest("fuckOff", UnitName("targettarget"), REQUEST_PRIORITY.COMMAND)
+        local target = UnitName("target")
+        if UnitIsEnemy("player", "target") then
+            target = UnitName("targettarget")
+        end
+        mb_MakeRequest("fuckOff", target, REQUEST_PRIORITY.COMMAND)
     elseif string.find(msg, "aoe") then
         local mode = max_SplitString(msg, " ")[2]
         mb_areaOfEffectMode = mode == "on"

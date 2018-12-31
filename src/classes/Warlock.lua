@@ -45,6 +45,7 @@ function mb_Warlock(commander)
                 return
             else
                 DropItemOnUnit(max_GetUnitForPlayerName(request.body))
+                max_SayRaid("Giving Healthstone to " .. request.body)
                 mb_RequestCompleted(request)
                 return
             end

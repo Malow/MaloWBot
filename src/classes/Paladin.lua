@@ -119,7 +119,7 @@ function mb_Paladin_OnLoad()
         mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_MIGHT)
     elseif mb_GetMySpecName() == "KingsJudge" then
         mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_KINGS)
-    elseif mb_GetMySpecName() == "RetLight" then
+    elseif mb_GetMySpecName() == "RetLight" or mb_GetMySpecName() == "LightHoly" then
         mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_LIGHT)
     elseif mb_GetMySpecName() == "SanctuarySalvation" then
         mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_SALVATION)
@@ -312,6 +312,23 @@ function mb_Paladin_AddDesiredTalents()
         mb_AddDesiredTalent(3, 12, 3) -- Two-Handed Weapon Specialization
         mb_AddDesiredTalent(3, 13, 1) -- Sanctity Aura
         mb_AddDesiredTalent(3, 14, 5) -- Vengeance
+    elseif mb_GetMySpecName() == "LightHoly" then
+        mb_AddDesiredTalent(1, 1, 1) -- Divine Strength
+        mb_AddDesiredTalent(1, 2, 5) -- Divine Intellect
+        mb_AddDesiredTalent(1, 3, 5) -- Spiritual Focus
+        mb_AddDesiredTalent(1, 5, 3) -- Healing Light
+        mb_AddDesiredTalent(1, 6, 1) -- Consecration
+        mb_AddDesiredTalent(1, 7, 2) -- Improved Lay on Hands
+        mb_AddDesiredTalent(1, 8, 2) -- Unyielding Faith
+        mb_AddDesiredTalent(1, 9, 5) -- Illumination
+        mb_AddDesiredTalent(1, 11, 1) -- Divine Favor
+        mb_AddDesiredTalent(1, 13, 5) -- Holy Power
+        mb_AddDesiredTalent(1, 14, 1) -- Holy Shock
+        mb_AddDesiredTalent(2, 1, 5) -- Improved Devotion Aura
+        mb_AddDesiredTalent(2, 4, 2) -- Guardian's Favor
+        mb_AddDesiredTalent(2, 5, 5) -- Toughness
+        mb_AddDesiredTalent(2, 9, 5) -- Anticipation
+        mb_AddDesiredTalent(2, 11, 3) -- Improved Concentration Aura
     else
         max_SayRaid("Serious error, bad spec for paladin: " .. mb_GetMySpecName())
     end

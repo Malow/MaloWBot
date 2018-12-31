@@ -502,6 +502,7 @@ end
 ---			All-in-one pet macro:     /run local c=CastSpellByName if UnitExists("pet") then if UnitHealth("pet")==0 then c("Revive Pet") elseif GetPetHappiness()~=nil and GetPetHappiness()~=3 then c("Feed Pet") PickupContainerItem(0, 13) else c("Dismiss Pet") end else c("Call Pet") end
 ---		Add Aimed-shot to the rotation, maybe see https://github.com/Geigerkind/OneButtonHunter/blob/master/OneButtonHunter.lua, though it seems to be bugged
 ---		Make them melee-hit with Raptor strike and mongoose bite if in melee range?
+---		Deterrence on Melee hit
 ---	Warrior:
 ---		Battle-shout, make it smart so that it rebuffs party mates within range if needed and not only self. Also make non-tanking tanks refresh it when it has like 5 sec duration left to prevent tanking tanks from wasting the rage
 ---		Prot:
@@ -524,7 +525,7 @@ end
 --- Consumables
 ---		Add a watch for it.
 ---		Add them to be ignored for trade over a certain quantity (don't want them to trade all their pots when they're inventory dumpers)
----		"Try-hard mode" on/off, which uses flasks and shit, and potions in combat.
+---		"Try-hard mode" on/off, which uses flasks and weapon enchants and foodbuffs, and potions in combat.
 --- Crown-control
 ---		Request target to be CCd, people the raid will automatically accept depending on what kind of target it is and if they can CC.
 ---			No such thing as focus, gonna need to either TargetNearestEnemy (only works in cone in front) or use TargetLastTarget/Enemy and then like after every assist and using DPS spell doing that to retarget the CC target.

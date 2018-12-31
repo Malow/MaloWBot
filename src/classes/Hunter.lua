@@ -49,7 +49,7 @@ function mb_Hunter(commander)
 			return
 		end
 	else
-		if mb_IsClassLeader() then
+		if mb_Hunter_HasFullImprovedHuntersMark() then
 			if not max_HasDebuff("target", DEBUFF_TEXTURE_HUNTERS_MARK) then
 				CastSpellByName("Hunter's Mark")
 				return
@@ -166,24 +166,50 @@ function mb_Hunter_IsReady()
 	return true
 end
 
+function mb_Hunter_HasFullImprovedHuntersMark()
+	local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(2, 3)
+	return currentRank == 5
+end
+
 function mb_Hunter_AddDesiredTalents()
-	mb_AddDesiredTalent(1, 1, 2) -- Improved Aspect of the Hawk
-	mb_AddDesiredTalent(2, 2, 5) -- Efficiency
-	mb_AddDesiredTalent(2, 3, 2) -- Improved Hunter's Mark
-	mb_AddDesiredTalent(2, 4, 5) -- Lethal Shots
-	mb_AddDesiredTalent(2, 5, 1) -- Aimed Shot
-	mb_AddDesiredTalent(2, 7, 3) -- Hawk Eye
-	mb_AddDesiredTalent(2, 9, 5) -- Mortal Shots
-	mb_AddDesiredTalent(2, 10, 1) -- Scatter Shot
-	mb_AddDesiredTalent(2, 11, 3) -- Barrage
-	mb_AddDesiredTalent(2, 13, 5) -- Ranged Weapon Specialization
-	mb_AddDesiredTalent(2, 14, 1) -- Trueshot
-	mb_AddDesiredTalent(3, 1, 3) -- Monster Slaying
-	mb_AddDesiredTalent(3, 2, 3) -- Humanoid Slaying
-	mb_AddDesiredTalent(3, 4, 2) -- Entrapment
-	mb_AddDesiredTalent(3, 5, 2) -- Savage Strikes
-	mb_AddDesiredTalent(3, 7, 2) -- Clever Traps
-	mb_AddDesiredTalent(3, 8, 2) -- Survivalist
-	mb_AddDesiredTalent(3, 9, 1) -- Deterrence
-	mb_AddDesiredTalent(3, 11, 3) -- Surefooted
+	if mb_GetMySpecName() == "MM" then
+		mb_AddDesiredTalent(1, 1, 2) -- Improved Aspect of the Hawk
+		mb_AddDesiredTalent(2, 2, 5) -- Efficiency
+		mb_AddDesiredTalent(2, 3, 2) -- Improved Hunter's Mark
+		mb_AddDesiredTalent(2, 4, 5) -- Lethal Shots
+		mb_AddDesiredTalent(2, 5, 1) -- Aimed Shot
+		mb_AddDesiredTalent(2, 7, 3) -- Hawk Eye
+		mb_AddDesiredTalent(2, 9, 5) -- Mortal Shots
+		mb_AddDesiredTalent(2, 10, 1) -- Scatter Shot
+		mb_AddDesiredTalent(2, 11, 3) -- Barrage
+		mb_AddDesiredTalent(2, 13, 5) -- Ranged Weapon Specialization
+		mb_AddDesiredTalent(2, 14, 1) -- Trueshot
+		mb_AddDesiredTalent(3, 1, 3) -- Monster Slaying
+		mb_AddDesiredTalent(3, 2, 3) -- Humanoid Slaying
+		mb_AddDesiredTalent(3, 4, 2) -- Entrapment
+		mb_AddDesiredTalent(3, 5, 2) -- Savage Strikes
+		mb_AddDesiredTalent(3, 7, 2) -- Clever Traps
+		mb_AddDesiredTalent(3, 8, 2) -- Survivalist
+		mb_AddDesiredTalent(3, 9, 1) -- Deterrence
+		mb_AddDesiredTalent(3, 11, 3) -- Surefooted
+	elseif mb_GetMySpecName() == "MMFullHM" then
+		mb_AddDesiredTalent(1, 1, 2) -- Improved Aspect of the Hawk
+		mb_AddDesiredTalent(2, 2, 5) -- Efficiency
+		mb_AddDesiredTalent(2, 3, 5) -- Improved Hunter's Mark
+		mb_AddDesiredTalent(2, 4, 5) -- Lethal Shots
+		mb_AddDesiredTalent(2, 5, 1) -- Aimed Shot
+		mb_AddDesiredTalent(2, 7, 1) -- Hawk Eye
+		mb_AddDesiredTalent(2, 9, 5) -- Mortal Shots
+		mb_AddDesiredTalent(2, 11, 3) -- Barrage
+		mb_AddDesiredTalent(2, 13, 5) -- Ranged Weapon Specialization
+		mb_AddDesiredTalent(2, 14, 1) -- Trueshot
+		mb_AddDesiredTalent(3, 1, 3) -- Monster Slaying
+		mb_AddDesiredTalent(3, 2, 3) -- Humanoid Slaying
+		mb_AddDesiredTalent(3, 4, 2) -- Entrapment
+		mb_AddDesiredTalent(3, 5, 2) -- Savage Strikes
+		mb_AddDesiredTalent(3, 7, 2) -- Clever Traps
+		mb_AddDesiredTalent(3, 8, 2) -- Survivalist
+		mb_AddDesiredTalent(3, 9, 1) -- Deterrence
+		mb_AddDesiredTalent(3, 11, 3) -- Surefooted
+	end
 end

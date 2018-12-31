@@ -298,12 +298,20 @@ end
 
 mb_saidQuestCompleteHelpMessageTime = 0
 function mb_HandleGossiping()
+    local _, gossip1, _, gossip2, _, gossip3, _, gossip4, _, gossip5 = GetGossipOptions()
+    mb_Print(gossip1)
     local topGossipText = GetGossipText()
-    if topGossipText ~= nil and string.find(topGossipText, "The fabric of which") then
-        SelectGossipOption(1)
+    if topGossipText ~= nil then
+        if string.find(topGossipText, "The fabric of which") then
+            SelectGossipOption(1)
+            return
+        end
+        if string.find(topGossipText, "Greetings, ") and gossip1 == "vendor" then
+            SelectGossipOption(1)
+            return
+        end
     end
     -- QuestHaste addon takes care of accepting/completing of quests.
-    local _, gossip1, _, gossip2, _, gossip3, _, gossip4, _, gossip5 = GetGossipOptions()
     if mb_GetConfig()["autoTrainSpells"] then
         if gossip1 == "trainer" then
             SelectGossipOption(1)

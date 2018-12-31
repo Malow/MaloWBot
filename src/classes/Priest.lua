@@ -140,6 +140,9 @@ function mb_Priest_Disc()
     if mb_Priest_Renew(60) then
         return true
     end
+    if mb_Priest_TankHealing() then
+        return true
+    end
     return false
 end
 

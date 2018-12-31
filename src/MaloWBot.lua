@@ -446,7 +446,7 @@ end
 
 mb_shouldFuckOffAt = 0
 function mb_RebindMovementKeyIfNeeded()
-	if mb_shouldFuckOffAt + 3 > GetTime() then
+	if mb_shouldFuckOffAt + 4 > GetTime() then
 		SetBinding("9", "MOVEFORWARD")
 		return
 	end

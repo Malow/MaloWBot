@@ -211,5 +211,22 @@ function mb_Hunter_AddDesiredTalents()
 		mb_AddDesiredTalent(3, 8, 2) -- Survivalist
 		mb_AddDesiredTalent(3, 9, 1) -- Deterrence
 		mb_AddDesiredTalent(3, 11, 3) -- Surefooted
+    elseif mb_GetMySpecName() == "Kite" then
+        mb_AddDesiredTalent(1, 1, 5) -- Improved Aspect of the Hawk
+        mb_AddDesiredTalent(1, 2, 2) -- Endurance Training
+        mb_AddDesiredTalent(1, 5, 3) -- Thick Hide
+        mb_AddDesiredTalent(1, 7, 2) -- Pathfinding
+        mb_AddDesiredTalent(2, 2, 5) -- Efficiency
+        mb_AddDesiredTalent(2, 4, 5) -- Lethal Shots
+        mb_AddDesiredTalent(2, 6, 2) -- Improved Arcane Shot
+        mb_AddDesiredTalent(2, 7, 3) -- Hawk Eye
+        mb_AddDesiredTalent(2, 8, 4) -- Improved Serpent Sting
+        mb_AddDesiredTalent(3, 2, 3) -- Humanoid Slaying
+        mb_AddDesiredTalent(3, 3, 5) -- Deflection
+        mb_AddDesiredTalent(3, 5, 2) -- Savage Strikes
+        mb_AddDesiredTalent(3, 8, 4) -- Survivalist
+        mb_AddDesiredTalent(3, 9, 1) -- Deterrence
+        mb_AddDesiredTalent(3, 11, 3) -- Surefooted
+        mb_AddDesiredTalent(3, 12, 2) -- Improved Feign Death
 	end
 end

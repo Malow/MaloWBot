@@ -28,6 +28,8 @@ function mb_HandleSpecialSlashCommand(msg)
         mb_MakeRequest("fearWard", UnitName("target"), REQUEST_PRIORITY.COMMAND)
     elseif msg == "interrupt" then
         mb_MakeRequest(REQUEST_INTERRUPT.type, "interrupt", REQUEST_PRIORITY.COMMAND)
+    elseif msg == "crowdControl" then
+        mb_MakeRequest(REQUEST_CROWD_CONTROL.type, "crowdControl", REQUEST_PRIORITY.COMMAND)
     elseif msg == "fuckOff" then
         local target = UnitName("target")
         if UnitIsEnemy("player", "target") then

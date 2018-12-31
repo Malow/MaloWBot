@@ -121,6 +121,9 @@ REQUEST_TRANQUILIZING_SHOT = {
 REQUEST_INTERRUPT = {
     type = "interrupt"
 }
+REQUEST_CROWD_CONTROL = {
+    type = "crowdControl"
+}
 
 --- Buff Requests
 BUFF_ARCANE_INTELLECT = {

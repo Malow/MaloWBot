@@ -49,6 +49,17 @@ function mb_Warlock(commander)
                 mb_RequestCompleted(request)
                 return
             end
+        elseif request.type == REQUEST_CROWD_CONTROL.type then
+            if mb_IsOnGCD() then
+                return
+            end
+            max_AssistByPlayerName(request.from)
+            max_SayRaid("I'm Banishing " .. UnitName("target"))
+            local creatureType = UnitCreatureType("target")
+            if creatureType == "Elemental" then
+                CastSpellByName("Banish")
+            end
+            mb_RequestCompleted(request)
         end
     end
 
@@ -148,6 +159,7 @@ function mb_Warlock_OnLoad()
     mb_RegisterForRequest("summon", mb_Warlock_HandleSummonRequest)
     mb_RegisterForRequest("soulstone", mb_Warlock_HandleSoulstoneRequest)
     mb_RegisterForRequest("healthstone", mb_Warlock_HandleHealthstoneRequest)
+    mb_RegisterForRequest(REQUEST_CROWD_CONTROL.type, mb_Warlock_HandleCrowdControlRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
@@ -164,6 +176,7 @@ function mb_Warlock_OnLoad()
     mb_RegisterRangeCheckSpell("Death Coil")
     mb_RegisterRangeCheckSpell("Drain Soul")
     mb_RegisterRangeCheckSpell("Curse of the Elements")
+    mb_RegisterRangeCheckSpell("Banish")
 end
 
 function mb_Warlock_HandleSummonRequest(request)
@@ -196,6 +209,23 @@ function mb_Warlock_HandleHealthstoneRequest(request)
     local soulShardCount = mb_GetItemCount("Soul Shard")
     if CheckInteractDistance(max_GetUnitForPlayerName(request.body), 3) and soulShardCount > 10 then
         mb_AcceptRequest(request)
+    end
+end
+
+function mb_Warlock_HandleCrowdControlRequest(request)
+    if max_GetManaPercentage("player") < 10 then
+        return
+    elseif mb_IsDrinking() then
+        return
+    elseif UnitIsDead("player") then
+        return
+    end
+    max_AssistByPlayerName(request.from)
+    local creatureType = UnitCreatureType("target")
+    if creatureType == "Elemental" then
+        if mb_IsSpellInRange("Banish", "target") then
+            mb_AcceptRequest(request)
+        end
     end
 end
 

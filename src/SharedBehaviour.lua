@@ -425,14 +425,14 @@ end
 -- Buffs the player with the buff if it can, returns true if it buffs
 function mb_CompleteStandardBuffRequest(request)
     mb_DebugPrint("Trying to complete " .. request.type .. " from " .. request.body)
-    if UnitAffectingCombat("player") then
-        mb_DebugPrint("Skipping request due to combat " .. request.type .. " from " .. request.body)
-        return true
-    end
     local buff = mb_GetBuffWithType(request.type)
     if buff == nil then
         mb_DebugPrint("Not buff found " .. request.type .. " from " .. request.body)
         return false
+    end
+    if UnitAffectingCombat("player") then
+        mb_DebugPrint("Skipping request due to combat: " .. request.type .. " from " .. request.body)
+        return true
     end
     if mb_IsOnGCD() then
         return true

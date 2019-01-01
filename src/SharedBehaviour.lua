@@ -305,7 +305,7 @@ function mb_HandleGossiping()
             SelectGossipOption(1)
             return
         end
-        if string.find(topGossipText, "Greetings, ") and gossip1 == "vendor" then
+        if string.find(topGossipText, "Greetings") and gossip1 == "vendor" then
             SelectGossipOption(1)
             return
         end

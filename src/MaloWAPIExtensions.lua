@@ -252,6 +252,9 @@ end
 -- Targets the provided player's target. If the player doesn't have a target then clear target. If there is a target return true
 -- Also doesn't change target if the target to be set is your current target, to prevent auto-attacks from stopping
 function max_AssistByPlayerName(playerName)
+	if playerName == UnitName("player") then
+		return true
+	end
 	local assistUnit = max_GetUnitForPlayerName(playerName)
 	if UnitIsUnit("target", assistUnit .. "target") then
 		return

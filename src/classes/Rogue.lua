@@ -5,6 +5,7 @@ function mb_Rogue(commander)
         if request.type == REQUEST_INTERRUPT.type then
             if request.attempts > 90 then
                 mb_RequestCompleted(request)
+                max_SayRaid("Timed out interrupt request from " .. request.from)
                 return
             end
             if mb_IsOnGCD() then

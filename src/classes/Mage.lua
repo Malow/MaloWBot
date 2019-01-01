@@ -4,8 +4,9 @@ function mb_Mage(commander)
     end
     local request = mb_GetQueuedRequest(true)
     if request ~= nil and request.type == REQUEST_INTERRUPT.type then
-        if request.attempts > 50 then
+        if request.attempts > 90 then
             mb_RequestCompleted(request)
+            max_SayRaid("Timed out interrupt request from " .. request.from)
             return
         end
         if mb_isCasting then

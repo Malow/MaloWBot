@@ -19,9 +19,15 @@ function mb_Hunter(commander)
 	local request = mb_GetQueuedRequest(true)
 	if request ~= nil then
 		if request.type == REQUEST_TRANQUILIZING_SHOT.type then
+            if request.attempts > 90 then
+                mb_RequestCompleted(request)
+                max_SayRaid("Timed out Tranquilize request from " .. request.from)
+                return
+            end
 			if mb_IsOnGCD() then
 				return
 			end
+            max_AssistByPlayerName(request.from)
 			CastSpellByName("Tranquilizing Shot")
 			max_SayRaid("Tranquilizing " .. tostring(UnitName("target")))
 			mb_RequestCompleted(request)

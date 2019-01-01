@@ -9,6 +9,9 @@ function mb_MoveOutModule_Load()
     table.insert(spellNames, "Flamestrike")
     table.insert(spellNames, "Rain of Fire")
     mb_CombatLogModule_PeriodicSelfDamageWatch_Enable(spellNames)
+    local debuffNames = {}
+    table.insert(debuffNames, "Living Bomb")
+    mb_CombatLogModule_DebuffWatch_Enable(debuffNames)
 end
 
 function mb_MoveOutModule_Enable()
@@ -24,6 +27,9 @@ mb_MoveOutModule_warnedNoTarget = nil
 function mb_MoveOutModule_Update()
     if not mb_MoveOutModule_enabled then
         return false
+    end
+    if mb_MoveOutModule_HandleAutomaticFuckOff() then
+        return true
     end
     if mb_shouldFollow then
         return false
@@ -50,6 +56,9 @@ function mb_MoveOutModule_IsStandingInShit()
     if mb_MoveOutModule_HasBadDebuff() then
         return true
     end
+    if mb_CombatLogModule_PeriodicSelfDamageWatch_HasTakenWatchedDamageIn(2) then
+        return true
+    end
     return false
 end
 
@@ -58,9 +67,6 @@ function mb_MoveOutModule_HasBadDebuff()
         if max_HasDebuff("player", v) then
             return true
         end
-    end
-    if mb_CombatLogModule_PeriodicSelfDamageWatch_HasTakenWatchedDamageIn(2) then
-        return true
     end
     return false
 end
@@ -78,4 +84,19 @@ function mb_MoveOutModule_FindFollowTarget()
         end
     end
     return nil
+end
+
+function mb_MoveOutModule_HandleAutomaticFuckOff()
+    if mb_GetMyCommanderName() == UnitName("player") then
+        return false
+    end
+    local livingBombTime = mb_CombatLogModule_DebuffWatch_GetTimeForSpellName("Living Bomb")
+    if livingBombTime ~= nil then
+        mb_shouldFuckOffAt = GetTime()
+        mb_shouldFollow = false
+        max_SayRaid("I'm fucking off automatically!")
+        mb_CombatLogModule_DebuffWatch_ResetForSpellName("Living Bomb")
+        return true
+    end
+    return false
 end

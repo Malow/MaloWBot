@@ -107,9 +107,7 @@ function mb_Mage(commander)
         end
     end
 
-    local debuffTarget = mb_GetDebuffedRaidMember("Remove Lesser Curse", "Curse")
-    if debuffTarget ~= nil then
-        max_CastSpellOnRaidMember("Remove Lesser Curse", debuffTarget)
+    if mb_CleanseRaidMemberThrottled("Remove Lesser Curse", "Curse") then
         return
     end
 

@@ -64,9 +64,7 @@ function mb_Priest(commander)
         end
     end
 
-    local debuffTarget = mb_GetDebuffedRaidMember("Dispel Magic", "Magic")
-    if debuffTarget ~= nil then
-        max_CastSpellOnRaidMember("Dispel Magic", debuffTarget)
+    if mb_CleanseRaidMemberThrottled("Dispel Magic", "Magic") then
         return
     end
 

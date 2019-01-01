@@ -50,6 +50,11 @@ function mb_Warlock(commander)
                 return
             end
         elseif request.type == REQUEST_CROWD_CONTROL.type then
+            if request.attempts > 90 then
+                mb_RequestCompleted(request)
+                max_SayRaid("Timed out CC request from " .. request.from)
+                return
+            end
             if mb_IsOnGCD() then
                 return
             end

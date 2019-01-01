@@ -43,9 +43,7 @@ function mb_Druid(commander)
         return
     end
 
-    local debuffTarget = mb_GetDebuffedRaidMember("Remove Curse", "Curse")
-    if debuffTarget ~= nil then
-        max_CastSpellOnRaidMember("Remove Curse", debuffTarget)
+    if mb_CleanseRaidMemberThrottled("Remove Curse", "Curse") then
         return
     end
 

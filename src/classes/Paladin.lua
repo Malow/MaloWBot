@@ -49,9 +49,7 @@ function mb_Paladin(commander)
         return
     end
 
-    local debuffTarget = mb_GetDebuffedRaidMember("Cleanse", "Magic", "Poison", "Disease")
-    if debuffTarget ~= nil then
-        max_CastSpellOnRaidMember("Cleanse", debuffTarget)
+    if mb_CleanseRaidMemberThrottled("Cleanse", "Magic", "Poison", "Disease") then
         return
     end
 
@@ -92,6 +90,8 @@ function mb_Paladin_HasAura()
     if max_HasBuff("player", BUFF_TEXTURE_DEVOTION_AURA) then
         return true
     elseif max_HasBuff("player", BUFF_TEXTURE_FIRE_RESISTANCE_AURA) then
+        return true
+    elseif max_HasBuff("player", BUFF_TEXTURE_CONCENTRATION_AURA) then
         return true
     end
     return false

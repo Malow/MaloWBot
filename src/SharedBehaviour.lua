@@ -299,7 +299,6 @@ end
 mb_saidQuestCompleteHelpMessageTime = 0
 function mb_HandleGossiping()
     local _, gossip1, _, gossip2, _, gossip3, _, gossip4, _, gossip5 = GetGossipOptions()
-    mb_Print(gossip1)
     local topGossipText = GetGossipText()
     if topGossipText ~= nil then
         if string.find(topGossipText, "The fabric of which") then

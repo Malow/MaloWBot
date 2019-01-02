@@ -232,7 +232,6 @@ function mb_OnPostLoad()
 	mb_OriginalOnUIErrorEventFunction = UIErrorsFrame_OnEvent
 	UIErrorsFrame_OnEvent = mb_OnUIErrorEvent
 
-    mb_hasFinishedLoading = true
     mb_Print("Loaded")
 end
 
@@ -259,6 +258,8 @@ end
 
 -- OnUpdate
 function mb_OnUpdate()
+	mb_hasFinishedLoading = true
+
 	if mb_isGossiping and mb_gossipOpenedTime + 5 < GetTime() then
 		mb_isGossiping = false
 	end

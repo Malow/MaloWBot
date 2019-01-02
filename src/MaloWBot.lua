@@ -17,11 +17,12 @@ f:Show()
 SlashCmdList[MY_ABBREVIATION .. "COMMAND"] = function(msg)
 	mb_OnCmd(msg)
 end
-SLASH_MBCOMMAND1 = "/" .. MY_ABBREVIATION;
+SLASH_MBCOMMAND1 = "/" .. MY_ABBREVIATION
+
 SlashCmdList[MY_ABBREVIATION .. "R" .. "COMMAND"] = function(msg)
 	mb_OnRun()
 end
-SLASH_MBCOMMAND2 = "/" .. MY_ABBREVIATION .. "R";
+SLASH_MBRCOMMAND1 = "/" .. MY_ABBREVIATION .. "R"
 
 -- Prints message in chatbox
 function mb_Print(msg)

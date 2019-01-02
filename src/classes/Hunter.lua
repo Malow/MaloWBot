@@ -1,5 +1,5 @@
 function mb_Hunter(commander)
-	if mb_DoBasicCasterLogic() then
+	if mb_DoBasicCasterLogicThrottled() then
 		return
 	end
     if mb_isCasting then

@@ -2,7 +2,7 @@ mb_paladinIsJudgingLight = false
 mb_paladinIsJudgingWisdom = false
 mb_paladinCurrentHealTarget = nil
 function mb_Paladin(commander)
-    if mb_DoBasicCasterLogic() then
+    if mb_DoBasicCasterLogicThrottled() then
         return
     end
     if mb_isCasting then

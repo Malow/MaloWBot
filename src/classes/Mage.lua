@@ -1,5 +1,5 @@
 function mb_Mage(commander)
-    if mb_DoBasicCasterLogic() then
+    if mb_DoBasicCasterLogicThrottled() then
         return
     end
     local request = mb_GetQueuedRequest(true)

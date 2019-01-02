@@ -4,7 +4,7 @@ local MY_ABBREVIATION = "MB"
 -- Frame setup for update
 local lastUpdate = GetTime()
 local function mb_Update()
-	if GetTime() >= lastUpdate + 0.5 then
+	if GetTime() >= lastUpdate + 1 then
 		lastUpdate = GetTime()
 		mb_OnUpdate()
     end
@@ -15,10 +15,13 @@ f:Show()
 
 -- Commands hook
 SlashCmdList[MY_ABBREVIATION .. "COMMAND"] = function(msg)
-	SetCVar("autoSelfCast", 0)
 	mb_OnCmd(msg)
 end
 SLASH_MBCOMMAND1 = "/" .. MY_ABBREVIATION;
+SlashCmdList[MY_ABBREVIATION .. "R" .. "COMMAND"] = function(msg)
+	mb_OnRun()
+end
+SLASH_MBCOMMAND2 = "/" .. MY_ABBREVIATION .. "R";
 
 -- Prints message in chatbox
 function mb_Print(msg)
@@ -184,9 +187,11 @@ end
 function mb_OnLoad()
 end
 
+mb_hasFinishedLoading = false
 mb_classSpecificRunFunction = nil
 -- OnPostLoad, called when macros etc. are available
 function mb_OnPostLoad()
+	SetCVar("autoSelfCast", 0)
 	mb_CreateMBMacros()
 	SetBinding("0","TURNORACTION")
 	local playerClass = max_GetClass("player")
@@ -226,11 +231,12 @@ function mb_OnPostLoad()
 	mb_OriginalOnUIErrorEventFunction = UIErrorsFrame_OnEvent
 	UIErrorsFrame_OnEvent = mb_OnUIErrorEvent
 
-	mb_Print("Loaded")
+    mb_hasFinishedLoading = true
+    mb_Print("Loaded")
 end
 
 function mb_CreateMBMacros()
-	mb_CreateMacro("MB_Main", "/mb " .. mb_GetMyCommanderName(), 37, "7", "MULTIACTIONBAR4BUTTON1")
+	mb_CreateMacro("MB_Main", "/mbr", 37, "7", "MULTIACTIONBAR4BUTTON1")
 	mb_CreateMacro("MB_ZoomIn", "/run SetView(3); CameraZoomIn(2);", 38, "8", "MULTIACTIONBAR4BUTTON2")
 	if mb_GetMyCommanderName() ~= UnitName("player") then
 		mb_CreateMacro("MB_DE", "/cast Disenchant", 39, "1", "MULTIACTIONBAR4BUTTON3")
@@ -272,9 +278,22 @@ function mb_OnCmd(msg)
 	if mb_HandleSpecialSlashCommand(msg) then
 		return
 	end
-
-	mb_RunBot(msg)
 end
+
+-- OnRun
+function mb_OnRun()
+    if not mb_hasFinishedLoading then
+        return
+    end
+
+	if GetFramerate() < 5 then
+		max_SayRaid("Warning, I have lower than 5 FPS, skipped running to prevent freezing.")
+		return
+	end
+
+	mb_RunBot(mb_GetMyCommanderName())
+end
+
 
 function mb_RunBot(commander)
 	mb_RebindMovementKeyIfNeeded()
@@ -446,7 +465,7 @@ end
 
 mb_shouldFuckOffAt = 0
 function mb_RebindMovementKeyIfNeeded()
-	if mb_shouldFuckOffAt + 4 > GetTime() then
+	if mb_shouldFuckOffAt + 4.5 > GetTime() then
 		SetBinding("9", "MOVEFORWARD")
 		return
 	end

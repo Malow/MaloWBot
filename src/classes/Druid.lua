@@ -2,7 +2,7 @@
 mb_druidCurrentHealTarget = nil
 mb_druidStoppedCastingTime = 0
 function mb_Druid(commander)
-    if mb_DoBasicCasterLogic() then
+    if mb_DoBasicCasterLogicThrottled() then
         return
     end
     if mb_druidStoppedCastingTime + 0.3 > GetTime() then
@@ -21,14 +21,15 @@ function mb_Druid(commander)
         mb_druidCurrentHealTarget = nil
     end
 
+    if mb_IsOnGCD() then
+        return
+    end
+
     local request = mb_GetQueuedRequest(true)
     if request ~= nil then
         if mb_CompleteStandardBuffRequest(request) then
             return
         elseif request.type == REQUEST_REMOVE_CURSE.type then
-            if mb_IsOnGCD() then
-                return
-            end
             max_CastSpellOnRaidMemberByPlayerName("Remove Curse", request.body)
             mb_RequestCompleted(request)
             return
@@ -38,7 +39,7 @@ function mb_Druid(commander)
         end
     end
 
-    if not max_IsSpellNameOnCooldown("Innervate") and max_GetManaPercentage("player") < 10 then
+    if UnitAffectingCombat("player") and max_GetManaPercentage("player") < 10 and not max_IsSpellNameOnCooldown("Innervate") then
         max_CastSpellOnRaidMember("Innervate", "player")
         return
     end
@@ -48,10 +49,7 @@ function mb_Druid(commander)
     end
 
     if mb_IsClassLeader() then
-        if mb_Druid_InsectSwarm() then
-            return
-        end
-        if mb_Druid_FaerieFire() then
+        if mb_Druid_DebuffTargetThrottled() then
             return
         end
     end
@@ -130,6 +128,21 @@ function mb_Druid_Rejuvenation()
     local healTargetUnit, missingHealthOfTarget = mb_HealingModule_GetRaidHealTarget(spell, unitFilter)
     if max_GetHealthPercentage(healTargetUnit) < 65 then
         max_CastSpellOnRaidMember(spell, healTargetUnit)
+        return true
+    end
+    return false
+end
+
+mb_druidLastDebuffTargetTime = 0
+function mb_Druid_DebuffTargetThrottled()
+    if mb_druidLastDebuffTargetTime + 1.0 > GetTime() then
+        return false
+    end
+    mb_druidLastDebuffTargetTime = GetTime()
+    if mb_Druid_InsectSwarm() then
+        return true
+    end
+    if mb_Druid_FaerieFire() then
         return true
     end
     return false

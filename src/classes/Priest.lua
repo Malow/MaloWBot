@@ -3,8 +3,9 @@ MB_PRIEST_POH_HEAL_AMOUNT = 1200
 mb_priestCurrentHealTarget = nil
 mb_priestStoppedCastingTime = 0
 mb_priestIsCastingPoH = false
+mb_priestIsHoly = true
 function mb_Priest(commander)
-    if mb_DoBasicCasterLogic() then
+    if mb_DoBasicCasterLogicThrottled() then
         return
     end
     if mb_priestStoppedCastingTime + 0.3 > GetTime() then
@@ -31,29 +32,23 @@ function mb_Priest(commander)
         mb_priestIsCastingPoH = false
     end
 
+    if mb_IsOnGCD() then
+        return
+    end
+
     local request = mb_GetQueuedRequest(true)
     if request ~= nil then
-        mb_DebugPrint("Dealing with request .. " .. request.type .. " from " .. request.from)
         if mb_CompleteStandardBuffRequest(request) then
             return
         elseif request.type == REQUEST_RESURRECT.type then
-            if mb_IsOnGCD() then
-                return
-            end
             max_CastSpellOnRaidMemberByPlayerName("Resurrection", request.body)
             mb_RequestCompleted(request)
             return
         elseif request.type == REQUEST_REMOVE_MAGIC.type then
-            if mb_IsOnGCD() then
-                return
-            end
             max_CastSpellOnRaidMemberByPlayerName("Dispel Magic", request.body)
             mb_RequestCompleted(request)
             return
         elseif request.type == "fearWard" then
-            if mb_IsOnGCD() then
-                return
-            end
             max_SayRaid("I'm Fear Warding " .. request.body)
             max_CastSpellOnRaidMemberByPlayerName("Fear Ward", request.body)
             mb_RequestCompleted(request)
@@ -91,16 +86,14 @@ function mb_Priest(commander)
         return
     end
 
-    if mb_GetMySpecName() == "Disc" then
-        if mb_Priest_Disc() then
-            return true
-        end
-    elseif mb_GetMySpecName() == "Holy" then
+    if mb_priestIsHoly then
         if mb_Priest_Holy() then
             return true
         end
     else
-        max_SayRaid("Serious error, bad spec for priest: " .. mySpec)
+        if mb_Priest_Disc() then
+            return true
+        end
     end
 
     max_AssistByPlayerName(commander)
@@ -230,6 +223,7 @@ function mb_Priest_OnLoad()
     mb_RegisterRangeCheckSpell("Fear Ward")
     mb_HealingModule_Enable()
     mb_HealingModule_RegisterHoT("Renew", BUFF_TEXTURE_RENEW, 365)
+    mb_priestIsHoly = mb_GetMySpecName() == "Holy"
 end
 
 function mb_Priest_HandleFearWardRequest(request)

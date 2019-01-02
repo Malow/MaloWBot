@@ -29,9 +29,6 @@ function mb_HealingModule_HandleHoTRequest(request)
 end
 
 function mb_HealingModule_CompleteHoTRequest(request)
-    if mb_IsOnGCD() then
-        return
-    end
     mb_RequestCompleted(request)
     local unit = max_GetUnitForPlayerName(request.body)
     for k, v in pairs(mb_HealingModule_registeredHoTs) do

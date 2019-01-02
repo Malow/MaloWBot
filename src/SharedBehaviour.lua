@@ -272,7 +272,12 @@ function mb_LearnTalents()
     end
 end
 
-function mb_DoBasicCasterLogic()
+mb_lastBasicCasterLogic = 0
+function mb_DoBasicCasterLogicThrottled()
+    if mb_lastBasicCasterLogic + 1 > GetTime() then
+        return false
+    end
+    mb_lastBasicCasterLogic = GetTime()
     if mb_IsDrinking() then
         if max_GetManaPercentage("player") < 95 then
             return true
@@ -381,15 +386,24 @@ function mb_WarnForWatchedReagents()
     end
 end
 
+mb_isClassLeaderCached = nil
 function mb_IsClassLeader()
+    if mb_isClassLeaderCached ~= nil then
+        return mb_isClassLeaderCached
+    end
     local classMates = mb_GetClassMates(max_GetClass("player"))
-    return classMates[1] == UnitName("player")
+    mb_isClassLeaderCached = classMates[1] == UnitName("player")
+    return mb_isClassLeaderCached
 end
 
 function mb_RegisterRangeCheckSpell(spellName)
     local slot = max_GetTableSize(mb_registeredRangeCheckSpells) + 25
     if slot > 36 then
         max_SayRaid("Serious error, I have too many spells registered for range-check")
+    end
+    if not max_HasSpell(spellName) then
+        max_SayRaid("Warning: I'm trying to add " .. spellName .. " to range-check, but I don't know this spell")
+        return
     end
     mb_registeredRangeCheckSpells[spellName] = slot
     PickupSpell(max_GetSpellbookId(spellName), "BOOKTYPE_SPELL ")
@@ -431,14 +445,11 @@ end
 
 -- Buffs the player with the buff if it can, returns true if it buffs
 function mb_CompleteStandardBuffRequest(request)
-    mb_DebugPrint("Trying to complete " .. request.type .. " from " .. request.body)
     local buff = mb_GetBuffWithType(request.type)
     if buff == nil then
-        mb_DebugPrint("Not buff found " .. request.type .. " from " .. request.body)
         return false
     end
     if UnitAffectingCombat("player") then
-        mb_DebugPrint("Skipping request due to combat: " .. request.type .. " from " .. request.body)
         return true
     end
     if mb_IsOnGCD() then
@@ -446,12 +457,9 @@ function mb_CompleteStandardBuffRequest(request)
     end
     mb_RequestCompleted(request)
     if not max_HasBuffWithMultipleTextures(max_GetUnitForPlayerName(request.body), buff.textures) then
-        mb_DebugPrint("target doesn't have buff " .. request.type .. " from " .. request.body)
         if buff.groupWideSpellName ~= nil and mb_ShouldBuffGroupWide(request.body, buff, buff.unitFilter) then
-            mb_DebugPrint("Castomg group buff " .. request.type .. " from " .. request.body)
             max_CastSpellOnRaidMemberByPlayerName(buff.groupWideSpellName, request.body)
         else
-            mb_DebugPrint("Castomg single buff " .. request.type .. " from " .. request.body)
             max_CastSpellOnRaidMemberByPlayerName(buff.spellName, request.body)
         end
         return true
@@ -459,16 +467,13 @@ function mb_CompleteStandardBuffRequest(request)
 end
 
 function mb_HandleStandardBuffRequest(request)
-    mb_DebugPrint("Received request " .. request.type .. " from " .. request.body)
     local buff = mb_GetBuffWithType(request.type)
     if buff.groupWideSpellName ~= nil then
         if not max_HasSpell(buff.groupWideSpellName) then
-            mb_DebugPrint("Declined request " .. request.type .. " from " .. request.body .. ", I don't have: " .. buff.groupWideSpellName)
             return
         end
     end
     if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), buff.spellName) then
-        mb_DebugPrint("I accepted " .. request.type .. " from " .. request.body)
         mb_AcceptRequest(request)
     end
 end

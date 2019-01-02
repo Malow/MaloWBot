@@ -572,3 +572,13 @@ function mb_CleanseRaidMemberThrottled(spellName, debuffType1, debuffType2, debu
     mb_lastFailedCleanseCheck = GetTime()
     return false
 end
+
+function mb_IsFreeToAcceptRequest()
+    if UnitIsDead("player") then
+        return false
+    end
+    if mb_CrowdControlModule_IsAssignedToCrowdControl() then
+        return false
+    end
+    return true
+end

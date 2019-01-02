@@ -332,3 +332,24 @@ function max_UseEquippedItemIfReady(itemSlotName)
 	return false
 end
 
+function max_RaidTargetIndexToName(raidTargetIndex)
+	if raidTargetIndex == nil then
+		return "nil"
+	elseif raidTargetIndex == 1 then
+		return "Yellow Star"
+	elseif raidTargetIndex == 2 then
+		return "Orange Circle"
+	elseif raidTargetIndex == 3 then
+		return "Purple Diamond"
+	elseif raidTargetIndex == 4 then
+		return "Green Triangle"
+	elseif raidTargetIndex == 5 then
+		return "Moon"
+	elseif raidTargetIndex == 6 then
+		return "Blue Square"
+	elseif raidTargetIndex == 7 then
+		return "Red Cross"
+	elseif raidTargetIndex == 8 then
+		return "Skull"
+	end
+end

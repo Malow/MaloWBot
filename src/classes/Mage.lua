@@ -2,6 +2,11 @@ function mb_Mage(commander)
     if mb_DoBasicCasterLogicThrottled() then
         return
     end
+
+    if mb_CrowdControlModule_Run() then
+        return
+    end
+
     local request = mb_GetQueuedRequest(true)
     if request ~= nil and request.type == REQUEST_INTERRUPT.type then
         if request.attempts > 90 then
@@ -49,6 +54,11 @@ function mb_Mage(commander)
                 return
             end
             max_CastSpellOnRaidMemberByPlayerName("Remove Lesser Curse", request.body)
+            mb_RequestCompleted(request)
+            return
+        elseif request.type == REQUEST_CROWD_CONTROL.type then
+            max_AssistByPlayerName(request.from)
+            mb_CrowdControlModule_RegisterTarget("Polymorph", DEBUFF_TEXTURE_POLYMORPH)
             mb_RequestCompleted(request)
             return
         end
@@ -141,6 +151,7 @@ function mb_Mage_OnLoad()
     mb_RegisterForRequest(REQUEST_WATER.type, mb_Mage_HandleWaterRequest)
     mb_RegisterForRequest(REQUEST_REMOVE_CURSE.type, mb_Mage_HandleDecurseRequest)
     mb_RegisterForRequest(REQUEST_INTERRUPT.type, mb_Mage_HandleInterruptRequest)
+    mb_RegisterForRequest(REQUEST_CROWD_CONTROL.type, mb_Mage_HandleCrowdControlRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
@@ -156,12 +167,13 @@ function mb_Mage_OnLoad()
     mb_RegisterRangeCheckSpell("Arcane Intellect")
     mb_RegisterRangeCheckSpell("Remove Lesser Curse")
     mb_RegisterRangeCheckSpell("Counterspell")
+    mb_RegisterRangeCheckSpell("Polymorph")
     mb_AddReagentWatch("Arcane Powder", 40)
     mb_AddReagentWatch("Rune of Portals", 10)
 end
 
 function mb_Mage_HandleWaterRequest(request)
-    if UnitIsDead("player") then
+    if not mb_IsFreeToAcceptRequest() then
         return
     end
     if mb_GetWaterCount() < 25 then
@@ -176,7 +188,7 @@ function mb_Mage_HandleWaterRequest(request)
 end
 
 function mb_Mage_HandleDecurseRequest(request)
-    if UnitIsDead("player") then
+    if not mb_IsFreeToAcceptRequest() then
         return
     end
     if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Remove Lesser Curse") and UnitMana("player") > 500 then
@@ -185,7 +197,7 @@ function mb_Mage_HandleDecurseRequest(request)
 end
 
 function mb_Mage_HandleInterruptRequest(request)
-    if UnitIsDead("player") then
+    if not mb_IsFreeToAcceptRequest() then
         return
     end
     max_AssistByPlayerName(request.from)
@@ -196,6 +208,17 @@ function mb_Mage_HandleInterruptRequest(request)
         return
     end
     if UnitMana("player") > 500 then
+        mb_AcceptRequest(request)
+    end
+end
+
+function mb_Mage_HandleCrowdControlRequest(request)
+    if not mb_IsFreeToAcceptRequest() then
+        return
+    end
+    max_AssistByPlayerName(request.from)
+    local creatureType = UnitCreatureType("target")
+    if creatureType == "Humanoid" then
         mb_AcceptRequest(request)
     end
 end

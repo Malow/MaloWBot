@@ -27,6 +27,7 @@ classes\Warlock.lua
 classes\Warrior.lua
 
 modules\CombatLogModule.lua
+modules\CrowdControlModule.lua
 modules\HealingModule.lua
 modules\MoveOutModule.lua
 

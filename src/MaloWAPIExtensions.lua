@@ -256,8 +256,11 @@ function max_AssistByPlayerName(playerName)
 		return true
 	end
 	local assistUnit = max_GetUnitForPlayerName(playerName)
+	if assistUnit == nil then
+		return true
+	end
 	if UnitIsUnit("target", assistUnit .. "target") then
-		return
+		return true
 	end
 	if UnitExists(assistUnit .. "target") then
 		TargetUnit(assistUnit .. "target")

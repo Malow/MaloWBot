@@ -218,7 +218,7 @@ function mb_Mage_HandleCrowdControlRequest(request)
     end
     max_AssistByPlayerName(request.from)
     local creatureType = UnitCreatureType("target")
-    if creatureType == "Humanoid" then
+    if creatureType == "Humanoid" or creatureType == "Beast" then
         mb_AcceptRequest(request)
     end
 end

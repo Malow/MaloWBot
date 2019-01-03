@@ -26,6 +26,7 @@ function mb_Paladin(commander)
             return
         elseif request.type == REQUEST_RESURRECT.type then
             max_CastSpellOnRaidMemberByPlayerName("Redemption", request.body)
+            max_SayRaid("I'm resurrecting " .. request.body)
             mb_RequestCompleted(request)
             return
         elseif request.type == REQUEST_REMOVE_MAGIC.type or request.type == REQUEST_REMOVE_DISEASE.type or request.type == REQUEST_REMOVE_POISON.type then

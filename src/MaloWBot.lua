@@ -188,7 +188,6 @@ end
 function mb_OnLoad()
 end
 
-mb_hasFinishedLoading = false
 mb_classSpecificRunFunction = nil
 -- OnPostLoad, called when macros etc. are available
 function mb_OnPostLoad()
@@ -258,8 +257,6 @@ end
 
 -- OnUpdate
 function mb_OnUpdate()
-	mb_hasFinishedLoading = true
-
 	if mb_isGossiping and mb_gossipOpenedTime + 5 < GetTime() then
 		mb_isGossiping = false
 	end
@@ -284,12 +281,10 @@ end
 
 -- OnRun
 function mb_OnRun()
-    if not mb_hasFinishedLoading then
-        return
-    end
-
 	if GetFramerate() < 5 then
-		max_SayRaid("Warning, I have lower than 5 FPS, skipped running to prevent freezing.")
+		if UnitAffectingCombat("player") then
+			max_SayRaid("Warning, I have lower than 5 FPS, skipped running to prevent freezing.")
+		end
 		return
 	end
 

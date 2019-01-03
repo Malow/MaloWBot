@@ -62,6 +62,10 @@ function mb_HandleSpecialSlashCommand(msg)
         local mode = max_SplitString(msg, " ")[2]
         mb_shouldRequestBuffs = mode == "on"
         mb_MakeRequest("requestBuffsMode", mode, REQUEST_PRIORITY.COMMAND)
+    elseif string.find(msg, "remoteExecute") then
+        local code = string.sub(msg, 15)
+        mb_Print(code)
+        mb_MakeRequest("remoteExecute", code, REQUEST_PRIORITY.COMMAND)
     elseif msg == "fixraidgroup" or msg == "fixRaidGroup" then
         mb_FixRaidGroup()
     elseif msg == "debugRequests" then

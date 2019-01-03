@@ -15,6 +15,7 @@ function mb_RegisterSharedRequestHandlers(playerClass)
     mb_RegisterForRequest("moveOutModule", mb_MoveOutModuleRequestHandler)
     mb_RegisterForRequest("fuckOff", mb_FuckOffRequestHandler)
     mb_RegisterForRequest(playerClass .. "Sync", mb_ClassSyncRequestHandler)
+    mb_RegisterForRequest("remoteExecute", mb_RemoteExecuteRequestHandler)
 end
 
 function mb_ReloadRequestHandler(request)
@@ -185,6 +186,18 @@ function mb_ClassSyncRequestHandler(request)
         mb_classSyncData = request.body
         if mb_classSyncDataReceivedFunction ~= nil then
             mb_classSyncDataReceivedFunction()
+        end
+    end
+end
+
+function mb_RemoteExecuteRequestHandler(request)
+    if request.from == mb_GetMyCommanderName() then
+        local code = request.body
+        local func = loadstring(code)
+        if func == nil then
+            max_SayRaid("Bad Code: " .. code)
+        else
+            func()
         end
     end
 end

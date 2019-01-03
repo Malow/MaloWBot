@@ -58,7 +58,7 @@ function mb_Paladin(commander)
     end
 
     max_AssistByPlayerName(commander)
-    if not UnitExists("target") or not UnitIsEnemy("player", "target") then
+    if not max_HasValidOffensiveTarget() then
         return
     end
 
@@ -153,7 +153,7 @@ end
 
 function mb_Paladin_Judge()
     local cur, max, found = MobHealth3:GetUnitHealth("target")
-    if not found or cur < APPLY_DEBUFFS_HEALTH_ABOVE then
+    if found and cur < APPLY_DEBUFFS_HEALTH_ABOVE then
         return false
     end
 

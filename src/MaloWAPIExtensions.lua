@@ -356,3 +356,10 @@ function max_RaidTargetIndexToName(raidTargetIndex)
 		return "Skull"
 	end
 end
+
+function max_HasValidOffensiveTarget()
+	if UnitExists("target") and not UnitIsFriend("player", "target") then
+		return true
+	end
+	return false
+end

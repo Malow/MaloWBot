@@ -8,6 +8,7 @@ function mb_MoveOutModule_Load()
     local spellNames = {}
     table.insert(spellNames, "Flamestrike")
     table.insert(spellNames, "Rain of Fire")
+    table.insert(spellNames, "Blizzard")
     mb_CombatLogModule_PeriodicSelfDamageWatch_Enable(spellNames)
     local debuffNames = {}
     table.insert(debuffNames, "Living Bomb")

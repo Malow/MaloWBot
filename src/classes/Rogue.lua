@@ -28,7 +28,7 @@ function mb_Rogue(commander)
 
     AssistByName(commander)
 
-    if not UnitExists("target") or not UnitIsEnemy("player", "target") then
+    if not max_HasValidOffensiveTarget() then
         return
     end
 

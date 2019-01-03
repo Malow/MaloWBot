@@ -101,7 +101,7 @@ function mb_Warlock(commander)
     end
 
     max_AssistByPlayerName(commander)
-    if not UnitExists("target") or not UnitIsEnemy("player", "target") then
+    if not max_HasValidOffensiveTarget() then
         return
     end
 
@@ -129,7 +129,7 @@ function mb_Warlock_DrainSoul()
         return false
     end
     local cur, max, found = MobHealth3:GetUnitHealth("target")
-    if not found or cur > APPLY_DEBUFFS_HEALTH_ABOVE then
+    if found and cur > APPLY_DEBUFFS_HEALTH_ABOVE then
         return false
     end
     if max_GetFreeBagSlots() > 8 and max_GetLevelDifferenceFromSelf("target") > -10 then
@@ -141,7 +141,7 @@ end
 
 function mb_Warlock_Curse()
     local cur, max, found = MobHealth3:GetUnitHealth("target")
-    if not found or cur < APPLY_DEBUFFS_HEALTH_ABOVE then
+    if found and cur < APPLY_DEBUFFS_HEALTH_ABOVE then
         return false
     end
     if not mb_IsSpellInRange("Curse of the Elements", "target") then

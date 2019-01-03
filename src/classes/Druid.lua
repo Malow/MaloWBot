@@ -48,7 +48,9 @@ function mb_Druid(commander)
         return
     end
 
-    if mb_IsClassLeader() then
+    max_AssistByPlayerName(commander)
+
+    if mb_IsClassLeader() and max_HasValidOffensiveTarget() then
         if mb_Druid_DebuffTargetThrottled() then
             return
         end
@@ -63,8 +65,7 @@ function mb_Druid(commander)
     end
 
     -- Damage
-    max_AssistByPlayerName(commander)
-    if not UnitExists("target") or not UnitIsEnemy("player", "target") then
+    if not max_HasValidOffensiveTarget() then
         return
     end
 
@@ -112,9 +113,11 @@ function mb_Druid_TankHealing()
     local tankUnit = mb_HealingModule_GetValidTankUnitWithHighestFutureMissingHealth("Regrowth", unitFilter)
     if tankUnit ~= nil then
         local callBacks = {}
-        callBacks.onStart = function(spellCast) mb_HealingModule_SendData(UnitName(spellCast.target), 1200, spellCast.startTime + 2) end
+        callBacks.onStart = function(spellCast)
+            mb_HealingModule_SendData(UnitName(spellCast.target), 1200, spellCast.startTime + 2)
+            mb_druidCurrentHealTarget = tankUnit
+        end
         mb_CastSpellByNameOnRaidMemberWithCallbacks("Regrowth", tankUnit, callBacks)
-        mb_druidCurrentHealTarget = tankUnit
         return true
     end
     -- TODO: Do healing touch instead
@@ -150,10 +153,10 @@ end
 
 function mb_Druid_InsectSwarm()
     local cur, max, found = MobHealth3:GetUnitHealth("target")
-    if not found or cur < APPLY_DEBUFFS_HEALTH_ABOVE then
+    if found and cur < APPLY_DEBUFFS_HEALTH_ABOVE and false then
         return false
     end
-    if not max_HasDebuff("target", DEBUFF_INSECT_SWARM) and mb_IsSpellInRange("Insect Swarm", "target") then
+    if not max_HasDebuff("target", DEBUFF_TEXTURE_INSECT_SWARM) and mb_IsSpellInRange("Insect Swarm", "target") then
         CastSpellByName("Insect Swarm(Rank 1)")
         return true
     end
@@ -162,10 +165,10 @@ end
 
 function mb_Druid_FaerieFire()
     local cur, max, found = MobHealth3:GetUnitHealth("target")
-    if not found or cur < APPLY_DEBUFFS_HEALTH_ABOVE then
+    if found and cur < APPLY_DEBUFFS_HEALTH_ABOVE and false then
         return false
     end
-    if not max_HasDebuff("target", DEBUFF_TEXTURE_FAERIE_FIRE) and mb_IsSpellInRange("Faerie Fire", "target")  then
+    if not max_HasDebuff("target", DEBUFF_TEXTURE_FAERIE_FIRE) and mb_IsSpellInRange("Faerie Fire", "target") then
         CastSpellByName("Faerie Fire")
         return true
     end

@@ -14,7 +14,7 @@ function mb_Warrior(commander)
         CastSpellByName("Berserker Stance")
     end
 
-    if not UnitExists("target") or not UnitIsEnemy("player", "target") then
+    if not max_HasValidOffensiveTarget() then
         return
     end
 
@@ -45,10 +45,10 @@ end
 mb_Warrior_lastTankingBroadcast = 0
 mb_Warrior_lastSunder = 0
 function mb_Warrior_Tank(commander)
-    if not UnitExists("target") or not UnitIsEnemy("player", "target") or UnitIsDead("target") then
+    if not max_HasValidOffensiveTarget() or UnitIsDead("target") then
         AssistByName(commander)
     end
-    if not UnitExists("target") or not UnitIsEnemy("player", "target") then
+    if not max_HasValidOffensiveTarget() then
         return
     end
 

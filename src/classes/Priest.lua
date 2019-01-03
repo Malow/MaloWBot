@@ -97,7 +97,7 @@ function mb_Priest(commander)
     end
 
     max_AssistByPlayerName(commander)
-    if not UnitExists("target") or not UnitIsEnemy("player", "target") then
+    if not max_HasValidOffensiveTarget() then
         return
     end
 
@@ -116,9 +116,11 @@ function mb_Priest_TankHealing()
     local tankUnit = mb_HealingModule_GetValidTankUnitWithHighestFutureMissingHealth("Greater Heal")
     if tankUnit ~= nil then
         local callBacks = {}
-        callBacks.onStart = function(spellCast) mb_HealingModule_SendData(UnitName(spellCast.target), 1100, spellCast.startTime + 2.5) end
+        callBacks.onStart = function(spellCast)
+            mb_HealingModule_SendData(UnitName(spellCast.target), 1100, spellCast.startTime + 2.5)
+            mb_priestCurrentHealTarget = tankUnit
+        end
         mb_CastSpellByNameOnRaidMemberWithCallbacks("Greater Heal(Rank 1)", tankUnit, callBacks)
-        mb_priestCurrentHealTarget = tankUnit
         return true
     end
     return false

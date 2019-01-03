@@ -45,7 +45,7 @@ function mb_Hunter(commander)
 	end
 
 	max_AssistByPlayerName(commander)
-	if not UnitExists("target") or not UnitIsEnemy("player", "target") then
+	if not max_HasValidOffensiveTarget() then
 		return
 	end
 

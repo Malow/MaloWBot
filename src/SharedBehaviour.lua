@@ -272,14 +272,16 @@ function mb_LearnTalents()
     end
 end
 
-mb_lastBasicCasterLogic = 0
+mb_lastBasicCasterLogicTime = 0
+mb_lastBasicCasterLogicReturn = false
 function mb_DoBasicCasterLogicThrottled()
-    if mb_lastBasicCasterLogic + 1 > GetTime() then
-        return false
+    if mb_lastBasicCasterLogicTime + 1 > GetTime() then
+        return mb_lastBasicCasterLogicReturn
     end
-    mb_lastBasicCasterLogic = GetTime()
+    mb_lastBasicCasterLogicTime = GetTime()
     if mb_IsDrinking() then
         if max_GetManaPercentage("player") < 95 then
+            mb_lastBasicCasterLogicReturn = true
             return true
         else
             SitOrStand()
@@ -288,6 +290,7 @@ function mb_DoBasicCasterLogicThrottled()
 
     if max_GetManaPercentage("player") < 60 then
         if mb_DrinkIfPossible() then
+            mb_lastBasicCasterLogicReturn = true
             return true
         end
     end
@@ -298,6 +301,7 @@ function mb_DoBasicCasterLogicThrottled()
         end
     end
 
+    mb_lastBasicCasterLogicReturn = false
     return false
 end
 

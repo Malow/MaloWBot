@@ -52,6 +52,10 @@ function mb_Warrior_Tank(commander)
         return
     end
 
+    if not mb_isAutoAttacking then
+        CastSpellByName("Attack")
+    end
+
     if UnitAffectingCombat("player") and max_GetHealthPercentage("player") > 80 then
         CastSpellByName("Bloodrage")
     end
@@ -73,10 +77,6 @@ function mb_Warrior_Tank(commander)
             end
             CastSpellByName("Taunt")
         end
-    end
-
-    if not mb_isAutoAttacking then
-        CastSpellByName("Attack")
     end
 
     if not UnitIsUnit("player", "targettarget") then

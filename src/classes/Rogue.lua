@@ -141,6 +141,7 @@ function mb_Rogue_OnLoad()
     mb_RegisterRangeCheckSpell("Kick")
     mb_AddGCDCheckSpell("Sinister Strike")
     mb_RegisterForRequest(REQUEST_INTERRUPT.type, mb_Rogue_HandleInterruptRequest)
+    mb_AddReagentWatch("Instant Poison VI", 40)
 end
 
 function mb_Rogue_AddDesiredTalents()

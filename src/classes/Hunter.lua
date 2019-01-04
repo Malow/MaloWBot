@@ -133,6 +133,8 @@ function mb_Hunter_OnLoad()
 
 	mb_Hunter_AddDesiredTalents()
 	mb_CombatLogModule_SwingTimer_EnableAutoShot()
+	mb_RegisterRangeCheckSpell("Multi-Shot")
+	mb_GoToMaxRangeModule_RegisterMaxRangeSpell("Multi-Shot")
 end
 
 function mb_Hunter_HandleTranquilizingShotRequest(request)

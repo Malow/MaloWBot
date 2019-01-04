@@ -170,6 +170,8 @@ function mb_Mage_OnLoad()
     mb_RegisterRangeCheckSpell("Polymorph")
     mb_AddReagentWatch("Arcane Powder", 40)
     mb_AddReagentWatch("Rune of Portals", 10)
+    mb_RegisterRangeCheckSpell("Frostbolt")
+    mb_GoToMaxRangeModule_RegisterMaxRangeSpell("Frostbolt")
 end
 
 function mb_Mage_HandleWaterRequest(request)

@@ -475,6 +475,9 @@ function mb_RebindMovementKeyIfNeeded()
 		SetBinding("9", "TURNLEFT")
 		return
 	end
+	if mb_GoToMaxRangeModule_RebindMovementKeyIfNeeded() then
+		return
+	end
 	SetBinding("9", nil)
 end
 

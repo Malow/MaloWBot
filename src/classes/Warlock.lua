@@ -186,6 +186,8 @@ function mb_Warlock_OnLoad()
     mb_RegisterRangeCheckSpell("Drain Soul")
     mb_RegisterRangeCheckSpell("Curse of the Elements")
     mb_RegisterRangeCheckSpell("Banish")
+    mb_RegisterRangeCheckSpell("Shadow Bolt")
+    mb_GoToMaxRangeModule_RegisterMaxRangeSpell("Shadow Bolt")
 end
 
 function mb_Warlock_HandleSummonRequest(request)

@@ -52,8 +52,8 @@ function mb_Hunter(commander)
 	if CheckInteractDistance("target", 3) then
 		if not mb_isAutoAttacking then
 			CastSpellByName("Attack")
-			return
 		end
+		return
 	else
 		if mb_Hunter_HasFullImprovedHuntersMark() then
 			if not max_HasDebuff("target", DEBUFF_TEXTURE_HUNTERS_MARK) then
@@ -67,7 +67,20 @@ function mb_Hunter(commander)
 		end
 	end
 
-	CastSpellByName("Multi-Shot")
+	if not max_IsSpellNameOnCooldown("Rapid Fire") then
+		CastSpellByName("Rapid Fire")
+		return
+	end
+
+	if GetTime() < mb_CombatLogModule_SwingTimer_GetLastAutoShotTime() + 0.3 and not max_IsSpellNameOnCooldown("Aimed Shot") then
+		CastSpellByName("Aimed Shot")
+		return
+	end
+
+	if not max_IsSpellNameOnCooldown("Multi-Shot") then
+		CastSpellByName("Multi-Shot")
+		return
+	end
 end
 
 mb_hunterHasWarnedForNoAmmo = false
@@ -119,6 +132,7 @@ function mb_Hunter_OnLoad()
 	end
 
 	mb_Hunter_AddDesiredTalents()
+	mb_CombatLogModule_SwingTimer_EnableAutoShot()
 end
 
 function mb_Hunter_HandleTranquilizingShotRequest(request)

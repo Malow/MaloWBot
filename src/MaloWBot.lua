@@ -525,8 +525,11 @@ end
 ---		Pet-logic (reagent food, auto-feed, auto-call/revive, attacking, mend pet)
 ---			Owners request buffs for their pets
 ---			All-in-one pet macro:     /run local c=CastSpellByName if UnitExists("pet") then if UnitHealth("pet")==0 then c("Revive Pet") elseif GetPetHappiness()~=nil and GetPetHappiness()~=3 then c("Feed Pet") PickupContainerItem(0, 13) else c("Dismiss Pet") end else c("Call Pet") end
----		Add Aimed-shot to the rotation, maybe see https://github.com/Geigerkind/OneButtonHunter/blob/master/OneButtonHunter.lua, though it seems to be bugged
----			Parse combat events for when you hit with your bow, either Aimedshot right then, or calculate next autohit time and aimedshot then
+---		Feign Death
+---			To remove threat
+---			To be able to trap in combat?
+---			To enable a third trinket in combat?
+---			To drink?
 ---		Make them melee-hit with Raptor strike and mongoose bite if in melee range?
 ---		Deterrence on Melee hit
 ---		Automatic Tranq based on "x gains Frenzy" combat text

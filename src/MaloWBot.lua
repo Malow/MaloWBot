@@ -493,16 +493,17 @@ end
 ---		Spellstones? 1% crit if nothing better, use for 900 spell absorb too
 ---		Hellfire during AoE? Probably not while we're progressing fire-instances. Maybe in a max-burn AoE mode.
 ---	Mage:
----     Polymorph requests
 ---		Wand if oom
 ---		Fire/Frost ward
 ---		Have a think about Dampen / Amplify, if it should be used ever, and if they should be specced in it then.
+---		Click away PoM if combat ends with PoM up
 --- Priest:
 ---     PW:S if below X health or tank below % HP
 ---     Can swap groups in combat? If so priests could be spamming PoH with swapping people in who need it.
 ---		Do abolish disease, check mana costs of the 2 versions, though it's kinda messy since you can't just spam do it since it's a buff, so multiple druids can hit the same target...
 ---		Wand instead of attack if ranged, (does wand cause GCD?)
 ---		On aggro cast Fade
+---		If low on mana raid-heal less (except for PoH)
 --- Druids:
 ---     Tranquility like PoH in priest
 ---     Swiftmend
@@ -511,19 +512,24 @@ end
 ---		Innervate, who is it best on? Priests? Use requests?
 ---		Combat ress
 ---			Also need to implement rebuffing after combat ress then kinda
+---		If low on mana raid-heal less
 ---	Paladins:
 ---		request specific auras
 ---		Add logic for ret pal
 ---		Add holy shock for the few that has it
 ---		Consecration in a max-burn AoE mode?
 ---		Blessing of Protection (request re-bless after?)
+---		If high on Mana start stop-cast spamming tanks
+---		Lay on hands buff rotation on try-hard tries
 --- Hunter:
 ---		Pet-logic (reagent food, auto-feed, auto-call/revive, attacking, mend pet)
 ---			Owners request buffs for their pets
 ---			All-in-one pet macro:     /run local c=CastSpellByName if UnitExists("pet") then if UnitHealth("pet")==0 then c("Revive Pet") elseif GetPetHappiness()~=nil and GetPetHappiness()~=3 then c("Feed Pet") PickupContainerItem(0, 13) else c("Dismiss Pet") end else c("Call Pet") end
 ---		Add Aimed-shot to the rotation, maybe see https://github.com/Geigerkind/OneButtonHunter/blob/master/OneButtonHunter.lua, though it seems to be bugged
+---			Parse combat events for when you hit with your bow, either Aimedshot right then, or calculate next autohit time and aimedshot then
 ---		Make them melee-hit with Raptor strike and mongoose bite if in melee range?
 ---		Deterrence on Melee hit
+---		Automatic Tranq based on "x gains Frenzy" combat text
 ---	Warrior:
 ---		Battle-shout, make it smart so that it rebuffs party mates within range if needed and not only self. Also make non-tanking tanks refresh it when it has like 5 sec duration left to prevent tanking tanks from wasting the rage
 ---		Prot:
@@ -532,6 +538,7 @@ end
 ---			Intercept/charge, gonna make picking shit up way easier if they actually charge their targets, intercept too for resisted taunts so the mob runs away
 ---			Dual-tank mode, use cleave then and swap between both targets and check actual threat.
 ---			Berserker rage zerk stance dance? Both as fear ward kinda and to increase rage.
+---			Auto-taunt off other tanks if they have MS or other nasty debuff
 --- Say raid, "I am literally out of X" when out of reagents and trying to buff with them.
 --- Rename followTarget to commander
 --- Performance:
@@ -554,12 +561,16 @@ end
 ---	Auto-target mode. TargetNearestEnemy spam and just attack whatever is possible. For DPS maybe 1 person should be the "leader" and set skull, and the rest should follow that.
 ---		Tanks should automatically pick up untanked targets with this
 ---	Don't DPS if you risk overthreat, use KTM API? Need a way to disable it for solo/5-mans
+---	Add a command /mb readyCheck that initates a normal ready-check and runs mb_HandleReadyCheck() for self
+---	Click away temporary weapon enchants on ready check if their duration/charges is too low
+---
+---
 ---
 ---	Heal-visualizer, shows each broadcasted heal from each healer in a list and their target.
 --- Enemy-target logic, frame that displays enemy targets and who "has" that target (tank or CC)
 ---		Automatic marking of raid-symbol and a commander does "/mb target tank" or "/mb target cc"
 ---		Automatic DPSing of these targets in order, using assist on the tank who has it, or on the guy who CCs it.
----
+---	Requests per minute visualizer, a frame which shows request spam from people
 ---
 
 

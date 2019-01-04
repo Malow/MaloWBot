@@ -133,11 +133,11 @@ function mb_Mage(commander)
         return
     end
 
-    if UnitAffectingCombat("player") and max_GetDebuffStackCount("target", DEBUFF_TEXTURE_WINTERS_CHILL) == 5 and max_GetManaPercentage("player") > 10 and not mb_IsMoving() then
-        max_UseEquippedItemIfReady("Trinket0Slot")
-        max_UseEquippedItemIfReady("Trinket1Slot")
-
-        if mb_Mage_HasPresenceOfMind() and mb_IsMoving() and not max_IsSpellNameOnCooldown("Presence of Mind") then
+    if UnitAffectingCombat("player") and max_GetDebuffStackCount("target", DEBUFF_TEXTURE_WINTERS_CHILL) == 5 and max_GetManaPercentage("player") > 10 then
+        if not mb_IsMoving() then
+            max_UseEquippedItemIfReady("Trinket0Slot")
+            max_UseEquippedItemIfReady("Trinket1Slot")
+        elseif mb_Mage_HasPresenceOfMind() and not max_IsSpellNameOnCooldown("Presence of Mind") then
             CastSpellByName("Presence of Mind")
         end
     end

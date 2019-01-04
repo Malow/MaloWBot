@@ -419,7 +419,7 @@ function mb_RequestCompleted(request)
 end
 
 mb_lastAttemptedCast = nil
-function mb_CastSpellByNameWithCallbacks(spellName, target, callbacks)
+function mb_CastSpellByNameOnTargetWithCallbacks(spellName, target, callbacks)
 	mb_lastAttemptedCast = {}
 	mb_lastAttemptedCast.spellName = spellName
 	mb_lastAttemptedCast.startTime = GetTime()
@@ -437,7 +437,7 @@ function mb_CastSpellByNameOnRaidMemberWithCallbacks(spellName, target, callback
 		ClearTarget()
 		retarget = true
 	end
-	mb_CastSpellByNameWithCallbacks(spellName, target, callbacks)
+	mb_CastSpellByNameOnTargetWithCallbacks(spellName, target, callbacks)
 	SpellTargetUnit(target)
 	SpellStopTargeting()
 	if retarget then

@@ -231,6 +231,11 @@ function mb_OnPostLoad()
 	mb_OriginalOnUIErrorEventFunction = UIErrorsFrame_OnEvent
 	UIErrorsFrame_OnEvent = mb_OnUIErrorEvent
 
+	SetBinding("V", nil)
+	SetBinding("SHIFT-V", nil)
+	SetBinding("CTRL-V", nil)
+	SetBinding("ALT-V", nil)
+
     mb_Print("Loaded")
 end
 

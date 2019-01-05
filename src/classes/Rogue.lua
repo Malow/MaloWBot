@@ -44,6 +44,12 @@ function mb_Rogue(commander)
         CastSpellByName("Slice and Dice")
         return
     end
+
+    if not mb_Rogue_usesDaggers and GetComboPoints() == 5 then
+        CastSpellByName("Eviscerate")
+        return
+    end
+
     if mb_Rogue_usesDaggers then
         CastSpellByName("Backstab")
         return
@@ -96,9 +102,10 @@ function mb_Rogue_ApplyPoison()
 end
 
 function mb_Rogue_AdrenalineRush()
-    if max_IsSpellNameOnCooldown("Adrenaline Rush") or UnitHealthMax("target") < 40000 then
+    local cur, max, found = MobHealth3:GetUnitHealth("target")
+    if max_IsSpellNameOnCooldown("Adrenaline Rush") then
         return false
-    elseif UnitIsEnemy("Player", "target") and CheckInteractDistance("target", 3) and max_GetHealthPercentage("Target") < 90 then
+    elseif UnitIsEnemy("Player", "target") and CheckInteractDistance("target", 3) and max_GetHealthPercentage("target") < 90 then
         CastSpellByName("Adrenaline Rush")
         return true
     end
@@ -120,6 +127,19 @@ function mb_Rogue_HandleInterruptRequest(request)
         mb_AcceptRequest(request)
     end
 end
+
+--[[function mb_Rogue_Finisher_Swords()
+    if not max_HasBuff("player", BUFF_TEXTURE_SLICE_AND_DICE) and GetComboPoints() > 0 then
+        CastSpellByName("Slice and Dice")
+        return
+    end
+    if GetPlayerBuffTimeLeft(BUFF_TEXTURE_SLICE_AND_DICE) < 6 then
+        return
+    elseif GetComboPoints() >= 4 then
+        CastSpellByName("Eviscerate")
+        return
+    end
+end ]]--
 
 function mb_Rogue_OnLoad()
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)

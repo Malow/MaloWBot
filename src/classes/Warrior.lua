@@ -29,6 +29,11 @@ function mb_Warrior(commander)
     if mb_Warrior_BattleShout() then
         return
     end
+
+    if mb_Warrior_DeathWish() then
+        return
+    end
+
     if max_GetHealthPercentage("target") < 25 then
         CastSpellByName("Execute")
         return
@@ -176,6 +181,86 @@ function mb_Warrior_BattleShout()
     end
     return false
 end
+
+function mb_Warrior_DeathWish()
+    local cur, max, found = MobHealth3:GetUnitHealth("target")
+    if not found or cur == 0 then
+        return false
+    end
+    if UnitAffectingCombat("player") and cur > 20000 and max_GetHealthPercentage("target") < 20 then
+        CastSpellByName("Death Wish")
+        return
+    end
+    return false
+end
+
+--[[function mb_Warrior_ApplyTempWepEnchant()
+    if not UnitAffectingCombat("player") then
+        local meleeWeaponItemLink = GetInventoryItemLink("player", GetInventorySlotInfo("MainHandSlot"))
+        local meleeWeaponItemString = max_GetItemStringFromItemLink(meleeWeaponItemLink)
+        local itemName, itemLink, itemQuality, itemLevel, itemType, itemSubTypeMh, itemCount, itemTexture = GetItemInfo(meleeWeaponItemString)
+        local meleeWeaponItemLinkOH = GetInventoryItemLink("player", GetInventorySlotInfo("OffHandSlot"))
+        local meleeWeaponItemStringOH = max_GetItemStringFromItemLink(meleeWeaponItemLinkOH)
+        local itemName, itemLink, itemQuality, itemLevel, itemType, itemSubType, itemCount, itemTexture = GetItemInfo(meleeWeaponItemStringOH)
+        if itemSubType ~= nil then
+            local hasMainHandEnchant, mainHandExpiration, mainHandCharges, hasOffHandEnchant, offHandExpiration, offHandCharges = GetWeaponEnchantInfo();
+            if itemSubType == "Swords" then
+                if not mb_shouldRequestBuffs then
+                    return false
+                end
+                if hasMainHandEnchant == 0 then
+                    mb_UseItem("Dense Sharpening Stone")
+                    PickupInventoryItem(16)
+                    return true
+                end
+                if hasOffHandEnchant == 0 then
+                    mb_UseItem("Dense Sharpening Stone")
+                    PickupInventoryItem(17)
+                    return true
+                end
+                if mainHandExpiration <= 300000 then
+                    mb_UseItem("Dense Sharpening Stone")
+                    PickupInventoryItem(16)
+                    ReplaceEnchant()
+                    return true
+                end
+                if offHandExpiration <= 300000 then
+                    mb_UseItem("Dense Sharpening Stone")
+                    PickupInventoryItem(17)
+                    ReplaceEnchant()
+                    return true
+                end
+            elseif itemSubType == "Maces" then
+                if not mb_shouldRequestBuffs then
+                    return false
+                end
+                if hasMainHandEnchant == 0 then
+                    mb_UseItem("Dense Weightstone")
+                    PickupInventoryItem(16)
+                    return true
+                end
+                if hasOffHandEnchant == 0 then
+                    mb_UseItem("Dense Weightstone")
+                    PickupInventoryItem(17)
+                    return true
+                end
+                if mainHandExpiration <= 300000 then
+                    mb_UseItem("Dense Weightstone")
+                    PickupInventoryItem(16)
+                    ReplaceEnchant()
+                    return true
+                end
+                if offHandExpiration <= 300000 then
+                    mb_UseItem("Dense Weightstone")
+                    PickupInventoryItem(17)
+                    ReplaceEnchant()
+                    return true
+                end
+            end
+        end
+    end
+    return false
+end]]--
 
 function mb_Warrior_OnLoad()
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)

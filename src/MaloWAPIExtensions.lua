@@ -243,6 +243,15 @@ function max_IsSpellNameOnCooldown(spellName)
 	return start ~= 0
 end
 
+function max_GetTimeUntilSpellIsReady(spellName)
+    local start, duration = GetSpellCooldown(max_GetSpellbookId(spellName), "BOOKTYPE_SPELL ")
+    if start ~= 0 then
+        return (start + duration) - GetTime()
+    else
+        return 0
+    end
+end
+
 -- Returns true/false depending on if the spell with this spellbookId is on cooldown
 function max_IsSpellbookIdOnCooldown(spellbookId)
 	local start, duration = GetSpellCooldown(spellbookId, "BOOKTYPE_SPELL ")

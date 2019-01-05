@@ -77,7 +77,7 @@ function mb_Hunter(commander)
 		return
 	end
 
-	if not max_IsSpellNameOnCooldown("Multi-Shot") then
+	if not max_IsSpellNameOnCooldown("Multi-Shot") and max_GetTimeUntilSpellIsReady("Aimed Shot") > 1.5 then
 		CastSpellByName("Multi-Shot")
 		return
 	end

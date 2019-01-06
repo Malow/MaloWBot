@@ -31,6 +31,7 @@ modules\CrowdControlModule.lua
 modules\GoToMaxRangeModule.lua
 modules\HealingModule.lua
 modules\MoveOutModule.lua
+modules\SpellCastingModule.lua
 
 modules\CombatLogSubModules\DamageTakenPerSecond.lua
 modules\CombatLogSubModules\DebuffWatch.lua

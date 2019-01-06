@@ -453,10 +453,7 @@ function mb_CompleteStandardBuffRequest(request)
     if buff == nil then
         return false
     end
-    if UnitAffectingCombat("player") then
-        return true
-    end
-    if mb_IsOnGCD() then
+    if mb_IsOnGCD() or mb_IsCasting() then
         return true
     end
     mb_RequestCompleted(request)

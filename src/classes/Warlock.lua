@@ -5,7 +5,7 @@ function mb_Warlock(commander)
     if mb_DoBasicCasterLogicThrottled() then
         return
     end
-    if mb_isCasting then
+    if mb_IsCasting() then
         return
     end
 
@@ -191,7 +191,7 @@ function mb_Warlock_OnLoad()
 end
 
 function mb_Warlock_HandleSummonRequest(request)
-    if mb_isCasting then
+    if mb_IsCasting() then
         return
     end
     local soulShardCount = mb_GetItemCount("Soul Shard")

@@ -2,7 +2,7 @@ function mb_Hunter(commander)
 	if mb_DoBasicCasterLogicThrottled() then
 		return
 	end
-    if mb_isCasting then
+    if mb_IsCasting() then
         return
     end
 

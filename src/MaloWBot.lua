@@ -2,10 +2,11 @@ local MY_NAME = "MaloWBot"
 local MY_ABBREVIATION = "MB"
 
 -- Frame setup for update
-local lastUpdate = GetTime()
+local lastUpdate = 0
 local function mb_Update()
-	if GetTime() >= lastUpdate + 1 then
-		lastUpdate = GetTime()
+    mb_cachedTime = GetTime()
+	if mb_cachedTime >= lastUpdate + 1 then
+		lastUpdate = mb_cachedTime
 		mb_OnUpdate()
     end
 end
@@ -35,9 +36,12 @@ function mb_DebugPrint(msg)
     end
 end
 
+mb_cachedTime = 0
+function mb_GetTime()
+    return mb_cachedTime
+end
+
 -- Events
-mb_castStartedTime = nil
-mb_isCasting = false
 mb_isTrading = false
 mb_isVendoring = false
 mb_isGossiping = false
@@ -64,20 +68,6 @@ function mb_OnEvent()
 		if GetRealZoneText() == "Ironforge" or GetRealZoneText() == "Stormwind" then
 			mb_shouldRequestBuffs = false
 		end
-	elseif event == "SPELLCAST_START" or event == "SPELLCAST_CHANNEL_START" then
-		mb_isCasting = true
-		if mb_lastAttemptedCast ~= nil and mb_lastAttemptedCast.onStartCallback ~= nil then
-			mb_lastAttemptedCast.onStartCallback(mb_lastAttemptedCast)
-		end
-		mb_castStartedTime = GetTime()
-	elseif event == "SPELLCAST_STOP" or event == "SPELLCAST_CHANNEL_STOP" or event == "SPELLCAST_INTERRUPTED" or event == "SPELLCAST_FAILED" then
-		mb_isCasting = false
-		if event == "SPELLCAST_INTERRUPTED" or event == "SPELLCAST_FAILED" then
-			if mb_lastAttemptedCast ~= nil and mb_lastAttemptedCast.onFailCallback ~= nil then
-				mb_lastAttemptedCast.onFailCallback(mb_lastAttemptedCast)
-			end
-		end
-		mb_lastAttemptedCast = nil
 	elseif event == "CHAT_MSG_ADDON" and arg1 == "MB" then
         mb_HandleMBCommunication(arg2, arg3, arg4)
 	elseif event == "TRADE_CLOSED" then
@@ -105,6 +95,7 @@ function mb_OnEvent()
 		mb_isAutoAttacking = false
 	elseif event == "PLAYER_DEAD" then
 		mb_areaOfEffectMode = false
+        mb_shouldRequestBuffs = false
 		if mb_GetMyCommanderName() == UnitName("player") then
 			mb_shouldRequestBuffs = false
 			mb_MakeRequest("requestBuffsMode", "off", REQUEST_PRIORITY.COMMAND)
@@ -114,12 +105,6 @@ function mb_OnEvent()
 	end
 end
 f:RegisterEvent("ADDON_LOADED")
-f:RegisterEvent("SPELLCAST_START")
-f:RegisterEvent("SPELLCAST_CHANNEL_START")
-f:RegisterEvent("SPELLCAST_STOP")
-f:RegisterEvent("SPELLCAST_CHANNEL_STOP")
-f:RegisterEvent("SPELLCAST_INTERRUPTED")
-f:RegisterEvent("SPELLCAST_FAILED")
 f:RegisterEvent("CHAT_MSG_ADDON")
 f:RegisterEvent("PLAYER_LOGIN")
 f:RegisterEvent("ZONE_CHANGED_NEW_AREA")
@@ -423,33 +408,6 @@ function mb_RequestCompleted(request)
     end
 end
 
-mb_lastAttemptedCast = nil
-function mb_CastSpellByNameOnTargetWithCallbacks(spellName, target, callbacks)
-	mb_lastAttemptedCast = {}
-	mb_lastAttemptedCast.spellName = spellName
-	mb_lastAttemptedCast.startTime = GetTime()
-	mb_lastAttemptedCast.target = target
-	if callbacks ~= nil then
-		mb_lastAttemptedCast.onStartCallback = callbacks.onStart
-		mb_lastAttemptedCast.onFailCallback = callbacks.onFail
-	end
-	CastSpellByName(spellName, false)
-end
-
-function mb_CastSpellByNameOnRaidMemberWithCallbacks(spellName, target, callbacks)
-	local retarget = false
-	if UnitIsFriend("player", "target") then
-		ClearTarget()
-		retarget = true
-	end
-	mb_CastSpellByNameOnTargetWithCallbacks(spellName, target, callbacks)
-	SpellTargetUnit(target)
-	SpellStopTargeting()
-	if retarget then
-		TargetLastTarget()
-	end
-end
-
 mb_lastTimeMoving = 0
 mb_lastFacingWrongWayTime = 0
 function mb_OnUIErrorEvent(event, message, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
@@ -486,7 +444,6 @@ end
 ---
 --- Stop following, rebind 9 to movefoward for 1 frame, before casting important spells like evocation
 --- On ready-check check durability is above 10% in all slots, otherwise decline and announce in raid
---- Double-request handling can happen if the propose reaches 1 guy after the accept has already been sent. Shouldn't happen though
 --- Automatic Gold-spreading to one guy, automatic reagent-spreading from one guy, one guy is enough to open reagent vendor to buy everything the whole raid needs.
 ---		Need a new type of request for this where he asks for orders, waits 1 sec, and then buys everything, and then he automatically trades it when possible
 ---	Sit/stand logic based on error-messages, see RogueSpam addon.
@@ -563,7 +520,6 @@ end
 --- Crown-control
 ---		Request target to be CCd, people the raid will automatically accept depending on what kind of target it is and if they can CC.
 ---			No such thing as focus, gonna need to either TargetNearestEnemy (only works in cone in front) or use TargetLastTarget/Enemy and then like after every assist and using DPS spell doing that to retarget the CC target.
----	iscasting logic is a mess, mb_isCasting, started cast etc. Then also "lastAttemptedSpell", clear it up
 ---	Auto-target mode. TargetNearestEnemy spam and just attack whatever is possible. For DPS maybe 1 person should be the "leader" and set skull, and the rest should follow that.
 ---		Tanks should automatically pick up untanked targets with this
 ---	Don't DPS if you risk overthreat, use KTM API? Need a way to disable it for solo/5-mans

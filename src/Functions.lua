@@ -323,7 +323,7 @@ end
 
 -- Returns a number between 0.0 and 5.0 depending on how effective the group-heal would be, also returns a list of playerNames for the targets it will hit
 function mb_GetGroupHealEffect(healValue, rangeCheckSpell)
-    local groupUnits = max_GetGroupUnitsFor(UnitName("player"))
+    local groupUnits = mb_GetMyGroupUnitsThrottled()
     local totalHealEffect = 0
     local affectedPlayers = {}
     for i = 1, max_GetTableSize(groupUnits) do
@@ -338,4 +338,43 @@ function mb_GetGroupHealEffect(healValue, rangeCheckSpell)
         end
     end
     return totalHealEffect, affectedPlayers
+end
+
+mb_lastTargetSkullTime = 0
+mb_lastTargetSkullResult = false
+function mb_TargetSkullThrottled()
+	if mb_lastTargetSkullTime + 1 > GetTime() then
+		return mb_lastTargetSkullResult
+	end
+	mb_lastTargetSkullTime = GetTime()
+
+    if UnitExists("target") and GetRaidTargetIndex("target") == 8 then
+		mb_lastTargetSkullResult = true
+        return mb_lastTargetSkullResult
+    end
+
+	local members = max_GetNumPartyOrRaidMembers()
+	for i = 1, members do
+		local unit = max_GetUnitFromPartyOrRaidIndex(i)
+		if UnitExists(unit .. "target") and GetRaidTargetIndex(unit .. "target") == 8 then
+			AssistUnit(unit)
+			mb_lastTargetSkullResult = true
+			return mb_lastTargetSkullResult
+		end
+	end
+
+	mb_lastTargetSkullResult = false
+	return mb_lastTargetSkullResult
+end
+
+mb_lastGetMyGroupUnitsTime = 0
+mb_lastGetMyGroupUnitsResult = {}
+function mb_GetMyGroupUnitsThrottled()
+	if mb_lastGetMyGroupUnitsTime + 3 > GetTime() then
+		return mb_lastGetMyGroupUnitsResult
+	end
+	mb_lastGetMyGroupUnitsTime = GetTime()
+
+	mb_lastGetMyGroupUnitsResult = max_GetGroupUnitsFor("player")
+	return mb_lastGetMyGroupUnitsResult
 end

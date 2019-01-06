@@ -8,10 +8,10 @@ function mb_Druid(commander)
     if mb_druidStoppedCastingTime + 0.3 > GetTime() then
         return
     end
-    if mb_isCasting then
+    if mb_IsCasting() then
         if mb_druidCurrentHealTarget ~= nil and mb_castStartedTime + 1.5 < GetTime() then
             if max_GetMissingHealth(mb_druidCurrentHealTarget) < 1500 or max_HasBuff(mb_druidCurrentHealTarget, BUFF_TEXTURE_REGROWTH) then
-                SpellStopCasting()
+                mb_StopCasting()
                 mb_druidCurrentHealTarget = nil
                 mb_druidStoppedCastingTime = GetTime()
             end

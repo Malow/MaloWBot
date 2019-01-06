@@ -5,11 +5,11 @@ function mb_Paladin(commander)
     if mb_DoBasicCasterLogicThrottled() then
         return
     end
-    if mb_isCasting then
+    if mb_IsCasting() then
         if mb_paladinCurrentHealTarget ~= nil then
             local targetMissingHealth = max_GetMissingHealth(mb_paladinCurrentHealTarget)
             if (targetMissingHealth - (mb_GetHoTCount(mb_paladinCurrentHealTarget) * 500)) < 500 then
-                SpellStopCasting()
+                mb_StopCasting()
             end
         end
         return

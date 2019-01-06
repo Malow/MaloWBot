@@ -11,17 +11,17 @@ function mb_Priest(commander)
     if mb_priestStoppedCastingTime + 0.3 > GetTime() then
         return
     end
-    if mb_isCasting then
+    if mb_IsCasting() then
         if mb_priestCurrentHealTarget ~= nil and mb_castStartedTime + 2 < GetTime() then
             if max_GetMissingHealth(mb_priestCurrentHealTarget) < 1200 then
-                SpellStopCasting()
+                mb_StopCasting()
                 mb_priestCurrentHealTarget = nil
                 mb_priestStoppedCastingTime = GetTime()
             end
         end
         if mb_priestIsCastingPoH then
             if mb_GetGroupHealEffect(MB_PRIEST_POH_HEAL_AMOUNT, "Dispel Magic") < 2.5 then
-                SpellStopCasting()
+                mb_StopCasting()
                 mb_priestIsCastingPoH = false
                 mb_priestStoppedCastingTime = GetTime()
             end

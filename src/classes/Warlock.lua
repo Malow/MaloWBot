@@ -5,6 +5,11 @@ function mb_Warlock(commander)
     if mb_DoBasicCasterLogicThrottled() then
         return
     end
+
+    if mb_CrowdControlModule_Run() then
+        return
+    end
+
     if mb_IsCasting() then
         return
     end
@@ -54,21 +59,10 @@ function mb_Warlock(commander)
                 return
             end
         elseif request.type == REQUEST_CROWD_CONTROL.type then
-            if request.attempts > 90 then
-                mb_RequestCompleted(request)
-                max_SayRaid("Timed out CC request from " .. request.from)
-                return
-            end
-            if mb_IsOnGCD() then
-                return
-            end
             max_AssistByPlayerName(request.from)
-            max_SayRaid("I'm Banishing " .. UnitName("target"))
-            local creatureType = UnitCreatureType("target")
-            if creatureType == "Elemental" then
-                CastSpellByName("Banish")
-            end
+            mb_CrowdControlModule_RegisterTarget("Banish", DEBUFF_TEXTURE_BANISH)
             mb_RequestCompleted(request)
+            return
         end
     end
 
@@ -224,19 +218,13 @@ function mb_Warlock_HandleHealthstoneRequest(request)
 end
 
 function mb_Warlock_HandleCrowdControlRequest(request)
-    if max_GetManaPercentage("player") < 10 then
-        return
-    elseif mb_IsDrinking() then
-        return
-    elseif UnitIsDead("player") then
+    if not mb_IsFreeToAcceptRequest() then
         return
     end
     max_AssistByPlayerName(request.from)
     local creatureType = UnitCreatureType("target")
     if creatureType == "Elemental" then
-        if mb_IsSpellInRange("Banish", "target") then
-            mb_AcceptRequest(request)
-        end
+        mb_AcceptRequest(request)
     end
 end
 

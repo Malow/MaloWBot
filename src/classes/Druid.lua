@@ -5,15 +5,15 @@ function mb_Druid(commander)
     if mb_DoBasicCasterLogicThrottled() then
         return
     end
-    if mb_druidStoppedCastingTime + 0.3 > GetTime() then
+    if mb_druidStoppedCastingTime + 0.3 > mb_GetTime() then
         return
     end
     if mb_IsCasting() then
-        if mb_druidCurrentHealTarget ~= nil and mb_castStartedTime + 1.5 < GetTime() then
+        if mb_druidCurrentHealTarget ~= nil and mb_castStartedTime + 1.5 < mb_GetTime() then
             if max_GetMissingHealth(mb_druidCurrentHealTarget) < 1500 or max_HasBuff(mb_druidCurrentHealTarget, BUFF_TEXTURE_REGROWTH) then
                 mb_StopCasting()
                 mb_druidCurrentHealTarget = nil
-                mb_druidStoppedCastingTime = GetTime()
+                mb_druidStoppedCastingTime = mb_GetTime()
             end
         end
         return
@@ -138,10 +138,10 @@ end
 
 mb_druidLastDebuffTargetTime = 0
 function mb_Druid_DebuffTargetThrottled()
-    if mb_druidLastDebuffTargetTime + 1.0 > GetTime() then
+    if mb_druidLastDebuffTargetTime + 1.0 > mb_GetTime() then
         return false
     end
-    mb_druidLastDebuffTargetTime = GetTime()
+    mb_druidLastDebuffTargetTime = mb_GetTime()
     if mb_Druid_InsectSwarm() then
         return true
     end

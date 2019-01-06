@@ -5,7 +5,7 @@ end
 mb_CombatLogModule_SwingTimer_lastAutoShotTime = 0
 function mb_CombatLogModule_SwingTimer_AutoShot_OnEvent(arg1)
     if arg1 == 4 then
-        mb_CombatLogModule_SwingTimer_lastAutoShotTime = GetTime()
+        mb_CombatLogModule_SwingTimer_lastAutoShotTime = mb_GetTime()
     end
 end
 

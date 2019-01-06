@@ -247,8 +247,8 @@ end
 
 mb_lastAcceptedTrade = 0
 function mb_AcceptTradeThrottled()
-	if mb_lastAcceptedTrade + 1 < GetTime() then
-		mb_lastAcceptedTrade = GetTime()
+	if mb_lastAcceptedTrade + 1 < mb_GetTime() then
+		mb_lastAcceptedTrade = mb_GetTime()
 		AcceptTrade()
 	end
 end
@@ -343,10 +343,10 @@ end
 mb_lastTargetSkullTime = 0
 mb_lastTargetSkullResult = false
 function mb_TargetSkullThrottled()
-	if mb_lastTargetSkullTime + 1 > GetTime() then
+	if mb_lastTargetSkullTime + 1 > mb_GetTime() then
 		return mb_lastTargetSkullResult
 	end
-	mb_lastTargetSkullTime = GetTime()
+	mb_lastTargetSkullTime = mb_GetTime()
 
     if UnitExists("target") and GetRaidTargetIndex("target") == 8 then
 		mb_lastTargetSkullResult = true
@@ -370,10 +370,10 @@ end
 mb_lastGetMyGroupUnitsTime = 0
 mb_lastGetMyGroupUnitsResult = {}
 function mb_GetMyGroupUnitsThrottled()
-	if mb_lastGetMyGroupUnitsTime + 3 > GetTime() then
+	if mb_lastGetMyGroupUnitsTime + 3 > mb_GetTime() then
 		return mb_lastGetMyGroupUnitsResult
 	end
-	mb_lastGetMyGroupUnitsTime = GetTime()
+	mb_lastGetMyGroupUnitsTime = mb_GetTime()
 
 	mb_lastGetMyGroupUnitsResult = max_GetGroupUnitsFor("player")
 	return mb_lastGetMyGroupUnitsResult

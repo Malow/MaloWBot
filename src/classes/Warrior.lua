@@ -90,8 +90,8 @@ function mb_Warrior_Tank(commander)
 
     mb_Warrior_RequestHoTs()
 
-    if mb_Warrior_lastTankingBroadcast + 5 < GetTime() then
-        mb_Warrior_lastTankingBroadcast = GetTime()
+    if mb_Warrior_lastTankingBroadcast + 5 < mb_GetTime() then
+        mb_Warrior_lastTankingBroadcast = mb_GetTime()
         mb_MakeRequest("tankingBroadcast", mb_CombatLogModule_DamageTakenPerSecond_GetDTPS(10), REQUEST_PRIORITY.TANKING_BROADCAST)
     end
 
@@ -101,10 +101,10 @@ function mb_Warrior_Tank(commander)
         return
     end
 
-    if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) < 5 or mb_Warrior_lastSunder + 20 < GetTime() then
+    if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) < 5 or mb_Warrior_lastSunder + 20 < mb_GetTime() then
         if max_GetManaPercentage("player") >= 12 then
             CastSpellByName("Sunder Armor")
-            mb_Warrior_lastSunder = GetTime()
+            mb_Warrior_lastSunder = mb_GetTime()
         end
         return
     end
@@ -127,7 +127,7 @@ function mb_Warrior_Tank(commander)
 
     if max_GetManaPercentage("player") >= 12 then
         CastSpellByName("Sunder Armor")
-        mb_Warrior_lastSunder = GetTime()
+        mb_Warrior_lastSunder = mb_GetTime()
     end
 
     if max_GetManaPercentage("player") >= 40 then
@@ -168,9 +168,9 @@ function mb_Warrior_RequestHoTs()
         return
     end
     local HoTValue = mb_CombatLogModule_DamageTakenPerSecond_GetDTPS(10) / (myHotCount + 1) -- +1 to avoid diving by zero
-    if HoTValue > 100 and mb_Warrior_lastHoTRequest + 2.5 < GetTime() then
+    if HoTValue > 100 and mb_Warrior_lastHoTRequest + 2.5 < mb_GetTime() then
         mb_MakeRequest("HoT", UnitName("player"), REQUEST_PRIORITY.HEALING_OVER_TIME)
-        mb_Warrior_lastHoTRequest = GetTime()
+        mb_Warrior_lastHoTRequest = mb_GetTime()
     end
 end
 

@@ -36,18 +36,18 @@ function mb_MoveOutModule_Update()
         return false
     end
     if mb_MoveOutModule_IsStandingInShit() then
-        if mb_MoveOutModule_startedFollowing ~= nil and mb_MoveOutModule_startedFollowing + 3 > GetTime() then
+        if mb_MoveOutModule_startedFollowing ~= nil and mb_MoveOutModule_startedFollowing + 3 > mb_GetTime() then
             return true
         end
         local followTarget = mb_MoveOutModule_FindFollowTarget()
         if followTarget ~= nil then
             FollowUnit(followTarget)
             max_SayRaid("Started following " .. UnitName(followTarget) .. " to move out of shit on the ground.")
-            mb_MoveOutModule_startedFollowing = GetTime()
+            mb_MoveOutModule_startedFollowing = mb_GetTime()
             return true
-        elseif mb_MoveOutModule_warnedNoTarget == nil or mb_MoveOutModule_warnedNoTarget + 3 < GetTime() then
+        elseif mb_MoveOutModule_warnedNoTarget == nil or mb_MoveOutModule_warnedNoTarget + 3 < mb_GetTime() then
             max_SayRaid("Couldn't find any target to start following to move out of shit on the ground.")
-            mb_MoveOutModule_warnedNoTarget = GetTime()
+            mb_MoveOutModule_warnedNoTarget = mb_GetTime()
         end
     end
     return false
@@ -93,7 +93,7 @@ function mb_MoveOutModule_HandleAutomaticFuckOff()
     end
     local livingBombTime = mb_CombatLogModule_DebuffWatch_GetTimeForSpellName("Living Bomb")
     if livingBombTime ~= nil then
-        mb_shouldFuckOffAt = GetTime()
+        mb_shouldFuckOffAt = mb_GetTime()
         mb_shouldFollow = false
         max_SayRaid("I'm fucking off automatically!")
         mb_CombatLogModule_DebuffWatch_ResetForSpellName("Living Bomb")

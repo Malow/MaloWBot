@@ -238,11 +238,11 @@ function mb_MakeThrottledRequest(request, requestBody, requestPriority)
     if mb_throttleData[request.type] == nil then
         mb_MakeRequest(request.type, requestBody, requestPriority)
         mb_throttleData[request.type] = {}
-        mb_throttleData[request.type].nextRequestTime = GetTime() + UNACCEPTED_REQUEST_THROTTLE
+        mb_throttleData[request.type].nextRequestTime = mb_GetTime() + UNACCEPTED_REQUEST_THROTTLE
         mb_throttleData[request.type].acceptedThrottle = request.throttle
-    elseif mb_throttleData[request.type].nextRequestTime < GetTime() then
+    elseif mb_throttleData[request.type].nextRequestTime < mb_GetTime() then
         mb_MakeRequest(request.type, requestBody, requestPriority)
-        mb_throttleData[request.type].nextRequestTime = GetTime() + UNACCEPTED_REQUEST_THROTTLE
+        mb_throttleData[request.type].nextRequestTime = mb_GetTime() + UNACCEPTED_REQUEST_THROTTLE
     end
 end
 
@@ -275,10 +275,10 @@ end
 mb_lastBasicCasterLogicTime = 0
 mb_lastBasicCasterLogicReturn = false
 function mb_DoBasicCasterLogicThrottled()
-    if mb_lastBasicCasterLogicTime + 1 > GetTime() then
+    if mb_lastBasicCasterLogicTime + 1 > mb_GetTime() then
         return mb_lastBasicCasterLogicReturn
     end
-    mb_lastBasicCasterLogicTime = GetTime()
+    mb_lastBasicCasterLogicTime = mb_GetTime()
     if mb_IsDrinking() then
         if max_GetManaPercentage("player") < 95 then
             mb_lastBasicCasterLogicReturn = true
@@ -562,7 +562,7 @@ end
 
 mb_lastFailedCleanseCheck = 0
 function mb_CleanseRaidMemberThrottled(spellName, debuffType1, debuffType2, debuffType3)
-    if mb_lastFailedCleanseCheck + 1.2 > GetTime() then
+    if mb_lastFailedCleanseCheck + 1.2 > mb_GetTime() then
         return false
     end
     local debuffTarget = mb_GetDebuffedRaidMember(spellName, debuffType1, debuffType2, debuffType3)
@@ -570,7 +570,7 @@ function mb_CleanseRaidMemberThrottled(spellName, debuffType1, debuffType2, debu
         max_CastSpellOnRaidMember(spellName, debuffTarget)
         return true
     end
-    mb_lastFailedCleanseCheck = GetTime()
+    mb_lastFailedCleanseCheck = mb_GetTime()
     return false
 end
 

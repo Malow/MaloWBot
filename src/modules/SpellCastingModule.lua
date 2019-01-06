@@ -9,7 +9,7 @@ function mb_SpellCastingModule_OnEvent()
         if mb_lastAttemptedCast ~= nil and mb_lastAttemptedCast.onStartCallback ~= nil then
             mb_lastAttemptedCast.onStartCallback(mb_lastAttemptedCast)
         end
-        mb_castStartedTime = GetTime()
+        mb_castStartedTime = mb_GetTime()
     elseif event == "SPELLCAST_STOP" or event == "SPELLCAST_CHANNEL_STOP" or event == "SPELLCAST_INTERRUPTED" or event == "SPELLCAST_FAILED" then
         mb_isCasting = false
         if event == "SPELLCAST_INTERRUPTED" or event == "SPELLCAST_FAILED" then
@@ -32,7 +32,7 @@ mb_lastAttemptedCast = nil
 function mb_CastSpellByNameOnTargetWithCallbacks(spellName, target, callbacks)
     mb_lastAttemptedCast = {}
     mb_lastAttemptedCast.spellName = spellName
-    mb_lastAttemptedCast.startTime = GetTime()
+    mb_lastAttemptedCast.startTime = mb_GetTime()
     mb_lastAttemptedCast.target = target
     mb_lastAttemptedCast.onStartCallback = callbacks.onStart
     mb_lastAttemptedCast.onFailCallback = callbacks.onFail

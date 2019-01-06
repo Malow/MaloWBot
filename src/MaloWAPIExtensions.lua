@@ -246,7 +246,7 @@ end
 function max_GetTimeUntilSpellIsReady(spellName)
     local start, duration = GetSpellCooldown(max_GetSpellbookId(spellName), "BOOKTYPE_SPELL ")
     if start ~= 0 then
-        return (start + duration) - GetTime()
+        return (start + duration) - mb_GetTime()
     else
         return 0
     end

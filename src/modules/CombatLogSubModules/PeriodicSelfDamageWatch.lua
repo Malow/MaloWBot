@@ -20,7 +20,7 @@ end
 
 function mb_CombatLogModule_PeriodicSelfDamageWatch_HasTakenWatchedDamageIn(timeWindow)
     for k, v in pairs(mb_CombatLogModule_PeriodicSelfDamageWatch_log) do
-        if k > GetTime() - timeWindow then
+        if k > mb_GetTime() - timeWindow then
             return true
         end
     end

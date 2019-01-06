@@ -157,7 +157,7 @@ end
 
 function mb_FuckOffRequestHandler(request)
     if request.body == UnitName("player") then
-        mb_shouldFuckOffAt = GetTime()
+        mb_shouldFuckOffAt = mb_GetTime()
         mb_shouldFollow = false
         max_SayRaid("I'm fucking off!")
     end

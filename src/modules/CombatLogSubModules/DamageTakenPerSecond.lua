@@ -8,7 +8,7 @@ end
 
 mb_CombatLogModule_DamageTakenPerSecond_log = {}
 function mb_CombatLogModule_DamageTakenPerSecond_OnEvent(arg1)
-    mb_CombatLogModule_DamageTakenPerSecond_log[GetTime()] = mb_CombatLogModule_ExtractDamage(arg1)
+    mb_CombatLogModule_DamageTakenPerSecond_log[mb_GetTime()] = mb_CombatLogModule_ExtractDamage(arg1)
 end
 
 function mb_CombatLogModule_DamageTakenPerSecond_Reset()
@@ -17,7 +17,7 @@ end
 
 function mb_CombatLogModule_DamageTakenPerSecond_GetDTPS(averageOverPastSeconds)
     local damageTaken = 0
-    local now = GetTime()
+    local now = mb_GetTime()
     for k, v in pairs(mb_CombatLogModule_DamageTakenPerSecond_log) do
         if k > now - averageOverPastSeconds then
             damageTaken = damageTaken + v

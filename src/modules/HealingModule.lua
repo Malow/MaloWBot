@@ -64,7 +64,7 @@ function mb_HealingModule_HandleTankBroadcastRequest(request)
         mb_HealingModule_tankingTanks[request.from] = {}
     end
     mb_HealingModule_tankingTanks[request.from].dtps = tonumber(request.body)
-    mb_HealingModule_tankingTanks[request.from].lastReceived = GetTime()
+    mb_HealingModule_tankingTanks[request.from].lastReceived = mb_GetTime()
 end
 
 function mb_HealingModule_GetValidTankUnitWithHighestFutureMissingHealth(spellName, unitFilter)
@@ -91,7 +91,7 @@ end
 function mb_HealingModule_ExpireTankingTanks()
     local toBeExpired = {}
     for k, v in pairs(mb_HealingModule_tankingTanks) do
-        if v.lastReceived + 7 < GetTime() then
+        if v.lastReceived + 7 < mb_GetTime() then
             table.insert(toBeExpired, k)
         end
     end
@@ -106,7 +106,7 @@ function mb_HealingModule_GetFutureMissingHealth(unit)
     if mb_HealingModule_incomingHeals[playerName] == nil then
         return missingHealth
     end
-    local now = GetTime()
+    local now = mb_GetTime()
     for i = max_GetTableSize(mb_HealingModule_incomingHeals[playerName]), 1, -1 do
         if mb_HealingModule_incomingHeals[playerName][i].finishTime < now then
             table.remove(mb_HealingModule_incomingHeals[playerName], i)

@@ -72,7 +72,7 @@ function mb_Hunter(commander)
 		return
 	end
 
-	if GetTime() < mb_CombatLogModule_SwingTimer_GetLastAutoShotTime() + 0.3 and not max_IsSpellNameOnCooldown("Aimed Shot") then
+	if mb_GetTime() < mb_CombatLogModule_SwingTimer_GetLastAutoShotTime() + 0.3 and not max_IsSpellNameOnCooldown("Aimed Shot") then
 		CastSpellByName("Aimed Shot")
 		return
 	end

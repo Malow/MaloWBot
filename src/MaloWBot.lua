@@ -79,7 +79,7 @@ function mb_OnEvent()
 	elseif event == "MERCHANT_SHOW" then
 		mb_isVendoring = true
 	elseif event == "GOSSIP_SHOW" then
-		mb_gossipOpenedTime = GetTime()
+		mb_gossipOpenedTime = mb_GetTime()
 		mb_isGossiping = true
 	elseif event == "TRAINER_CLOSED" then
 		mb_isTraining = false
@@ -247,13 +247,13 @@ end
 
 -- OnUpdate
 function mb_OnUpdate()
-	if mb_isGossiping and mb_gossipOpenedTime + 5 < GetTime() then
+	if mb_isGossiping and mb_gossipOpenedTime + 5 < mb_GetTime() then
 		mb_isGossiping = false
 	end
 	-- Clean up unaccepted pending requests
 	local toBeRemovedIds = {}
 	for k, v in pairs(mb_myPendingRequests) do
-		if v.sentTime + 5 < GetTime() then
+		if v.sentTime + 5 < mb_GetTime() then
 			table.insert(toBeRemovedIds, v.id)
 		end
 	end
@@ -310,7 +310,7 @@ function mb_MakeRequest(requestType, requestBody, requestPriority)
 	request.body = requestBody
 	request.priority = requestPriority
     request.id = requestId
-	request.sentTime = GetTime()
+	request.sentTime = mb_GetTime()
 	mb_myPendingRequests[requestId] = request
 end
 
@@ -412,24 +412,24 @@ mb_lastTimeMoving = 0
 mb_lastFacingWrongWayTime = 0
 function mb_OnUIErrorEvent(event, message, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
 	if message == "Target needs to be in front of you" then
-		mb_lastFacingWrongWayTime = GetTime()
+		mb_lastFacingWrongWayTime = mb_GetTime()
 	elseif message == "Can't do that while moving" then
-		mb_lastTimeMoving = GetTime()
+		mb_lastTimeMoving = mb_GetTime()
 	end
 	mb_OriginalOnUIErrorEventFunction(event, message, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
 end
 
 function mb_IsMoving()
-	return mb_lastTimeMoving + 0.5 > GetTime()
+	return mb_lastTimeMoving + 0.5 > mb_GetTime()
 end
 
 mb_shouldFuckOffAt = 0
 function mb_RebindMovementKeyIfNeeded()
-	if mb_shouldFuckOffAt + 4.5 > GetTime() then
+	if mb_shouldFuckOffAt + 4.5 > mb_GetTime() then
 		SetBinding("9", "MOVEFORWARD")
 		return
 	end
-	if mb_lastFacingWrongWayTime + 0.5 > GetTime() then
+	if mb_lastFacingWrongWayTime + 0.5 > mb_GetTime() then
 		SetBinding("9", "TURNLEFT")
 		return
 	end
@@ -588,7 +588,7 @@ end
 --	m=SendChatMessage uh=UnitHealth UH=UnitHealthMax p="player" t="target" d=CheckInteractDistance PT="Kokkolarp"
 --
 --/run
---	sc6 = GetTime()
+--	sc6 = mb_GetTime()
 --  local qwe = 0
 --if qwe == 1 then
 --	CastSpellByName("Hamstring")
@@ -596,6 +596,6 @@ end
 --	a(33)
 --	tg56 = sc6-sc5
 --	if UnitExists(t) and not UnitIsFriend(p, t) and CheckInteractDistance(t, 3) and x1 == 0 and (hmsD == 0 or tg56 > hmsT) and um(p) >= 10 then
---		sc5 = GetTime()
+--		sc5 = mb_GetTime()
 --		CastSpellByName(hms)
 --	end

@@ -9,7 +9,7 @@ mb_CombatLogModule_DebuffWatch_log = {}
 function mb_CombatLogModule_DebuffWatch_OnEvent(arg1)
     for k, v in pairs(mb_CombatLogModule_DebuffWatch_spellNames) do
         if string.find(arg1, "You are afflicted by " .. v) then
-            mb_CombatLogModule_DebuffWatch_log[v] = GetTime()
+            mb_CombatLogModule_DebuffWatch_log[v] = mb_GetTime()
         end
     end
 end

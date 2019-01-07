@@ -77,7 +77,7 @@ function mb_HealingModule_GetValidTankUnitWithHighestFutureMissingHealth(spellNa
             break
         end
         if mb_IsUnitValidTarget(unit, spellName) then
-            local missingHealth = mb_HealingModule_GetFutureMissingHealth(unit)
+            local missingHealth = mb_HealingModule_GetFutureMissingHealth(unit, 300)
             missingHealth = missingHealth + (tankData.dtps * 3)
             if lowestTank == nil or futureMissingHealth < missingHealth then
                 lowestTank = unit
@@ -100,7 +100,7 @@ function mb_HealingModule_ExpireTankingTanks()
     end
 end
 
-function mb_HealingModule_GetFutureMissingHealth(unit)
+function mb_HealingModule_GetFutureMissingHealth(unit, healOverTimeValue)
     local playerName = UnitName(unit)
     local missingHealth = max_GetMissingHealth(unit)
     if mb_HealingModule_incomingHeals[playerName] == nil then
@@ -114,7 +114,7 @@ function mb_HealingModule_GetFutureMissingHealth(unit)
             missingHealth = missingHealth - mb_HealingModule_incomingHeals[playerName][i].healAmount
         end
     end
-    missingHealth = missingHealth - (mb_GetHoTCount(unit) * 500)
+    missingHealth = missingHealth - (mb_GetHoTCount(unit) * healOverTimeValue)
     return missingHealth
 end
 
@@ -136,14 +136,14 @@ end
 
 function mb_HealingModule_GetRaidHealTarget(spell, unitFilter)
     local healTarget = 0
-    local missingHealthOfTarget = mb_HealingModule_GetFutureMissingHealth("player")
+    local missingHealthOfTarget = mb_HealingModule_GetFutureMissingHealth("player", 800)
     local members = max_GetNumPartyOrRaidMembers()
     for i = 1, members do
         local unit = max_GetUnitFromPartyOrRaidIndex(i)
         if unitFilter ~= nil and not mb_CheckFilter(unit, unitFilter) then
             break
         end
-        local missingHealth = mb_HealingModule_GetFutureMissingHealth(unit)
+        local missingHealth = mb_HealingModule_GetFutureMissingHealth(unit, 800)
         if missingHealth > missingHealthOfTarget then
             if mb_IsUnitValidTarget(unit, spell) then
                 missingHealthOfTarget = missingHealth

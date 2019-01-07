@@ -1,24 +1,12 @@
 
-mb_druidCurrentHealTarget = nil
-mb_druidStoppedCastingTime = 0
 function mb_Druid(commander)
     if mb_DoBasicCasterLogicThrottled() then
         return
     end
-    if mb_druidStoppedCastingTime + 0.3 > mb_GetTime() then
-        return
-    end
+
     if mb_IsCasting() then
-        if mb_druidCurrentHealTarget ~= nil and mb_castStartedTime + 1.5 < mb_GetTime() then
-            if max_GetMissingHealth(mb_druidCurrentHealTarget) < 1500 or max_HasBuff(mb_druidCurrentHealTarget, BUFF_TEXTURE_REGROWTH) then
-                mb_StopCasting()
-                mb_druidCurrentHealTarget = nil
-                mb_druidStoppedCastingTime = mb_GetTime()
-            end
-        end
+        mb_StopCastingIfNeeded(mb_Druid_ShouldStopCasting)
         return
-    else
-        mb_druidCurrentHealTarget = nil
     end
 
     if mb_IsOnGCD() then
@@ -80,6 +68,17 @@ function mb_Druid(commander)
     end
 end
 
+function mb_Druid_ShouldStopCasting(currentCast)
+    if currentCast.spellName == "Regrowth" then
+        if currentCast.startCastTime + 1.5 < mb_GetTime() then
+            if max_GetMissingHealth(currentCast.target) < 1500 or max_HasBuff(mb_druidCurrentHealTarget, BUFF_TEXTURE_REGROWTH) then
+                return true
+            end
+        end
+    end
+    return false
+end
+
 function mb_Druid_OnLoad()
     if mb_Druid_HasImprovedMOTW() then
         mb_RegisterForStandardBuffRequest(BUFF_MARK_OF_THE_WILD)
@@ -114,8 +113,7 @@ function mb_Druid_TankHealing()
     if tankUnit ~= nil then
         local callBacks = {}
         callBacks.onStart = function(spellCast)
-            mb_HealingModule_SendData(UnitName(spellCast.target), 1200, spellCast.startTime + 2)
-            mb_druidCurrentHealTarget = tankUnit
+            mb_HealingModule_SendData(UnitName(spellCast.target), 1200, mb_GetTime() + 2)
         end
         mb_CastSpellByNameOnRaidMemberWithCallbacks("Regrowth", tankUnit, callBacks)
         return true

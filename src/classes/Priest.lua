@@ -1,35 +1,15 @@
 MB_PRIEST_POH_HEAL_AMOUNT = 1200
+MB_PRIEST_GHR1_HEAL_AMOUNT = 1200
 
-mb_priestCurrentHealTarget = nil
-mb_priestStoppedCastingTime = 0
-mb_priestIsCastingPoH = false
 mb_priestIsHoly = true
 function mb_Priest(commander)
     if mb_DoBasicCasterLogicThrottled() then
         return
     end
-    if mb_priestStoppedCastingTime + 0.3 > mb_GetTime() then
-        return
-    end
+
     if mb_IsCasting() then
-        if mb_priestCurrentHealTarget ~= nil and mb_castStartedTime + 2 < mb_GetTime() then
-            if max_GetMissingHealth(mb_priestCurrentHealTarget) < 1200 then
-                mb_StopCasting()
-                mb_priestCurrentHealTarget = nil
-                mb_priestStoppedCastingTime = mb_GetTime()
-            end
-        end
-        if mb_priestIsCastingPoH then
-            if mb_GetGroupHealEffect(MB_PRIEST_POH_HEAL_AMOUNT, "Dispel Magic") < 2.5 then
-                mb_StopCasting()
-                mb_priestIsCastingPoH = false
-                mb_priestStoppedCastingTime = mb_GetTime()
-            end
-        end
+        mb_StopCastingIfNeeded(mb_Priest_ShouldStopCasting)
         return
-    else
-        mb_priestCurrentHealTarget = nil
-        mb_priestIsCastingPoH = false
     end
 
     if mb_IsOnGCD() then
@@ -113,13 +93,27 @@ function mb_Priest(commander)
     end
 end
 
+function mb_Priest_ShouldStopCasting(currentCast)
+    if currentCast.spellName == "Greater Heal(Rank 1)" then
+        if currentCast.startCastTime + 2 < mb_GetTime() then
+            if max_GetMissingHealth(currentCast.target) < MB_PRIEST_GHR1_HEAL_AMOUNT then
+                return true
+            end
+        end
+    elseif currentCast.spellName == "Prayer of Healing" then
+        if mb_GetGroupHealEffect(MB_PRIEST_POH_HEAL_AMOUNT, "Dispel Magic") < 2.5 then
+            return true
+        end
+    end
+    return false
+end
+
 function mb_Priest_TankHealing()
     local tankUnit = mb_HealingModule_GetValidTankUnitWithHighestFutureMissingHealth("Greater Heal")
     if tankUnit ~= nil then
         local callBacks = {}
         callBacks.onStart = function(spellCast)
-            mb_HealingModule_SendData(UnitName(spellCast.target), 1100, spellCast.startTime + 2.5)
-            mb_priestCurrentHealTarget = tankUnit
+            mb_HealingModule_SendData(UnitName(spellCast.target), MB_PRIEST_GHR1_HEAL_AMOUNT, mb_GetTime() + 2.5)
         end
         mb_CastSpellByNameOnRaidMemberWithCallbacks("Greater Heal(Rank 1)", tankUnit, callBacks)
         return true
@@ -186,9 +180,8 @@ function mb_Priest_PrayerOfHealing()
             return true
         end
         local callBacks = {}
-        callBacks.onStart = function(spellCast) mb_HealingModule_SendData(affectedPlayers, MB_PRIEST_POH_HEAL_AMOUNT, spellCast.startTime + 3) end
+        callBacks.onStart = function(spellCast) mb_HealingModule_SendData(affectedPlayers, MB_PRIEST_POH_HEAL_AMOUNT, mb_GetTime() + 3) end
         mb_CastSpellByNameOnRaidMemberWithCallbacks("Prayer of Healing", "player", callBacks)
-        mb_priestIsCastingPoH = true
         return true
     end
     return false

@@ -26,7 +26,7 @@ function mb_Warlock(commander)
             callBacks.onStart = function(spellCast)
                 TargetByName(request.body, true)
             end
-            mb_CastSpellByNameOnTargetWithCallbacks("Ritual of Summoning", max_GetUnitForPlayerName(request.body), callBacks)
+            mb_CastSpellByNameOnTargetWithCallbacks("Ritual of Summoning", callBacks)
             mb_RequestCompleted(request)
             return
         elseif request.type == "soulstone" then

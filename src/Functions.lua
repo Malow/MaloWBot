@@ -375,6 +375,6 @@ function mb_GetMyGroupUnitsThrottled()
 	end
 	mb_lastGetMyGroupUnitsTime = mb_GetTime()
 
-	mb_lastGetMyGroupUnitsResult = max_GetGroupUnitsFor("player")
+	mb_lastGetMyGroupUnitsResult = max_GetGroupUnitsFor(UnitName("player"))
 	return mb_lastGetMyGroupUnitsResult
 end

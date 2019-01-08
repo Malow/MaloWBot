@@ -481,7 +481,7 @@ end
 ---		Add holy shock for the few that has it
 ---		Consecration in a max-burn AoE mode?
 ---		Blessing of Protection (request re-bless after?)
----		If high on Mana start stop-cast spamming tanks
+---		If high on Mana start stop-cast spamming tanks if no raid-healing is needed
 ---		Lay on hands buff rotation on try-hard tries
 --- Hunter:
 ---		Pet-logic (reagent food, auto-feed, auto-call/revive, attacking, mend pet)
@@ -506,10 +506,6 @@ end
 ---			Auto-taunt off other tanks if they have MS or other nasty debuff
 --- Say raid, "I am literally out of X" when out of reagents and trying to buff with them.
 --- Rename followTarget to commander
---- Performance:
---- 	Don't need to check for buffs every frame
----		Don't need to request water every frame
----	Repair-report, Should be able to report lowest item % in /raid
 ---	Bag-space report, each responds with how many bag spaces free, not as SayRaid but by responding to the request kinda and then the guy requesting sees the printout.
 --- Blacklist LoS targets when using mb_IsSpellInRange for 1 sec, use the Rogue-Spam way to detect error message of LoS
 --- IsActionInRange fails for resses, spend some more time looking into it to see if we can fix it
@@ -519,9 +515,7 @@ end
 ---		Add a watch for it.
 ---		Add them to be ignored for trade over a certain quantity (don't want them to trade all their pots when they're inventory dumpers)
 ---		"Try-hard mode" on/off, which uses flasks and weapon enchants and foodbuffs, and potions in combat.
---- Crown-control
----		Request target to be CCd, people the raid will automatically accept depending on what kind of target it is and if they can CC.
----			No such thing as focus, gonna need to either TargetNearestEnemy (only works in cone in front) or use TargetLastTarget/Enemy and then like after every assist and using DPS spell doing that to retarget the CC target.
+--- Crown-control people should be DPSing between re-cc's, the problem is re-aquiring CC target, targetlastenemy/targetnearestenemy/assist every1 in raid, and if still cant find say in raid so commander needs to target manually?
 ---	Auto-target mode. TargetNearestEnemy spam and just attack whatever is possible. For DPS maybe 1 person should be the "leader" and set skull, and the rest should follow that.
 ---		Tanks should automatically pick up untanked targets with this
 ---	Don't DPS if you risk overthreat, use KTM API? Need a way to disable it for solo/5-mans

@@ -81,7 +81,7 @@ function mb_HandleSharedBehaviour(commander)
     end
     --CancelLogout()
     if not UnitAffectingCombat("player") then
-        mb_CheckAndRequestBuffs()
+        mb_CheckAndRequestBuffsThrottled()
     end
 
     if mb_MoveOutModule_Update() then
@@ -165,10 +165,15 @@ function mb_DoTradeGoodies()
     end
 end
 
-function mb_CheckAndRequestBuffs()
+mb_lastRequestBuffCheckTime = 0
+function mb_CheckAndRequestBuffsThrottled()
     if not mb_shouldRequestBuffs then
         return
     end
+    if mb_lastRequestBuffCheckTime + 5 > mb_GetTime() then
+        return
+    end
+    mb_lastRequestBuffCheckTime = mb_GetTime()
     for i = 1, max_GetTableSize(mb_desiredBuffs) do
         if not max_HasBuffWithMultipleTextures("player", mb_desiredBuffs[i].textures) then
             mb_MakeThrottledRequest(mb_desiredBuffs[i], UnitName("player"), REQUEST_PRIORITY.BUFF)

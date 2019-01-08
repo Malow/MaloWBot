@@ -26,7 +26,7 @@ function mb_Rogue(commander)
         return
     end
 
-    AssistByName(commander)
+    max_AssistByPlayerName(commander)
 
     if not max_HasValidOffensiveTarget() then
         return

@@ -40,6 +40,10 @@ function mb_Priest(commander)
         end
     end
 
+    --if not max_IsSpellNameOnCooldown("Fear Ward") then
+    --    CastSpellByName("Fear Ward", true)
+    --end
+
     if mb_CleanseRaidMemberThrottled("Dispel Magic", "Magic") then
         return
     end

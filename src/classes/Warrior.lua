@@ -8,12 +8,11 @@ function mb_Warrior(commander)
         return
     end
 
-    AssistByName(commander)
-
     if max_GetActiveStance() ~= 3 then
         CastSpellByName("Berserker Stance")
     end
 
+    max_AssistByPlayerName(commander)
     if not max_HasValidOffensiveTarget() then
         return
     end
@@ -34,16 +33,33 @@ function mb_Warrior(commander)
         return
     end
 
-    if max_GetHealthPercentage("target") < 25 then
-        CastSpellByName("Execute")
-        return
-    end
+    if not mb_areaOfEffectMode then
+        if max_GetHealthPercentage("target") < 25 then
+            CastSpellByName("Execute")
+            return
+        end
 
-    CastSpellByName("Bloodthirst")
+        if not max_IsSpellNameOnCooldown("Bloodthirst") then
+            CastSpellByName("Bloodthirst")
+            return
+        end
 
-    if UnitIsEnemy("player","target") and CheckInteractDistance("target", 3) then
-        CastSpellByName("Whirlwind")
-        return
+        if CheckInteractDistance("target", 3) and not max_IsSpellNameOnCooldown("Whirlwind") then
+            CastSpellByName("Whirlwind")
+            return
+        end
+
+        if max_GetManaPercentage("player") >= 75 then
+            CastSpellByName("Heroic Strike")
+        end
+    else
+        if CheckInteractDistance("target", 3) and not max_IsSpellNameOnCooldown("Whirlwind") then
+            CastSpellByName("Whirlwind")
+            return
+        end
+        if max_GetManaPercentage("player") >= 60 then
+            CastSpellByName("Cleave")
+        end
     end
 end
 
@@ -51,7 +67,7 @@ mb_Warrior_lastTankingBroadcast = 0
 mb_Warrior_lastSunder = 0
 function mb_Warrior_Tank(commander)
     if not max_HasValidOffensiveTarget() or UnitIsDead("target") then
-        AssistByName(commander)
+        max_AssistByPlayerName(commander)
     end
     if not max_HasValidOffensiveTarget() then
         return
@@ -120,22 +136,30 @@ function mb_Warrior_Tank(commander)
         return
     end
 
-    if max_GetManaPercentage("player") >= 10 and not max_IsSpellNameOnCooldown("Shield Block") then
-        CastSpellByName("Shield Block")
+    if not max_IsSpellNameOnCooldown("Shield Block") then
+        if max_GetManaPercentage("player") >= 10 then
+            CastSpellByName("Shield Block")
+        end
         return
+    end
+
+    if max_GetManaPercentage("player") >= 50 then
+        CastSpellByName("Heroic Strike")
     end
 
     if max_GetManaPercentage("player") >= 12 then
         CastSpellByName("Sunder Armor")
         mb_Warrior_lastSunder = mb_GetTime()
-    end
-
-    if max_GetManaPercentage("player") >= 40 then
-        CastSpellByName("Heroic Strike")
+        return
     end
 end
 
-function mb_Warrior_DpsTank()
+function mb_Warrior_DpsTank(commander)
+    max_AssistByPlayerName(commander)
+    if not max_HasValidOffensiveTarget() then
+        return
+    end
+
     if max_GetActiveStance() ~= 1 then
         CastSpellByName("Battle Stance")
     end

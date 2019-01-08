@@ -71,7 +71,7 @@ end
 function mb_Druid_ShouldStopCasting(currentCast)
     if currentCast.spellName == "Regrowth" then
         if currentCast.startCastTime + 1.5 < mb_GetTime() then
-            if max_GetMissingHealth(currentCast.target) < 1500 or max_HasBuff(mb_druidCurrentHealTarget, BUFF_TEXTURE_REGROWTH) then
+            if max_GetMissingHealth(currentCast.target) < 1500 or max_HasBuff(currentCast.target, BUFF_TEXTURE_REGROWTH) then
                 return true
             end
         end

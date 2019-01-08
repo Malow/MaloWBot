@@ -1,21 +1,15 @@
 mb_paladinIsJudgingLight = false
 mb_paladinIsJudgingWisdom = false
-mb_paladinCurrentHealTarget = nil
 function mb_Paladin(commander)
     if mb_DoBasicCasterLogicThrottled() then
         return
     end
+
     if mb_IsCasting() then
-        if mb_paladinCurrentHealTarget ~= nil then
-            local targetMissingHealth = max_GetMissingHealth(mb_paladinCurrentHealTarget)
-            if (targetMissingHealth - (mb_GetHoTCount(mb_paladinCurrentHealTarget) * 500)) < 500 then
-                mb_StopCasting()
-            end
-        end
+        mb_StopCastingIfNeeded(mb_Paladin_ShouldStopCasting)
         return
-    else
-        mb_paladinCurrentHealTarget = nil
     end
+
     if mb_IsOnGCD() then
         return
     end
@@ -73,15 +67,26 @@ function mb_Paladin(commander)
     end
 end
 
+function mb_Paladin_ShouldStopCasting(currentCast)
+    if currentCast.spellName == "Flash of Light" then
+        local targetMissingHealth = max_GetMissingHealth(currentCast.target)
+        if (targetMissingHealth - (mb_GetHoTCount(currentCast.target) * 800)) < 500 then
+            return true
+        end
+    end
+    return false
+end
+
 function mb_Paladin_FlashOfLight()
     local spell = "Flash of Light"
     local healTargetUnit, missingHealth = mb_HealingModule_GetRaidHealTarget(spell)
     if missingHealth > 500 then
         --max_SayRaid("Started FoL on " .. UnitName(healTargetUnit) .. ". Current missing health: " .. max_GetMissingHealth(healTargetUnit) .. " - Calculated missing health: " .. missingHealth)
         local callBacks = {}
-        callBacks.onStart = function(spellCast) mb_HealingModule_SendData(UnitName(spellCast.target), 600, mb_GetTime() + 1.5) end
+        callBacks.onStart = function(spellCast)
+            mb_HealingModule_SendData(UnitName(spellCast.target), 600, mb_GetTime() + 1.5)
+        end
         mb_CastSpellByNameOnRaidMemberWithCallbacks(spell, healTargetUnit, callBacks)
-        mb_paladinCurrentHealTarget = healTargetUnit
         return true
     end
     return false

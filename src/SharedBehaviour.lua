@@ -95,7 +95,7 @@ function mb_HandleSharedBehaviour(commander)
 end
 
 function mb_HandleMassCommandRequests()
-    if mb_shouldReloadUi then
+    if mb_shouldReloadUi and not UnitAffectingCombat("player") then
         mb_shouldReloadUi = false
         ReloadUI()
         return true

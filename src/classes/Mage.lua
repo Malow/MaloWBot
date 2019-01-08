@@ -136,6 +136,9 @@ function mb_Mage(commander)
         if not mb_IsMoving() then
             max_UseEquippedItemIfReady("Trinket0Slot")
             max_UseEquippedItemIfReady("Trinket1Slot")
+            if mb_Mage_HasArcanePower() and not max_IsSpellNameOnCooldown("Arcane Power") then
+                CastSpellByName("Arcane Power")
+            end
         elseif mb_Mage_HasPresenceOfMind() and not max_IsSpellNameOnCooldown("Presence of Mind") then
             CastSpellByName("Presence of Mind")
         end
@@ -246,6 +249,11 @@ function mb_Mage_HasIceBarrier()
     return currentRank == 1
 end
 
+function mb_Mage_HasArcanePower()
+    local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(1, 16)
+    return currentRank == 1
+end
+
 function mb_Mage_AddDesiredTalents()
     if UnitLevel("player") == 60 then
         -- Raiding specs
@@ -286,6 +294,24 @@ function mb_Mage_AddDesiredTalents()
             mb_AddDesiredTalent(1, 13, 1) -- Presence of Mind
             mb_AddDesiredTalent(1, 14, 2) -- Arcane Mind
             mb_AddDesiredTalent(1, 15, 3) -- Arcane Instability
+        elseif  mb_GetMySpecName() == "ArcanePowerFrost" then
+            mb_AddDesiredTalent(3, 2, 5) -- Improved Frostbolt
+            mb_AddDesiredTalent(3, 3, 3) -- Elemental Precision
+            mb_AddDesiredTalent(3, 4, 5) -- Ice Shards
+            mb_AddDesiredTalent(3, 8, 3) -- Piercing Ice
+            mb_AddDesiredTalent(3, 11, 2) -- Arctic reach
+            mb_AddDesiredTalent(3, 12, 2) -- Frost Channeling
+            mb_AddDesiredTalent(1, 1, 2) -- Arcane Subtlety
+            mb_AddDesiredTalent(1, 2, 3) -- Arcane Focus
+            mb_AddDesiredTalent(1, 5, 5) -- Magic Absorption
+            mb_AddDesiredTalent(1, 6, 5) -- Arcane Concentration
+            mb_AddDesiredTalent(1, 8, 3) -- Improved Arcane Explosion
+            mb_AddDesiredTalent(1, 9, 1) -- Arcane Resilience
+            mb_AddDesiredTalent(1, 12, 3) -- Magic Meditation
+            mb_AddDesiredTalent(1, 13, 1) -- Presence of Mind
+            mb_AddDesiredTalent(1, 14, 4) -- Arcane Mind
+            mb_AddDesiredTalent(1, 15, 3) -- Arcane Instability
+            mb_AddDesiredTalent(1, 16, 1) -- Arcane Power
         end
     else
         -- Leveling/Dungeon spec

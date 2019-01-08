@@ -11,7 +11,11 @@ function mb_HandleSpecialSlashCommand(msg)
     elseif msg == "soulstone" then
         mb_MakeRequest("soulstone", UnitName("target"), REQUEST_PRIORITY.COMMAND)
     elseif msg == "healthstone" then
-        mb_MakeRequest("healthstone", UnitName("target"), REQUEST_PRIORITY.COMMAND)
+        if UnitExists("target") then
+            if max_GetRaidIndexForPlayerName(UnitName("target")) ~= nil then
+                mb_MakeRequest("healthstone", UnitName("target"), REQUEST_PRIORITY.COMMAND)
+            end
+        end
     elseif msg == "hearthstone" then
         mb_MakeRequest("hearthstone", "hearthstone", REQUEST_PRIORITY.COMMAND)
     elseif msg == "mount" then

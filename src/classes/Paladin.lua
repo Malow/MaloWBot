@@ -132,7 +132,7 @@ function mb_Paladin_OnLoad()
         mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_SANCTUARY)
     end
     mb_Paladin_AddDesiredTalents()
-    mb_AddReagentWatch("Symbol of Kings", 200)
+    mb_AddReagentWatch("Symbol of Kings", 400)
     mb_AddGCDCheckSpell("Holy Light")
     mb_RegisterClassSyncDataFunctions(mb_Paladin_CreateClassSyncData, mb_Paladin_ReceivedClassSyncData)
     mb_RegisterRangeCheckSpell("Flash of Light")

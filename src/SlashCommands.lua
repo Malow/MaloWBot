@@ -103,6 +103,7 @@ function mb_HandleSpecialSlashCommand(msg)
             mb_Print("    " .. v.type .. " with priority " .. v.priority .. " and body " .. v.body .. ". Sent at " .. v.sentTime)
         end
     else
+        mb_Print("Command \"" .. msg .. "\" not recognized.")
         return false
     end
     return true

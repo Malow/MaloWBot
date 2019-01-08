@@ -1,0 +1,10 @@
+## Interface: 30300
+## Title: MaloWBotVisualizer
+## DefaultState: enabled
+## Notes: MaloWs Bot Visualizer
+## Version 1
+## Author: MaloW
+
+MaloWBotVisualizer.xml
+MaloWBotVisualizer.lua
+

@@ -59,7 +59,17 @@ mb_isAutoAttacking = false
 mb_isAutoShooting = false
 mb_isReadyChecking = false
 function mb_OnEvent()
-	if event == "ADDON_LOADED" and arg1 == MY_NAME then
+	if event == "CHAT_MSG_ADDON" and arg1 == "MB" then
+		mb_HandleMBCommunication(arg2, arg3, arg4)
+	elseif event == "START_AUTOREPEAT_SPELL" then
+		mb_isAutoShooting = true
+	elseif event == "STOP_AUTOREPEAT_SPELL" then
+		mb_isAutoShooting = false
+	elseif event == "PLAYER_ENTER_COMBAT" then
+		mb_isAutoAttacking = true
+	elseif event == "PLAYER_LEAVE_COMBAT" then
+		mb_isAutoAttacking = false
+	elseif event == "ADDON_LOADED" and arg1 == MY_NAME then
 		if mb_SV == nil then
 			mb_SV = {}
 		end
@@ -70,8 +80,6 @@ function mb_OnEvent()
 		if GetRealZoneText() == "Ironforge" or GetRealZoneText() == "Stormwind" then
 			mb_shouldRequestBuffs = false
 		end
-	elseif event == "CHAT_MSG_ADDON" and arg1 == "MB" then
-        mb_HandleMBCommunication(arg2, arg3, arg4)
 	elseif event == "TRADE_CLOSED" then
 		mb_isTrading = false
 	elseif event == "TRADE_SHOW" then
@@ -87,14 +95,6 @@ function mb_OnEvent()
 		mb_isTraining = false
 	elseif event == "TRAINER_SHOW" then
 		mb_isTraining = true
-	elseif event == "START_AUTOREPEAT_SPELL" then
-		mb_isAutoShooting = true
-	elseif event == "STOP_AUTOREPEAT_SPELL" then
-		mb_isAutoShooting = false
-	elseif event == "PLAYER_ENTER_COMBAT" then
-		mb_isAutoAttacking = true
-	elseif event == "PLAYER_LEAVE_COMBAT" then
-		mb_isAutoAttacking = false
 	elseif event == "PLAYER_DEAD" then
 		mb_areaOfEffectMode = false
         mb_shouldRequestBuffs = false
@@ -151,7 +151,7 @@ function mb_HandleMBCommunication(arg2, arg3, arg4)
         -- Check if the request was one that I accepted, and if then I was the first to accept it
         local request = mb_myAcceptedRequests[requestId]
         if request ~= nil then
-            local playerName = strings[3]
+            local playerName = from
             if playerName == UnitName("player") then
                 table.insert(mb_queuedRequests, request)
             end
@@ -162,7 +162,7 @@ function mb_HandleMBCommunication(arg2, arg3, arg4)
         -- Check if the request was made by me
         local pendingRequest = mb_myPendingRequests[requestId]
         if pendingRequest ~= nil then
-            local playerName = strings[3]
+            local playerName = from
             pendingRequest.acceptedBy = playerName
             mb_MyPendingRequestWasAccepted(pendingRequest)
             mb_myPendingRequests[requestId] = nil
@@ -322,7 +322,7 @@ end
 
 function mb_AcceptRequest(request)
 	mb_myAcceptedRequests[request.id] = request
-	SendAddonMessage("MB", "acceptRequest:" .. request.id .. ":" .. UnitName("player"), "RAID")
+	SendAddonMessage("MB", "acceptRequest:" .. request.id, "RAID")
 end
 
 function mb_HasQueuedRequestOfType(requestType)

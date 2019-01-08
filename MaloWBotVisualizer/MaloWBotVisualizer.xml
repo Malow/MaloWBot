@@ -1,0 +1,75 @@
+<Ui>
+	<Frame name="MaloWBotVisualizerFrame" hidden="false" enableMouse="true" movable="true">
+		<Size><AbsDimension x="300" y="300"/></Size>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Scripts>
+			<OnLoad>
+				this:SetScale(0.8);
+				this:SetClampedToScreen(true)
+				this:RegisterEvent("CHAT_MSG_ADDON")
+			</OnLoad>	
+			<OnMouseUp>
+			 if ( this.isMoving ) then
+			  this:StopMovingOrSizing();
+			  this.isMoving = false;
+			 end
+			</OnMouseUp>
+			<OnMouseDown>
+			 if ( ( ( not this.isLocked ) or ( this.isLocked == 0 ) ) and ( arg1 == "LeftButton" ) ) then
+			  this:StartMoving();
+			  this.isMoving = true;
+			 end
+			</OnMouseDown>
+			<OnHide>
+			 if ( this.isMoving ) then
+			  this:StopMovingOrSizing();
+			  this.isMoving = false;
+			 end
+			</OnHide>
+			<OnUpdate>
+				mbv_OnUpdate();
+			</OnUpdate>
+			<OnEvent>
+				mbv_OnEvent();
+			</OnEvent>
+		</Scripts>
+
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground">
+					<Color r="0.08" g="0.08" b="0.10" a="1.0"/>
+					<Size><AbsDimension x="300" y="300"/></Size>
+					<Anchors>
+						<Anchor point="TOP"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString text="MaloWBotVisualizer" inherits="GameFontNormal">
+					<Size x="100" y="10"/>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="0" y="-5"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString text="RPS: " inherits="GameFontNormal" name="$parent_RpsText">
+					<Size x="50" y="10"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT">
+							<Offset>
+								<AbsDimension x="0" y="-5"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+			</Layer>
+		</Layers>
+	</Frame>
+</Ui>

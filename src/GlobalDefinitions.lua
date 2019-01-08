@@ -100,7 +100,7 @@ REQUEST_RESURRECT = {
 }
 REQUEST_WATER = {
     type = "water",
-    throttle = 10
+    throttle = 20
 }
 REQUEST_REMOVE_MAGIC = {
     type = "removeMagic",

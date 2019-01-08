@@ -583,3 +583,35 @@ function mb_IsFreeToAcceptRequest()
     end
     return true
 end
+
+mb_lastTemporaryWeaponEnchantCheck = 0
+function mb_ApplyTemporaryWeaponEnchantsThrottled(mainHandItemName, offHandItemName)
+    if mb_lastTemporaryWeaponEnchantCheck + 2 > mb_GetTime() then
+        return false
+    end
+    mb_lastTemporaryWeaponEnchantCheck = mb_GetTime()
+
+    local hasMainHandEnchant, mainHandExpiration, mainHandCharges, hasOffHandEnchant, offHandExpiration, offHandCharges = GetWeaponEnchantInfo()
+    if mainHandItemName ~= nil and mb_ApplyWeaponEnchantIfNeeded(mainHandItemName, 16, hasMainHandEnchant, mainHandExpiration, mainHandCharges) then
+        return true
+    end
+    if offHandItemName ~= nil and mb_ApplyWeaponEnchantIfNeeded(offHandItemName, 17, hasOffHandEnchant, offHandExpiration, offHandCharges) then
+        return true
+    end
+    return false
+end
+
+function mb_ApplyWeaponEnchantIfNeeded(itemName, slotNumber, hasEnchant, expiration, charges)
+    if hasEnchant == nil or expiration <= 300000 or (charges ~= nil and charges <= 20) then
+        if mb_GetItemCount(itemName) == 0 then
+            max_SayRaid("I'm out of " .. itemName)
+            return false
+        end
+        mb_UseItem(itemName)
+        PickupInventoryItem(slotNumber)
+        ReplaceEnchant()
+        ClearCursor()
+        return true
+    end
+    return false
+end

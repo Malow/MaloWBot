@@ -6,3 +6,4 @@
 ## Author: MaloW
 
 MaloWBotCommander.xml
+MaloWBotCombatCommander.xml

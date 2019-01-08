@@ -16,6 +16,7 @@ function mb_RegisterSharedRequestHandlers(playerClass)
     mb_RegisterForRequest("fuckOff", mb_FuckOffRequestHandler)
     mb_RegisterForRequest(playerClass .. "Sync", mb_ClassSyncRequestHandler)
     mb_RegisterForRequest("remoteExecute", mb_RemoteExecuteRequestHandler)
+    mb_RegisterForRequest("repairReport", mb_RepairReportRequestHandler)
 end
 
 function mb_ReloadRequestHandler(request)
@@ -200,4 +201,50 @@ function mb_RemoteExecuteRequestHandler(request)
             func()
         end
     end
+end
+
+function mb_RepairReportRequestHandler(request)
+    local requiredPercentage = tonumber(request.body)
+    local durabilitySlots = { 1, 3, 5, 6, 7, 8, 9, 10, 16, 17, 18 }
+    local lowestDurability = 100
+    for _, v in pairs(durabilitySlots) do
+        local percentage = mb_GetDurabilityPercentageForItemSlot(v)
+        if percentage ~= nil then
+            mb_Print("Slot " .. v .. " has " .. percentage)
+            if percentage < lowestDurability then
+                lowestDurability = percentage
+            end
+        end
+    end
+    if lowestDurability < requiredPercentage then
+        max_SayRaid("I'm at " .. lowestDurability .. "% durability.")
+    end
+end
+
+function mb_GetDurabilityPercentageForItemSlot(itemSlot)
+    MaloWBotToolTip:SetOwner(UIParent, "ANCHOR_NONE")
+    MaloWBotToolTip:ClearLines()
+    MaloWBotToolTip:SetInventoryItem("player", itemSlot)
+    for i = 1, 10 do
+        local line = getglobal("MaloWBotToolTipTextLeft" .. i):GetText()
+        if line ~= nil then
+            local percentage = mb_GetDurabilityPercentageFromLine(line)
+            if percentage ~= nil then
+                return percentage
+            end
+        end
+    end
+    return nil
+end
+
+function mb_GetDurabilityPercentageFromLine(line)
+    local start = string.find(line, "Durability %d+ / %d+")
+    if start == nil then
+        return nil
+    end
+    line = string.sub(line, 12)
+    local slashPos = string.find(line, "/")
+    local firstPart = string.sub(line, 1, slashPos - 1)
+    local secondPart = string.sub(line, slashPos + 2, string.len(line))
+    return (tonumber(firstPart) / tonumber(secondPart)) * 100
 end

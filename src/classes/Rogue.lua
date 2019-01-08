@@ -1,4 +1,7 @@
 mb_Rogue_usesDaggers = false
+mb_rogueShouldUsePoisons = true
+mb_rogueMainHandTemporaryWeaponEnchant = nil
+mb_rogueOffHandTemporaryWeaponEnchant = nil
 function mb_Rogue(commander)
     local request = mb_GetQueuedRequest(true)
     if request ~= nil then
@@ -22,8 +25,18 @@ function mb_Rogue(commander)
         end
     end
 
-    if mb_Rogue_ApplyPoison() then
-        return
+    if not UnitAffectingCombat("player") then
+        if mb_shouldRequestBuffs then
+            if mb_rogueShouldUsePoisons then
+                if mb_ApplyTemporaryWeaponEnchantsThrottled("Instant Poison VI", "Instant Poison VI") then
+                    return
+                end
+            else
+                if mb_ApplyTemporaryWeaponEnchantsThrottled(mb_rogueMainHandTemporaryWeaponEnchant, mb_rogueOffHandTemporaryWeaponEnchant) then
+                    return
+                end
+            end
+        end
     end
 
     max_AssistByPlayerName(commander)
@@ -57,50 +70,6 @@ function mb_Rogue(commander)
     CastSpellByName("Sinister Strike")
 end
 
-function mb_Rogue_ApplyPoison()
-    if not UnitAffectingCombat("player") then
-        local hasMainHandEnchant, mainHandExpiration, mainHandCharges, hasOffHandEnchant, offHandExpiration, offHandCharges = GetWeaponEnchantInfo();
-        if not mb_shouldRequestBuffs then
-            return false
-        end
-        if hasMainHandEnchant == 0 then
-            mb_UseItem("Instant Poison VI")
-            PickupInventoryItem(16)
-            return true
-        end
-        if hasOffHandEnchant == 0 then
-            mb_UseItem("Instant Poison VI")
-            PickupInventoryItem(17)
-            return true
-        end
-        if mainHandCharges == nil or mainHandCharges <= 20 then
-            mb_UseItem("Instant Poison VI")
-            PickupInventoryItem(16)
-            ReplaceEnchant()
-            return true
-        end
-        if offHandCharges == nil or offHandCharges <= 20 then
-            mb_UseItem("Instant Poison VI")
-            PickupInventoryItem(17)
-            ReplaceEnchant()
-            return true
-        end
-        if mainHandExpiration <= 300000 then
-            mb_UseItem("Instant Poison VI")
-            PickupInventoryItem(16)
-            ReplaceEnchant()
-            return true
-        end
-        if offHandExpiration <= 300000 then
-            mb_UseItem("Instant Poison VI")
-            PickupInventoryItem(17)
-            ReplaceEnchant()
-            return true
-        end
-    end
-    return false
-end
-
 function mb_Rogue_AdrenalineRush()
     local cur, max, found = MobHealth3:GetUnitHealth("target")
     if max_IsSpellNameOnCooldown("Adrenaline Rush") then
@@ -128,6 +97,10 @@ function mb_Rogue_HandleInterruptRequest(request)
     end
 end
 
+function mb_Rogue_HandleUsePoisonRequest(request)
+    mb_rogueShouldUsePoisons = request.body == "on"
+end
+
 --[[function mb_Rogue_Finisher_Swords()
     if not max_HasBuff("player", BUFF_TEXTURE_SLICE_AND_DICE) and GetComboPoints() > 0 then
         CastSpellByName("Slice and Dice")
@@ -149,19 +122,38 @@ function mb_Rogue_OnLoad()
     mb_AddDesiredBuff(BUFF_BLESSING_OF_LIGHT)
     mb_AddDesiredBuff(BUFF_BLESSING_OF_SALVATION)
     mb_AddDesiredBuff(BUFF_SHADOW_PROTECTION)
-    local meleeWeaponItemLink = GetInventoryItemLink("player", GetInventorySlotInfo("MainHandSlot"))
-    local meleeWeaponItemString = max_GetItemStringFromItemLink(meleeWeaponItemLink)
-    local itemName, itemLink, itemQuality, itemLevel, itemType, itemSubType, itemCount, itemTexture = GetItemInfo(meleeWeaponItemString)
-    if itemSubType ~= nil then
-        if itemSubType == "Daggers" then
-            mb_Rogue_usesDaggers = true
-        end
+
+    local itemSubType = max_GetItemSubTypeForSlot("MainHandSlot")
+    if itemSubType == "Daggers" then
+        mb_Rogue_usesDaggers = true
     end
+
     mb_Rogue_AddDesiredTalents()
     mb_RegisterRangeCheckSpell("Kick")
     mb_AddGCDCheckSpell("Sinister Strike")
     mb_RegisterForRequest(REQUEST_INTERRUPT.type, mb_Rogue_HandleInterruptRequest)
+    mb_RegisterForRequest("usePoison", mb_Rogue_HandleUsePoisonRequest)
     mb_AddReagentWatch("Instant Poison VI", 100)
+
+    local mainHandItemSubType = max_GetItemSubTypeForSlot("MainHandSlot")
+    if max_IsItemSubTypeSharp(mainHandItemSubType) then
+        mb_rogueMainHandTemporaryWeaponEnchant = "Dense Sharpening Stone"
+    elseif max_IsItemSubTypeBlunt(mainHandItemSubType) then
+        mb_rogueMainHandTemporaryWeaponEnchant = "Dense Weightstone"
+    end
+    local offHandItemSubType = max_GetItemSubTypeForSlot("SecondaryHandSlot")
+    if max_IsItemSubTypeSharp(offHandItemSubType) then
+        mb_rogueOffHandTemporaryWeaponEnchant = "Dense Sharpening Stone"
+    elseif max_IsItemSubTypeBlunt(offHandItemSubType) then
+        mb_rogueOffHandTemporaryWeaponEnchant = "Dense Weightstone"
+    end
+
+    if max_IsItemSubTypeSharp(mainHandItemSubType) or max_IsItemSubTypeSharp(offHandItemSubType) then
+        mb_AddReagentWatch("Dense Sharpening Stone", 100)
+    end
+    if max_IsItemSubTypeBlunt(mainHandItemSubType) or max_IsItemSubTypeBlunt(offHandItemSubType) then
+        mb_AddReagentWatch("Dense Weightstone", 100)
+    end
 end
 
 function mb_Rogue_AddDesiredTalents()

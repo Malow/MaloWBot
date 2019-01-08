@@ -34,8 +34,20 @@ function mb_HandleSpecialSlashCommand(msg)
         mb_MakeRequest(REQUEST_INTERRUPT.type, "interrupt", REQUEST_PRIORITY.COMMAND)
     elseif msg == "crowdControl" then
         mb_MakeRequest(REQUEST_CROWD_CONTROL.type, "crowdControl", REQUEST_PRIORITY.COMMAND)
+    elseif msg == "tranquilize" then
+        mb_MakeThrottledRequest(REQUEST_TRANQUILIZING_SHOT, "tranqItYoBeastBeCrazy", REQUEST_PRIORITY.COMMAND)
     elseif msg == "goToMaxRange" then
         mb_MakeRequest("goToMaxRange", "goToMaxRange", REQUEST_PRIORITY.COMMAND)
+    elseif string.find(msg, "usePoison") then
+        local mode = max_SplitString(msg, " ")[2]
+        mb_areaOfEffectMode = mode == "on"
+        mb_MakeRequest("usePoison", mode, REQUEST_PRIORITY.COMMAND)
+    elseif string.find(msg, "repairReport") then
+        local percentage = max_SplitString(msg, " ")[2]
+        if percentage == nil then
+            percentage = 100
+        end
+        mb_MakeRequest("repairReport", percentage, REQUEST_PRIORITY.COMMAND)
     elseif msg == "fuckOff" then
         local target = UnitName("target")
         if UnitIsEnemy("player", "target") then
@@ -70,7 +82,6 @@ function mb_HandleSpecialSlashCommand(msg)
         mb_MakeRequest("requestBuffsMode", mode, REQUEST_PRIORITY.COMMAND)
     elseif string.find(msg, "remoteExecute") then
         local code = string.sub(msg, 15)
-        mb_Print(code)
         mb_MakeRequest("remoteExecute", code, REQUEST_PRIORITY.COMMAND)
     elseif msg == "fixraidgroup" or msg == "fixRaidGroup" then
         mb_FixRaidGroup()

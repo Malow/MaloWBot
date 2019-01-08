@@ -372,3 +372,45 @@ function max_HasValidOffensiveTarget()
 	end
 	return false
 end
+
+function max_GetItemSubTypeForSlot(itemSlotName)
+    local itemLink = GetInventoryItemLink("player", GetInventorySlotInfo(itemSlotName))
+    if itemLink == nil then
+        return nil
+    end
+    local itemString = max_GetItemStringFromItemLink(itemLink)
+    if itemString == nil then
+        return nil
+    end
+    local itemName, itemLink, itemQuality, itemLevel, itemType, itemSubType, itemCount, itemTexture = GetItemInfo(itemString)
+    return itemSubType
+end
+
+function max_IsItemSubTypeSharp(itemSubType)
+    if itemSubType == "Daggers" then
+        return true
+    end
+    if itemSubType == "One-Handed Axes" then
+        return true
+    end
+    if itemSubType == "One-Handed Swords" then
+        return true
+    end
+    if itemSubType == "Two-Handed Axes" then
+        return true
+    end
+    if itemSubType == "Two-Handed Swords" then
+        return true
+    end
+    return false
+end
+
+function max_IsItemSubTypeBlunt(itemSubType)
+    if itemSubType == "One-Handed Maces" then
+        return true
+    end
+    if itemSubType == "Two-Handed Maces" then
+        return true
+    end
+    return false
+end

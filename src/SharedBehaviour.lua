@@ -566,11 +566,11 @@ function mb_CancelExpiringBuffWithTexture(buffTexture, minutes)
 end
 
 mb_lastFailedCleanseCheck = 0
-function mb_CleanseRaidMemberThrottled(spellName, debuffType1, debuffType2, debuffType3)
+function mb_CleanseRaidMemberThrottled(spellName, debuffType1, debuffType2, debuffType3, unitFilter)
     if mb_lastFailedCleanseCheck + 1.2 > mb_GetTime() then
         return false
     end
-    local debuffTarget = mb_GetDebuffedRaidMember(spellName, debuffType1, debuffType2, debuffType3)
+    local debuffTarget = mb_GetDebuffedRaidMember(spellName, debuffType1, debuffType2, debuffType3, unitFilter)
     if debuffTarget ~= nil then
         max_CastSpellOnRaidMember(spellName, debuffTarget)
         return true

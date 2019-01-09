@@ -61,7 +61,7 @@ mb_isAutoShooting = false
 mb_isReadyChecking = false
 function mb_OnEvent()
 	if event == "CHAT_MSG_ADDON" and arg1 == "MB" then
-		if max_GetTableSize(mb_queuedIncomingComms) > 20 then
+		if max_GetTableSize(mb_queuedIncomingComms) > 30 then
 			mb_queuedIncomingComms = {} -- If bot is not running or if we're lagging then prevent thousands of requests from queueing up.
 		end
 		local mbCom = {}
@@ -183,7 +183,7 @@ mb_classSpecificRunFunction = nil
 function mb_OnPostLoad()
 	SetCVar("autoSelfCast", 0)
 	mb_CreateMBMacros()
-	SetBinding("0","TURNORACTION")
+	mb_BindKey("0","TURNORACTION")
 	local playerClass = max_GetClass("player")
 	mb_HandleSharedBehaviourPostLoad(playerClass)
 	if playerClass == "DRUID" then
@@ -237,6 +237,11 @@ function mb_CreateMBMacros()
 	end
 end
 
+function mb_BindKey(bind, action)
+	SetBinding(bind, "action")
+	SetBinding("CTRL-" .. bind, "action")
+end
+
 function mb_CreateMacro(name, body, actionSlot, bindingKey, bindingName)
 	local macroId = GetMacroIndexByName(name)
 	if macroId > 0 then
@@ -247,7 +252,7 @@ function mb_CreateMacro(name, body, actionSlot, bindingKey, bindingName)
 	PickupMacro(macroId)
 	PlaceAction(actionSlot)
 	ClearCursor()
-	SetBinding(bindingKey, bindingName)
+	mb_BindKey(bindingKey, bindingName)
 end
 
 -- OnUpdate
@@ -429,17 +434,17 @@ end
 mb_shouldFuckOffAt = 0
 function mb_RebindMovementKeyIfNeeded()
 	if mb_shouldFuckOffAt + 4.5 > mb_GetTime() then
-		SetBinding("9", "MOVEFORWARD")
+		mb_BindKey("9", "MOVEFORWARD")
 		return
 	end
 	if mb_lastFacingWrongWayTime + 0.5 > mb_GetTime() then
-		SetBinding("9", "TURNLEFT")
+		mb_BindKey("9", "TURNLEFT")
 		return
 	end
 	if mb_GoToMaxRangeModule_RebindMovementKeyIfNeeded() then
 		return
 	end
-	SetBinding("9", nil)
+	mb_BindKey("9", nil)
 end
 
 

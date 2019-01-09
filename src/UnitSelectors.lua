@@ -49,15 +49,17 @@ function mb_GetLowestHealthFriendly(spell, unitFilter)
 end
 
 -- Returns the unit of a raid-member that has a debuff of the specific type and that you can cast the specific spell on.
-function mb_GetDebuffedRaidMember(spell, debuffType1, debuffType2, debuffType3)
+function mb_GetDebuffedRaidMember(spell, debuffType1, debuffType2, debuffType3, unitFilter)
     local members = max_GetNumPartyOrRaidMembers()
     for i = 1, members do
         local unit = max_GetUnitFromPartyOrRaidIndex(i)
-        for u = 1, MAX_DEBUFFS do
-            local debuffTexture, debuffApplications, debuffDispelType = UnitDebuff(unit, u)
-            if debuffDispelType ~= nil and (debuffDispelType == debuffType1 or debuffDispelType == debuffType2 or debuffDispelType == debuffType3) then
-                if mb_IsUnitValidTarget(unit, spell) then
-                    return unit
+        if unitFilter == nil or mb_CheckFilter(unit, unitFilter) then
+            for u = 1, MAX_DEBUFFS do
+                local debuffTexture, debuffApplications, debuffDispelType = UnitDebuff(unit, u)
+                if debuffDispelType ~= nil and (debuffDispelType == debuffType1 or debuffDispelType == debuffType2 or debuffDispelType == debuffType3) then
+                    if mb_IsUnitValidTarget(unit, spell) then
+                        return unit
+                    end
                 end
             end
         end
@@ -72,6 +74,11 @@ function mb_CheckFilter(unit, unitFilter)
             return false
         end
         return true
+    elseif unitFilter.name == UNIT_FILTER_DOES_NOT_HAVE_MANA.name then
+        if max_GetClass(unit) == "WARRIOR" or max_GetClass(unit) == "ROGUE" then
+            return true
+        end
+        return false
     elseif unitFilter.name == UNIT_FILTER_DOES_NOT_HAVE_DEBUFF.name then
         if max_HasDebuff(unit, unitFilter.debuff) then
             return false

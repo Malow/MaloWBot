@@ -44,7 +44,7 @@ function mb_Priest(commander)
     --    CastSpellByName("Fear Ward", true)
     --end
 
-    if mb_CleanseRaidMemberThrottled("Dispel Magic", "Magic") then
+    if mb_CleanseRaidMemberThrottled("Dispel Magic", "Magic", nil, nil, UNIT_FILTER_DOES_NOT_HAVE_MANA) then
         return
     end
 

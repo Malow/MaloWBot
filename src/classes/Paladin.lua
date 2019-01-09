@@ -1,5 +1,6 @@
 mb_paladinIsJudgingLight = false
 mb_paladinIsJudgingWisdom = false
+mb_paladinAura = "devo"
 function mb_Paladin(commander)
     if mb_DoBasicCasterLogicThrottled() then
         return
@@ -40,11 +41,11 @@ function mb_Paladin(commander)
     end
 
     if not mb_Paladin_HasAura() then
-        CastSpellByName("Devotion Aura")
+        mb_Paladin_CastAura()
         return
     end
 
-    if mb_CleanseRaidMemberThrottled("Cleanse", "Magic", "Poison", "Disease") then
+    if mb_CleanseRaidMemberThrottled("Cleanse", "Magic", "Poison", "Disease", UNIT_FILTER_DOES_NOT_HAVE_MANA) then
         return
     end
 
@@ -109,6 +110,45 @@ function mb_Paladin_HasAura()
     return false
 end
 
+function mb_Paladin_CastAura()
+    if mb_paladinAura == "devo" then
+        if not max_HasBuff("player", BUFF_TEXTURE_DEVOTION_AURA) then
+            CastSpellByName("Devotion Aura")
+        end
+        return
+    end
+    if mb_paladinAura == "ret" then
+        if not max_HasBuff("player", BUFF_TEXTURE_RETRIBUTION_AURA) then
+            CastSpellByName("Retribution Aura")
+        end
+        return
+    end
+    if mb_paladinAura == "conc" then
+        if not max_HasBuff("player", BUFF_TEXTURE_CONCENTRATION_AURA) then
+            CastSpellByName("Concentration Aura")
+        end
+        return
+    end
+    if mb_paladinAura == "shadow" then
+        if not max_HasBuff("player", BUFF_TEXTURE_SHADOW_RESISTANCE_AURA) then
+            CastSpellByName("Shadow Resistance Aura")
+        end
+        return
+    end
+    if mb_paladinAura == "frost" then
+        if not max_HasBuff("player", BUFF_TEXTURE_FROST_RESISTANCE_AURA) then
+            CastSpellByName("Frost Resistance Aura")
+        end
+        return
+    end
+    if mb_paladinAura == "fire" then
+        if not max_HasBuff("player", BUFF_TEXTURE_FIRE_RESISTANCE_AURA) then
+            CastSpellByName("Fire Resistance Aura")
+        end
+        return
+    end
+end
+
 function mb_Paladin_OnLoad()
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
@@ -156,42 +196,8 @@ function mb_Paladin_HandleResurrectionRequest(request)
 end
 
 function mb_Paladin_HandleAuraRequest(request)
-    if request.body == "devo" then
-        if not max_HasBuff("player", BUFF_TEXTURE_DEVOTION_AURA) then
-            CastSpellByName("Devotion Aura")
-        end
-        return
-    end
-    if request.body == "ret" then
-        if not max_HasBuff("player", BUFF_TEXTURE_RETRIBUTION_AURA) then
-            CastSpellByName("Retribution Aura")
-        end
-        return
-    end
-    if request.body == "conc" then
-        if not max_HasBuff("player", BUFF_TEXTURE_CONCENTRATION_AURA) then
-            CastSpellByName("Concentration Aura")
-        end
-        return
-    end
-    if request.body == "shadow" then
-        if not max_HasBuff("player", BUFF_TEXTURE_SHADOW_RESISTANCE_AURA) then
-            CastSpellByName("Shadow Resistance Aura")
-        end
-        return
-    end
-    if request.body == "frost" then
-        if not max_HasBuff("player", BUFF_TEXTURE_FROST_RESISTANCE_AURA) then
-            CastSpellByName("Frost Resistance Aura")
-        end
-        return
-    end
-    if request.body == "fire" then
-        if not max_HasBuff("player", BUFF_TEXTURE_FIRE_RESISTANCE_AURA) then
-            CastSpellByName("Fire Resistance Aura")
-        end
-        return
-    end
+    mb_paladinAura = request.body
+    mb_Paladin_CastAura()
 end
 
 function mb_Paladin_HandleCleanseRequest(request)

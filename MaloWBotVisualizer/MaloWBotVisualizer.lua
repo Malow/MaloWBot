@@ -1,14 +1,19 @@
-MBV_RPS_AVERAGE_PERIOD = 2
+MBV_RPS_AVERAGE_PERIOD = 1
 MBV_MAX_REQUESTS = 23
 
 mbv_lastRpsUpdateTime = 0
 mbv_rpsCount = 0
+mbv_previousRpsCount = 0
+mbv_previousPreviousRpsCount = 0
 function mbv_UpdateRPS()
     if mbv_lastRpsUpdateTime + MBV_RPS_AVERAGE_PERIOD > GetTime() then
         return
     end
     mbv_lastRpsUpdateTime = GetTime()
-    MaloWBotVisualizerFrame_RpsText:SetText("RPS: " .. mbv_rpsCount / MBV_RPS_AVERAGE_PERIOD)
+    local text = (mbv_rpsCount + mbv_previousRpsCount + mbv_previousPreviousRpsCount) / (MBV_RPS_AVERAGE_PERIOD * 3)
+    MaloWBotVisualizerFrame_RpsText:SetText("RPS: " .. text)
+    mbv_previousPreviousRpsCount = mbv_previousRpsCount
+    mbv_previousRpsCount = mbv_rpsCount
     mbv_rpsCount = 0
 end
 

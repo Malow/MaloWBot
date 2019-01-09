@@ -58,7 +58,7 @@
 					</Anchors>
 				</FontString>
 				<FontString text="RPS: " inherits="GameFontNormal" name="$parent_RpsText">
-					<Size x="50" y="10"/>
+					<Size x="70" y="10"/>
 					<Anchors>
 						<Anchor point="TOPRIGHT">
 							<Offset>

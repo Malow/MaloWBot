@@ -22,16 +22,16 @@ function mb_GoToMaxRangeModule_RebindMovementKeyIfNeeded()
             mb_GoToMaxRangeModule_hasMovedOutOfRange = false
             return false
         else
-            SetBinding("9", "MOVEFORWARD")
+            mb_BindKey("9", "MOVEFORWARD")
             return true
         end
     else
         if mb_IsSpellInRange(mb_GoToMaxRangeModule_spellName, "target") then
-            SetBinding("9", "MOVEBACKWARD")
+            mb_BindKey("9", "MOVEBACKWARD")
             return true
         else
             mb_GoToMaxRangeModule_hasMovedOutOfRange = true
-            SetBinding("9", "MOVEFORWARD")
+            mb_BindKey("9", "MOVEFORWARD")
             return true
         end
     end

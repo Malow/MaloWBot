@@ -497,6 +497,12 @@ end
 function mb_HandleReadyCheck()
     local isReady = true
 
+    local lowestDurability = mb_GetLowestDurabilityPercentage()
+    if lowestDurability < 10 then
+        max_SayRaid("I'm at " .. lowestDurability .. "% durability.")
+        isReady = false
+    end
+
     if mb_CancelExpiringBuffs(8) then
         isReady = false
     end

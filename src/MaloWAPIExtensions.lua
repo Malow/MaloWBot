@@ -412,5 +412,8 @@ function max_IsItemSubTypeBlunt(itemSubType)
     if itemSubType == "Two-Handed Maces" then
         return true
     end
+	if itemSubType == "Fist Weapons" then
+		return true
+	end
     return false
 end

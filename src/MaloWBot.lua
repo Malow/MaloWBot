@@ -482,7 +482,6 @@ end
 ---			Also need to implement rebuffing after combat ress then kinda
 ---		If low on mana raid-heal less
 ---	Paladins:
----		request specific auras
 ---		Add logic for ret pal
 ---		Add holy shock for the few that has it
 ---		Consecration in a max-burn AoE mode?
@@ -521,12 +520,12 @@ end
 ---		Add a watch for it.
 ---		Add them to be ignored for trade over a certain quantity (don't want them to trade all their pots when they're inventory dumpers)
 ---		"Try-hard mode" on/off, which uses flasks and weapon enchants and foodbuffs, and potions in combat.
---- Crown-control people should be DPSing between re-cc's, the problem is re-aquiring CC target, targetlastenemy/targetnearestenemy/assist every1 in raid, and if still cant find say in raid so commander needs to target manually?
+--- Crowd-control people should be DPSing between re-cc's, the problem is re-aquiring CC target, targetlastenemy/targetnearestenemy/assist every1 in raid, and if still cant find say in raid so commander needs to target manually?
 ---	Auto-target mode. TargetNearestEnemy spam and just attack whatever is possible. For DPS maybe 1 person should be the "leader" and set skull, and the rest should follow that.
 ---		Tanks should automatically pick up untanked targets with this
 ---	Don't DPS if you risk overthreat, use KTM API? Need a way to disable it for solo/5-mans
 ---	Add a command /mb readyCheck that initates a normal ready-check and runs mb_HandleReadyCheck() for self
----	Click away temporary weapon enchants on ready check if their duration/charges is too low
+--- Weapon enchants doesn't need to be re-applied when there's less than 5 minutes left, instead they need to be re-applied when ready check happens if their duration is too low.
 ---
 ---
 ---
@@ -534,7 +533,6 @@ end
 --- Enemy-target logic, frame that displays enemy targets and who "has" that target (tank or CC)
 ---		Automatic marking of raid-symbol and a commander does "/mb target tank" or "/mb target cc"
 ---		Automatic DPSing of these targets in order, using assist on the tank who has it, or on the guy who CCs it.
----	Requests per minute visualizer, a frame which shows request spam from people
 ---
 
 

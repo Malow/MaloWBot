@@ -205,16 +205,7 @@ end
 
 function mb_RepairReportRequestHandler(request)
     local requiredPercentage = tonumber(request.body)
-    local durabilitySlots = { 1, 3, 5, 6, 7, 8, 9, 10, 16, 17, 18 }
-    local lowestDurability = 100
-    for _, v in pairs(durabilitySlots) do
-        local percentage = mb_GetDurabilityPercentageForItemSlot(v)
-        if percentage ~= nil then
-            if percentage < lowestDurability then
-                lowestDurability = percentage
-            end
-        end
-    end
+    local lowestDurability = mb_GetLowestDurabilityPercentage()
     if lowestDurability < requiredPercentage then
         max_SayRaid("I'm at " .. lowestDurability .. "% durability.")
     end

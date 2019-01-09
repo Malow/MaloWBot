@@ -210,7 +210,6 @@ function mb_RepairReportRequestHandler(request)
     for _, v in pairs(durabilitySlots) do
         local percentage = mb_GetDurabilityPercentageForItemSlot(v)
         if percentage ~= nil then
-            mb_Print("Slot " .. v .. " has " .. percentage)
             if percentage < lowestDurability then
                 lowestDurability = percentage
             end

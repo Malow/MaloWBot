@@ -607,7 +607,7 @@ function mb_ApplyTemporaryWeaponEnchantsThrottled(mainHandItemName, offHandItemN
 end
 
 function mb_ApplyWeaponEnchantIfNeeded(itemName, slotNumber, hasEnchant, expiration, charges)
-    if hasEnchant == nil or expiration <= 300000 or (charges ~= nil and charges <= 20) then
+    if hasEnchant == nil or expiration <= 300000 or (charges ~= nil and charges ~= 0 and charges <= 20) then
         if mb_GetItemCount(itemName) == 0 then
             max_SayRaid("I'm out of " .. itemName)
             return false

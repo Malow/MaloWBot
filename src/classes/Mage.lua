@@ -169,7 +169,7 @@ function mb_Mage_UseCooldowns()
         if mb_Mage_HasArcanePower() and not max_IsSpellNameOnCooldown("Arcane Power") then
             CastSpellByName("Arcane Power")
         end
-        if mb_Mage_HasCombustion() then
+        if mb_Mage_HasCombustion() and not max_IsSpellNameOnCooldown("Combustion") then
             CastSpellByName("Combustion")
         end
     elseif mb_Mage_HasPresenceOfMind() and not max_IsSpellNameOnCooldown("Presence of Mind") then

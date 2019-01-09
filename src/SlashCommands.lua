@@ -73,7 +73,7 @@ function mb_HandleSpecialSlashCommand(msg)
         local mode = max_SplitString(msg, " ")[2]
         mb_shouldFollow = mode == "on"
         local requestBody = mode
-        if UnitExists("target") then
+        if UnitExists("target") and not UnitIsUnit("player", "target") then
             if max_GetRaidIndexForPlayerName(UnitName("target")) ~= nil then
                 requestBody = requestBody .. "/" .. UnitName("target")
             end

@@ -95,9 +95,15 @@ end
 function mb_Paladin_HasAura()
     if max_HasBuff("player", BUFF_TEXTURE_DEVOTION_AURA) then
         return true
-    elseif max_HasBuff("player", BUFF_TEXTURE_FIRE_RESISTANCE_AURA) then
+    elseif max_HasBuff("player", BUFF_TEXTURE_RETRIBUTION_AURA) then
         return true
     elseif max_HasBuff("player", BUFF_TEXTURE_CONCENTRATION_AURA) then
+        return true
+    elseif max_HasBuff("player", BUFF_TEXTURE_SHADOW_RESISTANCE_AURA) then
+        return true
+    elseif max_HasBuff("player", BUFF_TEXTURE_FROST_RESISTANCE_AURA) then
+        return true
+    elseif max_HasBuff("player", BUFF_TEXTURE_FIRE_RESISTANCE_AURA) then
         return true
     end
     return false
@@ -118,6 +124,7 @@ function mb_Paladin_OnLoad()
     mb_RegisterForRequest(REQUEST_REMOVE_MAGIC.type, mb_Paladin_HandleCleanseRequest)
     mb_RegisterForRequest(REQUEST_REMOVE_POISON.type, mb_Paladin_HandleCleanseRequest)
     mb_RegisterForRequest(REQUEST_REMOVE_DISEASE.type, mb_Paladin_HandleCleanseRequest)
+    mb_RegisterForRequest("palaAura", mb_Paladin_HandleAuraRequest)
     if mb_GetMySpecName() == "Wisdom" then
         mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_WISDOM)
         mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_MIGHT)
@@ -145,6 +152,45 @@ end
 function mb_Paladin_HandleResurrectionRequest(request)
     if mb_CanResurrectUnitWithSpell(max_GetUnitForPlayerName(request.body), "Redemption") then
         mb_AcceptRequest(request)
+    end
+end
+
+function mb_Paladin_HandleAuraRequest(request)
+    if request.body == "devo" then
+        if not max_HasBuff("player", BUFF_TEXTURE_DEVOTION_AURA) then
+            CastSpellByName("Devotion Aura")
+        end
+        return
+    end
+    if request.body == "ret" then
+        if not max_HasBuff("player", BUFF_TEXTURE_RETRIBUTION_AURA) then
+            CastSpellByName("Retribution Aura")
+        end
+        return
+    end
+    if request.body == "conc" then
+        if not max_HasBuff("player", BUFF_TEXTURE_CONCENTRATION_AURA) then
+            CastSpellByName("Concentration Aura")
+        end
+        return
+    end
+    if request.body == "shadow" then
+        if not max_HasBuff("player", BUFF_TEXTURE_SHADOW_RESISTANCE_AURA) then
+            CastSpellByName("Shadow Resistance Aura")
+        end
+        return
+    end
+    if request.body == "frost" then
+        if not max_HasBuff("player", BUFF_TEXTURE_FROST_RESISTANCE_AURA) then
+            CastSpellByName("Frost Resistance Aura")
+        end
+        return
+    end
+    if request.body == "fire" then
+        if not max_HasBuff("player", BUFF_TEXTURE_FIRE_RESISTANCE_AURA) then
+            CastSpellByName("Fire Resistance Aura")
+        end
+        return
     end
 end
 

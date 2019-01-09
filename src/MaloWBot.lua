@@ -52,6 +52,7 @@ mb_isTraining = false
 mb_registeredRequestsHandlers = {}
 mb_myAcceptedRequests = {}
 mb_myPendingRequests = {}
+mb_queuedIncomingComms = {}
 mb_gcdSpells = {}
 mb_queuedRequests = {}
 mb_areaOfEffectMode = false
@@ -60,7 +61,13 @@ mb_isAutoShooting = false
 mb_isReadyChecking = false
 function mb_OnEvent()
 	if event == "CHAT_MSG_ADDON" and arg1 == "MB" then
-		mb_HandleMBCommunication(arg2, arg3, arg4)
+		if max_GetTableSize(mb_queuedIncomingComms) > 20 then
+			mb_queuedIncomingComms = {} -- If bot is not running or if we're lagging then prevent thousands of requests from queueing up.
+		end
+		local mbCom = {}
+		mbCom.msg = arg2
+		mbCom.from = arg4
+		table.insert(mb_queuedIncomingComms, mbCom)
 	elseif event == "START_AUTOREPEAT_SPELL" then
 		mb_isAutoShooting = true
 	elseif event == "STOP_AUTOREPEAT_SPELL" then
@@ -125,12 +132,9 @@ f:RegisterEvent("PLAYER_DEAD")
 f:RegisterEvent("READY_CHECK")
 f:SetScript("OnEvent", mb_OnEvent)
 
-mb_queuedIncomingRequests = {}
-function mb_HandleMBCommunication(arg2, arg3, arg4)
-    local channel = arg3
-    local from = arg4
+function mb_HandleMBCommunication(msg, from)
     --local requestId, requestType, requestBody = string.match(arg2, "(%d+):(%a+):(.*)") -- string.match doesn't exist in 1.12, use this if you implement it yourself
-    local strings = max_SplitString(arg2, ":")
+    local strings = max_SplitString(msg, ":")
     local messageType = strings[1]
     if messageType == "request" then
         local request = {}
@@ -140,10 +144,9 @@ function mb_HandleMBCommunication(arg2, arg3, arg4)
         request.priority = tonumber(strings[5])
         request.from = from
         if mb_registeredRequestsHandlers[request.type] ~= nil then
-			if max_GetTableSize(mb_queuedIncomingRequests) > 20 then
-				mb_queuedIncomingRequests = {} -- If bot is not running then prevent thousands of requests from queueing up.
+			if mb_ShouldHandleRequest(request) then
+				mb_registeredRequestsHandlers[request.type](request)
 			end
-			table.insert(mb_queuedIncomingRequests, request)
         end
     elseif messageType == "acceptRequest" then
         local requestId = strings[2]
@@ -286,7 +289,7 @@ end
 
 function mb_RunBot(commander)
 	mb_RebindMovementKeyIfNeeded()
-	mb_HandleQueuedIncomingRequests()
+	mb_HandleQueuedIncomingComms()
 
 	if mb_HandleSharedBehaviour(commander) then
 		return
@@ -295,13 +298,11 @@ function mb_RunBot(commander)
 	mb_classSpecificRunFunction(commander)
 end
 
-function mb_HandleQueuedIncomingRequests()
-	for k, v in pairs(mb_queuedIncomingRequests) do
-		if mb_ShouldAddRequestToQueue(v) then
-			mb_registeredRequestsHandlers[v.type](v)
-		end
+function mb_HandleQueuedIncomingComms()
+	for k, v in pairs(mb_queuedIncomingComms) do
+		mb_HandleMBCommunication(v.msg, v.from)
 	end
-	mb_queuedIncomingRequests = {}
+	mb_queuedIncomingComms = {}
 end
 
 function mb_MakeRequest(requestType, requestBody, requestPriority)
@@ -352,7 +353,7 @@ function mb_IsOnGCD()
 	return true
 end
 
-function mb_ShouldAddRequestToQueue(request)
+function mb_ShouldHandleRequest(request)
 	if request.priority == nil then
 		mb_Print(request.type)
 		mb_Print(request.from)

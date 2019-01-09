@@ -1,3 +1,5 @@
+mb_mageLastScorch = 0
+mb_mageIsFire = false
 function mb_Mage(commander)
     if mb_DoBasicCasterLogicThrottled() then
         return
@@ -132,20 +134,47 @@ function mb_Mage(commander)
         return
     end
 
-    if UnitAffectingCombat("player") and max_GetDebuffStackCount("target", DEBUFF_TEXTURE_WINTERS_CHILL) == 5 and max_GetManaPercentage("player") > 10 then
-        if not mb_IsMoving() then
-            max_UseEquippedItemIfReady("Trinket0Slot")
-            max_UseEquippedItemIfReady("Trinket1Slot")
-            if mb_Mage_HasArcanePower() and not max_IsSpellNameOnCooldown("Arcane Power") then
-                CastSpellByName("Arcane Power")
+    if UnitAffectingCombat("player") and max_GetManaPercentage("player") > 25 then
+        if not mb_mageIsFire then
+            if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_WINTERS_CHILL) == 5 then
+                mb_Mage_UseCooldowns()
             end
-        elseif mb_Mage_HasPresenceOfMind() and not max_IsSpellNameOnCooldown("Presence of Mind") then
-            CastSpellByName("Presence of Mind")
+        else
+            if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_IMPROVED_SCORCH) == 5 then
+                mb_Mage_UseCooldowns()
+            end
         end
     end
 
-    CastSpellByName("Frostbolt")
+    if mb_mageIsFire then
+        if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_IMPROVED_SCORCH) < 5 then
+            CastSpellByName("Scorch")
+            mb_mageLastScorch = mb_GetTime()
+        elseif mb_IsClassLeader() and mb_mageLastScorch + 20 < mb_GetTime() then
+            CastSpellByName("Scorch")
+            mb_mageLastScorch = mb_GetTime()
+        else
+            CastSpellByName("Fireball")
+        end
+    else
+        CastSpellByName("Frostbolt")
+    end
     CastSpellByName("Fire Blast")
+end
+
+function mb_Mage_UseCooldowns()
+    if not mb_IsMoving() then
+        max_UseEquippedItemIfReady("Trinket0Slot")
+        max_UseEquippedItemIfReady("Trinket1Slot")
+        if mb_Mage_HasArcanePower() and not max_IsSpellNameOnCooldown("Arcane Power") then
+            CastSpellByName("Arcane Power")
+        end
+        if mb_Mage_HasCombustion() then
+            CastSpellByName("Combustion")
+        end
+    elseif mb_Mage_HasPresenceOfMind() and not max_IsSpellNameOnCooldown("Presence of Mind") then
+        CastSpellByName("Presence of Mind")
+    end
 end
 
 function mb_Mage_OnLoad()
@@ -173,7 +202,13 @@ function mb_Mage_OnLoad()
     mb_AddReagentWatch("Arcane Powder", 50)
     mb_AddReagentWatch("Rune of Portals", 10)
     mb_RegisterRangeCheckSpell("Frostbolt")
-    mb_GoToMaxRangeModule_RegisterMaxRangeSpell("Frostbolt")
+
+    if mb_GetMySpecName() == "DeepFire" then
+        mb_mageIsFire = true
+        mb_GoToMaxRangeModule_RegisterMaxRangeSpell("Fireball")
+    else
+        mb_GoToMaxRangeModule_RegisterMaxRangeSpell("Frostbolt")
+    end
 end
 
 function mb_Mage_HandleWaterRequest(request)
@@ -254,6 +289,11 @@ function mb_Mage_HasArcanePower()
     return currentRank == 1
 end
 
+function mb_Mage_HasCombustion()
+    local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(2, 16)
+    return currentRank == 1
+end
+
 function mb_Mage_AddDesiredTalents()
     if UnitLevel("player") == 60 then
         -- Raiding specs
@@ -274,7 +314,7 @@ function mb_Mage_AddDesiredTalents()
             mb_AddDesiredTalent(1, 2, 3) -- Arcane Focus
             mb_AddDesiredTalent(1, 5, 5) -- Magic Absorption
             mb_AddDesiredTalent(1, 6, 5) -- Arcane Concentration
-            mb_AddDesiredTalent(1, 12, 3) -- Magic Meditation
+            mb_AddDesiredTalent(1, 12, 3) -- Arcane Meditation
         elseif  mb_GetMySpecName() == "ArcaneInstability" then
             mb_AddDesiredTalent(3, 2, 5) -- Improved Frostbolt
             mb_AddDesiredTalent(3, 3, 3) -- Elemental Precision
@@ -290,7 +330,7 @@ function mb_Mage_AddDesiredTalents()
             mb_AddDesiredTalent(1, 6, 5) -- Arcane Concentration
             mb_AddDesiredTalent(1, 8, 3) -- Improved Arcane Explosion
             mb_AddDesiredTalent(1, 9, 1) -- Arcane Resilience
-            mb_AddDesiredTalent(1, 12, 3) -- Magic Meditation
+            mb_AddDesiredTalent(1, 12, 3) -- Arcane Meditation
             mb_AddDesiredTalent(1, 13, 1) -- Presence of Mind
             mb_AddDesiredTalent(1, 14, 2) -- Arcane Mind
             mb_AddDesiredTalent(1, 15, 3) -- Arcane Instability
@@ -307,11 +347,19 @@ function mb_Mage_AddDesiredTalents()
             mb_AddDesiredTalent(1, 6, 5) -- Arcane Concentration
             mb_AddDesiredTalent(1, 8, 3) -- Improved Arcane Explosion
             mb_AddDesiredTalent(1, 9, 1) -- Arcane Resilience
-            mb_AddDesiredTalent(1, 12, 3) -- Magic Meditation
+            mb_AddDesiredTalent(1, 12, 3) -- Arcane Meditation
             mb_AddDesiredTalent(1, 13, 1) -- Presence of Mind
             mb_AddDesiredTalent(1, 14, 4) -- Arcane Mind
             mb_AddDesiredTalent(1, 15, 3) -- Arcane Instability
             mb_AddDesiredTalent(1, 16, 1) -- Arcane Power
+        elseif  mb_GetMySpecName() == "DeepFire" then
+            mb_AddDesiredTalent(1, 1, 2) -- Arcane Subtlety
+            mb_AddDesiredTalent(1, 2, 3) -- Arcane Focus
+            mb_AddDesiredTalent(1, 5, 5) -- Magic Absorption
+            mb_AddDesiredTalent(1, 6, 5) -- Arcane Concentration
+            mb_AddDesiredTalent(1, 12, 2) -- Arcane Meditation
+            -- TODO: Add Fire talents
+            mb_AddDesiredTalent(3, 3, 3) -- Elemental Precision
         end
     else
         -- Leveling/Dungeon spec

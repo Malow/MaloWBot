@@ -9,6 +9,7 @@ function mb_MoveOutModule_Load()
     table.insert(spellNames, "Flamestrike")
     table.insert(spellNames, "Rain of Fire")
     table.insert(spellNames, "Blizzard")
+    table.insert(spellNames, "Mana Storm")
     mb_CombatLogModule_PeriodicSelfDamageWatch_Enable(spellNames)
     local debuffNames = {}
     table.insert(debuffNames, "Living Bomb")

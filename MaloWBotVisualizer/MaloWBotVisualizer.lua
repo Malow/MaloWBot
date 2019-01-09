@@ -10,8 +10,8 @@ function mbv_UpdateRPS()
         return
     end
     mbv_lastRpsUpdateTime = GetTime()
-    local text = (mbv_rpsCount + mbv_previousRpsCount + mbv_previousPreviousRpsCount) / (MBV_RPS_AVERAGE_PERIOD * 3)
-    MaloWBotVisualizerFrame_RpsText:SetText("RPS: " .. text)
+    local value = (mbv_rpsCount + mbv_previousRpsCount + mbv_previousPreviousRpsCount) / (MBV_RPS_AVERAGE_PERIOD * 3)
+    MaloWBotVisualizerFrame_RpsText:SetText("RPS: " .. math.floor(value * 100) / 100)
     mbv_previousPreviousRpsCount = mbv_previousRpsCount
     mbv_previousRpsCount = mbv_rpsCount
     mbv_rpsCount = 0

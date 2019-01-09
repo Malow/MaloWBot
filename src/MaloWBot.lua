@@ -238,8 +238,8 @@ function mb_CreateMBMacros()
 end
 
 function mb_BindKey(bind, action)
-	SetBinding(bind, "action")
-	SetBinding("CTRL-" .. bind, "action")
+	SetBinding(bind, action)
+	SetBinding("CTRL-" .. bind, action)
 end
 
 function mb_CreateMacro(name, body, actionSlot, bindingKey, bindingName)

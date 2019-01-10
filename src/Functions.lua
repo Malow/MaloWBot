@@ -134,15 +134,13 @@ function mb_IsIgnoredTradeItem(itemName)
 		end
 	end
 
-	if itemName == "Rough Arrow" then
-		return true
-	elseif itemName == "Jagged Arrow" then
-		return true
-	elseif itemName == "Instant Poison VI" then
-	    return true
-	elseif itemName == "Accurate Slugs" then
-		return true
-	elseif itemName == "Blacksmith Hammer" then
+	for _, watchedReagent in pairs(mb_watchedReagents) do
+		if watchedReagent.itemName == itemName then
+			return true
+		end
+	end
+
+	if itemName == "Blacksmith Hammer" then
 		return true
 	elseif itemName == "Mining Pick" then
 		return true
@@ -150,17 +148,7 @@ function mb_IsIgnoredTradeItem(itemName)
 		return true
 	elseif itemName == "Unadorned Seal of Ascension" then
 		return true
-	elseif itemName == "Wild Thornroot" then
-		return true
-	elseif itemName == "Symbol of Kings" then
-		return true
-	elseif itemName == "Rune of Portals" then
-		return true
 	elseif itemName == "Ironwood Seed" then
-		return true
-	elseif itemName == "Sacred Candle" then
-		return true
-	elseif itemName == "Arcane Powder" then
 		return true
 	elseif itemName == "Major Healthstone" then
 		return true
@@ -170,8 +158,6 @@ function mb_IsIgnoredTradeItem(itemName)
         return true
 	elseif itemName == "Field Repair Bot 74A" then
 		return true
-    elseif itemName == "Sacred Cord" then
-        return true
 	end
 	for i = max_GetTableSize(ITEMS_WATER), 1, -1 do
 		if itemName == ITEMS_WATER[i] then

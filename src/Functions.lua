@@ -166,6 +166,8 @@ function mb_IsIgnoredTradeItem(itemName)
 		return true
 	elseif itemName == "Gyromatic Micro-Adjustor" then
 		return true
+    elseif itemName == "Arclight Spanner" then
+        return true
 	elseif itemName == "Field Repair Bot 74A" then
 		return true
     elseif itemName == "Sacred Cord" then

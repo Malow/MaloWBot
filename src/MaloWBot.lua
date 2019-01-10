@@ -525,7 +525,6 @@ end
 ---		Tanks should automatically pick up untanked targets with this
 ---	Don't DPS if you risk overthreat, use KTM API? Need a way to disable it for solo/5-mans
 ---	Add a command /mb readyCheck that initates a normal ready-check and runs mb_HandleReadyCheck() for self
---- Weapon enchants doesn't need to be re-applied when there's less than 5 minutes left, instead they need to be re-applied when ready check happens if their duration is too low.
 ---
 ---
 ---

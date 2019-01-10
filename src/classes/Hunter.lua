@@ -67,7 +67,7 @@ function mb_Hunter(commander)
 		end
 	end
 
-	if not max_IsSpellNameOnCooldown("Rapid Fire") then
+	if mb_isAutoShooting and not max_IsSpellNameOnCooldown("Rapid Fire") then
 		CastSpellByName("Rapid Fire")
 		return
 	end

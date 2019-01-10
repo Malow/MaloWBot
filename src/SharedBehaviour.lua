@@ -494,7 +494,9 @@ function mb_HandleSharedBehaviourPostLoad(playerClass)
     mb_MoveOutModule_Load()
 end
 
+mb_lastReadyCheck = 0
 function mb_HandleReadyCheck()
+    mb_lastReadyCheck = mb_GetTime()
     local isReady = true
 
     local lowestDurability = mb_GetLowestDurabilityPercentage()
@@ -597,7 +599,7 @@ end
 
 mb_lastTemporaryWeaponEnchantCheck = 0
 function mb_ApplyTemporaryWeaponEnchantsThrottled(mainHandItemName, offHandItemName)
-    if mb_lastTemporaryWeaponEnchantCheck + 2 > mb_GetTime() then
+    if mb_lastTemporaryWeaponEnchantCheck + 3 > mb_GetTime() then
         return false
     end
     mb_lastTemporaryWeaponEnchantCheck = mb_GetTime()
@@ -613,16 +615,25 @@ function mb_ApplyTemporaryWeaponEnchantsThrottled(mainHandItemName, offHandItemN
 end
 
 function mb_ApplyWeaponEnchantIfNeeded(itemName, slotNumber, hasEnchant, expiration, charges)
-    if hasEnchant == nil or expiration <= 300000 or (charges ~= nil and charges ~= 0 and charges <= 20) then
-        if mb_GetItemCount(itemName) == 0 then
-            max_SayRaid("I'm out of " .. itemName)
-            return false
+    if mb_lastReadyCheck + 30 > mb_GetTime() then -- If there's been less than 30 seconds since last ready-check overwrite enchants with less than 5 minutes or less than 20 charges
+        if hasEnchant == nil or expiration <= 300000 or (charges ~= nil and charges ~= 0 and charges <= 20) then
+            return mb_ApplyWeaponEnchant(itemName, slotNumber)
         end
-        mb_UseItem(itemName)
-        PickupInventoryItem(slotNumber)
-        ReplaceEnchant()
-        ClearCursor()
-        return true
+    end
+    if hasEnchant == nil then
+        return mb_ApplyWeaponEnchant(itemName, slotNumber)
     end
     return false
+end
+
+function mb_ApplyWeaponEnchant(itemName, slotNumber)
+    if mb_GetItemCount(itemName) == 0 then
+        max_SayRaid("I'm out of " .. itemName)
+        return false
+    end
+    mb_UseItem(itemName)
+    PickupInventoryItem(slotNumber)
+    ReplaceEnchant()
+    ClearCursor()
+    return true
 end

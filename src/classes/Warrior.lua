@@ -165,9 +165,11 @@ function mb_Warrior_Tank(commander)
 end
 
 function mb_Warrior_DpsTank(commander)
-    max_AssistByPlayerName(commander)
     if not max_HasValidOffensiveTarget() then
-        return
+        max_AssistByPlayerName(commander)
+        if not max_HasValidOffensiveTarget() then
+            return
+        end
     end
 
     if max_GetActiveStance() ~= 1 then

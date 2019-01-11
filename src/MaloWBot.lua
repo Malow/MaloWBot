@@ -104,7 +104,6 @@ function mb_OnEvent()
 		mb_isTraining = true
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		mb_queuedUseConsumables = {}
-		mb_isTraining = true
 	elseif event == "PLAYER_DEAD" then
 		mb_queuedUseConsumables = {}
 		mb_areaOfEffectMode = false

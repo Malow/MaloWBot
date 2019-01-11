@@ -92,9 +92,10 @@ function mb_HandleSharedBehaviour(commander)
         FollowByName(commander, true)
     end
 
-    --if mb_UseConsumableFromQueue() then
-    --    return true
-    --end
+    if mb_UseConsumableFromQueue() then
+        return true
+    end
+
     return false
 end
 

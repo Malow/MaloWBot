@@ -35,6 +35,7 @@ modules\SpellCastingModule.lua
 
 modules\CombatLogSubModules\DamageTakenPerSecond.lua
 modules\CombatLogSubModules\DebuffWatch.lua
+modules\CombatLogSubModules\EnemyGainsWatch.lua
 modules\CombatLogSubModules\FriendlyGainsWatch.lua
 modules\CombatLogSubModules\PeriodicSelfDamageWatch.lua
 modules\CombatLogSubModules\SwingTimer.lua

@@ -436,13 +436,17 @@ function mb_IsMoving()
 	return mb_lastTimeMoving + 0.5 > mb_GetTime()
 end
 
+function mb_IsFacingWrongWay()
+	return mb_lastFacingWrongWayTime + 0.5 > mb_GetTime()
+end
+
 mb_shouldFuckOffAt = 0
 function mb_RebindMovementKeyIfNeeded()
 	if mb_shouldFuckOffAt + 4.5 > mb_GetTime() then
 		mb_BindKey("9", "MOVEFORWARD")
 		return
 	end
-	if mb_lastFacingWrongWayTime + 0.5 > mb_GetTime() then
+	if mb_IsFacingWrongWay() then
 		mb_BindKey("9", "TURNLEFT")
 		return
 	end

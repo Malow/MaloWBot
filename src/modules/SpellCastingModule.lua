@@ -33,7 +33,7 @@ function mb_IsCasting()
     if mb_isCasting then
         return true
     end
-    if mb_stoppedCastingTime + 0.35 > GetTime() then
+    if mb_stoppedCastingTime + 0.35 > mb_GetTime() then
         return true
     end
     if mb_lastAttemptedCast ~= nil and mb_lastAttemptedCast.attemptTime + 0.3 > mb_GetTime() then
@@ -93,7 +93,7 @@ function mb_StopCastingIfNeeded(stopCastingFunction)
     if mb_lastAttemptedCast == nil or mb_lastAttemptedCast.startCastTime == nil then
         return false
     end
-    if mb_stoppedCastingTime + 0.3 > GetTime() then
+    if mb_stoppedCastingTime + 0.3 > mb_GetTime() then
         return true
     end
     if stopCastingFunction(mb_lastAttemptedCast) then

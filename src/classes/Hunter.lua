@@ -134,12 +134,14 @@ function mb_Hunter_OnLoad()
 	mb_CombatLogModule_SwingTimer_EnableAutoShot()
 	mb_RegisterRangeCheckSpell("Multi-Shot")
 	mb_GoToMaxRangeModule_RegisterMaxRangeSpell("Multi-Shot")
+    mb_CombatLogModule_EnemyGainsWatch_Enable()
 end
 
 function mb_Hunter_HandleTranquilizingShotRequest(request)
 	if request.from == UnitName("player") then
 		return
 	end
+    max_AssistByPlayerName(request.from)
 	if mb_Hunter_CanDoTranquilizingShot() then
 		mb_AcceptRequest(request)
 	end
@@ -165,6 +167,9 @@ function mb_Hunter_CanDoTranquilizingShot()
 	if max_IsSpellNameOnCooldown("Tranquilizing Shot") then
 		return false
 	end
+    if mb_IsFacingWrongWay() then
+        return false
+    end
 	if mb_IsSpellInRange("Tranquilizing Shot") and UnitMana("player") > 500 then
 		return true
 	end
@@ -172,6 +177,10 @@ function mb_Hunter_CanDoTranquilizingShot()
 end
 
 function mb_Hunter_TargetNeedsTranquilizing()
+    if mb_CombatLogModule_EnemyGainsWatch_HasGained(UnitName("target"), "Frenzy") then
+        max_SayRaid("Automatic Frenzy detection on target, Tranquilizing.")
+        return true
+    end
 	for _, buffTexture in pairs(BUFF_TEXTURES_TRANQUILIZING_SHOT) do
 		if max_HasBuff("target", buffTexture) then
 			return true

@@ -34,13 +34,24 @@ function mb_CombatLogModule_ExtractDamage(str)
 end
 
 function mb_CombatLogModule_ExtractGainsSpellName(str)
-    local start = string.find(arg1, "gain %a+") -- You gain
+    local start = string.find(str, "gain %a+") -- You gain
     if start == nil then
-        start = string.find(arg1, "ains %a+") -- X gains
+        start = string.find(str, "ains %a+") -- X gains
         if start == nil then
             return 0
         end
     end
     local firstPartRemoved = string.sub(str, start + 5)
     return string.sub(firstPartRemoved, 1, string.len(firstPartRemoved) - 1)
+end
+
+function mb_CombatLogModule_ExtractGainsNames(str)
+    local start = string.find(str, "%a+ gains %a+") -- X gains Y
+    if start == nil then
+        return nil, nil
+    end
+    local gainsStart = string.find(str, "gains")
+    local unitName = string.sub(str, 1, gainsStart - 2)
+    local spellName = string.sub(str, gainsStart + 6, string.len(str) - 1)
+    return unitName, spellName
 end

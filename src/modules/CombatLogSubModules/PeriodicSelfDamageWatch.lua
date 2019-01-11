@@ -9,7 +9,7 @@ mb_CombatLogModule_PeriodicSelfDamageWatch_log = {}
 function mb_CombatLogModule_PeriodicSelfDamageWatch_OnEvent(arg1)
     for k, v in pairs(mb_CombatLogModule_PeriodicSelfDamageWatch_spellNames) do
         if string.find(arg1, v) then
-            mb_CombatLogModule_PeriodicSelfDamageWatch_log[GetTime()] = v
+            mb_CombatLogModule_PeriodicSelfDamageWatch_log[mb_GetTime()] = v
         end
     end
 end

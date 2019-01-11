@@ -44,6 +44,10 @@ function mb_Warrior(commander)
     end
 
     if not mb_areaOfEffectMode then
+        if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) == 5 then
+            max_UseEquippedItemIfReady("Trinket0Slot")
+            max_UseEquippedItemIfReady("Trinket1Slot")
+        end
         if max_GetHealthPercentage("target") < 25 then
             CastSpellByName("Execute")
             return

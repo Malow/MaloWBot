@@ -217,13 +217,25 @@ end
 
 -- Returns the spellbookId of the spell
 function max_GetSpellbookId(spellName)
+	local highestRank = -1
+	local highestRankId = -1
 	for i = 1, 200 do
-		local name, rank = GetSpellName(i, "BOOKTYPE_SPELL")
+		local name, rankString = GetSpellName(i, "BOOKTYPE_SPELL")
 		if name == spellName then
-			return i
+			local rank = 0
+			if string.find(rankString, "Rank %d+") then
+				rank = tonumber(string.sub(rankString, 5))
+			end
+			if rank > highestRank then
+				highestRankId = i
+				highestRank = rank
+			end
 		end
 	end
-	max_SayRaid("Serious error, I don't know the spell: " .. tostring(spellName))
+	if highestRankId == nil then
+		max_SayRaid("Serious error, I don't know the spell: " .. tostring(spellName))
+	end
+	return highestRankId
 end
 
 -- Returns true/false depending on if you know that spell

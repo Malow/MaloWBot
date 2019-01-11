@@ -2,7 +2,7 @@ function mb_Hunter(commander)
 	if mb_DoBasicCasterLogicThrottled() then
 		return
 	end
-    if mb_IsCasting() then
+    if mb_IsCasting() or mb_IsUsingAbility("Aimed Shot") then
         return
     end
 
@@ -133,6 +133,9 @@ function mb_Hunter_OnLoad()
 	mb_Hunter_AddDesiredTalents()
 	mb_CombatLogModule_SwingTimer_EnableAutoShot()
 	mb_RegisterRangeCheckSpell("Multi-Shot")
+	if mb_Hunter_HasAimedShot() then
+		mb_RegisterRangeCheckSpell("Aimed Shot") -- Need Aimed Shot on the bars to be able to check if we're "casting" it
+	end
 	mb_GoToMaxRangeModule_RegisterMaxRangeSpell("Multi-Shot")
     mb_CombatLogModule_EnemyGainsWatch_Enable()
 end
@@ -199,6 +202,11 @@ end
 function mb_Hunter_HasFullImprovedHuntersMark()
 	local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(2, 3)
 	return currentRank == 5
+end
+
+function mb_Hunter_HasAimedShot()
+	local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(2, 5)
+	return currentRank == 1
 end
 
 function mb_Hunter_AddDesiredTalents()

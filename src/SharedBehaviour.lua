@@ -448,6 +448,14 @@ function mb_IsSpellInRange(spellName, unit)
     return isInRange
 end
 
+-- Like IsCasting but works on specific abilities that doesn't "cast" like aimed shot. Abilities needs to be registered for range-check for them to work.
+function mb_IsUsingAbility(abilityName)
+    if mb_registeredRangeCheckSpells[abilityName] == nil then
+        return false
+    end
+    return IsCurrentAction(mb_registeredRangeCheckSpells[abilityName]) == 1
+end
+
 function mb_GetBuffWithType(type)
     for k, v in pairs(All_BUFFS) do
         if type == v.type then

@@ -91,6 +91,10 @@ function mb_HandleSharedBehaviour(commander)
     if not mb_IsDrinking() and mb_shouldFollow then
         FollowByName(commander, true)
     end
+
+    if mb_UseConsumableFromQueue() then
+        return true
+    end
     return false
 end
 
@@ -636,4 +640,24 @@ function mb_ApplyWeaponEnchant(itemName, slotNumber)
     ReplaceEnchant()
     ClearCursor()
     return true
+end
+
+mb_queuedUseConsumables = {}
+function mb_QueueUseConsumable(itemName)
+    table.insert(mb_queuedUseConsumables, itemName)
+end
+
+function mb_UseConsumableFromQueue()
+    if mb_IsCasting() then
+        return false
+    end
+    local itemName = table.remove(mb_queuedUseConsumables, 1)
+    local itemCount = mb_GetItemCount(itemName)
+    if itemCount > 0 then
+        mb_UseItem(itemName)
+        return true
+    else
+        max_SayRaid("I'm completely out of " .. itemName)
+    end
+    return false
 end

@@ -158,3 +158,11 @@ function mb_HealingModule_GetRaidHealTarget(spell, unitFilter)
     end
 end
 
+function mb_Healer_HandleUseConsumableRequest(request)
+    if not UnitAffectingCombat("player") then
+        return
+    end
+    if max_GetMissingMana("player") > 2500 then
+        mb_QueueUseConsumable("Major Mana Potion")
+    end
+end

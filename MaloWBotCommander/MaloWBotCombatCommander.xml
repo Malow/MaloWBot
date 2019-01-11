@@ -127,6 +127,20 @@
 					<OnClick> mb_OnCmd("tranquilize"); </OnClick>
 				</Scripts>
 			</Button>
+
+
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="UseConsumable">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="-66"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("useConsumable"); </OnClick>
+				</Scripts>
+			</Button>
 			
 			
 			

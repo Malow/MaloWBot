@@ -101,6 +101,9 @@ function mb_Hunter_HasAspect()
 	if max_HasBuff("player", BUFF_TEXTURE_ASPECT_OF_THE_HAWK) then
 		return true
 	end
+	if max_HasBuff("player", BUFF_TEXTURE_ASPECT_OF_THE_PACK) then
+		return true
+	end
 	return false
 end
 
@@ -124,7 +127,7 @@ function mb_Hunter_OnLoad()
 	if itemSubType == "Bows" or itemSubType == "Crossbows" then
 		mb_AddReagentWatch("Jagged Arrow", 2000)
 	elseif itemSubType == "Guns" then
-		mb_AddReagentWatch("Accurate Slugs", 2000)
+		mb_AddReagentWatch("Thorium Shells", 2000)
 	end
 
 	mb_Hunter_AddDesiredTalents()

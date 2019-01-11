@@ -102,7 +102,11 @@ function mb_OnEvent()
 		mb_isTraining = false
 	elseif event == "TRAINER_SHOW" then
 		mb_isTraining = true
+	elseif event == "PLAYER_REGEN_ENABLED" then
+		mb_queuedUseConsumables = {}
+		mb_isTraining = true
 	elseif event == "PLAYER_DEAD" then
+		mb_queuedUseConsumables = {}
 		mb_areaOfEffectMode = false
         mb_shouldRequestBuffs = false
 		if mb_GetMyCommanderName() == UnitName("player") then
@@ -130,6 +134,7 @@ f:RegisterEvent("PLAYER_ENTER_COMBAT")
 f:RegisterEvent("PLAYER_LEAVE_COMBAT")
 f:RegisterEvent("PLAYER_DEAD")
 f:RegisterEvent("READY_CHECK")
+f:RegisterEvent("PLAYER_REGEN_ENABLED")
 f:SetScript("OnEvent", mb_OnEvent)
 
 function mb_HandleMBCommunication(msg, from)

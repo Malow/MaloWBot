@@ -1,20 +1,27 @@
-MBV_RPS_AVERAGE_PERIOD = 1
+MBV_RPS_AVERAGE_PERIOD_SECONDS = 1
 MBV_MAX_REQUESTS = 23
+MBV_AVERAGE_PERIOD_COUNT = 5
 
 mbv_lastRpsUpdateTime = 0
-mbv_rpsCount = 0
-mbv_previousRpsCount = 0
-mbv_previousPreviousRpsCount = 0
+mbv_rpsCount = {}
+for i = 1, MBV_AVERAGE_PERIOD_COUNT do
+    mbv_rpsCount[i] = 0
+end
 function mbv_UpdateRPS()
-    if mbv_lastRpsUpdateTime + MBV_RPS_AVERAGE_PERIOD > GetTime() then
+    if mbv_lastRpsUpdateTime + MBV_RPS_AVERAGE_PERIOD_SECONDS > GetTime() then
         return
     end
     mbv_lastRpsUpdateTime = GetTime()
-    local value = (mbv_rpsCount + mbv_previousRpsCount + mbv_previousPreviousRpsCount) / (MBV_RPS_AVERAGE_PERIOD * 3)
+    local value = 0
+    for i = 1, MBV_AVERAGE_PERIOD_COUNT do
+        value = value + mbv_rpsCount[i]
+    end
+    value = value / (MBV_RPS_AVERAGE_PERIOD_SECONDS * MBV_AVERAGE_PERIOD_COUNT)
     MaloWBotVisualizerFrame_RpsText:SetText("RPS: " .. math.floor(value * 100) / 100)
-    mbv_previousPreviousRpsCount = mbv_previousRpsCount
-    mbv_previousRpsCount = mbv_rpsCount
-    mbv_rpsCount = 0
+    for i = MBV_AVERAGE_PERIOD_COUNT, 2, -1 do
+        mbv_rpsCount[i] = mbv_rpsCount[i - 1]
+    end
+    mbv_rpsCount[1] = 0
 end
 
 function mbv_OnUpdate()
@@ -28,7 +35,7 @@ function mbv_OnEvent()
 end
 
 function mbv_NewEvent(from, text)
-    mbv_rpsCount = mbv_rpsCount + 1
+    mbv_rpsCount[1] = mbv_rpsCount[1] + 1
     if MaloWBotVisualizerFrame.bars == nil then
         MaloWBotVisualizerFrame.bars = {}
         for i = 1, MBV_MAX_REQUESTS do

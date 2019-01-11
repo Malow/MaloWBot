@@ -652,6 +652,9 @@ function mb_UseConsumableFromQueue()
         return false
     end
     local itemName = table.remove(mb_queuedUseConsumables, 1)
+    if itemName == nil then
+        return false
+    end
     local itemCount = mb_GetItemCount(itemName)
     if itemCount > 0 then
         mb_UseItem(itemName)

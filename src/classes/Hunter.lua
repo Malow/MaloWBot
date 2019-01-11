@@ -10,12 +10,6 @@ function mb_Hunter(commander)
 		return
 	end
 
-	if mb_IsClassLeader() and mb_Hunter_TargetNeedsTranquilizing() then
-		if mb_Hunter_DoOrRequestTranquilizingShot() then
-			return
-		end
-	end
-
 	local request = mb_GetQueuedRequest(true)
 	if request ~= nil then
 		if request.type == REQUEST_TRANQUILIZING_SHOT.type then
@@ -49,6 +43,12 @@ function mb_Hunter(commander)
 		return
 	end
 
+	if mb_IsClassLeader() and mb_Hunter_TargetNeedsTranquilizing() then
+		if mb_Hunter_DoOrRequestTranquilizingShot() then
+			return
+		end
+	end
+
 	if CheckInteractDistance("target", 3) then
 		if not mb_isAutoAttacking then
 			CastSpellByName("Attack")
@@ -67,9 +67,15 @@ function mb_Hunter(commander)
 		end
 	end
 
-	if mb_isAutoShooting and not max_IsSpellNameOnCooldown("Rapid Fire") then
-		CastSpellByName("Rapid Fire")
-		return
+	if mb_isAutoShooting then
+		if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) == 5 then
+			max_UseEquippedItemIfReady("Trinket0Slot")
+			max_UseEquippedItemIfReady("Trinket1Slot")
+		end
+		if not max_IsSpellNameOnCooldown("Rapid Fire") then
+			CastSpellByName("Rapid Fire")
+			return
+		end
 	end
 
 	if mb_GetTime() < mb_CombatLogModule_SwingTimer_GetLastAutoShotTime() + 0.3 and not max_IsSpellNameOnCooldown("Aimed Shot") then

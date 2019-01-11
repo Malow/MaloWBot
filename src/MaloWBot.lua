@@ -480,6 +480,7 @@ end
 ---		Wand instead of attack if ranged, (does wand cause GCD?)
 ---		On aggro cast Fade
 ---		If low on mana raid-heal less (except for PoH)
+---		If high on mana and tank-dmg is low skip tank-healing and do raid-healing. (Look at expected future health of the selected tank, if the missing health is smaller than X skip it)
 --- Druids:
 ---     Tranquility like PoH in priest
 ---     Swiftmend
@@ -489,6 +490,7 @@ end
 ---		Combat ress
 ---			Also need to implement rebuffing after combat ress then kinda
 ---		If low on mana raid-heal less
+---		If high on mana and tank-dmg is low skip tank-healing and do raid-healing. (Look at expected future health of the selected tank, if the missing health is smaller than X skip it)
 ---	Paladins:
 ---		Add logic for ret pal
 ---		Add holy shock for the few that has it

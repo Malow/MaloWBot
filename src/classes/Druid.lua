@@ -44,6 +44,11 @@ function mb_Druid(commander)
         end
     end
 
+    if UnitAffectingCombat("player") then
+        max_UseEquippedItemIfReady("Trinket0Slot")
+        max_UseEquippedItemIfReady("Trinket1Slot")
+    end
+
     if mb_Druid_TankHealing() then
         return
     end

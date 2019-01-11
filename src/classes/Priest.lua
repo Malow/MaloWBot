@@ -49,6 +49,11 @@ function mb_Priest(commander)
         return
     end
 
+    if UnitAffectingCombat("player") then
+        max_UseEquippedItemIfReady("Trinket0Slot")
+        max_UseEquippedItemIfReady("Trinket1Slot")
+    end
+
     if mb_Priest_PrayerOfHealing() then
         return
     end

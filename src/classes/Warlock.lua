@@ -187,6 +187,9 @@ function mb_Warlock_OnLoad()
 end
 
 function mb_Warlock_HandleSummonRequest(request)
+    if not mb_IsFreeToAcceptRequest() then
+        return
+    end
     if mb_IsCasting() then
         return
     end
@@ -197,6 +200,9 @@ function mb_Warlock_HandleSummonRequest(request)
 end
 
 function mb_Warlock_HandleSoulstoneRequest(request)
+    if not mb_IsFreeToAcceptRequest() then
+        return
+    end
     if not mb_HasItem("Major Soulstone") then
         return
     end
@@ -210,6 +216,9 @@ function mb_Warlock_HandleSoulstoneRequest(request)
 end
 
 function mb_Warlock_HandleHealthstoneRequest(request)
+    if not mb_IsFreeToAcceptRequest() then
+        return
+    end
     if not mb_HasItem("Major Healthstone") then
         return
     end

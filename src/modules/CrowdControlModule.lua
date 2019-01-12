@@ -61,3 +61,18 @@ function mb_CrowdControlModule_StopCrowdControllingTarget()
     mb_CrowdControlModule_myCrowdControlTarget = nil
     max_SayRaid("Stopping Crowd-Control on " .. UnitName("target"))
 end
+
+function mb_CrowdControlModule_OnSelfDeath()
+    if mb_CrowdControlModule_IsAssignedToCrowdControl() then
+        if not UnitExists("target") or GetRaidTargetIndex("target") ~= mb_CrowdControlModule_myCrowdControlTarget then
+            TargetLastEnemy()
+        end
+        if UnitExists("target") and GetRaidTargetIndex("target") == mb_CrowdControlModule_myCrowdControlTarget then
+            mb_MakeRequest(REQUEST_CROWD_CONTROL.type, "crowdControl", REQUEST_PRIORITY.COMMAND)
+            max_SayRaid("I died while being assigned to Crowd-Control " .. UnitName("target") .. " (" .. max_RaidTargetIndexToName(mb_CrowdControlModule_myCrowdControlTarget) .. "). Sent request for someone else to take over.")
+        else
+            max_SayRaid("I died while being assigned to Crowd-Control " .. max_RaidTargetIndexToName(mb_CrowdControlModule_myCrowdControlTarget) .. ", but I was unable to target it so I couldn't send a request for someone else to take over.")
+        end
+        mb_CrowdControlModule_myCrowdControlTarget = nil
+    end
+end

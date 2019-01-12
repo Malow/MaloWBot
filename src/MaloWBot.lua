@@ -108,6 +108,7 @@ function mb_OnEvent()
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		mb_combatStartedTime = mb_GetTime()
 	elseif event == "PLAYER_DEAD" then
+		mb_CrowdControlModule_OnSelfDeath()
 		mb_queuedUseConsumables = {}
 		mb_areaOfEffectMode = false
         mb_shouldRequestBuffs = false

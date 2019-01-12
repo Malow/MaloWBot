@@ -44,7 +44,7 @@ function mb_Druid(commander)
         end
     end
 
-    if UnitAffectingCombat("player") then
+    if UnitAffectingCombat("player") and mb_GetTimeInCombat() > 30 then
         max_UseEquippedItemIfReady("Trinket0Slot")
         max_UseEquippedItemIfReady("Trinket1Slot")
     end

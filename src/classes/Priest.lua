@@ -30,10 +30,12 @@ function mb_Priest(commander)
             mb_RequestCompleted(request)
             return
         elseif request.type == "fearWard" then
-            max_SayRaid("I'm Fear Warding " .. request.body)
-            max_CastSpellOnRaidMemberByPlayerName("Fear Ward", request.body)
             mb_RequestCompleted(request)
-            return
+            if not max_HasBuff(max_GetUnitForPlayerName(request.body), BUFF_TEXTURE_FEAR_WARD) then
+                max_SayRaid("I'm Fear Warding " .. request.body)
+                max_CastSpellOnRaidMemberByPlayerName("Fear Ward", request.body)
+                return
+            end
         elseif request.type == "HoT" then
             mb_HealingModule_CompleteHoTRequest(request)
             return
@@ -49,7 +51,10 @@ function mb_Priest(commander)
         return
     end
 
-    if UnitAffectingCombat("player") then
+    if UnitAffectingCombat("player") and mb_GetTimeInCombat() > 30 then
+        if max_GetManaPercentage("player") < 80 then
+            CastSpellByName("Divine Favor")
+        end
         max_UseEquippedItemIfReady("Trinket0Slot")
         max_UseEquippedItemIfReady("Trinket1Slot")
     end
@@ -185,7 +190,7 @@ end
 function mb_Priest_PrayerOfHealing()
     local healEffect, affectedPlayers = mb_GetGroupHealEffect(MB_PRIEST_POH_HEAL_AMOUNT, "Dispel Magic")
     if healEffect > 3.0 then
-        if not max_IsSpellNameOnCooldown("Inner Focus") then
+        if UnitAffectingCombat("player") and mb_GetTimeInCombat() > 30 and not max_IsSpellNameOnCooldown("Inner Focus") then
             CastSpellByName("Inner Focus")
             return true
         end
@@ -241,7 +246,11 @@ function mb_Priest_HandleFearWardRequest(request)
     if UnitIsDead("player") then
         return
     end
-    if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Fear Ward") then
+    local unit = max_GetUnitForPlayerName(request.body)
+    if max_HasBuff(unit, BUFF_TEXTURE_FEAR_WARD) then
+        return
+    end
+    if mb_IsUnitValidTarget(unit, "Fear Ward") then
         mb_AcceptRequest(request)
     end
 end

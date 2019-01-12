@@ -64,6 +64,7 @@ BUFF_TEXTURE_PRAYER_OF_SHADOW_PROTECTION = "Interface\\Icons\\Spell_Holy_Prayero
 BUFF_TEXTURE_RENEW = "Interface\\Icons\\Spell_Holy_Renew"
 BUFF_TEXTURE_SPIRIT_OF_REDEMPTION = "Interface\\Icons\\Spell_Holy_GreaterHeal"
 BUFF_TEXTURE_ABOLISH_DISEASE = "Interface\\Icons\\Spell_Nature_NullifyDisease"
+BUFF_TEXTURE_FEAR_WARD = "Interface\\Icons\\Spell_Holy_Excorcism"
 DEBUFF_TEXTURE_WEAKENED_SOUL = "Interface\\Icons\\Spell_Holy_AshesToAshes"
 -- Rogue
 BUFF_TEXTURE_SLICE_AND_DICE = "Interface\\Icons\\Ability_Rogue_SliceDice"
@@ -75,6 +76,7 @@ DEBUFF_TEXTURE_CURSE_OF_THE_ELEMENTS = "Interface\\Icons\\Spell_Shadow_ChillTouc
 DEBUFF_TEXTURE_CURSE_OF_RECKLESSNESS = "Interface\\Icons\\Spell_Shadow_UnholyStrength"
 DEBUFF_TEXTURE_CURSE_OF_WEAKNESS = "Interface\\Icons\\Spell_Shadow_CurseOfMannoroth"
 DEBUFF_TEXTURE_BANISH = "Interface\\Icons\\Spell_Shadow_Cripple"
+DEBUFF_TEXTURE_IMPROVED_SHADOWBOLT = "Interface\\Icons\\Spell_Shadow_ShadowBolt"
 -- Warrior
 BUFF_TEXTURE_BATTLE_SHOUT = "Interface\\Icons\\Ability_Warrior_BattleShout"
 DEBUFF_TEXTURE_SUNDER_ARMOR = "Interface\\Icons\\Ability_Warrior_Sunder"

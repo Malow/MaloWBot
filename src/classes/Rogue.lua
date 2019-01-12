@@ -49,7 +49,7 @@ function mb_Rogue(commander)
         CastSpellByName("Attack")
     end
 
-    if mb_Rogue_AdrenalineRush() then
+    if mb_Rogue_UseCooldowns() then
         return
     end
 
@@ -70,15 +70,22 @@ function mb_Rogue(commander)
     CastSpellByName("Sinister Strike")
 end
 
-function mb_Rogue_AdrenalineRush()
-    if max_IsSpellNameOnCooldown("Adrenaline Rush") then
+function mb_Rogue_UseCooldowns()
+    if not CheckInteractDistance("target", 3) or not max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) == 5 then
         return false
-    elseif CheckInteractDistance("target", 3) and max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) == 5 then
-        max_UseEquippedItemIfReady("Trinket0Slot")
-        max_UseEquippedItemIfReady("Trinket1Slot")
+    end
+
+    max_UseEquippedItemIfReady("Trinket0Slot")
+    max_UseEquippedItemIfReady("Trinket1Slot")
+    if not max_IsSpellNameOnCooldown("Adrenaline Rush") then
         CastSpellByName("Adrenaline Rush")
         return true
     end
+    if not max_IsSpellNameOnCooldown("Blade Flurry") then
+        CastSpellByName("Blade Flurry")
+        return true
+    end
+
     return false
 end
 

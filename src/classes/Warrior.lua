@@ -39,15 +39,16 @@ function mb_Warrior(commander)
         return
     end
 
-    if mb_Warrior_DeathWish() then
-        return
+    if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) == 5 and CheckInteractDistance("target", 3) then
+        max_UseEquippedItemIfReady("Trinket0Slot")
+        max_UseEquippedItemIfReady("Trinket1Slot")
+        if not max_IsSpellNameOnCooldown("Death Wish") then
+            CastSpellByName("Death Wish")
+            return
+        end
     end
 
     if not mb_areaOfEffectMode then
-        if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) == 5 then
-            max_UseEquippedItemIfReady("Trinket0Slot")
-            max_UseEquippedItemIfReady("Trinket1Slot")
-        end
         if max_GetHealthPercentage("target") < 25 then
             CastSpellByName("Execute")
             return
@@ -218,18 +219,6 @@ function mb_Warrior_BattleShout()
     if not max_HasBuff("player", BUFF_TEXTURE_BATTLE_SHOUT) then
         CastSpellByName("Battle Shout")
         return true
-    end
-    return false
-end
-
-function mb_Warrior_DeathWish()
-    local cur, max, found = MobHealth3:GetUnitHealth("target")
-    if not found or cur == 0 then
-        return false
-    end
-    if UnitAffectingCombat("player") and cur > 20000 and max_GetHealthPercentage("target") < 20 then
-        CastSpellByName("Death Wish")
-        return
     end
     return false
 end

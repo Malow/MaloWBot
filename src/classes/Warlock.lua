@@ -116,7 +116,7 @@ function mb_Warlock(commander)
         return
     end
 
-    if UnitAffectingCombat("player") then
+    if UnitAffectingCombat("player") and max_HasDebuff("target", DEBUFF_TEXTURE_IMPROVED_SHADOWBOLT) then
         max_UseEquippedItemIfReady("Trinket0Slot")
         max_UseEquippedItemIfReady("Trinket1Slot")
     end

@@ -1,6 +1,5 @@
 mb_paladinIsJudgingLight = false
 mb_paladinIsJudgingWisdom = false
-mb_paladinAura = "devo"
 function mb_Paladin(commander)
     if mb_DoBasicCasterLogicThrottled() then
         return
@@ -36,10 +35,6 @@ function mb_Paladin(commander)
         return
     end
 
-    if UnitAffectingCombat("player") and max_GetManaPercentage("player") < 80 then
-        CastSpellByName("Divine Favor")
-    end
-
     if not mb_Paladin_HasAura() then
         mb_Paladin_CastAura()
         return
@@ -50,7 +45,10 @@ function mb_Paladin(commander)
         return
     end
 
-    if UnitAffectingCombat("player") then
+    if UnitAffectingCombat("player") and mb_GetTimeInCombat() > 30 then
+        if max_GetManaPercentage("player") < 80 then
+            CastSpellByName("Divine Favor")
+        end
         max_UseEquippedItemIfReady("Trinket0Slot")
         max_UseEquippedItemIfReady("Trinket1Slot")
     end
@@ -117,37 +115,37 @@ function mb_Paladin_HasAura()
 end
 
 function mb_Paladin_CastAura()
-    if mb_paladinAura == "devo" then
+    if mb_SV.paladinAura == "devo" then
         if not max_HasBuff("player", BUFF_TEXTURE_DEVOTION_AURA) then
             CastSpellByName("Devotion Aura")
         end
         return
     end
-    if mb_paladinAura == "ret" then
+    if mb_SV.paladinAura == "ret" then
         if not max_HasBuff("player", BUFF_TEXTURE_RETRIBUTION_AURA) then
             CastSpellByName("Retribution Aura")
         end
         return
     end
-    if mb_paladinAura == "conc" then
+    if mb_SV.paladinAura == "conc" then
         if not max_HasBuff("player", BUFF_TEXTURE_CONCENTRATION_AURA) then
             CastSpellByName("Concentration Aura")
         end
         return
     end
-    if mb_paladinAura == "shadow" then
+    if mb_SV.paladinAura == "shadow" then
         if not max_HasBuff("player", BUFF_TEXTURE_SHADOW_RESISTANCE_AURA) then
             CastSpellByName("Shadow Resistance Aura")
         end
         return
     end
-    if mb_paladinAura == "frost" then
+    if mb_SV.paladinAura == "frost" then
         if not max_HasBuff("player", BUFF_TEXTURE_FROST_RESISTANCE_AURA) then
             CastSpellByName("Frost Resistance Aura")
         end
         return
     end
-    if mb_paladinAura == "fire" then
+    if mb_SV.paladinAura == "fire" then
         if not max_HasBuff("player", BUFF_TEXTURE_FIRE_RESISTANCE_AURA) then
             CastSpellByName("Fire Resistance Aura")
         end
@@ -156,6 +154,9 @@ function mb_Paladin_CastAura()
 end
 
 function mb_Paladin_OnLoad()
+    if mb_SV.paladinAura == nil then
+        mb_SV.paladinAura = "devo"
+    end
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
@@ -204,7 +205,7 @@ function mb_Paladin_HandleResurrectionRequest(request)
 end
 
 function mb_Paladin_HandleAuraRequest(request)
-    mb_paladinAura = request.body
+    mb_SV.paladinAura = request.body
     mb_Paladin_CastAura()
 end
 

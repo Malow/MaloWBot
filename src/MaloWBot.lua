@@ -59,6 +59,7 @@ mb_areaOfEffectMode = false
 mb_isAutoAttacking = false
 mb_isAutoShooting = false
 mb_isReadyChecking = false
+mb_combatStartedTime = 0
 function mb_OnEvent()
 	if event == "CHAT_MSG_ADDON" and arg1 == "MB" then
 		if max_GetTableSize(mb_queuedIncomingComms) > 30 then
@@ -104,6 +105,8 @@ function mb_OnEvent()
 		mb_isTraining = true
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		mb_queuedUseConsumables = {}
+	elseif event == "PLAYER_REGEN_DISABLED" then
+		mb_combatStartedTime = mb_GetTime()
 	elseif event == "PLAYER_DEAD" then
 		mb_queuedUseConsumables = {}
 		mb_areaOfEffectMode = false
@@ -134,6 +137,7 @@ f:RegisterEvent("PLAYER_LEAVE_COMBAT")
 f:RegisterEvent("PLAYER_DEAD")
 f:RegisterEvent("READY_CHECK")
 f:RegisterEvent("PLAYER_REGEN_ENABLED")
+f:RegisterEvent("PLAYER_REGEN_DISABLED")
 f:SetScript("OnEvent", mb_OnEvent)
 
 function mb_HandleMBCommunication(msg, from)
@@ -453,6 +457,13 @@ function mb_RebindMovementKeyIfNeeded()
 		return
 	end
 	mb_BindKey("9", nil)
+end
+
+function mb_GetTimeInCombat()
+	if not UnitAffectingCombat("player") then
+		return 0
+	end
+	return mb_GetTime() - mb_combatStartedTime
 end
 
 

@@ -80,6 +80,7 @@ end
 
 mb_Warrior_lastTankingBroadcast = 0
 mb_Warrior_lastSunder = 0
+mb_Warrior_wasTankingLastFrame = false
 function mb_Warrior_Tank(commander)
     if not max_HasValidOffensiveTarget() or UnitIsDead("target") then
         max_AssistByPlayerName(commander)
@@ -104,6 +105,11 @@ function mb_Warrior_Tank(commander)
                     CastSpellByName("Defensive Stance")
                 end
             else
+                if mb_Warrior_wasTankingLastFrame then
+                    mb_Warrior_lastTankingBroadcast = 0
+                    mb_MakeRequest("tankingBroadcast", 0, REQUEST_PRIORITY.TANKING_BROADCAST)
+                    mb_Warrior_wasTankingLastFrame = false
+                end
                 mb_Warrior_DpsTank(commander)
                 return
             end
@@ -115,15 +121,15 @@ function mb_Warrior_Tank(commander)
         end
     end
 
-    if not UnitIsUnit("player", "targettarget") then
-        return
-    end
+    mb_Warrior_wasTankingLastFrame = true
 
     mb_Warrior_RequestHoTs()
 
     if mb_Warrior_lastTankingBroadcast + 5 < mb_GetTime() then
         mb_Warrior_lastTankingBroadcast = mb_GetTime()
-        mb_MakeRequest("tankingBroadcast", mb_CombatLogModule_DamageTakenPerSecond_GetDTPS(10), REQUEST_PRIORITY.TANKING_BROADCAST)
+        local dtps = mb_CombatLogModule_DamageTakenPerSecond_GetDTPS(10)
+        dtps = dtps + 1 -- Making sure we're not sending 0 here because sending 0 means that you're not actually tanking anymore
+        mb_MakeRequest("tankingBroadcast", dtps, REQUEST_PRIORITY.TANKING_BROADCAST)
     end
 
     CastSpellByName("Revenge")

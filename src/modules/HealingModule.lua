@@ -60,10 +60,15 @@ end
 
 mb_HealingModule_tankingTanks = {}
 function mb_HealingModule_HandleTankBroadcastRequest(request)
+    local dtps = tonumber(request.body)
+    if dtps == 0 then
+        mb_HealingModule_tankingTanks[request.from] = nil
+        return
+    end
     if mb_HealingModule_tankingTanks[request.from] == nil then
         mb_HealingModule_tankingTanks[request.from] = {}
     end
-    mb_HealingModule_tankingTanks[request.from].dtps = tonumber(request.body)
+    mb_HealingModule_tankingTanks[request.from].dtps = dtps
     mb_HealingModule_tankingTanks[request.from].lastReceived = mb_GetTime()
 end
 

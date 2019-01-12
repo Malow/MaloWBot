@@ -71,10 +71,11 @@ function mb_Rogue(commander)
 end
 
 function mb_Rogue_AdrenalineRush()
-    local cur, max, found = MobHealth3:GetUnitHealth("target")
     if max_IsSpellNameOnCooldown("Adrenaline Rush") then
         return false
-    elseif UnitIsEnemy("Player", "target") and CheckInteractDistance("target", 3) and max_GetHealthPercentage("target") < 90 then
+    elseif CheckInteractDistance("target", 3) and max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) == 5 then
+        max_UseEquippedItemIfReady("Trinket0Slot")
+        max_UseEquippedItemIfReady("Trinket1Slot")
         CastSpellByName("Adrenaline Rush")
         return true
     end

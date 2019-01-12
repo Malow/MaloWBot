@@ -29,7 +29,13 @@ function mb_HandleSpecialSlashCommand(msg)
     elseif msg == "goldDistribution" then
         mb_MakeRequest("goldDistribution", "goldDistribution", REQUEST_PRIORITY.COMMAND)
     elseif msg == "fearWard" then
-        mb_MakeRequest("fearWard", UnitName("target"), REQUEST_PRIORITY.COMMAND)
+        local target = UnitName("player")
+        if UnitExists("target") and not UnitIsUnit("player", "target") then
+            if max_GetRaidIndexForPlayerName(UnitName("target")) ~= nil then
+                target = UnitName("target")
+            end
+        end
+        mb_MakeRequest("fearWard", target, REQUEST_PRIORITY.COMMAND)
     elseif msg == "interrupt" then
         mb_MakeRequest(REQUEST_INTERRUPT.type, "interrupt", REQUEST_PRIORITY.COMMAND)
     elseif msg == "crowdControl" then

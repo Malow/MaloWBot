@@ -74,7 +74,7 @@ DEBUFF_TEXTURE_CURSE_OF_SHADOW = "Interface\\Icons\\Spell_Shadow_CurseOfAchimond
 DEBUFF_TEXTURE_CURSE_OF_THE_ELEMENTS = "Interface\\Icons\\Spell_Shadow_ChillTouch"
 DEBUFF_TEXTURE_CURSE_OF_RECKLESSNESS = "Interface\\Icons\\Spell_Shadow_UnholyStrength"
 DEBUFF_TEXTURE_CURSE_OF_WEAKNESS = "Interface\\Icons\\Spell_Shadow_CurseOfMannoroth"
-DEBUFF_TEXTURE_BANISH = "Interface\\Icons\\Shadow_Cripple"
+DEBUFF_TEXTURE_BANISH = "Interface\\Icons\\Spell_Shadow_Cripple"
 -- Warrior
 BUFF_TEXTURE_BATTLE_SHOUT = "Interface\\Icons\\Ability_Warrior_BattleShout"
 DEBUFF_TEXTURE_SUNDER_ARMOR = "Interface\\Icons\\Ability_Warrior_Sunder"

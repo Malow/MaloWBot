@@ -17,19 +17,16 @@ function mb_Mage(commander)
             return
         end
         if mb_IsCasting() then
-            SpellStopCasting()
-            return
-        end
-        if mb_IsOnGCD() then
-            return
+            mb_StopCasting()
         end
         max_AssistByPlayerName(request.from)
         max_SayRaid("Interrupting " .. tostring(UnitName("target")))
         CastSpellByName("Counterspell")
         mb_RequestCompleted(request)
+        return
     end
 
-    if mb_IsCasting() then
+    if not mb_IsReadyForNewCast() then
         return
     end
 
@@ -52,9 +49,6 @@ function mb_Mage(commander)
                 return
             end
         elseif request.type == REQUEST_REMOVE_CURSE.type then
-            if mb_IsOnGCD() then
-                return
-            end
             max_CastSpellOnRaidMemberByPlayerName("Remove Lesser Curse", request.body)
             mb_RequestCompleted(request)
             return

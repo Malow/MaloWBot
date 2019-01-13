@@ -30,21 +30,28 @@ mb_SpellCastingModule_Frame:RegisterEvent("SPELLCAST_INTERRUPTED")
 mb_SpellCastingModule_Frame:RegisterEvent("SPELLCAST_FAILED")
 
 function mb_IsCasting()
-    if mb_isCasting then
-        return true
+    return mb_isCasting
+end
+
+function mb_IsReadyForNewCast()
+    if mb_IsOnGCD() then
+        return false
+    end
+    if mb_IsCasting() then
+        return false
     end
     if mb_stoppedCastingTime + 0.35 > mb_GetTime() then
-        return true
+        return false
     end
     if mb_lastAttemptedCast ~= nil and mb_lastAttemptedCast.attemptTime + 0.3 > mb_GetTime() then
-        return true
+        return false
     end
-    return false
+    return true
 end
 
 mb_lastAttemptedCast = nil
 function mb_CastSpellByNameOnTargetWithCallbacks(spellName, callbacks)
-    if mb_IsCasting() then
+    if not mb_IsReadyForNewCast() then
         return
     end
     mb_lastAttemptedCast = {}
@@ -56,7 +63,7 @@ function mb_CastSpellByNameOnTargetWithCallbacks(spellName, callbacks)
 end
 
 function mb_CastSpellByNameOnRaidMemberWithCallbacks(spellName, target, callbacks)
-    if mb_IsCasting() then
+    if not mb_IsReadyForNewCast() then
         return
     end
     local retarget = false
@@ -89,12 +96,12 @@ function mb_StopCasting()
     return false
 end
 
-function mb_StopCastingIfNeeded(stopCastingFunction)
-    if mb_lastAttemptedCast == nil or mb_lastAttemptedCast.startCastTime == nil then
+function mb_StopAttemptedCastIfNeeded(stopCastingFunction)
+    if not mb_isCasting() then
         return false
     end
-    if mb_stoppedCastingTime + 0.3 > mb_GetTime() then
-        return true
+    if mb_lastAttemptedCast == nil or mb_lastAttemptedCast.startCastTime == nil then
+        return false
     end
     if stopCastingFunction(mb_lastAttemptedCast) then
         mb_StopCasting()

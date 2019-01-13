@@ -4,12 +4,8 @@ function mb_Druid(commander)
         return
     end
 
-    if mb_IsCasting() then
-        mb_StopCastingIfNeeded(mb_Druid_ShouldStopCasting)
-        return
-    end
-
-    if mb_IsOnGCD() then
+    if not mb_IsReadyForNewCast() then
+        mb_StopAttemptedCastIfNeeded(mb_Druid_ShouldStopCasting)
         return
     end
 

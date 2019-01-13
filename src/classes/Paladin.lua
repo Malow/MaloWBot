@@ -5,12 +5,8 @@ function mb_Paladin(commander)
         return
     end
 
-    if mb_IsCasting() then
-        mb_StopCastingIfNeeded(mb_Paladin_ShouldStopCasting)
-        return
-    end
-
-    if mb_IsOnGCD() then
+    if not mb_IsReadyForNewCast() then
+        mb_StopAttemptedCastIfNeeded(mb_Paladin_ShouldStopCasting)
         return
     end
 

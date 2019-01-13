@@ -7,12 +7,8 @@ function mb_Priest(commander)
         return
     end
 
-    if mb_IsCasting() then
-        mb_StopCastingIfNeeded(mb_Priest_ShouldStopCasting)
-        return
-    end
-
-    if mb_IsOnGCD() then
+    if not mb_IsReadyForNewCast() then
+        mb_StopAttemptedCastIfNeeded(mb_Priest_ShouldStopCasting)
         return
     end
 

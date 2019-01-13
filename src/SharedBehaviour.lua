@@ -14,9 +14,10 @@ mb_registeredRangeCheckSpells = {}
 
 function mb_HandleSharedBehaviour(commander)
     if mb_isReadyChecking then
-        mb_isReadyChecking = false
         mb_HandleReadyCheck()
+        mb_isReadyChecking = false
     end
+
     if UnitAffectingCombat("player") then
         if max_GetHealthPercentage("player") < 25 then
             mb_UseItem("Major Healthstone")

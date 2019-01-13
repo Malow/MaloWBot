@@ -302,6 +302,11 @@ end
 
 
 function mb_RunBot(commander)
+    if max_HasDebuff("player", DEBUFF_TEXTURE_MANDOKIR_WATCH) then
+        SpellStopCasting()
+        TargetUnit("player")
+        return
+    end
 	mb_RebindMovementKeyIfNeeded()
 	mb_HandleQueuedIncomingComms()
 

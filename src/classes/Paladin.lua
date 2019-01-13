@@ -171,7 +171,9 @@ function mb_Paladin_OnLoad()
     mb_RegisterForRequest("useConsumable", mb_Healer_HandleUseConsumableRequest)
     if mb_GetMySpecName() == "Wisdom" then
         mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_WISDOM)
-        mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_MIGHT)
+        if max_GetNumPartyOrRaidMembers() < 30 then
+            mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_MIGHT)
+        end
     elseif mb_GetMySpecName() == "MightJudge" then
         mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_MIGHT)
     elseif mb_GetMySpecName() == "KingsJudge" then

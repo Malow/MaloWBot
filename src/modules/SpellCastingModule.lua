@@ -97,7 +97,7 @@ function mb_StopCasting()
 end
 
 function mb_StopAttemptedCastIfNeeded(stopCastingFunction)
-    if not mb_isCasting() then
+    if not mb_IsCasting() then
         return false
     end
     if mb_lastAttemptedCast == nil or mb_lastAttemptedCast.startCastTime == nil then

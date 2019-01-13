@@ -115,6 +115,16 @@ function mb_HandleThrottledSharedBehaviour(commander)
         mb_CheckAndRequestBuffs()
     end
 
+    if GetTrackingTexture() == nil then
+        if max_HasSpell("Find Minerals") then
+            CastSpellByName("Find Minerals")
+            return true
+        elseif max_HasSpell("Find Herbs") then
+            CastSpellByName("Find Herbs")
+            return true
+        end
+    end
+
     return false
 end
 

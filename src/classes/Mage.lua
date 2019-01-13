@@ -16,7 +16,8 @@ function mb_Mage(commander)
             max_SayRaid("Timed out interrupt request from " .. request.from)
             return
         end
-        if mb_StopCasting() then
+        if mb_IsCasting() then
+            SpellStopCasting()
             return
         end
         if mb_IsOnGCD() then

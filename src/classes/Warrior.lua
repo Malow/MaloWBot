@@ -121,6 +121,10 @@ function mb_Warrior_Tank(commander)
         end
     end
 
+    if not UnitAffectingCombat("player") then
+        return
+    end
+
     mb_Warrior_wasTankingLastFrame = true
 
     mb_Warrior_RequestHoTs()
@@ -133,6 +137,10 @@ function mb_Warrior_Tank(commander)
     end
 
     CastSpellByName("Revenge")
+
+    if max_GetManaPercentage("player") >= 70 then
+        CastSpellByName("Heroic Strike")
+    end
 
     if mb_IsOnGCD() then
         return
@@ -164,7 +172,7 @@ function mb_Warrior_Tank(commander)
         return
     end
 
-    if max_GetManaPercentage("player") >= 50 then
+    if max_GetManaPercentage("player") >= 40 then
         CastSpellByName("Heroic Strike")
     end
 

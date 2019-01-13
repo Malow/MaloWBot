@@ -233,14 +233,6 @@ function mb_CanBuffUnitWithSpell(unit, spell)
 	end
 end
 
-mb_lastAcceptedTrade = 0
-function mb_AcceptTradeThrottled()
-	if mb_lastAcceptedTrade + 1 < mb_GetTime() then
-		mb_lastAcceptedTrade = mb_GetTime()
-		AcceptTrade()
-	end
-end
-
 -- Optional unitFilter used for Arcane Int / Divine Spirit
 function mb_ShouldBuffGroupWide(unitName, buff, unitFilter)
 	local groupUnits = max_GetGroupUnitsFor(unitName)

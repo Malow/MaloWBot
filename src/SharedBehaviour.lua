@@ -13,9 +13,8 @@ mb_classSyncData = nil
 mb_registeredRangeCheckSpells = {}
 
 function mb_HandleSharedBehaviour(commander)
-    if mb_isReadyChecking then
-        mb_HandleReadyCheck()
-        mb_isReadyChecking = false
+    if mb_HandleThrottledSharedBehaviour(commander) then
+        return true
     end
 
     if UnitAffectingCombat("player") then
@@ -23,6 +22,67 @@ function mb_HandleSharedBehaviour(commander)
             mb_UseItem("Major Healthstone")
             return true
         end
+    end
+
+    if mb_shouldLearnTalents then
+        mb_LearnTalents()
+    end
+    if mb_isTraining then
+        mb_TrainSpells()
+        return true
+    end
+    if mb_isVendoring then
+        mb_HandleVendoring()
+        return true
+    end
+    if mb_tradeGoodiesTarget ~= nil then
+        mb_DoTradeGoodies()
+        return true
+    end
+    --CancelLogout()
+
+    if mb_MoveOutModule_Update() then
+        return true
+    end
+
+    if not mb_IsDrinking() and mb_shouldFollow then
+        FollowByName(commander, true)
+    end
+
+    if mb_UseConsumableFromQueue() then
+        return true
+    end
+
+    return false
+end
+
+mb_lastHandleThrottledSharedBehaviour = 0
+function mb_HandleThrottledSharedBehaviour(commander)
+    if mb_lastHandleThrottledSharedBehaviour + 1 > mb_GetTime() then
+        return false
+    end
+    mb_lastHandleThrottledSharedBehaviour = mb_GetTime()
+
+    if mb_isReadyChecking then
+        mb_HandleReadyCheck()
+        mb_isReadyChecking = false
+    end
+
+    if mb_isTrading then
+        local canNotBeTradedLink = GetTradePlayerItemLink(7)
+        if canNotBeTradedLink ~= nil then
+            local canNotBeTradedItemString = max_GetItemStringFromItemLink(canNotBeTradedLink)
+            local itemName = GetItemInfo(canNotBeTradedItemString)
+            if itemName ~= nil then
+                mb_AddItemToIgnoredForTrade(itemName)
+            end
+        end
+        AcceptTrade()
+    end
+
+    if mb_isGossiping then
+        mb_HandleGossiping()
+        return true
     end
 
     if mb_HandleMassCommandRequests() then
@@ -37,64 +97,22 @@ function mb_HandleSharedBehaviour(commander)
 
     AcceptGuild()
     AcceptGroup()
-    if mb_isTrading then
-        local canNotBeTradedLink = GetTradePlayerItemLink(7)
-        if canNotBeTradedLink ~= nil then
-            local canNotBeTradedItemString = max_GetItemStringFromItemLink(canNotBeTradedLink)
-            local itemName = GetItemInfo(canNotBeTradedItemString)
-            if itemName ~= nil then
-                mb_AddItemToIgnoredForTrade(itemName)
-            end
-        end
-        mb_AcceptTradeThrottled()
-    end
     RetrieveCorpse()
     ConfirmAcceptQuest()
     ConfirmSummon()
     AcceptQuest()
-    if mb_shouldLearnTalents then
-        mb_LearnTalents()
-    end
-    if mb_isTraining then
-        mb_TrainSpells()
-        return true
-    end
-    if mb_isGossiping then
-        mb_HandleGossiping()
-        return true
-    end
-    if mb_isVendoring then
-        mb_HandleVendoring()
-        return true
-    end
-    if mb_tradeGoodiesTarget ~= nil then
-        mb_DoTradeGoodies()
-        return true
-    end
+
     if UnitIsDeadOrGhost("player") then
         AcceptResurrect()
         mb_RequestResurrection()
         FollowByName(commander, true)
         return true
     end
-    if mb_HandleQueuedSharedRequests() then
-        return true
-    end
-    --CancelLogout()
+
+    mb_HandleQueuedSharedRequests()
+
     if not UnitAffectingCombat("player") then
-        mb_CheckAndRequestBuffsThrottled()
-    end
-
-    if mb_MoveOutModule_Update() then
-        return true
-    end
-
-    if not mb_IsDrinking() and mb_shouldFollow then
-        FollowByName(commander, true)
-    end
-
-    if mb_UseConsumableFromQueue() then
-        return true
+        mb_CheckAndRequestBuffs()
     end
 
     return false
@@ -154,7 +172,6 @@ function mb_HandleQueuedSharedRequests()
             mb_RequestCompleted(request)
         end
     end
-    return false
 end
 
 function mb_DoTradeGoodies()
@@ -171,15 +188,10 @@ function mb_DoTradeGoodies()
     end
 end
 
-mb_lastRequestBuffCheckTime = 0
-function mb_CheckAndRequestBuffsThrottled()
+function mb_CheckAndRequestBuffs()
     if not mb_shouldRequestBuffs then
         return
     end
-    if mb_lastRequestBuffCheckTime + 5 > mb_GetTime() then
-        return
-    end
-    mb_lastRequestBuffCheckTime = mb_GetTime()
     for i = 1, max_GetTableSize(mb_desiredBuffs) do
         if not max_HasBuffWithMultipleTextures("player", mb_desiredBuffs[i].textures) then
             mb_MakeThrottledRequest(mb_desiredBuffs[i], UnitName("player"), REQUEST_PRIORITY.BUFF)

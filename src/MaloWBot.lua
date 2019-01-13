@@ -300,15 +300,23 @@ function mb_OnRun()
 	mb_RunBot(mb_GetMyCommanderName())
 end
 
+function mb_ShouldDoNothing()
+	if max_HasDebuff("player", DEBUFF_TEXTURE_MANDOKIR_WATCH) then
+		SpellStopCasting()
+		TargetUnit("player")
+		return true
+	end
+	return false
+end
 
 function mb_RunBot(commander)
-    if max_HasDebuff("player", DEBUFF_TEXTURE_MANDOKIR_WATCH) then
-        SpellStopCasting()
-        TargetUnit("player")
-        return
-    end
-	mb_RebindMovementKeyIfNeeded()
 	mb_HandleQueuedIncomingComms()
+
+	if mb_ShouldDoNothing() then
+		return
+	end
+
+	mb_RebindMovementKeyIfNeeded()
 
 	if mb_HandleSharedBehaviour(commander) then
 		return

@@ -33,6 +33,8 @@ modules\HealingModule.lua
 modules\MoveOutModule.lua
 modules\SpellCastingModule.lua
 
+modules\BossModules\Jindo.lua
+
 modules\CombatLogSubModules\DamageTakenPerSecond.lua
 modules\CombatLogSubModules\DebuffWatch.lua
 modules\CombatLogSubModules\EnemyGainsWatch.lua

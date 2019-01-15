@@ -2,6 +2,7 @@ mb_Rogue_usesDaggers = false
 mb_rogueShouldUsePoisons = true
 mb_rogueMainHandTemporaryWeaponEnchant = nil
 mb_rogueOffHandTemporaryWeaponEnchant = nil
+mb_rogueShouldUseCooldownsOnCooldown = true
 function mb_Rogue(commander)
     local request = mb_GetQueuedRequest(true)
     if request ~= nil then
@@ -39,6 +40,12 @@ function mb_Rogue(commander)
         end
     end
 
+    if mb_currentBossModule.rogueLogic ~= nil then
+        if mb_currentBossModule.rogueLogic() then
+            return
+        end
+    end
+
     max_AssistByPlayerName(commander)
 
     if not max_HasValidOffensiveTarget() then
@@ -49,7 +56,7 @@ function mb_Rogue(commander)
         CastSpellByName("Attack")
     end
 
-    if mb_Rogue_UseCooldowns() then
+    if mb_Rogue_UseCooldownsIfGood() then
         return
     end
 
@@ -70,11 +77,17 @@ function mb_Rogue(commander)
     CastSpellByName("Sinister Strike")
 end
 
-function mb_Rogue_UseCooldowns()
+function mb_Rogue_UseCooldownsIfGood()
+    if not mb_rogueShouldUseCooldownsOnCooldown then
+        return false
+    end
     if not CheckInteractDistance("target", 3) or not max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) == 5 then
         return false
     end
+    return mb_Rogue_UseCooldowns()
+end
 
+function mb_Rogue_UseCooldowns()
     max_UseEquippedItemIfReady("Trinket0Slot")
     max_UseEquippedItemIfReady("Trinket1Slot")
     if not max_IsSpellNameOnCooldown("Adrenaline Rush") then
@@ -85,7 +98,6 @@ function mb_Rogue_UseCooldowns()
         CastSpellByName("Blade Flurry")
         return true
     end
-
     return false
 end
 

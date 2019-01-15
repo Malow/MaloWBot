@@ -46,6 +46,9 @@ function mb_HandleSpecialSlashCommand(msg)
         mb_MakeRequest("goToMaxRange", "goToMaxRange", REQUEST_PRIORITY.COMMAND)
     elseif msg == "useConsumable" then
         mb_MakeRequest("useConsumable", "useConsumable", REQUEST_PRIORITY.COMMAND)
+    elseif string.find(msg, "bossModule") then
+        local module = max_SplitString(msg, " ")[2]
+        mb_MakeRequest("bossModule", tostring(module), REQUEST_PRIORITY.COMMAND)
     elseif string.find(msg, "usePoison") then
         local mode = max_SplitString(msg, " ")[2]
         mb_areaOfEffectMode = mode == "on"

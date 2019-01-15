@@ -17,6 +17,7 @@ function mb_RegisterSharedRequestHandlers(playerClass)
     mb_RegisterForRequest(playerClass .. "Sync", mb_ClassSyncRequestHandler)
     mb_RegisterForRequest("remoteExecute", mb_RemoteExecuteRequestHandler)
     mb_RegisterForRequest("repairReport", mb_RepairReportRequestHandler)
+    mb_RegisterForRequest("bossModule", mb_BossModuleRequestHandler)
 end
 
 function mb_ReloadRequestHandler(request)
@@ -237,4 +238,21 @@ function mb_GetDurabilityPercentageFromLine(line)
     local firstPart = string.sub(line, 1, slashPos - 1)
     local secondPart = string.sub(line, slashPos + 2, string.len(line))
     return (tonumber(firstPart) / tonumber(secondPart)) * 100
+end
+
+function mb_BossModuleRequestHandler(request)
+    local moduleName = request.body
+    if mb_currentBossModule.unloadFunction ~= nil then
+        mb_currentBossModule.unloadFunction()
+    end
+    mb_currentBossModule = {}
+    if moduleName == "nil" then
+        -- do nothing, we already unloaded above
+    elseif moduleName == "jindo" then
+        mb_BossModule_Jindo_Load()
+    elseif moduleName == "mandokir" then
+        mb_BossModule_Mandokir_Load()
+    else
+        max_SayRaid("BossModule not recognized: " .. tostring(moduleName))
+    end
 end

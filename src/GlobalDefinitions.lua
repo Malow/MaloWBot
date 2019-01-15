@@ -83,9 +83,6 @@ DEBUFF_TEXTURE_SUNDER_ARMOR = "Interface\\Icons\\Ability_Warrior_Sunder"
 DEBUFF_TEXTURE_DEMORALIZING_SHOUT = "Interface\\Icons\\Ability_Warrior_WarCry"
 DEBUFF_TEXTURE_THUNDER_CLAP = "Interface\\Icons\\Spell_Nature_ThunderClap"
 
--- Non-class
-DEBUFF_TEXTURE_MANDOKIR_WATCH = "Interface\\Icons\\Spell_Shadow_Charm"
-
 --- Unit filters
 UNIT_FILTER_HAS_MANA = {
     name = "UNIT_FILTER_HAS_MANA"

@@ -38,6 +38,12 @@ function mb_Hunter(commander)
 		CastSpellByName("Trueshot Aura")
 	end
 
+	if mb_currentBossModule.hunterLogic ~= nil then
+		if mb_currentBossModule.hunterLogic() then
+			return
+		end
+	end
+
 	max_AssistByPlayerName(commander)
 	if not max_HasValidOffensiveTarget() then
 		return

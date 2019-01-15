@@ -28,7 +28,7 @@ function mb_Druid(commander)
         return
     end
 
-    if mb_CleanseRaidMemberThrottled("Remove Curse", "Curse") then
+    if mb_shouldDecurse and mb_CleanseRaidMemberThrottled("Remove Curse", "Curse") then
         return
     end
 

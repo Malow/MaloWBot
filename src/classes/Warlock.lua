@@ -92,8 +92,14 @@ function mb_Warlock(commander)
     end
 
     if UnitAffectingCombat("player") then
-        if max_GetManaPercentage("player") < 10 and max_GetHealthPercentage("player") > 75 then
+        if max_GetManaPercentage("player") < 40 and max_GetHealthPercentage("player") > 75 then
             CastSpellByName("Life Tap")
+            return
+        end
+    end
+
+    if mb_currentBossModule.warlockLogic ~= nil then
+        if mb_currentBossModule.warlockLogic() then
             return
         end
     end

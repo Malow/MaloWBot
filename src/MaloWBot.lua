@@ -60,6 +60,8 @@ mb_isAutoAttacking = false
 mb_isAutoShooting = false
 mb_isReadyChecking = false
 mb_combatStartedTime = 0
+mb_currentBossModule = {}
+mb_shouldDecurse = true
 function mb_OnEvent()
 	if event == "CHAT_MSG_ADDON" and arg1 == "MB" then
 		if max_GetTableSize(mb_queuedIncomingComms) > 30 then
@@ -300,20 +302,13 @@ function mb_OnRun()
 	mb_RunBot(mb_GetMyCommanderName())
 end
 
-function mb_ShouldDoNothing()
-	if max_HasDebuff("player", DEBUFF_TEXTURE_MANDOKIR_WATCH) then
-		SpellStopCasting()
-		TargetUnit("player")
-		return true
-	end
-	return false
-end
-
 function mb_RunBot(commander)
 	mb_HandleQueuedIncomingComms()
 
-	if mb_ShouldDoNothing() then
-		return
+	if mb_currentBossModule.preRun ~= nil then
+		if mb_currentBossModule.preRun() then
+			return
+		end
 	end
 
 	mb_RebindMovementKeyIfNeeded()

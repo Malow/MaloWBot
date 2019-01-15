@@ -22,6 +22,12 @@ function mb_Warrior(commander)
         CastSpellByName("Berserker Stance")
     end
 
+    if mb_currentBossModule.warriorDpsLogic ~= nil then
+        if mb_currentBossModule.warriorDpsLogic() then
+            return
+        end
+    end
+
     max_AssistByPlayerName(commander)
     if not max_HasValidOffensiveTarget() then
         return

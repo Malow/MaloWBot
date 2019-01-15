@@ -167,10 +167,10 @@ function mb_Rogue_OnLoad()
     end
 
     if max_IsItemSubTypeSharp(mainHandItemSubType) or max_IsItemSubTypeSharp(offHandItemSubType) then
-        mb_AddReagentWatch("Dense Sharpening Stone", 100)
+        mb_AddReagentWatch("Dense Sharpening Stone", 50)
     end
     if max_IsItemSubTypeBlunt(mainHandItemSubType) or max_IsItemSubTypeBlunt(offHandItemSubType) then
-        mb_AddReagentWatch("Dense Weightstone", 100)
+        mb_AddReagentWatch("Dense Weightstone", 50)
     end
 end
 

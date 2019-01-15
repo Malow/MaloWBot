@@ -158,6 +158,14 @@ function mb_IsIgnoredTradeItem(itemName)
         return true
 	elseif itemName == "Field Repair Bot 74A" then
 		return true
+	elseif itemName == "Fishing Pole" then
+		return true
+	elseif itemName == "Big Iron Fishing Pole" then
+		return true
+	elseif itemName == "Bright Baubles" then
+		return true
+	elseif itemName == "Aquadynamic Fish Attractor" then
+		return true
 	end
 	for i = max_GetTableSize(ITEMS_WATER), 1, -1 do
 		if itemName == ITEMS_WATER[i] then

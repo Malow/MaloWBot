@@ -73,11 +73,6 @@ function mb_Priest(commander)
         end
     end
 
-    if mb_areaOfEffectMode then
-        CastSpellByName("Holy Nova")
-        return
-    end
-
     if mb_priestIsHoly then
         if mb_Priest_Holy() then
             return true
@@ -201,6 +196,9 @@ end
 function mb_Priest_OnLoad()
     if mb_Priest_HasDivineSpirit() then
         mb_RegisterForStandardBuffRequest(BUFF_DIVINE_SPIRIT)
+        if max_GetNumPartyOrRaidMembers() < 30 then
+            mb_RegisterForStandardBuffRequest(BUFF_SHADOW_PROTECTION)
+        end
     else
         if mb_Priest_HasImprovedFortitude() then
             mb_RegisterForStandardBuffRequest(BUFF_POWER_WORD_FORTITUDE)

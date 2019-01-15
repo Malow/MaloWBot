@@ -78,8 +78,7 @@ function mb_Hunter(commander)
 			max_UseEquippedItemIfReady("Trinket0Slot")
 			max_UseEquippedItemIfReady("Trinket1Slot")
 		end
-		if not max_IsSpellNameOnCooldown("Rapid Fire") then
-			CastSpellByName("Rapid Fire")
+		if max_CastSpellIfReady("Rapid Fire") then
 			return
 		end
 	end

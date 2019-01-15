@@ -429,3 +429,11 @@ function max_IsItemSubTypeBlunt(itemSubType)
 	end
     return false
 end
+
+function max_CastSpellIfReady(spellName)
+	if not max_IsSpellNameOnCooldown(spellName) then
+		CastSpellByName(spellName)
+		return true
+	end
+	return false
+end

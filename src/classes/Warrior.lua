@@ -48,8 +48,7 @@ function mb_Warrior(commander)
     if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) == 5 and CheckInteractDistance("target", 3) then
         max_UseEquippedItemIfReady("Trinket0Slot")
         max_UseEquippedItemIfReady("Trinket1Slot")
-        if not max_IsSpellNameOnCooldown("Death Wish") then
-            CastSpellByName("Death Wish")
+        if max_CastSpellIfReady("Death Wish") then
             return
         end
     end
@@ -60,8 +59,7 @@ function mb_Warrior(commander)
             return
         end
 
-        if not max_IsSpellNameOnCooldown("Bloodthirst") then
-            CastSpellByName("Bloodthirst")
+        if max_CastSpellIfReady("Bloodthirst") then
             return
         end
 

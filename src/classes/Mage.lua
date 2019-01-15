@@ -77,8 +77,7 @@ function mb_Mage(commander)
             end
         end
         if mb_Mage_HasIceBarrier() then
-            if not max_IsSpellNameOnCooldown("Ice Barrier") then
-                CastSpellByName("Ice Barrier")
+            if max_CastSpellIfReady("Ice Barrier") then
                 return
             end
         end

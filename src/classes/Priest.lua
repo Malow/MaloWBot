@@ -67,8 +67,7 @@ function mb_Priest(commander)
     end
 
     if UnitAffectingCombat("player") and max_GetHealthPercentage("player") < 30 then
-        if not max_IsSpellNameOnCooldown("Desperate Prayer") then
-            CastSpellByName("Desperate Prayer")
+        if max_CastSpellIfReady("Desperate Prayer") then
             return
         end
     end

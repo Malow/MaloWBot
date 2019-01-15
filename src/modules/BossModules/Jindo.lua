@@ -75,9 +75,7 @@ function mb_BossModule_Jindo_WarriorDpsLogic()
             if max_GetManaPercentage("player") >= 60 then
                 CastSpellByName("Cleave")
             end
-            if not max_IsSpellNameOnCooldown("Whirlwind") then
-                CastSpellByName("Whirlwind")
-            end
+            max_CastSpellIfReady("Whirlwind")
             return true
         end
     end

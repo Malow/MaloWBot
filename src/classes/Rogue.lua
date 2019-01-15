@@ -90,12 +90,10 @@ end
 function mb_Rogue_UseCooldowns()
     max_UseEquippedItemIfReady("Trinket0Slot")
     max_UseEquippedItemIfReady("Trinket1Slot")
-    if not max_IsSpellNameOnCooldown("Adrenaline Rush") then
-        CastSpellByName("Adrenaline Rush")
+    if max_CastSpellIfReady("Adrenaline Rush") then
         return true
     end
-    if not max_IsSpellNameOnCooldown("Blade Flurry") then
-        CastSpellByName("Blade Flurry")
+    if max_CastSpellIfReady("Blade Flurry") then
         return true
     end
     return false

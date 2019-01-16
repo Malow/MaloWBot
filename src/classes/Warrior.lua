@@ -101,6 +101,12 @@ function mb_Warrior_Tank(commander)
         CastSpellByName("Bloodrage")
     end
 
+    if mb_currentBossModule.warriorTankLogic ~= nil then
+        if mb_currentBossModule.warriorTankLogic() then
+            return
+        end
+    end
+
     if UnitExists("targettarget") then
         local targetOfTargetName = UnitName("targettarget")
         if mb_GetConfig()["specs"][targetOfTargetName] == "WarrTank" then

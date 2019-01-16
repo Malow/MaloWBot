@@ -56,9 +56,15 @@ function mb_GetDebuffedRaidMember(spell, debuffType1, debuffType2, debuffType3, 
         if unitFilter == nil or mb_CheckFilter(unit, unitFilter) then
             for u = 1, MAX_DEBUFFS do
                 local debuffTexture, debuffApplications, debuffDispelType = UnitDebuff(unit, u)
-                if debuffDispelType ~= nil and (debuffDispelType == debuffType1 or debuffDispelType == debuffType2 or debuffDispelType == debuffType3) then
-                    if mb_IsUnitValidTarget(unit, spell) then
-                        return unit
+                if not mb_shouldDecurse and debuffDispelType == "Curse" then
+                    -- Skip to next iteration
+                elseif not mb_shouldDepoison and debuffDispelType == "Poison" then
+                    -- Skip to next iteration
+                else
+                    if debuffDispelType ~= nil and (debuffDispelType == debuffType1 or debuffDispelType == debuffType2 or debuffDispelType == debuffType3) then
+                        if mb_IsUnitValidTarget(unit, spell) then
+                            return unit
+                        end
                     end
                 end
             end

@@ -118,7 +118,7 @@ function mb_Mage(commander)
         end
     end
 
-    if mb_shouldDecurse and mb_CleanseRaidMemberThrottled("Remove Lesser Curse", "Curse") then
+    if mb_CleanseRaidMemberThrottled("Remove Lesser Curse", "Curse") then
         return
     end
 

@@ -62,6 +62,7 @@ mb_isReadyChecking = false
 mb_combatStartedTime = 0
 mb_currentBossModule = {}
 mb_shouldDecurse = true
+mb_shouldDepoison = true
 function mb_OnEvent()
 	if event == "CHAT_MSG_ADDON" and arg1 == "MB" then
 		if max_GetTableSize(mb_queuedIncomingComms) > 30 then

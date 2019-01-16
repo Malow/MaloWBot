@@ -2,7 +2,7 @@ MB_MOVE_OUT_MODULE_DEBUFFS = {
     "Example"
 }
 
-mb_MoveOutModule_enabled = true
+mb_MoveOutModule_enabled = false
 
 function mb_MoveOutModule_Load()
     local spellNames = {}
@@ -10,6 +10,7 @@ function mb_MoveOutModule_Load()
     table.insert(spellNames, "Rain of Fire")
     table.insert(spellNames, "Blizzard")
     table.insert(spellNames, "Mana Storm")
+    table.insert(spellNames, "Flames")
     mb_CombatLogModule_PeriodicSelfDamageWatch_Enable(spellNames)
     local debuffNames = {}
     table.insert(debuffNames, "Living Bomb")

@@ -252,6 +252,8 @@ function mb_BossModuleRequestHandler(request)
         mb_BossModule_Jindo_Load()
     elseif moduleName == "mandokir" then
         mb_BossModule_Mandokir_Load()
+    elseif moduleName == "hakkar" then
+        mb_BossModule_Hakkar_Load()
     else
         max_SayRaid("BossModule not recognized: " .. tostring(moduleName))
     end

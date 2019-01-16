@@ -256,22 +256,18 @@ function mb_Warlock_CreateClassSyncData()
     local classMates = mb_GetClassMates(max_GetClass("player"))
     if max_GetTableSize(classMates) > 2 then
         return classMates[1] .. "/" .. classMates[2] .. "/" .. classMates[3]
+    elseif max_GetTableSize(classMates) > 1 then
+        return classMates[1] .. "/" .. classMates[2]
     else
-        return ""
+        return classMates[1]
     end
 end
 
 function mb_Warlock_ReceivedClassSyncData()
-    if mb_classSyncData ~= "" then
-        local assignments = max_SplitString(mb_classSyncData, "/")
-        mb_warlockIsCursingElements = assignments[1] == UnitName("player")
-        mb_warlockIsCursingShadow = assignments[2] == UnitName("player")
-        mb_warlockIsCursingRecklessness = assignments[3] == UnitName("player")
-    else
-        mb_warlockIsCursingElements = false
-        mb_warlockIsCursingShadow = false
-        mb_warlockIsCursingRecklessness = false
-    end
+    local assignments = max_SplitString(mb_classSyncData, "/")
+    mb_warlockIsCursingElements = assignments[1] == UnitName("player")
+    mb_warlockIsCursingRecklessness = assignments[2] == UnitName("player")
+    mb_warlockIsCursingShadow = assignments[3] == UnitName("player")
 end
 
 function mb_Warlock_AddDesiredTalents()

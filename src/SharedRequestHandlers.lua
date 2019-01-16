@@ -173,10 +173,7 @@ function mb_RegisterClassSyncDataFunctions(createDataFunction, syncDataReceivedF
 end
 
 function mb_ClassSyncRequestHandler(request)
-    if request.from == UnitName("player") then
-        return
-    end
-    if mb_IsClassLeader() then
+    if mb_classSyncData == nil and mb_IsClassLeader() then
         if mb_createClassSyncDataFunction == nil then
             mb_classSyncData = ""
         else

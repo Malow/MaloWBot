@@ -395,7 +395,7 @@ function mb_HandleVendoring()
         if GetRepairAllCost() > GetMoney() then
             max_SayRaid("Guys, I'm broke and can't afford my repairs :(")
         else
-            RepairAllItems()
+            --RepairAllItems()
         end
         CloseMerchant()
     end

@@ -212,34 +212,6 @@ function mb_RepairReportRequestHandler(request)
     end
 end
 
-function mb_GetDurabilityPercentageForItemSlot(itemSlot)
-    MaloWBotToolTip:SetOwner(UIParent, "ANCHOR_NONE")
-    MaloWBotToolTip:ClearLines()
-    MaloWBotToolTip:SetInventoryItem("player", itemSlot)
-    for i = 1, 10 do
-        local line = getglobal("MaloWBotToolTipTextLeft" .. i):GetText()
-        if line ~= nil then
-            local percentage = mb_GetDurabilityPercentageFromLine(line)
-            if percentage ~= nil then
-                return percentage
-            end
-        end
-    end
-    return nil
-end
-
-function mb_GetDurabilityPercentageFromLine(line)
-    local start = string.find(line, "Durability %d+ / %d+")
-    if start == nil then
-        return nil
-    end
-    line = string.sub(line, 12)
-    local slashPos = string.find(line, "/")
-    local firstPart = string.sub(line, 1, slashPos - 1)
-    local secondPart = string.sub(line, slashPos + 2, string.len(line))
-    return (tonumber(firstPart) / tonumber(secondPart)) * 100
-end
-
 function mb_BossModuleRequestHandler(request)
     local moduleName = request.body
     if mb_currentBossModule.unloadFunction ~= nil then

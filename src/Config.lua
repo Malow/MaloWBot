@@ -18,8 +18,8 @@ function mb_GetConfig()
         config["groupConfiguration"] = mb_GetGroupConfiguration()
     end
     config["specs"] = {}
-    config["specs"]["Kaladin"] = "Wisdom" --"RetLight"
-    config["specs"]["Malow"] = "LightHoly"
+    config["specs"]["Kaladin"] = "LightHoly" --"RetLight"
+    config["specs"]["Malow"] = "SanctuarySalvation"
     config["specs"]["Rosita"] = "KingsJudge"
     config["specs"]["Madeleina"] = "Wisdom"
     config["specs"]["Skyler"] = "MightJudge"

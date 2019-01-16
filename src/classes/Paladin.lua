@@ -36,6 +36,12 @@ function mb_Paladin(commander)
         return
     end
 
+    if mb_currentBossModule.paladinLogic ~= nil then
+        if mb_currentBossModule.paladinLogic() then
+            return
+        end
+    end
+
     --if mb_CleanseRaidMemberThrottled("Cleanse", "Magic", "Poison", "Disease", UNIT_FILTER_DOES_NOT_HAVE_MANA) then
     if mb_CleanseRaidMemberThrottled("Cleanse", "Magic", "Poison", "Disease") then
         return

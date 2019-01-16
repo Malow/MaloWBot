@@ -12,6 +12,12 @@ function mb_Priest(commander)
         return
     end
 
+    if mb_currentBossModule.priestLogic ~= nil then
+        if mb_currentBossModule.priestLogic() then
+            return
+        end
+    end
+
     local request = mb_GetQueuedRequest(true)
     if request ~= nil then
         if mb_CompleteStandardBuffRequest(request) then

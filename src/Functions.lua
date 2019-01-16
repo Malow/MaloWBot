@@ -186,7 +186,7 @@ end
 
 -- Checks if target exists, is visible, is friendly and if it's dead or ghost AND if it's in range of spell if a spell is provided.
 function mb_IsUnitValidTarget(unit, spell)
-	if UnitExists(unit) and UnitIsVisible(unit) and not UnitIsDeadOrGhost(unit) and not max_HasBuff(unit, BUFF_TEXTURE_SPIRIT_OF_REDEMPTION) then -- and not UnitIsEnemy("player", unit) -- removed for Lucifron MC
+	if UnitExists(unit) and UnitIsVisible(unit) and not UnitIsDeadOrGhost(unit) and not max_HasBuff(unit, BUFF_TEXTURE_SPIRIT_OF_REDEMPTION) and not UnitIsEnemy("player", unit) then
 		if spell ~= nil then
 			if mb_IsSpellInRange(spell, unit) then
 				return true

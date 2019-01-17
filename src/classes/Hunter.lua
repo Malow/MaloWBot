@@ -136,7 +136,7 @@ function mb_Hunter_OnLoad()
 
 	local itemSubType = max_GetItemSubTypeForSlot("RangedSlot")
 	if itemSubType == "Bows" or itemSubType == "Crossbows" then
-		mb_AddReagentWatch("Jagged Arrow", 2000)
+		mb_AddReagentWatch("Thorium Headed Arrow", 2000)
 	elseif itemSubType == "Guns" then
 		mb_AddReagentWatch("Thorium Shells", 2000)
 	end

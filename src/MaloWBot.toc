@@ -36,6 +36,7 @@ modules\SpellCastingModule.lua
 modules\BossModules\Hakkar.lua
 modules\BossModules\Jindo.lua
 modules\BossModules\Lucifron.lua
+modules\BossModules\Magmadar.lua
 modules\BossModules\Mandokir.lua
 
 modules\CombatLogSubModules\DamageTakenPerSecond.lua

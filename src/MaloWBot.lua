@@ -63,6 +63,7 @@ mb_combatStartedTime = 0
 mb_currentBossModule = {}
 mb_shouldDecurse = true
 mb_shouldDepoison = true
+mb_shouldDispel = true
 mb_consumablesLevel = 0
 function mb_OnEvent()
 	if event == "CHAT_MSG_ADDON" and arg1 == "MB" then

@@ -60,6 +60,8 @@ function mb_GetDebuffedRaidMember(spell, debuffType1, debuffType2, debuffType3, 
                     -- Skip to next iteration
                 elseif not mb_shouldDepoison and debuffDispelType == "Poison" then
                     -- Skip to next iteration
+                elseif not mb_shouldDispel and debuffDispelType == "Magic" then
+                    -- Skip to next iteration
                 else
                     if debuffDispelType ~= nil and (debuffDispelType == debuffType1 or debuffDispelType == debuffType2 or debuffDispelType == debuffType3) then
                         if mb_IsUnitValidTarget(unit, spell) then

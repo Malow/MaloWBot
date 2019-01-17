@@ -229,6 +229,8 @@ function mb_BossModuleRequestHandler(request)
         mb_BossModule_Lucifron_Load()
     elseif moduleName == "magmadar" then
         mb_BossModule_Magmadar_Load()
+    elseif moduleName == "garr" then
+        mb_BossModule_Garr_Load()
     else
         max_SayRaid("BossModule not recognized: " .. tostring(moduleName))
     end

@@ -18,6 +18,7 @@ function mb_RegisterSharedRequestHandlers(playerClass)
     mb_RegisterForRequest("remoteExecute", mb_RemoteExecuteRequestHandler)
     mb_RegisterForRequest("repairReport", mb_RepairReportRequestHandler)
     mb_RegisterForRequest("bossModule", mb_BossModuleRequestHandler)
+    mb_RegisterForRequest("consumablesLevel", mb_ConsumablesLevelRequestHandler)
 end
 
 function mb_ReloadRequestHandler(request)
@@ -231,4 +232,8 @@ function mb_BossModuleRequestHandler(request)
     else
         max_SayRaid("BossModule not recognized: " .. tostring(moduleName))
     end
+end
+
+function mb_ConsumablesLevelRequestHandler(request)
+    mb_consumablesLevel = tonumber(request.body)
 end

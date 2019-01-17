@@ -32,7 +32,7 @@ function mb_Rogue(commander)
                 if mb_ApplyTemporaryWeaponEnchantsThrottled("Instant Poison VI", "Instant Poison VI") then
                     return
                 end
-            else
+            elseif mb_consumablesLevel > 0 then
                 if mb_ApplyTemporaryWeaponEnchantsThrottled(mb_rogueMainHandTemporaryWeaponEnchant, mb_rogueOffHandTemporaryWeaponEnchant) then
                     return
                 end

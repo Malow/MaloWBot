@@ -63,6 +63,7 @@ mb_combatStartedTime = 0
 mb_currentBossModule = {}
 mb_shouldDecurse = true
 mb_shouldDepoison = true
+mb_consumablesLevel = 0
 function mb_OnEvent()
 	if event == "CHAT_MSG_ADDON" and arg1 == "MB" then
 		if max_GetTableSize(mb_queuedIncomingComms) > 30 then
@@ -108,6 +109,7 @@ function mb_OnEvent()
 		mb_isTraining = true
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		mb_queuedUseConsumables = {}
+		mb_consumablesLevel = 0
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		mb_combatStartedTime = mb_GetTime()
 	elseif event == "PLAYER_DEAD" then

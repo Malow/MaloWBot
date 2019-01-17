@@ -6,7 +6,7 @@ mb_warriorMainHandTemporaryWeaponEnchant = nil
 mb_warriorOffHandTemporaryWeaponEnchant = nil
 function mb_Warrior(commander)
     if not UnitAffectingCombat("player") then
-        if mb_shouldRequestBuffs then
+        if mb_shouldRequestBuffs and mb_consumablesLevel > 0 then
             if mb_ApplyTemporaryWeaponEnchantsThrottled(mb_warriorMainHandTemporaryWeaponEnchant, mb_warriorOffHandTemporaryWeaponEnchant) then
                 return
             end

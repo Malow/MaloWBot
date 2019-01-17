@@ -167,7 +167,7 @@ function mb_Healer_HandleUseConsumableRequest(request)
     if not UnitAffectingCombat("player") then
         return
     end
-    if max_GetMissingMana("player") > 2500 then
+    if max_GetManaPercentage("player") < 20 then
         mb_QueueUseConsumable("Major Mana Potion")
     end
 end

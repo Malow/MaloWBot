@@ -102,19 +102,19 @@ function mb_HandleSpecialSlashCommand(msg)
     elseif msg == "debugRequests" then
         mb_Print("Queued confirmed requests: " .. max_GetTableSize(mb_queuedRequests) .. "x")
         for k, v in pairs(mb_queuedRequests) do
-            mb_Print("    " .. v.type .. " by " .. v.from .. " with priority " .. tostring(v.priority) .. " and body " .. tostring(v.body))
+            mb_Print("    " .. tostring(v.type) .. " by " .. tostring(v.from) .. " with priority " .. tostring(v.priority) .. " and body " .. tostring(v.body))
         end
         mb_Print("Requests that I've accepted but not yet confirmed: " .. max_GetTableSize(mb_myAcceptedRequests) .. "x")
         for k, v in pairs(mb_myAcceptedRequests) do
-            mb_Print("    " .. v.type .. " by " .. v.from .. " with priority " .. tostring(v.priority) .. " and body " .. tostring(v.body))
+            mb_Print("    " .. tostring(v.type) .. " by " .. tostring(v.from) .. " with priority " .. tostring(v.priority) .. " and body " .. tostring(v.body))
         end
         mb_Print("Incoming MB-Comms: " .. max_GetTableSize(mb_queuedIncomingComms) .. "x")
         for k, v in pairs(mb_queuedIncomingComms) do
-            mb_Print("    " .. v.type .. " by " .. v.from .. " with priority " .. tostring(v.priority) .. " and body " .. tostring(v.body))
+            mb_Print("    " .. tostring(v.type) .. " by " .. tostring(v.from) .. " with priority " .. tostring(v.priority) .. " and body " .. tostring(v.body))
         end
         mb_Print("Pending outgoing requests: " .. max_GetTableSize(mb_myPendingRequests) .. "x")
         for k, v in pairs(mb_myPendingRequests) do
-            mb_Print("    " .. v.type .. " with priority " .. tostring(v.priority) .. " and body " .. tostring(v.body) .. ". Sent at " .. v.sentTime)
+            mb_Print("    " .. tostring(v.type) .. " with priority " .. tostring(v.priority) .. " and body " .. tostring(v.body) .. ". Sent at " .. tostring(v.sentTime))
         end
     else
         mb_Print("Command \"" .. msg .. "\" not recognized.")

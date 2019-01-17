@@ -202,11 +202,12 @@ function mb_RemoteExecuteRequestHandler(request)
 end
 
 function mb_RepairReportRequestHandler(request)
-    local requiredPercentage = tonumber(request.body)
+    local requiredPercentage = 20
     local lowestDurability = mb_GetLowestDurabilityPercentage()
     if lowestDurability < requiredPercentage then
         max_SayRaid("I'm at " .. lowestDurability .. "% durability.")
     end
+    mb_WarnForWatchedReagents()
 end
 
 function mb_BossModuleRequestHandler(request)

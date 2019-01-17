@@ -193,6 +193,8 @@ end
 mb_classSpecificRunFunction = nil
 -- OnPostLoad, called when macros etc. are available
 function mb_OnPostLoad()
+	ChatFrame1.editBox.stickyType = "GUILD" -- Automatically set /g as default chat channel
+	ChatFrame1.editBox.chatType = "GUILD" -- Automatically set /g as default chat channel
 	SetCVar("autoSelfCast", 0)
 	mb_CreateMBMacros()
 	mb_BindKey("0","TURNORACTION")

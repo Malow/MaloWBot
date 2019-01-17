@@ -201,6 +201,7 @@ function mb_Mage_OnLoad()
     mb_RegisterRangeCheckSpell("Polymorph")
     mb_AddReagentWatch("Arcane Powder", 50)
     mb_AddReagentWatch("Rune of Portals", 10)
+    mb_AddReagentWatch("Brilliant Wizard Oil", 2)
     mb_RegisterRangeCheckSpell("Frostbolt")
 
     if mb_GetMySpecName() == "DeepFire" then

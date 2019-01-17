@@ -190,6 +190,7 @@ function mb_Warlock_OnLoad()
     mb_RegisterRangeCheckSpell("Banish")
     mb_RegisterRangeCheckSpell("Shadow Bolt")
     mb_GoToMaxRangeModule_RegisterMaxRangeSpell("Shadow Bolt")
+    mb_AddReagentWatch("Brilliant Wizard Oil", 2)
 end
 
 function mb_Warlock_HandleSummonRequest(request)

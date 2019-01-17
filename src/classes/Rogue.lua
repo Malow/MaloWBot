@@ -166,11 +166,25 @@ function mb_Rogue_OnLoad()
         mb_rogueOffHandTemporaryWeaponEnchant = "Dense Weightstone"
     end
 
-    if max_IsItemSubTypeSharp(mainHandItemSubType) or max_IsItemSubTypeSharp(offHandItemSubType) then
-        mb_AddReagentWatch("Dense Sharpening Stone", 50)
+    local sharpWatch = 0
+    local bluntWatch = 0
+    if max_IsItemSubTypeSharp(mainHandItemSubType) then
+        sharpWatch = sharpWatch + 20
     end
-    if max_IsItemSubTypeBlunt(mainHandItemSubType) or max_IsItemSubTypeBlunt(offHandItemSubType) then
-        mb_AddReagentWatch("Dense Weightstone", 50)
+    if max_IsItemSubTypeSharp(offHandItemSubType) then
+        sharpWatch = sharpWatch + 20
+    end
+    if max_IsItemSubTypeBlunt(mainHandItemSubType) then
+        bluntWatch = bluntWatch + 20
+    end
+    if max_IsItemSubTypeBlunt(offHandItemSubType) then
+        bluntWatch = bluntWatch + 20
+    end
+    if sharpWatch > 0 then
+        mb_AddReagentWatch("Dense Sharpening Stone", sharpWatch)
+    end
+    if bluntWatch > 0 then
+        mb_AddReagentWatch("Dense Weightstone", bluntWatch)
     end
 end
 

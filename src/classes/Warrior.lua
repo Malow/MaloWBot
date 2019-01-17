@@ -275,11 +275,25 @@ function mb_Warrior_OnLoad()
         mb_warriorOffHandTemporaryWeaponEnchant = "Dense Weightstone"
     end
 
-    if max_IsItemSubTypeSharp(mainHandItemSubType) or max_IsItemSubTypeSharp(offHandItemSubType) then
-        mb_AddReagentWatch("Dense Sharpening Stone", 100)
+    local sharpWatch = 0
+    local bluntWatch = 0
+    if max_IsItemSubTypeSharp(mainHandItemSubType) then
+        sharpWatch = sharpWatch + 25
     end
-    if max_IsItemSubTypeBlunt(mainHandItemSubType) or max_IsItemSubTypeBlunt(offHandItemSubType) then
-        mb_AddReagentWatch("Dense Weightstone", 100)
+    if max_IsItemSubTypeSharp(offHandItemSubType) then
+        sharpWatch = sharpWatch + 25
+    end
+    if max_IsItemSubTypeBlunt(mainHandItemSubType) then
+        bluntWatch = bluntWatch + 25
+    end
+    if max_IsItemSubTypeBlunt(offHandItemSubType) then
+        bluntWatch = bluntWatch + 25
+    end
+    if sharpWatch > 0 then
+        mb_AddReagentWatch("Dense Sharpening Stone", sharpWatch)
+    end
+    if bluntWatch > 0 then
+        mb_AddReagentWatch("Dense Weightstone", bluntWatch)
     end
 end
 

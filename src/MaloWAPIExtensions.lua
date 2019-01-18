@@ -379,7 +379,7 @@ function max_RaidTargetIndexToName(raidTargetIndex)
 end
 
 function max_HasValidOffensiveTarget()
-	if UnitExists("target") and not UnitIsFriend("player", "target") and not UnitIsDeadOrGhost("target") then
+	if UnitExists("target") and max_UnitIsEnemy("target") and not UnitIsDeadOrGhost("target") then
 		return true
 	end
 	return false
@@ -436,4 +436,8 @@ function max_CastSpellIfReady(spellName)
 		return true
 	end
 	return false
+end
+
+function max_UnitIsEnemy(unit)
+	return UnitIsEnemy("player", unit) == 1
 end

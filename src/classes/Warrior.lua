@@ -10,6 +10,7 @@ function mb_Warrior(commander)
         if not max_IsSpellNameOnCooldown("Berserker Rage") then
             if max_GetActiveStance() ~= 3 then
                 CastSpellByName("Berserker Stance")
+                return
             end
             CastSpellByName("Berserker Rage")
             mb_warriorShouldBerserkerRage = false

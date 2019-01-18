@@ -55,6 +55,12 @@ function mb_Hunter(commander)
 		end
 	end
 
+	if UnitIsUnit("player", "targettarget") then
+		if max_CastSpellIfReady("Feign Death") then
+			return
+		end
+	end
+
 	if CheckInteractDistance("target", 3) then
 		if not mb_isAutoAttacking then
 			CastSpellByName("Attack")

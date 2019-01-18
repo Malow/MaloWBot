@@ -155,7 +155,7 @@ end
 
 function mb_Druid_InsectSwarm()
     local cur, max, found = MobHealth3:GetUnitHealth("target")
-    if found and cur < APPLY_DEBUFFS_HEALTH_ABOVE and false then
+    if found and cur < APPLY_DEBUFFS_HEALTH_ABOVE then
         return false
     end
     if not max_HasDebuff("target", DEBUFF_TEXTURE_INSECT_SWARM) and mb_IsSpellInRange("Insect Swarm", "target") then
@@ -167,7 +167,7 @@ end
 
 function mb_Druid_FaerieFire()
     local cur, max, found = MobHealth3:GetUnitHealth("target")
-    if found and cur < APPLY_DEBUFFS_HEALTH_ABOVE and false then
+    if found and cur < APPLY_DEBUFFS_HEALTH_ABOVE then
         return false
     end
     if not max_HasDebuff("target", DEBUFF_TEXTURE_FAERIE_FIRE) and mb_IsSpellInRange("Faerie Fire", "target") then

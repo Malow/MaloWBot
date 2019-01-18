@@ -118,6 +118,10 @@ function mb_Mage(commander)
         end
     end
 
+    if mb_Mage_SheepMindControlledFriend() then
+        return
+    end
+
     if mb_CleanseRaidMemberThrottled("Remove Lesser Curse", "Curse") then
         return
     end
@@ -175,6 +179,21 @@ function mb_Mage_UseCooldowns()
     elseif mb_Mage_HasPresenceOfMind() and not max_IsSpellNameOnCooldown("Presence of Mind") then
         CastSpellByName("Presence of Mind")
     end
+end
+
+function mb_Mage_SheepMindControlledFriend()
+    local members = max_GetNumPartyOrRaidMembers()
+    for i = 1, members do
+        local unit = max_GetUnitFromPartyOrRaidIndex(i)
+        if max_UnitIsEnemy(unit) and not max_HasDebuff(unit, DEBUFF_TEXTURE_POLYMORPH) then
+            if CheckInteractDistance("target", 4) then
+                TargetUnit(unit)
+                CastSpellByName("Polymorph")
+                return true
+            end
+        end
+    end
+    return false
 end
 
 function mb_Mage_OnLoad()

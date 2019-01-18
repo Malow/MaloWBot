@@ -174,7 +174,7 @@ function mb_RegisterClassSyncDataFunctions(createDataFunction, syncDataReceivedF
 end
 
 function mb_ClassSyncRequestHandler(request)
-    if mb_classSyncData == nil and mb_IsClassLeader() then
+    if request.body == "needSync" and mb_IsClassLeader() then
         if mb_createClassSyncDataFunction == nil then
             mb_classSyncData = ""
         else
@@ -182,7 +182,7 @@ function mb_ClassSyncRequestHandler(request)
             mb_classSyncDataReceivedFunction()
         end
         mb_MakeRequest(max_GetClass("player") .. "Sync", mb_classSyncData, REQUEST_PRIORITY.CLASS_SYNC)
-    elseif request.body ~= "needSync" then
+    else
         mb_classSyncData = request.body
         if mb_classSyncDataReceivedFunction ~= nil then
             mb_classSyncDataReceivedFunction()

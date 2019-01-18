@@ -318,13 +318,13 @@ function mb_GetGroupHealEffect(healValue, rangeCheckSpell)
     local groupUnits = mb_GetMyGroupUnitsThrottled()
     local totalHealEffect = 0
     local affectedPlayers = {}
-    for i = 1, max_GetTableSize(groupUnits) do
-        if mb_IsUnitValidFriendlyTarget(groupUnits[i], rangeCheckSpell) then
-            local healEffect = max_GetMissingHealth(groupUnits[i]) / healValue
+	for _, unit in pairs(groupUnits) do
+        if mb_IsUnitValidFriendlyTarget(unit, rangeCheckSpell) then
+            local healEffect = max_GetMissingHealth(unit) / healValue
             if healEffect > 1.0 then
                 healEffect = 1.0
             end
-			local unitName = UnitName(groupUnits[i])
+			local unitName = UnitName(unit)
             table.insert(affectedPlayers, unitName)
             totalHealEffect = totalHealEffect + healEffect
         end

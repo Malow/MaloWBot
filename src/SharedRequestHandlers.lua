@@ -172,7 +172,10 @@ function mb_RegisterClassSyncDataFunctions(createDataFunction, syncDataReceivedF
 end
 
 function mb_ClassSyncRequestHandler(request)
-    if request.body == "needSync" and mb_IsClassLeader() then
+    if request.body == "needSync" then
+        if not mb_IsClassLeader() then
+            return
+        end
         if mb_createClassSyncDataFunction == nil then
             mb_classSyncData = ""
         else

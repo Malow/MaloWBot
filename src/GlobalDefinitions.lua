@@ -146,14 +146,16 @@ BUFF_ARCANE_INTELLECT = {
     throttle = 10,
     spellName = "Arcane Intellect",
     groupWideSpellName = "Arcane Brilliance",
-    unitFilter = UNIT_FILTER_HAS_MANA
+    unitFilter = UNIT_FILTER_HAS_MANA,
+    reagent = "Arcane Powder"
 }
 BUFF_POWER_WORD_FORTITUDE = {
     type = "buffPowerWordFortitude",
     textures = { BUFF_TEXTURE_POWER_WORD_FORTITUDE, BUFF_TEXTURE_PRAYER_OF_FORTITUDE },
     throttle = 10,
     spellName = "Power Word: Fortitude",
-    groupWideSpellName = "Prayer of Fortitude"
+    groupWideSpellName = "Prayer of Fortitude",
+    reagent = "Sacred Candle"
 }
 BUFF_DIVINE_SPIRIT = {
     type = "buffDivineSpirit",
@@ -161,57 +163,66 @@ BUFF_DIVINE_SPIRIT = {
     throttle = 10,
     spellName = "Divine Spirit",
     groupWideSpellName = "Prayer of Spirit",
-    unitFilter = UNIT_FILTER_HAS_MANA
+    unitFilter = UNIT_FILTER_HAS_MANA,
+    reagent = "Sacred Candle"
 }
 BUFF_BLESSING_OF_WISDOM = {
     type = "buffBlessingOfWisdom",
     textures = { BUFF_TEXTURE_BLESSING_OF_WISDOM, BUFF_TEXTURE_GREATER_BLESSING_OF_WISDOM },
     throttle = 10,
-    spellName = "Greater Blessing of Wisdom"
+    spellName = "Greater Blessing of Wisdom",
+    reagent = "Symbol of Kings"
 }
 BUFF_BLESSING_OF_MIGHT = {
     type = "buffBlessingOfMight",
     textures = { BUFF_TEXTURE_BLESSING_OF_MIGHT, BUFF_TEXTURE_GREATER_BLESSING_OF_MIGHT },
     throttle = 10,
-    spellName = "Greater Blessing of Might"
+    spellName = "Greater Blessing of Might",
+    reagent = "Symbol of Kings"
 }
 BUFF_BLESSING_OF_KINGS = {
     type = "buffBlessingOfKings",
     textures = { BUFF_TEXTURE_BLESSING_OF_KINGS, BUFF_TEXTURE_GREATER_BLESSING_OF_KINGS },
     throttle = 10,
-    spellName = "Greater Blessing of Kings"
+    spellName = "Greater Blessing of Kings",
+    reagent = "Symbol of Kings"
 }
 BUFF_BLESSING_OF_LIGHT = {
     type = "buffBlessingOfLight",
     textures = { BUFF_TEXTURE_BLESSING_OF_LIGHT, BUFF_TEXTURE_GREATER_BLESSING_OF_LIGHT },
     throttle = 10,
-    spellName = "Greater Blessing of Light"
+    spellName = "Greater Blessing of Light",
+    reagent = "Symbol of Kings"
 }
 BUFF_BLESSING_OF_SANCTUARY = {
     type = "buffBlessingOfSanctuary",
     textures = { BUFF_TEXTURE_BLESSING_OF_SANCTUARY, BUFF_TEXTURE_GREATER_BLESSING_OF_SANCTUARY },
     throttle = 10,
-    spellName = "Greater Blessing of Sanctuary"
+    spellName = "Greater Blessing of Sanctuary",
+    reagent = "Symbol of Kings"
 }
 BUFF_BLESSING_OF_SALVATION = {
     type = "buffBlessingOfSalvation",
     textures = { BUFF_TEXTURE_BLESSING_OF_SALVATION, BUFF_TEXTURE_GREATER_BLESSING_OF_SALVATION },
     throttle = 10,
-    spellName = "Greater Blessing of Salvation"
+    spellName = "Greater Blessing of Salvation",
+    reagent = "Symbol of Kings"
 }
 BUFF_MARK_OF_THE_WILD = {
     type = "buffMarkOfTheWild",
     textures = { BUFF_TEXTURE_MARK_OF_THE_WILD, BUFF_TEXTURE_GIFT_OF_THE_WILD },
     throttle = 10,
     spellName = "Mark of the Wild",
-    groupWideSpellName = "Gift of the Wild"
+    groupWideSpellName = "Gift of the Wild",
+    reagent = "Wild Thornroot"
 }
 BUFF_SHADOW_PROTECTION = {
     type = "buffShadowProtection",
     textures = { BUFF_TEXTURE_SHADOW_PROTECTION, BUFF_TEXTURE_PRAYER_OF_SHADOW_PROTECTION },
     throttle = 10,
     spellName = "Shadow Protection",
-    groupWideSpellName = "Prayer of Shadow Protection"
+    groupWideSpellName = "Prayer of Shadow Protection",
+    reagent = "Sacred Candle"
 }
 BUFF_THORNS = {
     type = "buffThorns",

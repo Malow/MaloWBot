@@ -37,7 +37,7 @@ function mb_TradeMeGoodiesRequestHandler(request)
             return false
         end
         local unit = max_GetUnitForPlayerName(request.body)
-        if mb_IsUnitValidTarget(unit) then
+        if mb_IsUnitValidFriendlyTarget(unit) then
             if CheckInteractDistance(unit, 2) then
                 mb_AcceptRequest(request)
             end
@@ -57,7 +57,7 @@ function mb_InventoryDumpRequestHandler(request)
             return
         end
         local unit = max_GetUnitForPlayerName(request.body)
-        if mb_IsUnitValidTarget(unit) then
+        if mb_IsUnitValidFriendlyTarget(unit) then
             if CheckInteractDistance(unit, 2) then
                 mb_AcceptRequest(request)
             end

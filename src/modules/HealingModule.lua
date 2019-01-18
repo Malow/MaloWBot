@@ -20,7 +20,7 @@ function mb_HealingModule_HandleHoTRequest(request)
     local unit = max_GetUnitForPlayerName(request.body)
     for k, v in pairs(mb_HealingModule_registeredHoTs) do
         if not max_HasBuff(unit, v.texture) then
-            if mb_IsUnitValidTarget(unit, k) and UnitMana("player") > mb_HealingModule_registeredHoTs[k].manaCost then
+            if mb_IsUnitValidFriendlyTarget(unit, k) and UnitMana("player") > mb_HealingModule_registeredHoTs[k].manaCost then
                 mb_AcceptRequest(request)
                 return
             end
@@ -33,7 +33,7 @@ function mb_HealingModule_CompleteHoTRequest(request)
     local unit = max_GetUnitForPlayerName(request.body)
     for k, v in pairs(mb_HealingModule_registeredHoTs) do
         if not max_HasBuff(unit, v.texture) then
-            if mb_IsUnitValidTarget(unit, k) and UnitMana("player") > mb_HealingModule_registeredHoTs[k].manaCost then
+            if mb_IsUnitValidFriendlyTarget(unit, k) and UnitMana("player") > mb_HealingModule_registeredHoTs[k].manaCost then
                 max_CastSpellOnRaidMember(k, unit)
                 return
             end
@@ -81,7 +81,7 @@ function mb_HealingModule_GetValidTankUnitWithHighestFutureMissingHealth(spellNa
         if unitFilter ~= nil and not mb_CheckFilter(unit, unitFilter) then
             break
         end
-        if mb_IsUnitValidTarget(unit, spellName) then
+        if mb_IsUnitValidFriendlyTarget(unit, spellName) then
             local missingHealth = mb_HealingModule_GetFutureMissingHealth(unit, 300)
             missingHealth = missingHealth + (tankData.dtps * 3)
             if lowestTank == nil or futureMissingHealth < missingHealth then
@@ -150,7 +150,7 @@ function mb_HealingModule_GetRaidHealTarget(spell, unitFilter)
         end
         local missingHealth = mb_HealingModule_GetFutureMissingHealth(unit, 800)
         if missingHealth > missingHealthOfTarget then
-            if mb_IsUnitValidTarget(unit, spell) then
+            if mb_IsUnitValidFriendlyTarget(unit, spell) then
                 missingHealthOfTarget = missingHealth
                 healTarget = i
             end

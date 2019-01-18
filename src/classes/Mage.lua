@@ -220,7 +220,7 @@ function mb_Mage_HandleWaterRequest(request)
         return
     end
     local unit = max_GetUnitForPlayerName(request.body)
-    if mb_IsUnitValidTarget(unit) then
+    if mb_IsUnitValidFriendlyTarget(unit) then
         if CheckInteractDistance(unit, 2) then
             mb_AcceptRequest(request)
         end
@@ -231,7 +231,7 @@ function mb_Mage_HandleDecurseRequest(request)
     if not mb_IsFreeToAcceptRequest() then
         return
     end
-    if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Remove Lesser Curse") and UnitMana("player") > 500 then
+    if mb_IsUnitValidFriendlyTarget(max_GetUnitForPlayerName(request.body), "Remove Lesser Curse") and UnitMana("player") > 500 then
         mb_AcceptRequest(request)
     end
 end

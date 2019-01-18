@@ -10,7 +10,7 @@ function mb_GetMostDamagedFriendly(spell, unitFilter)
         end
         local missingHealth = max_GetMissingHealth(unit)
         if missingHealth > missingHealthOfTarget then
-            if mb_IsUnitValidTarget(unit, spell) then
+            if mb_IsUnitValidFriendlyTarget(unit, spell) then
                 missingHealthOfTarget = missingHealth
                 healTarget = i
             end
@@ -35,7 +35,7 @@ function mb_GetLowestHealthFriendly(spell, unitFilter)
         end
         local health = UnitHealth(unit)
         if health < healthOfTarget then
-            if mb_IsUnitValidTarget(unit, spell) then
+            if mb_IsUnitValidFriendlyTarget(unit, spell) then
                     healthOfTarget = health
                     healTarget = i
             end
@@ -64,7 +64,7 @@ function mb_GetDebuffedRaidMember(spell, debuffType1, debuffType2, debuffType3, 
                     -- Skip to next iteration
                 else
                     if debuffDispelType ~= nil and (debuffDispelType == debuffType1 or debuffDispelType == debuffType2 or debuffDispelType == debuffType3) then
-                        if mb_IsUnitValidTarget(unit, spell) then
+                        if mb_IsUnitValidFriendlyTarget(unit, spell) then
                             return unit
                         end
                     end

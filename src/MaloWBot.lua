@@ -545,7 +545,7 @@ end
 ---			Dual-tank mode, use cleave then and swap between both targets and check actual threat.
 ---			Berserker rage zerk stance dance? Both as fear ward kinda and to increase rage.
 ---			Auto-taunt off other tanks if they have MS or other nasty debuff
---- Say raid, "I am literally out of X" when out of reagents and trying to buff with them.
+---		Single-target salv for DPS warriors
 --- Rename followTarget to commander
 ---	Bag-space report, each responds with how many bag spaces free, not as SayRaid but by responding to the request kinda and then the guy requesting sees the printout.
 --- Blacklist LoS targets when using mb_IsSpellInRange for 1 sec, use the Rogue-Spam way to detect error message of LoS

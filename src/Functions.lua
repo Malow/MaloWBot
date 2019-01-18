@@ -185,7 +185,7 @@ function mb_IsIgnoredTradeItem(itemName)
 end
 
 -- Checks if target exists, is visible, is friendly and if it's dead or ghost AND if it's in range of spell if a spell is provided.
-function mb_IsUnitValidTarget(unit, spell)
+function mb_IsUnitValidFriendlyTarget(unit, spell)
 	if UnitExists(unit) and UnitIsVisible(unit) and not UnitIsDeadOrGhost(unit) and not max_HasBuff(unit, BUFF_TEXTURE_SPIRIT_OF_REDEMPTION) and not UnitIsEnemy("player", unit) then
 		if spell ~= nil then
 			if mb_IsSpellInRange(spell, unit) then
@@ -240,7 +240,7 @@ function mb_CanBuffUnitWithSpell(unit, spell)
 	elseif UnitIsDead("player") then
 		return
 	end
-	if mb_IsUnitValidTarget(unit, spell) and max_GetLevelDifferenceFromSelf(unit) > -8 then
+	if mb_IsUnitValidFriendlyTarget(unit, spell) and max_GetLevelDifferenceFromSelf(unit) > -8 then
 		return true
 	end
 end
@@ -250,7 +250,7 @@ function mb_ShouldBuffGroupWide(unitName, buff, unitFilter)
 	local groupUnits = max_GetGroupUnitsFor(unitName)
 	local count = 0
 	for i = 1, max_GetTableSize(groupUnits) do
-		if mb_IsUnitValidTarget(groupUnits[i]) and not max_HasBuffWithMultipleTextures(groupUnits[i], buff.textures) then
+		if mb_IsUnitValidFriendlyTarget(groupUnits[i]) and not max_HasBuffWithMultipleTextures(groupUnits[i], buff.textures) then
 			if unitFilter == nil then
 				count = count + 1
 			elseif mb_CheckFilter(groupUnits[i], unitFilter) then
@@ -319,7 +319,7 @@ function mb_GetGroupHealEffect(healValue, rangeCheckSpell)
     local totalHealEffect = 0
     local affectedPlayers = {}
     for i = 1, max_GetTableSize(groupUnits) do
-        if mb_IsUnitValidTarget(groupUnits[i], rangeCheckSpell) then
+        if mb_IsUnitValidFriendlyTarget(groupUnits[i], rangeCheckSpell) then
             local healEffect = max_GetMissingHealth(groupUnits[i]) / healValue
             if healEffect > 1.0 then
                 healEffect = 1.0

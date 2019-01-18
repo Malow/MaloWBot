@@ -514,6 +514,12 @@ function mb_HandleStandardBuffRequest(request)
         if not max_HasSpell(buff.groupWideSpellName) then
             return
         end
+        if buff.reagent ~= nil then
+            if mb_GetItemCount(buff.reagent) == 0 then
+                max_SayRaid("I'm completely out of " .. buff.reagent)
+                return
+            end
+        end
     end
     if mb_CanBuffUnitWithSpell(max_GetUnitForPlayerName(request.body), buff.spellName) then
         mb_AcceptRequest(request)

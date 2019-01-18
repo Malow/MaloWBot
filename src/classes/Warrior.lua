@@ -1,6 +1,4 @@
--- TODO:
----     Tank VS DPS distinction for Sanctuary/Salvation
----
+
 mb_warriorIsTank = mb_GetMySpecName() == "WarrTank"
 mb_warriorMainHandTemporaryWeaponEnchant = nil
 mb_warriorOffHandTemporaryWeaponEnchant = nil
@@ -140,7 +138,7 @@ function mb_Warrior_Tank(commander)
                 mb_Warrior_DpsTank(commander)
                 return
             end
-        elseif mb_warriorShouldAutomaticallyTaunt then
+        elseif mb_warriorShouldAutomaticallyTaunt or mb_Warrior_wasTankingLastFrame then
             if max_GetActiveStance() ~= 2 then
                 CastSpellByName("Defensive Stance")
             end

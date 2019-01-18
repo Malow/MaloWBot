@@ -246,7 +246,7 @@ function mb_Priest_HandleFearWardRequest(request)
     if max_HasBuff(unit, BUFF_TEXTURE_FEAR_WARD) then
         return
     end
-    if mb_IsUnitValidTarget(unit, "Fear Ward") then
+    if mb_IsUnitValidFriendlyTarget(unit, "Fear Ward") then
         mb_AcceptRequest(request)
     end
 end
@@ -261,7 +261,7 @@ function mb_Priest_HandleDispelRequest(request)
     if UnitIsDead("player") then
         return
     end
-    if mb_IsUnitValidTarget(max_GetUnitForPlayerName(request.body), "Dispel Magic") and UnitMana("player") > 500 then
+    if mb_IsUnitValidFriendlyTarget(max_GetUnitForPlayerName(request.body), "Dispel Magic") and UnitMana("player") > 500 then
         mb_AcceptRequest(request)
     end
 end

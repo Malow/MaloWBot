@@ -5,6 +5,7 @@ mb_warriorIsTank = mb_GetMySpecName() == "WarrTank"
 mb_warriorMainHandTemporaryWeaponEnchant = nil
 mb_warriorOffHandTemporaryWeaponEnchant = nil
 mb_warriorShouldBerserkerRage = false
+mb_warriorShouldAutomaticallyTaunt = true
 function mb_Warrior(commander)
     if mb_warriorShouldBerserkerRage then
         if not max_IsSpellNameOnCooldown("Berserker Rage") then
@@ -139,7 +140,7 @@ function mb_Warrior_Tank(commander)
                 mb_Warrior_DpsTank(commander)
                 return
             end
-        else
+        elseif mb_warriorShouldAutomaticallyTaunt then
             if max_GetActiveStance() ~= 2 then
                 CastSpellByName("Defensive Stance")
             end

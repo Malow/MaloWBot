@@ -46,6 +46,8 @@ function mb_HandleSpecialSlashCommand(msg)
         mb_MakeRequest("goToMaxRange", "goToMaxRange", REQUEST_PRIORITY.COMMAND)
     elseif msg == "useConsumable" then
         mb_MakeRequest("useConsumable", "useConsumable", REQUEST_PRIORITY.COMMAND)
+    elseif msg == "berserkerRage" then
+        mb_MakeRequest("berserkerRage", "berserkerRage", REQUEST_PRIORITY.COMMAND)
     elseif string.find(msg, "bossModule") then
         local module = max_SplitString(msg, " ")[2]
         mb_MakeRequest("bossModule", tostring(module), REQUEST_PRIORITY.COMMAND)

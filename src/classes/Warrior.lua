@@ -4,7 +4,18 @@
 mb_warriorIsTank = mb_GetMySpecName() == "WarrTank"
 mb_warriorMainHandTemporaryWeaponEnchant = nil
 mb_warriorOffHandTemporaryWeaponEnchant = nil
+mb_warriorShouldBerserkerRage = false
 function mb_Warrior(commander)
+    if mb_warriorShouldBerserkerRage then
+        if not max_IsSpellNameOnCooldown("Berserker Rage") then
+            if max_GetActiveStance() ~= 3 then
+                CastSpellByName("Berserker Stance")
+            end
+            CastSpellByName("Berserker Rage")
+            mb_warriorShouldBerserkerRage = false
+            return
+        end
+    end
     if not UnitAffectingCombat("player") then
         if mb_shouldRequestBuffs and mb_consumablesLevel > 0 then
             if mb_ApplyTemporaryWeaponEnchantsThrottled(mb_warriorMainHandTemporaryWeaponEnchant, mb_warriorOffHandTemporaryWeaponEnchant) then
@@ -41,10 +52,6 @@ function mb_Warrior(commander)
         CastSpellByName("Attack")
     end
 
-    if max_CastSpellIfReady("Berserker Rage") then
-        return
-    end
-
     if mb_Warrior_BattleShout() then
         return
     end
@@ -59,8 +66,9 @@ function mb_Warrior(commander)
 
     if not mb_areaOfEffectMode then
         if max_GetHealthPercentage("target") < 25 then
-            CastSpellByName("Recklessness")
-            return
+            if max_CastSpellIfReady("Recklessness") then
+                return
+            end
         end	
         if max_GetHealthPercentage("target") < 25 then
             CastSpellByName("Execute")
@@ -255,6 +263,7 @@ function mb_Warrior_BattleShout()
 end
 
 function mb_Warrior_OnLoad()
+    mb_RegisterForRequest("berserkerRage", mb_Warrior_HandleBerserkerRageRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
     mb_AddDesiredBuff(BUFF_BLESSING_OF_MIGHT)
@@ -307,6 +316,10 @@ end
 function mb_Warrior_HasImprovedDemoralizingShout()
     local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(2, 3)
     return currentRank == 5
+end
+
+function mb_Warrior_HandleBerserkerRageRequest(request)
+    mb_warriorShouldBerserkerRage = true
 end
 
 function mb_Warrior_AddDesiredTalents()

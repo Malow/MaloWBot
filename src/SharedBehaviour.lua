@@ -636,6 +636,9 @@ function mb_IsFreeToAcceptRequest()
     if mb_CrowdControlModule_IsAssignedToCrowdControl() then
         return false
     end
+    if mb_IsDrinking() then
+        return false
+    end
     return true
 end
 

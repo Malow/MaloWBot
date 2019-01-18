@@ -148,13 +148,11 @@ function mb_GoldDistributionRequestHandler(request)
 end
 
 function mb_MoveOutModuleRequestHandler(request)
-    if request.from == mb_GetMyCommanderName() then
-        local parts = max_SplitString(request.body, "/")
-        if parts[1] == "on" then
-            mb_MoveOutModule_Enable()
-        else
-            mb_MoveOutModule_Disable()
-        end
+    local parts = max_SplitString(request.body, "/")
+    if parts[1] == "on" then
+        mb_MoveOutModule_Enable()
+    else
+        mb_MoveOutModule_Disable()
     end
 end
 

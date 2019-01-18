@@ -234,6 +234,10 @@ function mb_Warrior_DpsTank(commander)
         CastSpellByName("Thunder Clap")
         return
     end
+    if max_GetHealthPercentage("target") < 25 then
+        CastSpellByName("Execute")
+        return
+    end
     if max_GetManaPercentage("player") >= 40 and not max_IsSpellNameOnCooldown("Shield Slam") then
         CastSpellByName("Shield Slam")
         return

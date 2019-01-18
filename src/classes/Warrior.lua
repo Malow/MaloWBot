@@ -41,6 +41,10 @@ function mb_Warrior(commander)
         CastSpellByName("Attack")
     end
 
+    if max_CastSpellIfReady("Berserker Rage") then
+        return
+    end
+
     if mb_Warrior_BattleShout() then
         return
     end
@@ -55,10 +59,13 @@ function mb_Warrior(commander)
 
     if not mb_areaOfEffectMode then
         if max_GetHealthPercentage("target") < 25 then
+            CastSpellByName("Recklessness")
+            return
+        end	
+        if max_GetHealthPercentage("target") < 25 then
             CastSpellByName("Execute")
             return
         end
-
         if max_CastSpellIfReady("Bloodthirst") then
             return
         end

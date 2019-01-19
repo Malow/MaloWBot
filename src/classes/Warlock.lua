@@ -247,7 +247,7 @@ function mb_Warlock_HandleCrowdControlRequest(request)
 end
 
 function mb_Warlock_IsReady()
-    if mb_CancelExpiringBuffWithTexture(BUFF_TEXTURE_SACRIFICED_SUCCUBUS, 8) then
+    if max_CancelBuffWithRemainingDurationLessThan(BUFF_TEXTURE_SACRIFICED_SUCCUBUS, 8 * 60) then
         return false
     end
     return true

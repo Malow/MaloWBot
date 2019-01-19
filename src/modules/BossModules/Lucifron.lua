@@ -3,6 +3,7 @@ function mb_BossModule_Lucifron_Load()
     mb_currentBossModule.priestLogic = mb_BossModule_Lucifron_PriestLogic
     mb_currentBossModule.paladinLogic = mb_BossModule_Lucifron_PaladinLogic
 end
+mb_RegisterBossModule("lucifron", mb_BossModule_Lucifron_Load)
 
 function mb_BossModule_Lucifron_Unload()
 

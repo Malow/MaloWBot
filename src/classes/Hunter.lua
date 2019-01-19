@@ -210,7 +210,7 @@ function mb_Hunter_TargetNeedsTranquilizing()
 end
 
 function mb_Hunter_IsReady()
-	if mb_CancelExpiringBuffWithTexture(BUFF_TEXTURE_TRUESHOT_AURA, 8) then
+	if max_CancelBuffWithRemainingDurationLessThan(BUFF_TEXTURE_TRUESHOT_AURA, 8 * 60) then
 		return false
 	end
 	return true

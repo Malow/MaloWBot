@@ -85,24 +85,28 @@ function mb_Mage(commander)
 
     if UnitAffectingCombat("player") then
         if mb_Mage_HasIceBlock() then
-            if max_IsSpellNameOnCooldown("Ice Block") and not max_IsSpellNameOnCooldown("Cold Snap") then
-                CastSpellByName("Cold Snap")
-                return
+            if max_IsSpellNameOnCooldown("Ice Block") then
+                if max_CastSpellIfReady("Cold Snap") then
+                    return
+                end
             end
-            if max_GetHealthPercentage("player") < 30 and not max_IsSpellNameOnCooldown("Ice Block") then
-                CastSpellByName("Ice Block")
-                return
+            if max_GetHealthPercentage("player") < 30 then
+                if max_CastSpellIfReady("Ice Block") then
+                    return
+                end
             end
         end
         if mb_Mage_HasIceBarrier() then
-            if max_GetHealthPercentage("player") < 30 and not max_IsSpellNameOnCooldown("Ice Barrier") then
-                CastSpellByName("Ice Barrier")
-                return
+            if max_GetHealthPercentage("player") < 30 then
+                if max_CastSpellIfReady("Ice Barrier") then
+                    return
+                end
             end
         end
-        if max_GetManaPercentage("player") < 10 and not max_IsSpellNameOnCooldown("Evocation") then
-            CastSpellByName("Evocation")
-            return
+        if max_GetManaPercentage("player") < 10 then
+            if max_CastSpellIfReady("Evocation") then
+                return
+            end
         elseif max_GetManaPercentage("player") < 20 then
             for i = max_GetTableSize(ITEMS_MANA_GEM), 1, -1 do
                 if mb_UseItem(ITEMS_MANA_GEM[i]) then
@@ -283,7 +287,7 @@ function mb_Mage_HandleCrowdControlRequest(request)
 end
 
 function mb_Mage_IsReady()
-    if mb_CancelExpiringBuffWithTexture(BUFF_TEXTURE_MAGE_ARMOR, 8) then
+    if max_CancelBuffWithRemainingDurationLessThan(BUFF_TEXTURE_MAGE_ARMOR, 8 * 60) then
         return false
     end
     return true

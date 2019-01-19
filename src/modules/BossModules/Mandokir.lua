@@ -4,6 +4,7 @@ function mb_BossModule_Mandokir_Load()
     mb_currentBossModule.unloadFunction = mb_BossModule_Mandokir_Unload
     mb_currentBossModule.preRun = mb_BossModule_Mandokir_PreRun
 end
+mb_RegisterBossModule("mandokir", mb_BossModule_Mandokir_Load)
 
 function mb_BossModule_Mandokir_Unload()
 

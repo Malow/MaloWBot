@@ -4,6 +4,7 @@ function mb_BossModule_Magmadar_Load()
     mb_shouldDispel = false
     mb_warriorShouldAutomaticallyTaunt = false
 end
+mb_RegisterBossModule("magmadar", mb_BossModule_Magmadar_Load)
 
 function mb_BossModule_Magmadar_Unload()
     mb_shouldDispel = true
@@ -11,7 +12,7 @@ function mb_BossModule_Magmadar_Unload()
 end
 
 function mb_BossModule_Magmadar_PriestLogic()
-    if not max_IsSpellNameOnCooldown("Fear Ward") then
+    if not max_IsSpellNameOnCooldown("Fear Ward") and not max_HasBuff("player", BUFF_TEXTURE_FEAR_WARD) then
         max_CastSpellOnRaidMember("Fear Ward", "player")
         return true
     end

@@ -220,20 +220,12 @@ function mb_BossModuleRequestHandler(request)
     mb_currentBossModule = {}
     if moduleName == "nil" then
         -- do nothing, we already unloaded above
-    elseif moduleName == "jindo" then
-        mb_BossModule_Jindo_Load()
-    elseif moduleName == "mandokir" then
-        mb_BossModule_Mandokir_Load()
-    elseif moduleName == "hakkar" then
-        mb_BossModule_Hakkar_Load()
-    elseif moduleName == "lucifron" then
-        mb_BossModule_Lucifron_Load()
-    elseif moduleName == "magmadar" then
-        mb_BossModule_Magmadar_Load()
-    elseif moduleName == "garr" then
-        mb_BossModule_Garr_Load()
-    else
+        return
+    end
+    if mb_registeredBossModules[moduleName] == nil then
         max_SayRaid("BossModule not recognized: " .. tostring(moduleName))
+    else
+        mb_registeredBossModules[moduleName]()
     end
 end
 

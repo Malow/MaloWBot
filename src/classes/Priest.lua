@@ -267,7 +267,7 @@ function mb_Priest_HandleDispelRequest(request)
 end
 
 function mb_Priest_IsReady()
-    if mb_CancelExpiringBuffWithTexture(BUFF_TEXTURE_INNER_FIRE, 8) then
+    if max_CancelBuffWithRemainingDurationLessThan(BUFF_TEXTURE_INNER_FIRE, 8 * 60) then
         return false
     end
     return true

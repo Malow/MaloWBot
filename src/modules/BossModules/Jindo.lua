@@ -11,6 +11,7 @@ function mb_BossModule_Jindo_Load()
     mb_rogueShouldUseBladeFlurryOnCooldown = false
     mb_shouldDecurse = false
 end
+mb_RegisterBossModule("jindo", mb_BossModule_Jindo_Load)
 
 function mb_BossModule_Jindo_Unload()
     mb_rogueShouldUseBladeFlurryOnCooldown = true

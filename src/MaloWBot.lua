@@ -458,9 +458,13 @@ function mb_IsFacingWrongWay()
 	return mb_lastFacingWrongWayTime + 0.5 > mb_GetTime()
 end
 
+function mb_IsFuckingOff()
+	return mb_shouldFuckOffAt + 4.5 > mb_GetTime()
+end
+
 mb_shouldFuckOffAt = 0
 function mb_RebindMovementKeyIfNeeded()
-	if mb_shouldFuckOffAt + 4.5 > mb_GetTime() then
+	if mb_IsFuckingOff() then
 		mb_BindKey("9", "MOVEFORWARD")
 		return
 	end
@@ -479,6 +483,13 @@ function mb_GetTimeInCombat()
 		return 0
 	end
 	return mb_GetTime() - mb_combatStartedTime
+end
+
+function mb_RegisterBossModule(name, loadFunction)
+	if mb_registeredBossModules == nil then
+		mb_registeredBossModules = {}
+	end
+	mb_registeredBossModules[name] = loadFunction
 end
 
 

@@ -592,22 +592,7 @@ function mb_CancelExpiringBuffs(minutes)
     local didCancel = false
     for _, buff in pairs(All_BUFFS) do
         for _, buffTexture in pairs(buff.textures) do
-            if mb_CancelExpiringBuffWithTexture(buffTexture, minutes) then
-                didCancel = true
-            end
-        end
-    end
-    return didCancel
-end
-
-function mb_CancelExpiringBuffWithTexture(buffTexture, minutes)
-    local didCancel = false
-    for buffIndex = MAX_BUFFS, 1, -1 do
-        local b = UnitBuff("player", buffIndex)
-        if b ~= nil and b == buffTexture then
-            local timeLeft = GetPlayerBuffTimeLeft(buffIndex - 1)
-            if timeLeft < minutes * 60 then
-                CancelPlayerBuff(buffIndex - 1)
+            if max_CancelBuffWithRemainingDurationLessThan(buffTexture, minutes * 60) then
                 didCancel = true
             end
         end

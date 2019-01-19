@@ -441,3 +441,48 @@ end
 function max_UnitIsEnemy(unit)
 	return UnitIsEnemy("player", unit) == 1
 end
+
+function max_GetPlayerDebuffTimeLeft(debuffTexture)
+	for i = 0, MAX_BUFFS do
+		local buffIndex = GetPlayerBuff(i, "HARMFUL")
+		if buffIndex >= 0 then
+			if GetPlayerBuffTexture(buffIndex) == debuffTexture then
+				return GetPlayerBuffTimeLeft(buffIndex)
+			end
+		else
+			return 0
+		end
+	end
+end
+
+function max_CancelBuff(buffTexture)
+	for i = 0, MAX_BUFFS do
+		local buffIndex = GetPlayerBuff(i, "HELPFUL")
+		if buffIndex >= 0 then
+			if GetPlayerBuffTexture(buffIndex) == buffTexture then
+				CancelPlayerBuff(buffIndex)
+				return true
+			end
+		else
+			return false
+		end
+	end
+	return false
+end
+
+function max_CancelBuffWithRemainingDurationLessThan(buffTexture, remainingDuration)
+	for i = 0, MAX_BUFFS do
+		local buffIndex = GetPlayerBuff(i, "HELPFUL")
+		if buffIndex >= 0 then
+			if GetPlayerBuffTexture(buffIndex) == buffTexture then
+				if GetPlayerBuffTimeLeft(buffIndex) < remainingDuration then
+					CancelPlayerBuff(buffIndex)
+					return true
+				end
+			end
+		else
+			return false
+		end
+	end
+	return false
+end

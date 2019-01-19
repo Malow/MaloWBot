@@ -3,9 +3,33 @@ function mb_HandleSpecialSlashCommand(msg)
         mb_MakeRequest("reload", "reload", REQUEST_PRIORITY.COMMAND)
         ReloadUI()
     elseif msg == "trademegoodies" or msg == "tradeMeGoodies" then
-        mb_MakeRequest("trademegoodies", UnitName("player"), REQUEST_PRIORITY.COMMAND)
+        if mb_isTrading then
+            AcceptTrade()
+        else
+            mb_MakeRequest("trademegoodies", UnitName("player"), REQUEST_PRIORITY.COMMAND)
+        end
     elseif msg == "inventoryDump" then
-        mb_MakeRequest("inventoryDump", UnitName("player"), REQUEST_PRIORITY.COMMAND)
+        if mb_isTrading then
+            if GetTradePlayerItemLink(1) ~= nil then
+                AcceptTrade()
+            else
+                local count = 0
+                for bag = 0, 4 do
+                    for slot = 1, GetContainerNumSlots(bag) do
+                        local t = GetContainerItemInfo(bag, slot)
+                        if t ~= nil then
+                            UseContainerItem(bag, slot)
+                            count = count + 1
+                            if count == 6 then
+                                return
+                            end
+                        end
+                    end
+                end
+            end
+        else
+            mb_MakeRequest("inventoryDump", UnitName("player"), REQUEST_PRIORITY.COMMAND)
+        end
     elseif msg == "summon" then
         mb_MakeRequest("summon", UnitName("target"), REQUEST_PRIORITY.COMMAND)
     elseif msg == "soulstone" then

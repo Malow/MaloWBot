@@ -407,7 +407,6 @@ function mb_AddReagentWatch(itemName, minimumCount)
     local reagent = {}
     reagent.itemName = itemName
     reagent.minimumCount = minimumCount
-    reagent.hasWarned = false
     table.insert(mb_watchedReagents, reagent)
 end
 
@@ -415,10 +414,7 @@ function mb_WarnForWatchedReagents()
     for i = 1, max_GetTableSize(mb_watchedReagents) do
         local itemCount = mb_GetItemCount(mb_watchedReagents[i].itemName)
         if itemCount < mb_watchedReagents[i].minimumCount then
-            if not mb_watchedReagents[i].hasWarned then
-                max_SayRaid("I'm down to " .. itemCount .. " " .. mb_watchedReagents[i].itemName .. ". I would like another " .. mb_watchedReagents[i].minimumCount - itemCount)
-                mb_watchedReagents[i].hasWarned = true
-            end
+            max_SayRaid("I'm down to " .. itemCount .. " " .. mb_watchedReagents[i].itemName .. ". I would like another " .. mb_watchedReagents[i].minimumCount - itemCount)
         end
     end
 end

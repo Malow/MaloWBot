@@ -137,10 +137,12 @@ function mb_HandleMassCommandRequests()
     end
     if mb_shouldHearthstone then
         mb_shouldHearthstone = false
-        if mb_UseItem("Hearthstone") then
-            return true
-        else
+        if not mb_HasItem("Hearthstone") then
             max_SayRaid("Uh guys? I don't have a Hearthstone...")
+        elseif mb_IsItemOnCooldown("Hearthstone") then
+            max_SayRaid("My Hearthstone is on cooldown.")
+        else
+            mb_UseItem("Hearthstone")
         end
     end
     if mb_shouldMount then

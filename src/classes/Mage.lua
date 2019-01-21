@@ -382,7 +382,16 @@ function mb_Mage_AddDesiredTalents()
             mb_AddDesiredTalent(1, 5, 5) -- Magic Absorption
             mb_AddDesiredTalent(1, 6, 5) -- Arcane Concentration
             mb_AddDesiredTalent(1, 12, 2) -- Arcane Meditation
-            -- TODO: Add Fire talents
+            mb_AddDesiredTalent(2, 1, 5) -- Improved Fireball
+            mb_AddDesiredTalent(2, 3, 5) -- Ignite
+            mb_AddDesiredTalent(2, 4, 2) -- Flame Throwing
+            mb_AddDesiredTalent(2, 6, 2) -- Incinerate
+            mb_AddDesiredTalent(2, 9, 2) -- Burning
+            mb_AddDesiredTalent(2, 10, 3) -- Improved Scorch
+            mb_AddDesiredTalent(2, 12, 3) -- Master of Elements
+            mb_AddDesiredTalent(2, 13, 3) -- Critical Mass
+            mb_AddDesiredTalent(2, 15, 5) -- Fire Power
+            mb_AddDesiredTalent(2, 16, 1) -- Combustion
             mb_AddDesiredTalent(3, 3, 3) -- Elemental Precision
         end
     else

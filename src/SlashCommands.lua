@@ -153,11 +153,25 @@ function mb_HandleSpecialSlashCommand(msg)
 end
 
 function mb_FixRaidGroup()
+    local members = max_GetNumPartyOrRaidMembers()
+    if members == 0 then
+        for i = 1, 100 do
+            local name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i)
+            if name ~= nil and online == 1 then
+                InviteByName(name)
+                return
+            end
+        end
+        return
+    end
     if not IsPartyLeader() then
         mb_MakeRequest("promoteLeader", "promoteLeader", REQUEST_PRIORITY.COMMAND)
         return
     end
-    local members = max_GetNumPartyOrRaidMembers()
+    if not UnitInRaid("player") then
+        ConvertToRaid()
+        return
+    end
     for i = 1, members do
         local name, rank, subgroup, level, class, fileName, zone, online, isDead = GetRaidRosterInfo(i)
         if rank == 0 then

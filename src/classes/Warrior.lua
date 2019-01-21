@@ -280,6 +280,13 @@ function mb_Warrior_OnLoad()
     if mb_warriorIsTank then
         mb_CombatLogModule_DamageTakenPerSecond_Enable()
         mb_AddDesiredBuff(BUFF_THORNS)
+
+        local itemSubType = max_GetItemSubTypeForSlot("RangedSlot")
+        if itemSubType == "Bows" or itemSubType == "Crossbows" then
+            mb_AddReagentWatch("Jagged Arrow", 200)
+        elseif itemSubType == "Guns" then
+            mb_AddReagentWatch("Accurate Slugs", 200)
+        end
     end
 
     local mainHandItemSubType = max_GetItemSubTypeForSlot("MainHandSlot")

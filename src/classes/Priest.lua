@@ -247,6 +247,7 @@ function mb_Priest_HandleFearWardRequest(request)
         return
     end
     if mb_IsUnitValidFriendlyTarget(unit, "Fear Ward") then
+        max_SayRaid("Accepted fear-ward on " .. request.body .. " from " .. request.from)
         mb_AcceptRequest(request)
     end
 end

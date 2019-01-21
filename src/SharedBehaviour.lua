@@ -75,6 +75,7 @@ function mb_HandleThrottledSharedBehaviour(commander)
             local itemName = GetItemInfo(canNotBeTradedItemString)
             if itemName ~= nil then
                 mb_AddItemToIgnoredForTrade(itemName)
+                CancelTrade()
             end
         end
         AcceptTrade()

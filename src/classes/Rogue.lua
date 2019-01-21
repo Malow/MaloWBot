@@ -81,7 +81,10 @@ function mb_Rogue_UseCooldownsIfGood()
     if not mb_rogueShouldUseCooldownsOnCooldown then
         return false
     end
-    if not CheckInteractDistance("target", 3) or not max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) == 5 then
+    if not max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) == 5 then
+        return false
+    end
+    if not CheckInteractDistance("target", 3) then
         return false
     end
     return mb_Rogue_UseCooldowns()

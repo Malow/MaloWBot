@@ -65,6 +65,7 @@ mb_shouldDecurse = true
 mb_shouldDepoison = true
 mb_shouldDispel = true
 mb_consumablesLevel = 0
+mb_shouldDotRepair = false
 function mb_OnEvent()
 	if event == "CHAT_MSG_ADDON" and arg1 == "MB" then
 		if max_GetTableSize(mb_queuedIncomingComms) > 30 then
@@ -124,6 +125,8 @@ function mb_OnEvent()
 		end
 	elseif event == "READY_CHECK" then
 		mb_isReadyChecking = true
+	elseif event == "PLAYER_ALIVE" or event == "PLAYER_UNGHOST" then
+		mb_shouldDotRepair = true
 	end
 end
 f:RegisterEvent("ADDON_LOADED")
@@ -145,6 +148,8 @@ f:RegisterEvent("PLAYER_DEAD")
 f:RegisterEvent("READY_CHECK")
 f:RegisterEvent("PLAYER_REGEN_ENABLED")
 f:RegisterEvent("PLAYER_REGEN_DISABLED")
+f:RegisterEvent("PLAYER_ALIVE")
+f:RegisterEvent("PLAYER_UNGHOST")
 f:SetScript("OnEvent", mb_OnEvent)
 
 function mb_HandleMBCommunication(msg, from)
@@ -276,6 +281,16 @@ end
 function mb_OnUpdate()
 	if mb_isGossiping and mb_gossipOpenedTime + 5 < mb_GetTime() then
 		mb_isGossiping = false
+	end
+	if mb_shouldDotRepair then
+		if not UnitIsDead("player") then
+			if UnitIsUnit("player", "targettarget") then
+				max_SayRaid(".repair")
+				mb_shouldDotRepair = false
+			else
+				TargetUnit("player")
+			end
+		end
 	end
 	-- Clean up unaccepted pending requests
 	local toBeRemovedIds = {}

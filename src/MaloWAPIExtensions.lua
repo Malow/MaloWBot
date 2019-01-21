@@ -379,7 +379,7 @@ function max_RaidTargetIndexToName(raidTargetIndex)
 end
 
 function max_HasValidOffensiveTarget()
-	if UnitExists("target") and max_UnitIsEnemy("target") and not UnitIsDeadOrGhost("target") then
+	if UnitExists("target") and not UnitIsDeadOrGhost("target") then
 		return true
 	end
 	return false

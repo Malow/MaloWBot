@@ -33,6 +33,7 @@ modules\HealingModule.lua
 modules\MoveOutModule.lua
 modules\SpellCastingModule.lua
 
+modules\BossModules\Azuregos.lua
 modules\BossModules\Garr.lua
 modules\BossModules\Geddon.lua
 modules\BossModules\Hakkar.lua

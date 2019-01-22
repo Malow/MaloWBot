@@ -44,7 +44,6 @@ function mb_Priest(commander)
         end
     end
 
-    --if mb_CleanseRaidMemberThrottled("Dispel Magic", "Magic", nil, nil, UNIT_FILTER_DOES_NOT_HAVE_MANA) then
     if mb_CleanseRaidMemberThrottled("Dispel Magic", "Magic") then
         return
     end

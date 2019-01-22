@@ -31,7 +31,7 @@ function mb_BossModule_Lucifron_FindMindControlledUnit()
     local members = max_GetNumPartyOrRaidMembers()
     for i = 1, members do
         local unit = max_GetUnitFromPartyOrRaidIndex(i)
-        if max_UnitIsEnemy(unit) then
+        if max_CanAttackUnit(unit) then
             return unit
         end
     end

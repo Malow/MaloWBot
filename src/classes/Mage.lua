@@ -189,7 +189,7 @@ function mb_Mage_SheepMindControlledFriend()
     local members = max_GetNumPartyOrRaidMembers()
     for i = 1, members do
         local unit = max_GetUnitFromPartyOrRaidIndex(i)
-        if max_UnitIsEnemy(unit) and not max_HasDebuff(unit, DEBUFF_TEXTURE_POLYMORPH) then
+        if max_CanAttackUnit(unit) and not max_HasDebuff(unit, DEBUFF_TEXTURE_POLYMORPH) then
             if CheckInteractDistance("target", 4) then
                 TargetUnit(unit)
                 CastSpellByName("Polymorph")

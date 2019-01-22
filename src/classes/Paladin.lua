@@ -44,7 +44,6 @@ function mb_Paladin(commander)
         end
     end
 
-    --if mb_CleanseRaidMemberThrottled("Cleanse", "Magic", "Poison", "Disease", UNIT_FILTER_DOES_NOT_HAVE_MANA) then
     if mb_CleanseRaidMemberThrottled("Cleanse", "Magic", "Poison", "Disease") then
         return
     end
@@ -184,6 +183,9 @@ function mb_Paladin_OnLoad()
         end
     elseif mb_GetMySpecName() == "MightJudge" then
         mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_MIGHT)
+        if max_GetNumPartyOrRaidMembers() < 30 then
+            mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_WISDOM)
+        end
     elseif mb_GetMySpecName() == "KingsJudge" then
         mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_KINGS)
     elseif mb_GetMySpecName() == "RetLight" or mb_GetMySpecName() == "LightHoly" then

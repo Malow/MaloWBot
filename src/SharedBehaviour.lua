@@ -600,9 +600,47 @@ function mb_CancelExpiringBuffs(minutes)
 end
 
 mb_lastFailedCleanseCheck = 0
-function mb_CleanseRaidMemberThrottled(spellName, debuffType1, debuffType2, debuffType3, unitFilter)
+function mb_CleanseRaidMemberThrottled(spellName, debuffType1, debuffType2, debuffType3, unitFilter, ignoreShoulds)
     if mb_lastFailedCleanseCheck + 1.2 > mb_GetTime() then
         return false
+    end
+    if not ignoreShoulds then
+        if not mb_shouldDecurse then
+            local type = "Curse"
+            if debuffType1 == type then
+                debuffType1 = nil
+            end
+            if debuffType2 == type then
+                debuffType2 = nil
+            end
+            if debuffType3 == type then
+                debuffType3 = nil
+            end
+        end
+        if not mb_shouldDepoison then
+            local type = "Poison"
+            if debuffType1 == type then
+                debuffType1 = nil
+            end
+            if debuffType2 == type then
+                debuffType2 = nil
+            end
+            if debuffType3 == type then
+                debuffType3 = nil
+            end
+        end
+        if not mb_shouldDispel then
+            local type = "Magic"
+            if debuffType1 == type then
+                debuffType1 = nil
+            end
+            if debuffType2 == type then
+                debuffType2 = nil
+            end
+            if debuffType3 == type then
+                debuffType3 = nil
+            end
+        end
     end
     local debuffTarget = mb_GetDebuffedRaidMember(spellName, debuffType1, debuffType2, debuffType3, unitFilter)
     if debuffTarget ~= nil then

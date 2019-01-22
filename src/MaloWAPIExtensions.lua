@@ -379,7 +379,7 @@ function max_RaidTargetIndexToName(raidTargetIndex)
 end
 
 function max_HasValidOffensiveTarget()
-	if UnitExists("target") and not UnitIsDeadOrGhost("target") then
+	if UnitExists("target") and not UnitIsDeadOrGhost("target") and max_CanAttackUnit("target") then
 		return true
 	end
 	return false
@@ -438,8 +438,8 @@ function max_CastSpellIfReady(spellName)
 	return false
 end
 
-function max_UnitIsEnemy(unit)
-	return UnitIsEnemy("player", unit) == 1
+function max_CanAttackUnit(unit)
+    return UnitCanAttack("player", unit) == 1
 end
 
 function max_GetPlayerDebuffTimeLeft(debuffTexture)

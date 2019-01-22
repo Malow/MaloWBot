@@ -56,8 +56,10 @@ function mb_Rogue(commander)
         CastSpellByName("Attack")
     end
 
-    if mb_Rogue_UseCooldownsIfGood() then
-        return
+    if mb_Rogue_IsGoodToUseCooldowns() then
+        if mb_Rogue_UseCooldowns() then
+            return
+        end
     end
 
     if not max_HasBuff("player", BUFF_TEXTURE_SLICE_AND_DICE) and GetComboPoints() > 0 then
@@ -77,17 +79,17 @@ function mb_Rogue(commander)
     CastSpellByName("Sinister Strike")
 end
 
-function mb_Rogue_UseCooldownsIfGood()
+function mb_Rogue_IsGoodToUseCooldowns()
     if not mb_rogueShouldUseCooldownsOnCooldown then
         return false
     end
-    if not max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) == 5 then
+    if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) < 5 then
         return false
     end
-    if not CheckInteractDistance("target", 3) then
+    if not mb_IsSpellInRange("Sinister Strike", "target") then
         return false
     end
-    return mb_Rogue_UseCooldowns()
+    return true
 end
 
 function mb_Rogue_UseCooldowns()
@@ -151,6 +153,7 @@ function mb_Rogue_OnLoad()
 
     mb_Rogue_AddDesiredTalents()
     mb_RegisterRangeCheckSpell("Kick")
+    mb_RegisterRangeCheckSpell("Sinister Strike")
     mb_AddGCDCheckSpell("Sinister Strike")
     mb_RegisterForRequest(REQUEST_INTERRUPT.type, mb_Rogue_HandleInterruptRequest)
     mb_RegisterForRequest("usePoison", mb_Rogue_HandleUsePoisonRequest)

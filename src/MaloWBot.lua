@@ -251,6 +251,48 @@ function mb_OnPostLoad()
     mb_Print("Loaded")
 end
 
+-- Runs the first time the actual bot is run (7 is pressed).
+function mb_OnFirstRun()
+	mb_CheckForProfessionCooldown()
+end
+
+function mb_CheckForProfessionCooldown()
+	if max_HasSpell("Alchemy") then
+		CastSpellByName("Alchemy")
+		for i = 1, 200 do
+			local name =  GetTradeSkillInfo(i)
+			if name == "Transmute: Arcanite" then
+				local cooldownLeft = GetTradeSkillCooldown(i)
+				if cooldownLeft == nil or cooldownLeft < 1 then
+					max_SayGuild("My " .. name .. " is ready.")
+				end
+			end
+		end
+		CloseTradeSkill()
+	end
+	if max_HasSpell("Tailoring") then
+		CastSpellByName("Tailoring")
+		for i = 1, 200 do
+			local name =  GetTradeSkillInfo(i)
+			if name == "Mooncloth" then
+				local cooldownLeft = GetTradeSkillCooldown(i)
+				if cooldownLeft == nil or cooldownLeft < 1 then
+					max_SayGuild("My " .. name .. " is ready.")
+				end
+			end
+		end
+		CloseTradeSkill()
+	end
+	if max_HasSpell("Leatherworking") then
+		local shakerName = "Salt Shaker"
+			if not mb_HasItem(shakerName) then
+			max_SayGuild("I don't have a " .. shakerName)
+		elseif not mb_IsItemOnCooldown(shakerName) then
+			max_SayGuild("My " .. shakerName .. " is ready.")
+		end
+	end
+end
+
 function mb_CreateMBMacros()
 	mb_CreateMacro("MB_Main", "/mbr", 37, "7", "MULTIACTIONBAR4BUTTON1")
 	mb_CreateMacro("MB_ZoomIn", "/run SetView(3); CameraZoomIn(2);", 38, "8", "MULTIACTIONBAR4BUTTON2")
@@ -311,6 +353,7 @@ function mb_OnCmd(msg)
 	end
 end
 
+mb_hasStartedRunning = false
 -- OnRun
 function mb_OnRun()
 	if GetFramerate() < 5 then
@@ -318,6 +361,11 @@ function mb_OnRun()
 			max_SayRaid("Warning, I have lower than 5 FPS, skipped running to prevent freezing.")
 		end
 		return
+	end
+
+	if not mb_hasStartedRunning then
+		mb_OnFirstRun()
+		mb_hasStartedRunning = true
 	end
 
 	mb_RunBot(mb_GetMyCommanderName())

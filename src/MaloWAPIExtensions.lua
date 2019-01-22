@@ -161,6 +161,10 @@ function max_SayRaid(msg)
 	SendChatMessage(msg, "RAID", "Common")
 end
 
+function max_SayGuild(msg)
+    SendChatMessage(msg, "GUILD", "Common")
+end
+
 -- Returns the amount of unspent talent points
 function max_GetUnspentTalentPoints()
 	local spentPoints = 0

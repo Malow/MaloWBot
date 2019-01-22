@@ -1,3 +1,4 @@
+MB_DRUID_TRANQUILITY_HEAL_AMOUNT = 2000
 
 function mb_Druid(commander)
     if mb_DoBasicCasterLogicThrottled() then
@@ -45,6 +46,10 @@ function mb_Druid(commander)
         max_UseEquippedItemIfReady("Trinket1Slot")
     end
 
+    if mb_Druid_Tranquility() then
+        return
+    end
+
     if mb_Druid_TankHealing() then
         return
     end
@@ -76,6 +81,23 @@ function mb_Druid_ShouldStopCasting(currentCast)
                 return true
             end
         end
+    end
+    return false
+end
+
+function mb_Druid_Tranquility()
+    if UnitMana("player") < 1000 then
+        return false
+    end
+    if not UnitAffectingCombat("player") or max_IsSpellNameOnCooldown("Tranquility") then
+        return false
+    end
+    local healEffect, affectedPlayers = mb_GetGroupHealEffect(MB_DRUID_TRANQUILITY_HEAL_AMOUNT, "Remove Curse")
+    if healEffect > 4.0 then
+        local callBacks = {}
+        callBacks.onStart = function(spellCast) mb_HealingModule_SendData(affectedPlayers, MB_DRUID_TRANQUILITY_HEAL_AMOUNT, mb_GetTime() + 10) end
+        mb_CastSpellByNameOnRaidMemberWithCallbacks("Tranquility", "player", callBacks)
+        return true
     end
     return false
 end

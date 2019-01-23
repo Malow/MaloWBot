@@ -1,5 +1,6 @@
-MB_PRIEST_POH_HEAL_AMOUNT = 1200
-MB_PRIEST_GHR1_HEAL_AMOUNT = 1200
+MB_PRIEST_POH_HEAL_AMOUNT = 1300
+MB_PRIEST_GHR1_HEAL_AMOUNT = 1600
+MB_PRIEST_GHR4_HEAL_AMOUNT = 3000
 
 mb_priestIsHoly = true
 function mb_Priest(commander)
@@ -44,22 +45,6 @@ function mb_Priest(commander)
         end
     end
 
-    if mb_CleanseRaidMemberThrottled("Dispel Magic", "Magic") then
-        return
-    end
-
-    if UnitAffectingCombat("player") and mb_GetTimeInCombat() > 30 then
-        if max_GetManaPercentage("player") < 80 then
-            CastSpellByName("Divine Favor")
-        end
-        max_UseEquippedItemIfReady("Trinket0Slot")
-        max_UseEquippedItemIfReady("Trinket1Slot")
-    end
-
-    if mb_Priest_PrayerOfHealing() then
-        return
-    end
-
     if not UnitAffectingCombat("player") then
         if not max_HasBuff("player", BUFF_TEXTURE_INNER_FIRE) then
             CastSpellByName("Inner Fire")
@@ -73,14 +58,50 @@ function mb_Priest(commander)
         end
     end
 
+    if UnitAffectingCombat("player") and UnitMana("player") < 1000 and not max_HasBuff("player", BUFF_TEXTURE_INNERVATE) then
+        mb_MakeThrottledRequest(REQUEST_INNERVATE, UnitName("player"), REQUEST_PRIORITY.IMPORTANT_BUFF)
+    end
+
+    local tankUnit, tankFutureMissingHealth = mb_HealingModule_GetValidTankUnitWithHighestFutureMissingHealth("Greater Heal")
+    if tankUnit ~= nil and tankFutureMissingHealth > (UnitHealthMax(tankUnit) / 2) then
+        mb_Priest_DoTankHealing(tankUnit)
+        return
+    end
+
+    if mb_CleanseRaidMemberThrottled("Dispel Magic", "Magic") then
+        return
+    end
+
+    if UnitAffectingCombat("player") and mb_GetTimeInCombat() > 30 then
+        max_UseEquippedItemIfReady("Trinket0Slot")
+        max_UseEquippedItemIfReady("Trinket1Slot")
+    end
+
+    if mb_Priest_PrayerOfHealing() then
+        return
+    end
+
+    if tankUnit ~= nil and tankFutureMissingHealth > 0 then
+        mb_Priest_DoTankHealing(tankUnit)
+        return
+    end
+
     if mb_priestIsHoly then
-        if mb_Priest_Holy() then
+        if mb_Priest_Renew(55) then
             return true
         end
     else
-        if mb_Priest_Disc() then
+        if mb_Priest_PWS(40) then
             return true
         end
+        if mb_Priest_Renew(65) then
+            return true
+        end
+    end
+
+    if tankUnit ~= nil then
+        mb_Priest_DoTankHealing(tankUnit)
+        return
     end
 
     max_AssistByPlayerName(commander)
@@ -106,6 +127,12 @@ function mb_Priest_ShouldStopCasting(currentCast)
                 return true
             end
         end
+    elseif currentCast.spellName == "Greater Heal" then
+            if currentCast.startCastTime + 2 < mb_GetTime() then
+                if max_GetMissingHealth(currentCast.target) < MB_PRIEST_GHR4_HEAL_AMOUNT then
+                    return true
+                end
+            end
     elseif currentCast.spellName == "Prayer of Healing" then
         if mb_GetGroupHealEffect(MB_PRIEST_POH_HEAL_AMOUNT, "Dispel Magic") < 2.5 then
             return true
@@ -114,41 +141,21 @@ function mb_Priest_ShouldStopCasting(currentCast)
     return false
 end
 
-function mb_Priest_TankHealing()
-    local tankUnit = mb_HealingModule_GetValidTankUnitWithHighestFutureMissingHealth("Greater Heal")
-    if tankUnit ~= nil then
-        local callBacks = {}
-        callBacks.onStart = function(spellCast)
-            mb_HealingModule_SendData(UnitName(spellCast.target), MB_PRIEST_GHR1_HEAL_AMOUNT, mb_GetTime() + 2.5)
-        end
-        mb_CastSpellByNameOnRaidMemberWithCallbacks("Greater Heal(Rank 1)", tankUnit, callBacks)
-        return true
+function mb_Priest_DoTankHealing(tankUnit)
+    if mb_Priest_InnerFocus() then
+        return
     end
-    return false
-end
-
-function mb_Priest_Disc()
-    if mb_Priest_PWS(50) then
-        return true
+    local healAmount = MB_PRIEST_GHR1_HEAL_AMOUNT
+    local spellName = "Greater Heal(Rank 1)"
+    if max_HasBuff("player", BUFF_TEXTURE_INNER_FOCUS) then
+        healAmount = MB_PRIEST_GHR4_HEAL_AMOUNT
+        spellName = "Greater Heal"
     end
-    if mb_Priest_Renew(60) then
-        return true
+    local callBacks = {}
+    callBacks.onStart = function(spellCast)
+        mb_HealingModule_SendData(UnitName(spellCast.target), healAmount, mb_GetTime() + 2.5)
     end
-    if mb_Priest_TankHealing() then
-        return true
-    end
-    return false
-end
-
-function mb_Priest_Holy()
-    if mb_Priest_Renew(40) then
-        return true
-    end
-
-    if mb_Priest_TankHealing() then
-        return true
-    end
-    return false
+    mb_CastSpellByNameOnRaidMemberWithCallbacks(spellName, tankUnit, callBacks)
 end
 
 function mb_Priest_PWS(healthPercentage)
@@ -178,11 +185,21 @@ function mb_Priest_Renew(healthPercentage)
     return false
 end
 
+function mb_Priest_InnerFocus()
+    if not UnitAffectingCombat("player") or mb_GetTimeInCombat() < 30 then
+        return false
+    end
+    if max_IsSpellNameOnCooldown("Inner Focus") or max_GetManaPercentage("player") > 75 then
+        return false
+    end
+    CastSpellByName("Inner Focus")
+    return true
+end
+
 function mb_Priest_PrayerOfHealing()
     local healEffect, affectedPlayers = mb_GetGroupHealEffect(MB_PRIEST_POH_HEAL_AMOUNT, "Dispel Magic")
     if healEffect > 3.0 then
-        if UnitAffectingCombat("player") and mb_GetTimeInCombat() > 30 and not max_IsSpellNameOnCooldown("Inner Focus") then
-            CastSpellByName("Inner Focus")
+        if mb_Priest_InnerFocus() then
             return true
         end
         local callBacks = {}

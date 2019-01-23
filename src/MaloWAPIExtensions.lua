@@ -130,6 +130,9 @@ function max_GetUnitForPlayerName(playerName)
 			return unit
 		end
 	end
+	if UnitName("player") == playerName then
+		return "player"
+	end
 	return nil
 end
 
@@ -204,10 +207,21 @@ end
 
 -- Returns a list of units of the group that the provided unit's name is part of
 function max_GetGroupUnitsFor(unitName)
-	local targetRaidIndex = max_GetRaidIndexForPlayerName(unitName)
-	local targetSubGroup = max_GetSubgroupForRaidIndex(targetRaidIndex)
 	local groupMembers = {}
 
+	if not UnitInRaid("player") then
+		table.insert(groupMembers, "player")
+		for i = 1, 4 do
+			local unit = GetPartyMember(i)
+			if unit ~= nil then
+				table.insert(groupMembers, "party" .. i)
+			end
+		end
+		return groupMembers
+	end
+
+	local targetRaidIndex = max_GetRaidIndexForPlayerName(unitName)
+	local targetSubGroup = max_GetSubgroupForRaidIndex(targetRaidIndex)
 	local membersCount = max_GetNumPartyOrRaidMembers()
 	for i = 1, membersCount do
 		local unit = max_GetUnitFromPartyOrRaidIndex(i)

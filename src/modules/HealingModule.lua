@@ -90,7 +90,7 @@ function mb_HealingModule_GetValidTankUnitWithHighestFutureMissingHealth(spellNa
             end
         end
     end
-    return lowestTank
+    return lowestTank, futureMissingHealth
 end
 
 function mb_HealingModule_ExpireTankingTanks()

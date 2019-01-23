@@ -1,4 +1,5 @@
 MB_DRUID_TRANQUILITY_HEAL_AMOUNT = 2000
+MB_DRUID_REGROWTH_HEAL_AMOUNT = 2000
 
 function mb_Druid(commander)
     if mb_DoBasicCasterLogicThrottled() then
@@ -21,11 +22,18 @@ function mb_Druid(commander)
         elseif request.type == "HoT" then
             mb_HealingModule_CompleteHoTRequest(request)
             return
+        elseif request.type == REQUEST_INNERVATE.type then
+            local unit = max_GetUnitForPlayerName(request.body)
+            if not max_HasBuff(unit, BUFF_TEXTURE_INNERVATE) then
+                max_CastSpellOnRaidMemberByPlayerName("Innervate", request.body)
+                max_SayRaid("Innervating " .. request.body)
+            end
+            mb_RequestCompleted(request)
+            return
         end
     end
 
-    if UnitAffectingCombat("player") and max_GetManaPercentage("player") < 10 and not max_IsSpellNameOnCooldown("Innervate") then
-        max_CastSpellOnRaidMember("Innervate", "player")
+    if mb_Druid_InnervateSelf() then
         return
     end
 
@@ -50,11 +58,11 @@ function mb_Druid(commander)
         return
     end
 
-    if mb_Druid_TankHealing() then
+    if mb_Druid_Rejuvenation() then
         return
     end
 
-    if mb_Druid_Rejuvenation() then
+    if mb_Druid_DoTankHealing() then
         return
     end
 
@@ -77,10 +85,29 @@ end
 function mb_Druid_ShouldStopCasting(currentCast)
     if currentCast.spellName == "Regrowth" then
         if currentCast.startCastTime + 1.5 < mb_GetTime() then
-            if max_GetMissingHealth(currentCast.target) < 1500 or max_HasBuff(currentCast.target, BUFF_TEXTURE_REGROWTH) then
+            if max_GetMissingHealth(currentCast.target) < MB_DRUID_REGROWTH_HEAL_AMOUNT or max_HasBuff(currentCast.target, BUFF_TEXTURE_REGROWTH) then
                 return true
             end
         end
+    end
+    return false
+end
+
+function mb_Druid_InnervateSelf()
+    if not UnitAffectingCombat("player") then
+        return false
+    end
+    if max_IsSpellNameOnCooldown("Innervate") then
+        return false
+    end
+    if max_HasBuff("player", BUFF_TEXTURE_INNERVATE) then
+        return false
+    end
+
+    if UnitMana("player") < 1000 then
+        max_CastSpellOnRaidMember("Innervate", "player")
+        max_SayRaid("Innervating myself")
+        return true
     end
     return false
 end
@@ -109,6 +136,7 @@ function mb_Druid_OnLoad()
     mb_RegisterForStandardBuffRequest(BUFF_THORNS)
     mb_RegisterForRequest(REQUEST_REMOVE_CURSE.type, mb_Druid_HandleDecurseRequest)
     mb_RegisterForRequest("useConsumable", mb_Healer_HandleUseConsumableRequest)
+    mb_RegisterForRequest(REQUEST_INNERVATE.type, mb_Druid_HandleInnervateRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
@@ -128,18 +156,19 @@ function mb_Druid_OnLoad()
     mb_RegisterRangeCheckSpell("Regrowth")
     mb_RegisterRangeCheckSpell("Insect Swarm")
     mb_RegisterRangeCheckSpell("Faerie Fire")
+    mb_RegisterRangeCheckSpell("Innervate")
     mb_HealingModule_Enable()
     mb_HealingModule_RegisterHoT("Rejuvenation", BUFF_TEXTURE_REJUVENATION, 335)
 end
 
-function mb_Druid_TankHealing()
+function mb_Druid_DoTankHealing()
     local unitFilter = UNIT_FILTER_DOES_NOT_HAVE_BUFF
     unitFilter.buff = BUFF_TEXTURE_REGROWTH
     local tankUnit = mb_HealingModule_GetValidTankUnitWithHighestFutureMissingHealth("Regrowth", unitFilter)
     if tankUnit ~= nil then
         local callBacks = {}
         callBacks.onStart = function(spellCast)
-            mb_HealingModule_SendData(UnitName(spellCast.target), 1200, mb_GetTime() + 2)
+            mb_HealingModule_SendData(UnitName(spellCast.target), MB_DRUID_REGROWTH_HEAL_AMOUNT, mb_GetTime() + 2)
         end
         mb_CastSpellByNameOnRaidMemberWithCallbacks("Regrowth", tankUnit, callBacks)
         return true
@@ -207,6 +236,21 @@ function mb_Druid_HandleDecurseRequest(request)
         mb_AcceptRequest(request)
     end
 end
+
+function mb_Druid_HandleInnervateRequest(request)
+    if not mb_IsFreeToAcceptRequest() then
+        return
+    end
+    if max_IsSpellNameOnCooldown("Innervate") then
+        return
+    end
+
+    if mb_IsUnitValidFriendlyTarget(max_GetUnitForPlayerName(request.body), "Innervate") then
+        mb_AcceptRequest(request)
+    end
+end
+
+
 
 function mb_Druid_HasImprovedMOTW()
     local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(3, 1)

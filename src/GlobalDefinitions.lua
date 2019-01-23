@@ -14,6 +14,7 @@ BUFF_TEXTURE_REGROWTH = "Interface\\Icons\\Spell_Nature_ResistNature"
 BUFF_TEXTURE_MARK_OF_THE_WILD = "Interface\\Icons\\Spell_Nature_Regeneration"
 BUFF_TEXTURE_GIFT_OF_THE_WILD = "Interface\\Icons\\Spell_Nature_Regeneration"
 BUFF_TEXTURE_THORNS = "Interface\\Icons\\Spell_Nature_Thorns"
+BUFF_TEXTURE_INNERVATE = "Interface\\Icons\\Spell_Nature_Lightning"
 DEBUFF_TEXTURE_INSECT_SWARM = "Interface\\Icons\\Spell_Nature_InsectSwarm"
 DEBUFF_TEXTURE_FAERIE_FIRE = "Interface\\Icons\\Spell_Nature_FaerieFire"
 -- Hunter
@@ -67,6 +68,7 @@ BUFF_TEXTURE_RENEW = "Interface\\Icons\\Spell_Holy_Renew"
 BUFF_TEXTURE_SPIRIT_OF_REDEMPTION = "Interface\\Icons\\Spell_Holy_GreaterHeal"
 BUFF_TEXTURE_ABOLISH_DISEASE = "Interface\\Icons\\Spell_Nature_NullifyDisease"
 BUFF_TEXTURE_FEAR_WARD = "Interface\\Icons\\Spell_Holy_Excorcism"
+BUFF_TEXTURE_INNER_FOCUS = "Interface\\Icons\\Spell_Frost_WindWalkOn"
 DEBUFF_TEXTURE_WEAKENED_SOUL = "Interface\\Icons\\Spell_Holy_AshesToAshes"
 -- Rogue
 BUFF_TEXTURE_SLICE_AND_DICE = "Interface\\Icons\\Ability_Rogue_SliceDice"
@@ -139,6 +141,10 @@ REQUEST_INTERRUPT = {
 }
 REQUEST_CROWD_CONTROL = {
     type = "crowdControl"
+}
+REQUEST_INNERVATE = {
+    type = "innervate",
+    throttle = 5
 }
 
 --- Buff Requests
@@ -269,9 +275,9 @@ ITEMS_MANA_GEM = {
 REQUEST_PRIORITY = {
     COMMAND = 101,
     TANKING_BROADCAST = 101,
-    HEALING_OVER_TIME = 101,
     HEALER_MODULE_DATA = 101,
     CLASS_SYNC = 101,
+    IMPORTANT_BUFF = 101,
     -- Anything with over 100 priority is never skipped
     DISPEL = 80,
     RESURRECT_RESURRECTER = 70,

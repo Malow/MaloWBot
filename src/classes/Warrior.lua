@@ -254,7 +254,7 @@ function mb_Warrior_RequestHoTs()
     end
     local HoTValue = mb_CombatLogModule_DamageTakenPerSecond_GetDTPS(10) / (myHotCount + 1) -- +1 to avoid diving by zero
     if HoTValue > 100 and mb_Warrior_lastHoTRequest + 2.5 < mb_GetTime() then
-        mb_MakeRequest("HoT", UnitName("player"), REQUEST_PRIORITY.HEALING_OVER_TIME)
+        mb_MakeRequest("HoT", UnitName("player"), REQUEST_PRIORITY.IMPORTANT_BUFF)
         mb_Warrior_lastHoTRequest = mb_GetTime()
     end
 end

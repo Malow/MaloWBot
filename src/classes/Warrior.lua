@@ -56,24 +56,16 @@ function mb_Warrior(commander)
         return
     end
 
-    if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) == 5 and CheckInteractDistance("target", 3) then
-        max_UseEquippedItemIfReady("Trinket0Slot")
-        max_UseEquippedItemIfReady("Trinket1Slot")
-        if max_CastSpellIfReady("Death Wish") then
-            return
-        end
+    if mb_Warrior_UseDpsCooldownsIfGood() then
+        return
     end
 
     if not mb_areaOfEffectMode then
         if max_GetHealthPercentage("target") < 25 then
-            if max_CastSpellIfReady("Recklessness") then
-                return
-            end
-        end	
-        if max_GetHealthPercentage("target") < 25 then
             CastSpellByName("Execute")
             return
         end
+
         if max_CastSpellIfReady("Bloodthirst") then
             return
         end
@@ -93,6 +85,28 @@ function mb_Warrior(commander)
         end
         if max_GetManaPercentage("player") >= 60 then
             CastSpellByName("Cleave")
+        end
+    end
+end
+
+function mb_Warrior_UseDpsCooldownsIfGood()
+    if not max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) == 5 then
+        return false
+    end
+    if not mb_IsSpellInRange("Sunder Armor", "target") then
+        return false
+    end
+
+    max_UseEquippedItemIfReady("Trinket0Slot")
+    max_UseEquippedItemIfReady("Trinket1Slot")
+
+    if max_CastSpellIfReady("Death Wish") then
+        return true
+    end
+
+    if UnitClassification("target") == "worldboss" and max_GetHealthPercentage("target") < 22 then
+        if max_CastSpellIfReady("Recklessness") then
+            return true
         end
     end
 end

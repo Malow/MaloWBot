@@ -83,6 +83,9 @@ function mb_Rogue_IsGoodToUseCooldowns()
     if not mb_rogueShouldUseCooldownsOnCooldown then
         return false
     end
+    if not UnitClassification("target") == "worldboss" then
+        return false
+    end
     if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) < 5 then
         return false
     end

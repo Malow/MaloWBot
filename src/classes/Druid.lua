@@ -122,7 +122,7 @@ function mb_Druid_Tranquility()
     local healEffect, affectedPlayers = mb_GetGroupHealEffect(MB_DRUID_TRANQUILITY_HEAL_AMOUNT, "Remove Curse")
     if healEffect > 4.0 then
         local callBacks = {}
-        callBacks.onStart = function(spellCast) mb_HealingModule_SendData(affectedPlayers, MB_DRUID_TRANQUILITY_HEAL_AMOUNT, mb_GetTime() + 10) end
+        callBacks.onStart = function(spellCast) mb_HealingModule_SendData(affectedPlayers, MB_DRUID_TRANQUILITY_HEAL_AMOUNT, 10) end
         mb_CastSpellByNameOnRaidMemberWithCallbacks("Tranquility", "player", callBacks)
         return true
     end
@@ -135,7 +135,7 @@ function mb_Druid_OnLoad()
     end
     mb_RegisterForStandardBuffRequest(BUFF_THORNS)
     mb_RegisterForRequest(REQUEST_REMOVE_CURSE.type, mb_Druid_HandleDecurseRequest)
-    mb_RegisterForRequest("useConsumable", mb_Healer_HandleUseConsumableRequest)
+    mb_RegisterForRequest("useConsumable", mb_HealerModule_HandleUseConsumableRequest)
     mb_RegisterForRequest(REQUEST_INNERVATE.type, mb_Druid_HandleInnervateRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
@@ -168,7 +168,7 @@ function mb_Druid_DoTankHealing()
     if tankUnit ~= nil then
         local callBacks = {}
         callBacks.onStart = function(spellCast)
-            mb_HealingModule_SendData(UnitName(spellCast.target), MB_DRUID_REGROWTH_HEAL_AMOUNT, mb_GetTime() + 2)
+            mb_HealingModule_SendData(UnitName(spellCast.target), MB_DRUID_REGROWTH_HEAL_AMOUNT, 2)
         end
         mb_CastSpellByNameOnRaidMemberWithCallbacks("Regrowth", tankUnit, callBacks)
         return true

@@ -153,7 +153,7 @@ function mb_Priest_DoTankHealing(tankUnit)
     end
     local callBacks = {}
     callBacks.onStart = function(spellCast)
-        mb_HealingModule_SendData(UnitName(spellCast.target), healAmount, mb_GetTime() + 2.5)
+        mb_HealingModule_SendData(UnitName(spellCast.target), healAmount, 2.5)
     end
     mb_CastSpellByNameOnRaidMemberWithCallbacks(spellName, tankUnit, callBacks)
 end
@@ -203,7 +203,7 @@ function mb_Priest_PrayerOfHealing()
             return true
         end
         local callBacks = {}
-        callBacks.onStart = function(spellCast) mb_HealingModule_SendData(affectedPlayers, MB_PRIEST_POH_HEAL_AMOUNT, mb_GetTime() + 3) end
+        callBacks.onStart = function(spellCast) mb_HealingModule_SendData(affectedPlayers, MB_PRIEST_POH_HEAL_AMOUNT, 3) end
         mb_CastSpellByNameOnRaidMemberWithCallbacks("Prayer of Healing", "player", callBacks)
         return true
     end
@@ -225,7 +225,7 @@ function mb_Priest_OnLoad()
     mb_RegisterForRequest("fearWard", mb_Priest_HandleFearWardRequest)
     mb_RegisterForRequest(REQUEST_RESURRECT.type, mb_Priest_HandleResurrectionRequest)
     mb_RegisterForRequest(REQUEST_REMOVE_MAGIC.type, mb_Priest_HandleDispelRequest)
-    mb_RegisterForRequest("useConsumable", mb_Healer_HandleUseConsumableRequest)
+    mb_RegisterForRequest("useConsumable", mb_HealerModule_HandleUseConsumableRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
@@ -237,7 +237,7 @@ function mb_Priest_OnLoad()
     mb_AddDesiredBuff(BUFF_SHADOW_PROTECTION)
     mb_Priest_AddDesiredTalents()
     mb_AddGCDCheckSpell("Renew")
-    mb_AddReagentWatch("Sacred Candle", 120)
+    mb_AddReagentWatch("Sacred Candle", 200)
     mb_AddReagentWatch("Major Mana Potion", 10)
     mb_AddReagentWatch("Brilliant Mana Oil", 2)
     mb_RegisterRangeCheckSpell("Resurrection")

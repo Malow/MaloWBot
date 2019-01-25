@@ -578,6 +578,8 @@ end
 ---		Do abolish disease, check mana costs of the 2 versions, though it's kinda messy since you can't just spam do it since it's a buff, so multiple druids can hit the same target...
 ---		Wand instead of attack if ranged, (does wand cause GCD?)
 ---		On aggro cast Fade
+---		PW:S usage can probably be improved. Current issues are that it selects the raid member at lowest current health, and checks if it has less than 50% health.
+---			That means that tanks that are at 3k health (less than half) could get lower prio than mages who are at 90% health, and therefor no PW:S at all is cast.
 --- Druids:
 ---     Swiftmend
 ---		Add logic for Feral DPS and Feral tank

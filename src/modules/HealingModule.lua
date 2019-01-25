@@ -46,7 +46,7 @@ function mb_HealingModule_HandleDataRequest(request)
         local parts = max_SplitString(request.body, "/")
         local incomingHeal = {}
         incomingHeal.healAmount = tonumber(parts[2])
-        incomingHeal.finishTime = tonumber(parts[3])
+        incomingHeal.finishTime = mb_GetTime() + tonumber(parts[3])
         incomingHeal.from = request.from
         local playerNames = max_SplitString(parts[1], "#")
         for k, playerName in pairs(playerNames) do
@@ -111,9 +111,8 @@ function mb_HealingModule_GetFutureMissingHealth(unit, healOverTimeValue)
     if mb_HealingModule_incomingHeals[playerName] == nil then
         return missingHealth
     end
-    local now = mb_GetTime()
     for i = max_GetTableSize(mb_HealingModule_incomingHeals[playerName]), 1, -1 do
-        if mb_HealingModule_incomingHeals[playerName][i].finishTime < now then
+        if mb_HealingModule_incomingHeals[playerName][i].finishTime < mb_GetTime() then
             table.remove(mb_HealingModule_incomingHeals[playerName], i)
         else
             missingHealth = missingHealth - mb_HealingModule_incomingHeals[playerName][i].healAmount
@@ -124,17 +123,17 @@ function mb_HealingModule_GetFutureMissingHealth(unit, healOverTimeValue)
 end
 
 -- targetPlayerName can be either a string or a table of strings if the spell will hit multiple targets
-function mb_HealingModule_SendData(targetPlayerName, healAmount, finishTime)
+function mb_HealingModule_SendData(targetPlayerName, healAmount, castLength)
     if max_IsTable(targetPlayerName) then
         local targetPlayers = ""
         for _, playerName in pairs(targetPlayerName) do
             targetPlayers = targetPlayers .. playerName .. "#"
         end
         targetPlayers = string.sub(targetPlayers, 1, string.len(targetPlayers) - 1)
-        local healData = targetPlayers .. "/" .. healAmount .. "/" .. finishTime
+        local healData = targetPlayers .. "/" .. healAmount .. "/" .. castLength
         mb_MakeRequest("healerModuleData", healData, REQUEST_PRIORITY.HEALER_MODULE_DATA)
     else
-        local healData = targetPlayerName .. "/" .. healAmount .. "/" .. finishTime
+        local healData = targetPlayerName .. "/" .. healAmount .. "/" .. castLength
         mb_MakeRequest("healerModuleData", healData, REQUEST_PRIORITY.HEALER_MODULE_DATA)
     end
 end
@@ -163,11 +162,91 @@ function mb_HealingModule_GetRaidHealTarget(spell, unitFilter)
     end
 end
 
-function mb_Healer_HandleUseConsumableRequest(request)
+function mb_HealerModule_HandleUseConsumableRequest(request)
     if not UnitAffectingCombat("player") then
         return
     end
     if max_GetManaPercentage("player") < 20 then
         mb_QueueUseConsumable("Major Mana Potion")
     end
+end
+
+function mb_HealerModule_ShouldCancelHealToDecoupleMyHealingFromHigherPrioritizedHealers()
+    -- TODO for priests and druids to make sure they're all not synced up in their healing as they probably will be with the stop-casting logic
+end
+
+function mb_HealerModule_GetIncomingHealAmountFromHigherPrioritizedHealersOnUnit(unit)
+    local playerName = UnitName(unit)
+    local incomingHeal = 0
+    if mb_HealingModule_incomingHeals[playerName] == nil then
+        return 0
+    end
+    for i = max_GetTableSize(mb_HealingModule_incomingHeals[playerName]), 1, -1 do
+        if mb_HealingModule_incomingHeals[playerName][i].finishTime < mb_GetTime() then
+            table.remove(mb_HealingModule_incomingHeals[playerName], i)
+        else
+            if mb_HealerModule_HasHealerHigherPriorityThanMe(mb_HealingModule_incomingHeals[playerName][i].from) then
+                incomingHeal = incomingHeal + mb_HealingModule_incomingHeals[playerName][i].healAmount
+            end
+        end
+    end
+    return incomingHeal
+end
+
+function mb_HealerModule_HasHealerHigherPriorityThanMe(healerName)
+    local healOrder = mb_HealerModule_GetHealersPriorityThrottled()
+    if healOrder[UnitName("player")] == nil then
+        mb_Print("No heal order for " .. UnitName("player"))
+    end
+    if healOrder[healerName] == nil then
+        mb_Print("No heal order for " .. healerName)
+    end
+    return healOrder[UnitName("player")] > healOrder[healerName]
+end
+
+mb_HealerModule_lastGetHealersPriorityTime = 0
+mb_HealerModule_healerPriority = nil
+function mb_HealerModule_GetHealersPriorityThrottled()
+    if mb_HealerModule_healerPriority ~= nil and mb_HealerModule_lastGetHealersPriorityTime + 60 > mb_GetTime() then
+        return mb_HealerModule_healerPriority
+    end
+    mb_HealerModule_lastGetHealersPriorityTime = mb_GetTime()
+    mb_HealerModule_healerPriority = {}
+
+    local priests = {}
+    local druids = {}
+    local paladins = {}
+    local members = max_GetNumPartyOrRaidMembers()
+    for i = 1, members do
+        local unit = max_GetUnitFromPartyOrRaidIndex(i)
+        if max_GetClass(unit) == "PRIEST" then
+            table.insert(priests, UnitName(unit))
+        elseif max_GetClass(unit) == "DRUID" then
+            table.insert(druids, UnitName(unit))
+        elseif max_GetClass(unit) == "PALADIN" then
+            table.insert(paladins, UnitName(unit))
+        end
+    end
+    table.sort(priests)
+    table.sort(druids)
+    table.sort(paladins)
+
+    local i = 1
+    for _, priest in pairs(priests) do
+        mb_HealerModule_healerPriority[priest] = i
+        mb_Print("Added " .. priest .. " at " .. i)
+        i = i + 1
+    end
+    for _, druid in pairs(druids) do
+        mb_HealerModule_healerPriority[druid] = i
+        mb_Print("Added " .. druid .. " at " .. i)
+        i = i + 1
+    end
+    for _, paladin in pairs(paladins) do
+        mb_HealerModule_healerPriority[paladin] = i
+        mb_Print("Added " .. paladin .. " at " .. i)
+        i = i + 1
+    end
+
+    return mb_HealerModule_healerPriority
 end

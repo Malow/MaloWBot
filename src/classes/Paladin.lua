@@ -1,3 +1,5 @@
+MB_PALADIN_FOL_HEAL_AMOUNT = 600
+
 mb_paladinIsJudgingLight = false
 mb_paladinIsJudgingWisdom = false
 function mb_Paladin(commander)
@@ -48,6 +50,13 @@ function mb_Paladin(commander)
         return
     end
 
+    max_AssistByPlayerName(commander)
+    if max_HasValidOffensiveTarget() then
+        if mb_Paladin_Judge() then
+            return
+        end
+    end
+
     if UnitAffectingCombat("player") and mb_GetTimeInCombat() > 30 then
         if max_GetManaPercentage("player") < 80 then
             CastSpellByName("Divine Favor")
@@ -56,16 +65,12 @@ function mb_Paladin(commander)
         max_UseEquippedItemIfReady("Trinket1Slot")
     end
 
-    if mb_Paladin_FlashOfLight() then
+    if mb_Paladin_RaidHeal() then
         return
     end
 
     max_AssistByPlayerName(commander)
     if not max_HasValidOffensiveTarget() then
-        return
-    end
-
-    if mb_Paladin_Judge() then
         return
     end
 
@@ -78,21 +83,26 @@ end
 function mb_Paladin_ShouldStopCasting(currentCast)
     if currentCast.spellName == "Flash of Light" then
         local targetMissingHealth = max_GetMissingHealth(currentCast.target)
-        if (targetMissingHealth - (mb_GetHoTCount(currentCast.target) * 800)) < 500 then
+        targetMissingHealth = targetMissingHealth - (mb_GetHoTCount(currentCast.target) * 800)
+        targetMissingHealth = targetMissingHealth - mb_HealerModule_GetIncomingHealAmountFromHigherPrioritizedHealersOnUnit(currentCast.target)
+        if max_GetManaPercentage("player") > 90 and targetMissingHealth > 0 then
+            return false
+        end
+        if targetMissingHealth < MB_PALADIN_FOL_HEAL_AMOUNT then
             return true
         end
     end
     return false
 end
 
-function mb_Paladin_FlashOfLight()
+function mb_Paladin_RaidHeal()
     local spell = "Flash of Light"
     local healTargetUnit, missingHealth = mb_HealingModule_GetRaidHealTarget(spell)
-    if missingHealth > 500 then
+    if missingHealth > MB_PALADIN_FOL_HEAL_AMOUNT then
         --max_SayRaid("Started FoL on " .. UnitName(healTargetUnit) .. ". Current missing health: " .. max_GetMissingHealth(healTargetUnit) .. " - Calculated missing health: " .. missingHealth)
         local callBacks = {}
         callBacks.onStart = function(spellCast)
-            mb_HealingModule_SendData(UnitName(spellCast.target), 600, mb_GetTime() + 1.5)
+            mb_HealingModule_SendData(UnitName(spellCast.target), MB_PALADIN_FOL_HEAL_AMOUNT, 1.5)
         end
         mb_CastSpellByNameOnRaidMemberWithCallbacks(spell, healTargetUnit, callBacks)
         return true
@@ -175,7 +185,7 @@ function mb_Paladin_OnLoad()
     mb_RegisterForRequest(REQUEST_REMOVE_POISON.type, mb_Paladin_HandleCleanseRequest)
     mb_RegisterForRequest(REQUEST_REMOVE_DISEASE.type, mb_Paladin_HandleCleanseRequest)
     mb_RegisterForRequest("palaAura", mb_Paladin_HandleAuraRequest)
-    mb_RegisterForRequest("useConsumable", mb_Healer_HandleUseConsumableRequest)
+    mb_RegisterForRequest("useConsumable", mb_HealerModule_HandleUseConsumableRequest)
     if mb_GetMySpecName() == "Wisdom" then
         mb_RegisterForStandardBuffRequest(BUFF_BLESSING_OF_WISDOM)
         if max_GetNumPartyOrRaidMembers() < 30 then

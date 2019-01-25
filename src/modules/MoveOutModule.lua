@@ -1,5 +1,5 @@
 MB_MOVE_OUT_MODULE_DEBUFFS = {
-    "Example"
+    "Flames"
 }
 
 mb_MoveOutModule_enabled = false

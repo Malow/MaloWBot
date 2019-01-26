@@ -154,39 +154,33 @@ end
 
 function mb_FixRaidGroup()
     local members = max_GetNumPartyOrRaidMembers()
-    if members == 0 then
+    if members < 40 then
         for i = 1, 100 do
             local name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i)
             if name ~= nil and online == 1 then
                 InviteByName(name)
-                return
+                if members == 0 then
+                    return
+                end
             end
         end
         return
     end
     if not IsPartyLeader() then
         mb_MakeRequest("promoteLeader", "promoteLeader", REQUEST_PRIORITY.COMMAND)
-        return
-    end
-    if not UnitInRaid("player") then
-        ConvertToRaid()
-        return
-    end
-    for i = 1, members do
-        local name, rank, subgroup, level, class, fileName, zone, online, isDead = GetRaidRosterInfo(i)
-        if rank == 0 then
-            local unit = max_GetUnitFromPartyOrRaidIndex(i)
-            PromoteToAssistant(UnitName(unit))
+    else
+        SetLootMethod("freeforall")
+        if not UnitInRaid("player") then
+            ConvertToRaid()
+            return
         end
-    end
-    if members < 40 then
-        for i = 1, 100 do
-            local name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i)
-            if name ~= nil and online == 1 then
-                InviteByName(name)
+        for i = 1, members do
+            local name, rank, subgroup, level, class, fileName, zone, online, isDead = GetRaidRosterInfo(i)
+            if rank == 0 then
+                local unit = max_GetUnitFromPartyOrRaidIndex(i)
+                PromoteToAssistant(UnitName(unit))
             end
         end
-        return
     end
 
     for i = 1, members do

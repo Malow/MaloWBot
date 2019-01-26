@@ -206,7 +206,7 @@ function mb_Paladin_OnLoad()
     end
     mb_Paladin_AddDesiredTalents()
     mb_AddReagentWatch("Symbol of Kings", 400)
-    mb_AddReagentWatch("Major Mana Potion", 10)
+    mb_AddReagentWatch("Major Mana Potion", 20)
     mb_AddReagentWatch("Brilliant Mana Oil", 2)
     mb_AddGCDCheckSpell("Holy Light")
     mb_RegisterClassSyncDataFunctions(mb_Paladin_CreateClassSyncData, mb_Paladin_ReceivedClassSyncData)

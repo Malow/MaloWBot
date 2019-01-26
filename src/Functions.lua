@@ -28,7 +28,7 @@ function mb_GetTradeableItemWithQuality(desiredQuality)
 			local texture, itemCount, locked, quality, readable = GetContainerItemInfo(bag, slot)
 			if texture ~= nil and desiredQuality == quality and not locked then
 				local name = GetItemInfo(max_GetItemStringFromItemLink(GetContainerItemLink(bag, slot)))
-				if not mb_IsIgnoredTradeItem(name) then
+				if not mb_IsIgnoredTradeItem(name) and not mb_IsItemSoulbound(bag, slot) then
 					return true, bag, slot
 				end
 			end
@@ -44,7 +44,7 @@ function mb_GetTradeableItem()
 			local texture, itemCount, locked, quality, readable = GetContainerItemInfo(bag, slot)
 			if texture ~= nil and not locked then
 				local name = GetItemInfo(max_GetItemStringFromItemLink(GetContainerItemLink(bag, slot)))
-				if not mb_IsIgnoredTradeItem(name) then
+				if not mb_IsIgnoredTradeItem(name) and not mb_IsItemSoulbound(bag, slot) then
 					return true, bag, slot
 				end
 			end
@@ -119,21 +119,8 @@ function mb_GetWaterCount()
 	return totalItemCount
 end
 
-function mb_AddItemToIgnoredForTrade(itemName)
-	if mb_SV.ignoredTradeItems == nil then
-		mb_SV.ignoredTradeItems = {}
-	end
-	table.insert(mb_SV.ignoredTradeItems, itemName)
-end
-
--- Contains a list of items that are ignored for trading, returns true/false. Any BOP-items should be added to the mb_SV.ignoredTradeItems automatically in SharedBehaviour
+-- Contains a list of items that are ignored for trading, returns true/false.
 function mb_IsIgnoredTradeItem(itemName)
-	if mb_SV.ignoredTradeItems ~= nil then
-		if max_TableContains(mb_SV.ignoredTradeItems, itemName) then
-			return true
-		end
-	end
-
 	for _, watchedReagent in pairs(mb_watchedReagents) do
 		if watchedReagent.itemName == itemName then
 			return true
@@ -413,4 +400,26 @@ function mb_GetDurabilityPercentageFromLine(line)
 	local firstPart = string.sub(line, 1, slashPos - 1)
 	local secondPart = string.sub(line, slashPos + 2, string.len(line))
 	return (tonumber(firstPart) / tonumber(secondPart)) * 100
+end
+
+function mb_IsItemSoulbound(bag, slot)
+	MaloWBotToolTip:SetOwner(UIParent, "ANCHOR_NONE")
+	MaloWBotToolTip:ClearLines()
+	MaloWBotToolTip:SetBagItem(bag, slot)
+	for i = 1, 10 do
+		local line = getglobal("MaloWBotToolTipTextLeft" .. i):GetText()
+		if line == "Soulbound" then
+			return true
+		end
+	end
+	return false
+end
+
+mb_lastStartTradeTime = 0
+function mb_StartTradeThrottled(unit)
+	if mb_lastStartTradeTime + 1 > mb_GetTime() then
+		return
+	end
+	mb_lastStartTradeTime = mb_GetTime()
+	InitiateTrade(unit)
 end

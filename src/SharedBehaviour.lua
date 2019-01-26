@@ -69,15 +69,6 @@ function mb_HandleThrottledSharedBehaviour(commander)
     end
 
     if mb_isTrading then
-        local canNotBeTradedLink = GetTradePlayerItemLink(7)
-        if canNotBeTradedLink ~= nil then
-            local canNotBeTradedItemString = max_GetItemStringFromItemLink(canNotBeTradedLink)
-            local itemName = GetItemInfo(canNotBeTradedItemString)
-            if itemName ~= nil then
-                mb_AddItemToIgnoredForTrade(itemName)
-                CancelTrade()
-            end
-        end
         AcceptTrade()
     end
 
@@ -189,16 +180,24 @@ end
 
 function mb_DoTradeGoodies()
     if not mb_isTrading then
-        InitiateTrade(max_GetUnitForPlayerName(mb_tradeGoodiesTarget))
+        if not CheckInteractDistance(max_GetUnitForPlayerName(mb_tradeGoodiesTarget), 2) then
+            mb_tradeGoodiesTarget = nil
+            return
+        end
+        mb_StartTradeThrottled(max_GetUnitForPlayerName(mb_tradeGoodiesTarget))
         return
     end
-    local found, bag, slot = mb_GetTradeableItem(0)
-    if found then
-        PickupContainerItem(bag, slot)
-        DropItemOnUnit(max_GetUnitForPlayerName(mb_tradeGoodiesTarget))
-    else
-        mb_tradeGoodiesTarget = nil
+    local found, bag, slot = mb_GetTradeableItem()
+    if found and not mb_IsItemSoulbound(bag, slot) then
+        local lastTradeSlot = GetTradePlayerItemLink(6)
+        if lastTradeSlot == nil then
+            PickupContainerItem(bag, slot)
+            DropItemOnUnit(max_GetUnitForPlayerName(mb_tradeGoodiesTarget))
+            ClearCursor()
+            return
+        end
     end
+    mb_tradeGoodiesTarget = nil
 end
 
 function mb_CheckAndRequestBuffs()

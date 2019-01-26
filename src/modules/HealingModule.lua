@@ -195,12 +195,6 @@ end
 
 function mb_HealerModule_HasHealerHigherPriorityThanMe(healerName)
     local healOrder = mb_HealerModule_GetHealersPriorityThrottled()
-    if healOrder[UnitName("player")] == nil then
-        mb_Print("No heal order for " .. UnitName("player"))
-    end
-    if healOrder[healerName] == nil then
-        mb_Print("No heal order for " .. healerName)
-    end
     return healOrder[UnitName("player")] > healOrder[healerName]
 end
 
@@ -219,12 +213,13 @@ function mb_HealerModule_GetHealersPriorityThrottled()
     local members = max_GetNumPartyOrRaidMembers()
     for i = 1, members do
         local unit = max_GetUnitFromPartyOrRaidIndex(i)
+        local unitName = UnitName(unit)
         if max_GetClass(unit) == "PRIEST" then
-            table.insert(priests, UnitName(unit))
+            table.insert(priests, unitName)
         elseif max_GetClass(unit) == "DRUID" then
-            table.insert(druids, UnitName(unit))
+            table.insert(druids, unitName)
         elseif max_GetClass(unit) == "PALADIN" then
-            table.insert(paladins, UnitName(unit))
+            table.insert(paladins, unitName)
         end
     end
     table.sort(priests)
@@ -234,17 +229,14 @@ function mb_HealerModule_GetHealersPriorityThrottled()
     local i = 1
     for _, priest in pairs(priests) do
         mb_HealerModule_healerPriority[priest] = i
-        mb_Print("Added " .. priest .. " at " .. i)
         i = i + 1
     end
     for _, druid in pairs(druids) do
         mb_HealerModule_healerPriority[druid] = i
-        mb_Print("Added " .. druid .. " at " .. i)
         i = i + 1
     end
     for _, paladin in pairs(paladins) do
         mb_HealerModule_healerPriority[paladin] = i
-        mb_Print("Added " .. paladin .. " at " .. i)
         i = i + 1
     end
 

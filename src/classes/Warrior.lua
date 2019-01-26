@@ -105,6 +105,7 @@ function mb_Warrior_UseDpsCooldownsIfGood()
     end
 
     if UnitClassification("target") == "worldboss" and max_GetHealthPercentage("target") < 22 then
+        max_UseEquippedItemIfReady("LegsSlot")
         if max_CastSpellIfReady("Recklessness") then
             return true
         end

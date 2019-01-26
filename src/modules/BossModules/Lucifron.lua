@@ -12,7 +12,7 @@ end
 function mb_BossModule_Lucifron_PriestLogic()
     local unit = mb_BossModule_Lucifron_FindMindControlledUnit()
     if unit ~= nil then
-        max_CastSpellOnRaidMember("Cleanse", unit)
+        max_CastSpellOnRaidMember("Dispel Magic", unit)
         return true
     end
     return false
@@ -21,7 +21,7 @@ end
 function mb_BossModule_Lucifron_PaladinLogic()
     local unit = mb_BossModule_Lucifron_FindMindControlledUnit()
     if unit ~= nil then
-        max_CastSpellOnRaidMember("Dispel Magic", unit)
+        max_CastSpellOnRaidMember("Cleanse", unit)
         return true
     end
     return false

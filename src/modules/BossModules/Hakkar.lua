@@ -10,9 +10,5 @@ function mb_BossModule_Hakkar_Unload()
 end
 
 function mb_BossModule_Hakkar_WarriorTankLogic()
-    if not max_IsSpellNameOnCooldown("Intimidating Shout") then
-        CastSpellByName("Intimidating Shout")
-        return true
-    end
-    return false
+    return max_CastSpellIfReady("Intimidating Shout")
 end

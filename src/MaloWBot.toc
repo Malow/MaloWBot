@@ -38,6 +38,7 @@ modules\BossModules\Garr.lua
 modules\BossModules\Geddon.lua
 modules\BossModules\Hakkar.lua
 modules\BossModules\Jindo.lua
+modules\BossModules\Kazzak.lua
 modules\BossModules\Lucifron.lua
 modules\BossModules\Magmadar.lua
 modules\BossModules\Mandokir.lua

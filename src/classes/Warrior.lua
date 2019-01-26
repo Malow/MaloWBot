@@ -44,7 +44,7 @@ function mb_Warrior(commander)
         return
     end
 
-    if UnitAffectingCombat("player") and max_GetHealthPercentage("player") > 80 then
+    if UnitAffectingCombat("player") and max_GetHealthPercentage("player") > 80 and max_GetManaPercentage("player") < 30 then
         CastSpellByName("Bloodrage")
     end
 
@@ -126,7 +126,7 @@ function mb_Warrior_Tank(commander)
         CastSpellByName("Attack")
     end
 
-    if UnitAffectingCombat("player") and max_GetHealthPercentage("player") > 80 then
+    if UnitAffectingCombat("player") and max_GetHealthPercentage("player") > 80 and max_GetManaPercentage("player") < 30 then
         CastSpellByName("Bloodrage")
     end
 

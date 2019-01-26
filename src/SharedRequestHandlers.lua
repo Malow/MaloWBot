@@ -204,7 +204,13 @@ function mb_RemoteExecuteRequestHandler(request)
 end
 
 function mb_RepairReportRequestHandler(request)
-    local requiredPercentage = 20
+    if request.from == UnitName("player") then
+        local requiredPercentage = request.body
+        mb_DoRepairReport(requiredPercentage)
+    end
+end
+
+function mb_DoRepairReport(requiredPercentage)
     local lowestDurability = mb_GetLowestDurabilityPercentage()
     if lowestDurability < requiredPercentage then
         max_SayRaid("I'm at " .. lowestDurability .. "% durability.")

@@ -91,6 +91,7 @@ function mb_HandleSpecialSlashCommand(msg)
             percentage = 100
         end
         mb_MakeRequest("repairReport", percentage, REQUEST_PRIORITY.COMMAND)
+        mb_DoRepairReport(tonumber(percentage))
     elseif msg == "fuckOff" then
         local target = UnitName("target")
         if UnitIsEnemy("player", "target") then

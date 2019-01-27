@@ -1,11 +1,12 @@
-MB_RANGE_CHECK_MODULE_CACHE_PLAYERS_PER_RUN = 5
+MB_RANGE_CHECK_MODULE_CACHE_PLAYERS_PER_RUN = 4
 
-mb_uniqueFriendlyRangeSpells = {}
+mb_uniqueFriendlyRangeSlots = {}
 mb_registeredEnemyRangeCheckSpells = {}
 mb_registeredFriendlyRangeCheckSpells = {}
 mb_lastCachedId = 1
 mb_cachedRangeChecks = {}
 mb_RangeCheckModule_shouldCacheFriendlyRanges = false
+mb_RangeCheckModule_lastRangeCheckUsage = 0
 
 function mb_RegisterEnemyRangeCheckSpell(spellName)
     local slot = max_GetTableSize(mb_registeredFriendlyRangeCheckSpells) + max_GetTableSize(mb_registeredEnemyRangeCheckSpells) + 25
@@ -43,10 +44,17 @@ function mb_RegisterFriendlyRangeCheckSpell(spellName)
     PlaceAction(slot)
     ClearCursor()
 
-    if mb_uniqueFriendlyRangeSpells[range] == nil then
-        mb_uniqueFriendlyRangeSpells[range] = slot
-    end
     mb_RangeCheckModule_shouldCacheFriendlyRanges = true
+    for _, v in pairs(mb_uniqueFriendlyRangeSlots) do
+        if v.range == range then
+            return
+        end
+    end
+    local data = {}
+    data.range = range
+    data.slot = slot
+    table.insert(mb_uniqueFriendlyRangeSlots, data)
+    table.sort(mb_uniqueFriendlyRangeSlots, function(a, b) return a.range > b.range end)
 end
 
 -- Changes target if you don't try to use it on your existing target, will break auto-attacks
@@ -91,6 +99,7 @@ function mb_IsUnitValidFriendlyTarget(unit, spellName)
         max_SayRaid("Serious error, don't have spell " .. spellName .. " registered for rangeCheck, but still tried to check range with it.")
         return false
     end
+    mb_RangeCheckModule_lastRangeCheckUsage = mb_GetTime()
     return mb_cachedRangeChecks[unit][mb_registeredFriendlyRangeCheckSpells[spellName].range] == true
 end
 
@@ -107,6 +116,9 @@ function mb_RangeCheckModule_CacheRangesToFriendlies()
     if not mb_RangeCheckModule_shouldCacheFriendlyRanges then
         return
     end
+    if mb_RangeCheckModule_lastRangeCheckUsage + 5 < mb_GetTime() then
+        return
+    end
 
     local endNumber = mb_lastCachedId + (MB_RANGE_CHECK_MODULE_CACHE_PLAYERS_PER_RUN - 1)
     local members = max_GetNumPartyOrRaidMembers()
@@ -118,11 +130,24 @@ function mb_RangeCheckModule_CacheRangesToFriendlies()
         mb_cachedRangeChecks[unit] = {}
         if UnitExists(unit) and UnitIsVisible(unit) and not UnitIsDeadOrGhost(unit) and not max_HasBuff(unit, BUFF_TEXTURE_SPIRIT_OF_REDEMPTION) and not max_CanAttackUnit(unit) then
             mb_cachedRangeChecks[unit].isValid = true
+            local isWithin28Yards = CheckInteractDistance(unit, 4)
+            local isAlreadyNotInHigherRange = false
+            for _, v in pairs(mb_uniqueFriendlyRangeSlots) do
+                if v.range >= 28 and isWithin28Yards then
+                    mb_cachedRangeChecks[unit][v.range] = true
+                elseif isAlreadyNotInHigherRange then
+                    mb_cachedRangeChecks[unit][v.range] = false
+                else
+                    if mb_IsActionInRange(v.slot, unit) then
+                        mb_cachedRangeChecks[unit][v.range] = true
+                    else
+                        mb_cachedRangeChecks[unit][v.range] = false
+                        isAlreadyNotInHigherRange = true
+                    end
+                end
+            end
         else
             mb_cachedRangeChecks[unit].isValid = false
-        end
-        for range, actionSlot in pairs(mb_uniqueFriendlyRangeSpells) do
-            mb_cachedRangeChecks[unit][range] = mb_IsActionInRange(actionSlot, unit)
         end
         mb_lastCachedId = mb_lastCachedId + 1
     end

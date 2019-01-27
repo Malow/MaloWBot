@@ -210,12 +210,17 @@ end
 function mb_CanBuffUnitWithSpell(unit, spell)
 	if max_GetManaPercentage("player") < 50 then
 		return false
-	elseif mb_IsDrinking() then
-		return false
-	elseif UnitIsDead("player") then
-		return
 	end
-	if mb_IsUnitValidFriendlyTarget(unit, spell) and max_GetLevelDifferenceFromSelf(unit) > -8 then
+	if mb_IsDrinking() then
+		return false
+	end
+	if UnitIsDead("player") then
+		return false
+	end
+	if max_GetLevelDifferenceFromSelf(unit) < -8 then
+		return false
+	end
+	if mb_IsUnitValidFriendlyTarget(unit, spell) then
 		return true
 	end
 end
@@ -225,11 +230,11 @@ function mb_ShouldBuffGroupWide(unitName, buff, unitFilter)
 	local groupUnits = max_GetGroupUnitsFor(unitName)
 	local count = 0
 	for i = 1, max_GetTableSize(groupUnits) do
-		if mb_IsUnitValidFriendlyTarget(groupUnits[i]) and not max_HasBuffWithMultipleTextures(groupUnits[i], buff.textures) then
-			if unitFilter == nil then
-				count = count + 1
-			elseif mb_CheckFilter(groupUnits[i], unitFilter) then
-				count = count + 1
+		if unitFilter == nil or mb_CheckFilter(groupUnits[i], unitFilter) then
+			if not max_HasBuffWithMultipleTextures(groupUnits[i], buff.textures) then
+				if mb_IsUnitValidFriendlyTarget(groupUnits[i]) then
+					count = count + 1
+				end
 			end
 		end
 	end
@@ -294,15 +299,17 @@ function mb_GetGroupHealEffect(healValue, rangeCheckSpell)
     local totalHealEffect = 0
     local affectedPlayers = {}
 	for _, unit in pairs(groupUnits) do
-        if mb_IsUnitValidFriendlyTarget(unit, rangeCheckSpell) then
-            local healEffect = max_GetMissingHealth(unit) / healValue
-            if healEffect > 1.0 then
-                healEffect = 1.0
-            end
-			local unitName = UnitName(unit)
-            table.insert(affectedPlayers, unitName)
-            totalHealEffect = totalHealEffect + healEffect
-        end
+		local healEffect = max_GetMissingHealth(unit) / healValue
+		if healEffect > 0.0 then
+			if mb_IsUnitValidFriendlyTarget(unit, rangeCheckSpell) then
+				if healEffect > 1.0 then
+					healEffect = 1.0
+				end
+				local unitName = UnitName(unit)
+				table.insert(affectedPlayers, unitName)
+				totalHealEffect = totalHealEffect + healEffect
+			end
+		end
     end
     return totalHealEffect, affectedPlayers
 end

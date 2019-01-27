@@ -278,7 +278,10 @@ function mb_Priest_HandleDispelRequest(request)
     if UnitIsDead("player") then
         return
     end
-    if mb_IsUnitValidFriendlyTarget(max_GetUnitForPlayerName(request.body), "Dispel Magic") and UnitMana("player") > 500 then
+    if UnitMana("player") < 500 then
+        return
+    end
+    if mb_IsUnitValidFriendlyTarget(max_GetUnitForPlayerName(request.body), "Dispel Magic") then
         mb_AcceptRequest(request)
     end
 end

@@ -19,8 +19,8 @@ function mb_HealingModule_HandleHoTRequest(request)
     end
     local unit = max_GetUnitForPlayerName(request.body)
     for k, v in pairs(mb_HealingModule_registeredHoTs) do
-        if not max_HasBuff(unit, v.texture) then
-            if mb_IsUnitValidFriendlyTarget(unit, k) and UnitMana("player") > mb_HealingModule_registeredHoTs[k].manaCost then
+        if UnitMana("player") > mb_HealingModule_registeredHoTs[k].manaCost and not max_HasBuff(unit, v.texture) then
+            if mb_IsUnitValidFriendlyTarget(unit, k) then
                 mb_AcceptRequest(request)
                 return
             end
@@ -32,8 +32,8 @@ function mb_HealingModule_CompleteHoTRequest(request)
     mb_RequestCompleted(request)
     local unit = max_GetUnitForPlayerName(request.body)
     for k, v in pairs(mb_HealingModule_registeredHoTs) do
-        if not max_HasBuff(unit, v.texture) then
-            if mb_IsUnitValidFriendlyTarget(unit, k) and UnitMana("player") > mb_HealingModule_registeredHoTs[k].manaCost then
+        if UnitMana("player") > mb_HealingModule_registeredHoTs[k].manaCost and not max_HasBuff(unit, v.texture) then
+            if mb_IsUnitValidFriendlyTarget(unit, k) then
                 max_CastSpellOnRaidMember(k, unit)
                 return
             end

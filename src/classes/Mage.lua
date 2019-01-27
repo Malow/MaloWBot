@@ -254,7 +254,10 @@ function mb_Mage_HandleDecurseRequest(request)
     if not mb_IsFreeToAcceptRequest() then
         return
     end
-    if mb_IsUnitValidFriendlyTarget(max_GetUnitForPlayerName(request.body), "Remove Lesser Curse") and UnitMana("player") > 500 then
+    if UnitMana("player") < 500 then
+        return
+    end
+    if mb_IsUnitValidFriendlyTarget(max_GetUnitForPlayerName(request.body), "Remove Lesser Curse") then
         mb_AcceptRequest(request)
     end
 end

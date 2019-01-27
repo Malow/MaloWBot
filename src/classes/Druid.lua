@@ -94,7 +94,7 @@ function mb_Druid_ShouldStopCasting(currentCast)
 end
 
 function mb_Druid_InnervateSelf()
-    if not UnitAffectingCombat("player") then
+    if not UnitAffectingCombat("player") or mb_GetTimeInCombat() < 30 then
         return false
     end
     if max_IsSpellNameOnCooldown("Innervate") then
@@ -238,6 +238,9 @@ function mb_Druid_HandleDecurseRequest(request)
 end
 
 function mb_Druid_HandleInnervateRequest(request)
+    if not UnitAffectingCombat("player") then
+        return
+    end
     if not mb_IsFreeToAcceptRequest() then
         return
     end

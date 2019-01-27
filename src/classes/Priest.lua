@@ -58,7 +58,7 @@ function mb_Priest(commander)
         end
     end
 
-    if UnitAffectingCombat("player") and UnitMana("player") < 1000 and not max_HasBuff("player", BUFF_TEXTURE_INNERVATE) then
+    if UnitAffectingCombat("player") and mb_GetTimeInCombat() > 30 and UnitMana("player") < 1000 and not max_HasBuff("player", BUFF_TEXTURE_INNERVATE) then
         mb_MakeThrottledRequest(REQUEST_INNERVATE, UnitName("player"), REQUEST_PRIORITY.IMPORTANT_BUFF)
     end
 

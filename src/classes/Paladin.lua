@@ -1,4 +1,6 @@
-MB_PALADIN_FOL_HEAL_AMOUNT = 600
+MB_PALADIN_FLASH_OF_LIGHT_RANK_1_HEAL_AMOUNT = 350
+MB_PALADIN_FLASH_OF_LIGHT_MAX_RANK_HEAL_AMOUNT = 600
+MB_PALADIN_HOLY_LIGHT_HEAL_AMOUNT = 2200
 
 mb_paladinIsJudgingLight = false
 mb_paladinIsJudgingWisdom = false
@@ -69,6 +71,10 @@ function mb_Paladin(commander)
         return
     end
 
+    if mb_Paladin_TankHeal() then
+        return
+    end
+
     max_AssistByPlayerName(commander)
     if not max_HasValidOffensiveTarget() then
         return
@@ -88,7 +94,17 @@ function mb_Paladin_ShouldStopCasting(currentCast)
         if max_GetManaPercentage("player") > 90 and targetMissingHealth > 0 then
             return false
         end
-        if targetMissingHealth < MB_PALADIN_FOL_HEAL_AMOUNT then
+        if targetMissingHealth < MB_PALADIN_FLASH_OF_LIGHT_MAX_RANK_HEAL_AMOUNT then
+            return true
+        end
+    elseif currentCast.spellName == "Holy Light" then
+        if currentCast.startCastTime + 2 < mb_GetTime() then
+            if max_GetMissingHealth(currentCast.target) < MB_PALADIN_HOLY_LIGHT_HEAL_AMOUNT then
+                return true
+            end
+        end
+        local healTargetUnit, missingHealth = mb_HealingModule_GetRaidHealTarget("Flash of Light")
+        if missingHealth > MB_PALADIN_FLASH_OF_LIGHT_MAX_RANK_HEAL_AMOUNT then
             return true
         end
     end
@@ -98,16 +114,34 @@ end
 function mb_Paladin_RaidHeal()
     local spell = "Flash of Light"
     local healTargetUnit, missingHealth = mb_HealingModule_GetRaidHealTarget(spell)
-    if missingHealth > MB_PALADIN_FOL_HEAL_AMOUNT then
-        --max_SayRaid("Started FoL on " .. UnitName(healTargetUnit) .. ". Current missing health: " .. max_GetMissingHealth(healTargetUnit) .. " - Calculated missing health: " .. missingHealth)
+    if missingHealth > MB_PALADIN_FLASH_OF_LIGHT_MAX_RANK_HEAL_AMOUNT then
+        local healAmount = MB_PALADIN_FLASH_OF_LIGHT_MAX_RANK_HEAL_AMOUNT
+        if not max_HasBuff("player", BUFF_TEXTURE_DIVINE_FAVOR) and max_GetManaPercentage("player") < 10 then
+            healAmount = MB_PALADIN_FLASH_OF_LIGHT_RANK_1_HEAL_AMOUNT
+            spell = "Flash of Light(Rank 1)"
+        end
         local callBacks = {}
         callBacks.onStart = function(spellCast)
-            mb_HealingModule_SendData(UnitName(spellCast.target), MB_PALADIN_FOL_HEAL_AMOUNT, 1.5)
+            mb_HealingModule_SendData(UnitName(spellCast.target), healAmount, 1.5)
         end
         mb_CastSpellByNameOnRaidMemberWithCallbacks(spell, healTargetUnit, callBacks)
         return true
     end
     return false
+end
+
+function mb_Paladin_TankHeal()
+    local spell = "Holy Light"
+    local tankUnit, tankFutureMissingHealth = mb_HealingModule_GetValidTankUnitWithHighestFutureMissingHealth(spell)
+    if tankUnit == nil then
+        return false
+    end
+    local callBacks = {}
+    callBacks.onStart = function(spellCast)
+        mb_HealingModule_SendData(UnitName(spellCast.target), MB_PALADIN_HOLY_LIGHT_HEAL_AMOUNT, 2.5)
+    end
+    mb_CastSpellByNameOnRaidMemberWithCallbacks(spell, tankUnit, callBacks)
+    return true
 end
 
 function mb_Paladin_HasAura()
@@ -211,6 +245,7 @@ function mb_Paladin_OnLoad()
     mb_AddGCDCheckSpell("Holy Light")
     mb_RegisterClassSyncDataFunctions(mb_Paladin_CreateClassSyncData, mb_Paladin_ReceivedClassSyncData)
     mb_RegisterRangeCheckSpell("Flash of Light")
+    mb_RegisterRangeCheckSpell("Holy Light")
     mb_RegisterRangeCheckSpell("Cleanse")
     mb_RegisterRangeCheckSpell("Redemption")
     mb_RegisterRangeCheckSpell("Judgement")

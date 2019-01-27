@@ -53,6 +53,7 @@ BUFF_TEXTURE_BLESSING_OF_SANCTUARY = "Interface\\Icons\\Spell_Nature_LightningSh
 BUFF_TEXTURE_GREATER_BLESSING_OF_SANCTUARY = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSanctuary"
 BUFF_TEXTURE_BLESSING_OF_SALVATION = "Interface\\Icons\\Spell_Holy_SealOfSalvation"
 BUFF_TEXTURE_GREATER_BLESSING_OF_SALVATION = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSalvation"
+BUFF_TEXTURE_DIVINE_FAVOR = "Interface\\Icons\\Spell_Holy_Heal"
 DEBUFF_TEXTURE_JUDGEMENT_OF_LIGHT = "Interface\\Icons\\Spell_Holy_HealingAura"
 DEBUFF_TEXTURE_JUDGEMENT_OF_WISDOM = "Interface\\Icons\\Spell_Holy_RighteousnessAura"
 DEBUFF_TEXTURE_FORBEARANCE = "Interface\\Icons\\Spell_Holy_RemoveCurse"

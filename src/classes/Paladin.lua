@@ -243,11 +243,11 @@ function mb_Paladin_OnLoad()
     mb_AddReagentWatch("Brilliant Mana Oil", 2)
     mb_AddGCDCheckSpell("Holy Light")
     mb_RegisterClassSyncDataFunctions(mb_Paladin_CreateClassSyncData, mb_Paladin_ReceivedClassSyncData)
-    mb_RegisterRangeCheckSpell("Flash of Light")
-    mb_RegisterRangeCheckSpell("Holy Light")
-    mb_RegisterRangeCheckSpell("Cleanse")
-    mb_RegisterRangeCheckSpell("Redemption")
-    mb_RegisterRangeCheckSpell("Judgement")
+    mb_RegisterFriendlyRangeCheckSpell("Flash of Light")
+    mb_RegisterFriendlyRangeCheckSpell("Holy Light")
+    mb_RegisterFriendlyRangeCheckSpell("Cleanse")
+    mb_RegisterFriendlyRangeCheckSpell("Redemption")
+    mb_RegisterEnemyRangeCheckSpell("Judgement")
     mb_HealingModule_Enable()
 end
 
@@ -277,7 +277,7 @@ function mb_Paladin_Judge()
         return false
     end
 
-    if not mb_IsSpellInRange("Judgement", "target") then
+    if not mb_IsSpellInRangeOnEnemy("Judgement", "target") then
         return false
     end
 

@@ -173,20 +173,6 @@ function mb_IsIgnoredTradeItem(itemName)
 	return false
 end
 
--- Checks if target exists, is visible, is friendly and if it's dead or ghost AND if it's in range of spell if a spell is provided.
-function mb_IsUnitValidFriendlyTarget(unit, spell)
-	if UnitExists(unit) and UnitIsVisible(unit) and not UnitIsDeadOrGhost(unit) and not max_HasBuff(unit, BUFF_TEXTURE_SPIRIT_OF_REDEMPTION) and not max_CanAttackUnit(unit) then
-		if spell ~= nil then
-			if mb_IsSpellInRange(spell, unit) then
-				return true
-			end
-		else
-			return true
-		end
-	end 
-	return false
-end
-
 -- Drinks conjured mage-water if possible, returns true/false
 function mb_DrinkIfPossible()
 	if not UnitAffectingCombat("player") and not mb_IsDrinking() then
@@ -413,6 +399,21 @@ function mb_IsItemSoulbound(bag, slot)
 		end
 	end
 	return false
+end
+
+function mb_GetSpellRange(actionSlot)
+    MaloWBotToolTip:SetOwner(UIParent, "ANCHOR_NONE")
+    MaloWBotToolTip:ClearLines()
+    MaloWBotToolTip:SetAction(actionSlot)
+    for i = 1, 10 do
+        local line = getglobal("MaloWBotToolTipTextRight" .. i):GetText()
+        if line ~= nil and string.find(line, "yd range") then
+            local spacePos = string.find(line, " ")
+            local range = tonumber(string.sub(line, 1, spacePos - 1))
+            return range
+        end
+    end
+    return nil
 end
 
 mb_lastStartTradeTime = 0

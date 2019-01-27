@@ -136,7 +136,7 @@ function mb_Hunter_OnLoad()
     mb_AddDesiredBuff(BUFF_SHADOW_PROTECTION)
 	mb_AddGCDCheckSpell("Serpent Sting")
 	if max_HasSpell("Tranquilizing Shot") then
-		mb_RegisterRangeCheckSpell("Tranquilizing Shot")
+		mb_RegisterEnemyRangeCheckSpell("Tranquilizing Shot")
 		mb_RegisterForRequest(REQUEST_TRANQUILIZING_SHOT.type, mb_Hunter_HandleTranquilizingShotRequest)
 	end
 
@@ -149,9 +149,9 @@ function mb_Hunter_OnLoad()
 
 	mb_Hunter_AddDesiredTalents()
 	mb_CombatLogModule_SwingTimer_EnableAutoShot()
-	mb_RegisterRangeCheckSpell("Multi-Shot")
+	mb_RegisterEnemyRangeCheckSpell("Multi-Shot")
 	if mb_Hunter_HasAimedShot() then
-		mb_RegisterRangeCheckSpell("Aimed Shot") -- Need Aimed Shot on the bars to be able to check if we're "casting" it
+		mb_RegisterEnemyRangeCheckSpell("Aimed Shot") -- Need Aimed Shot on the bars to be able to check if we're "casting" it
 	end
 	mb_GoToMaxRangeModule_RegisterMaxRangeSpell("Multi-Shot")
     mb_CombatLogModule_EnemyGainsWatch_Enable()
@@ -190,7 +190,7 @@ function mb_Hunter_CanDoTranquilizingShot()
     if mb_IsFacingWrongWay() then
         return false
     end
-	if mb_IsSpellInRange("Tranquilizing Shot") and UnitMana("player") > 500 then
+	if mb_IsSpellInRangeOnEnemy("Tranquilizing Shot") and UnitMana("player") > 500 then
 		return true
 	end
 	return false

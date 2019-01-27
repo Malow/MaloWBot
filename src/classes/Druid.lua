@@ -151,12 +151,12 @@ function mb_Druid_OnLoad()
     mb_AddReagentWatch("Major Mana Potion", 20)
     mb_AddReagentWatch("Brilliant Mana Oil", 2)
     mb_AddGCDCheckSpell("Rejuvenation")
-    mb_RegisterRangeCheckSpell("Remove Curse")
-    mb_RegisterRangeCheckSpell("Rejuvenation")
-    mb_RegisterRangeCheckSpell("Regrowth")
-    mb_RegisterRangeCheckSpell("Insect Swarm")
-    mb_RegisterRangeCheckSpell("Faerie Fire")
-    mb_RegisterRangeCheckSpell("Innervate")
+    mb_RegisterFriendlyRangeCheckSpell("Remove Curse")
+    mb_RegisterFriendlyRangeCheckSpell("Rejuvenation")
+    mb_RegisterFriendlyRangeCheckSpell("Regrowth")
+    mb_RegisterEnemyRangeCheckSpell("Insect Swarm")
+    mb_RegisterEnemyRangeCheckSpell("Faerie Fire")
+    mb_RegisterFriendlyRangeCheckSpell("Innervate")
     mb_HealingModule_Enable()
     mb_HealingModule_RegisterHoT("Rejuvenation", BUFF_TEXTURE_REJUVENATION, 335)
 end
@@ -209,7 +209,7 @@ function mb_Druid_InsectSwarm()
     if found and cur < APPLY_DEBUFFS_HEALTH_ABOVE then
         return false
     end
-    if not max_HasDebuff("target", DEBUFF_TEXTURE_INSECT_SWARM) and mb_IsSpellInRange("Insect Swarm", "target") then
+    if not max_HasDebuff("target", DEBUFF_TEXTURE_INSECT_SWARM) and mb_IsSpellInRangeOnEnemy("Insect Swarm", "target") then
         CastSpellByName("Insect Swarm(Rank 1)")
         return true
     end
@@ -221,7 +221,7 @@ function mb_Druid_FaerieFire()
     if found and cur < APPLY_DEBUFFS_HEALTH_ABOVE then
         return false
     end
-    if not max_HasDebuff("target", DEBUFF_TEXTURE_FAERIE_FIRE) and mb_IsSpellInRange("Faerie Fire", "target") then
+    if not max_HasDebuff("target", DEBUFF_TEXTURE_FAERIE_FIRE) and mb_IsSpellInRangeOnEnemy("Faerie Fire", "target") then
         CastSpellByName("Faerie Fire")
         return true
     end

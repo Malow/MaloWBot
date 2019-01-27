@@ -109,7 +109,7 @@ function mb_Warlock(commander)
         return
     end
 
-    if max_GetHealthPercentage("player") < 30 and mb_IsSpellInRange("Death Coil", "target") and not max_IsSpellNameOnCooldown("Death Coil") then
+    if max_GetHealthPercentage("player") < 30 and mb_IsSpellInRangeOnEnemy("Death Coil", "target") and not max_IsSpellNameOnCooldown("Death Coil") then
         CastSpellByName("Death Coil")
         return
     end
@@ -131,7 +131,7 @@ function mb_Warlock(commander)
 end
 
 function mb_Warlock_DrainSoul()
-    if not mb_IsSpellInRange("Drain Soul", "target") then
+    if not mb_IsSpellInRangeOnEnemy("Drain Soul", "target") then
         return false
     end
     local cur, max, found = MobHealth3:GetUnitHealth("target")
@@ -150,7 +150,7 @@ function mb_Warlock_Curse()
     if found and cur < APPLY_DEBUFFS_HEALTH_ABOVE then
         return false
     end
-    if not mb_IsSpellInRange("Curse of the Elements", "target") then
+    if not mb_IsSpellInRangeOnEnemy("Curse of the Elements", "target") then
         return false
     end
     if mb_warlockIsCursingElements and not max_HasDebuff("target", DEBUFF_TEXTURE_CURSE_OF_THE_ELEMENTS) then
@@ -183,12 +183,12 @@ function mb_Warlock_OnLoad()
     mb_Warlock_AddDesiredTalents()
     mb_AddGCDCheckSpell("Shadow Bolt")
     mb_RegisterClassSyncDataFunctions(mb_Warlock_CreateClassSyncData, mb_Warlock_ReceivedClassSyncData)
-    mb_RegisterRangeCheckSpell("Unending Breath")
-    mb_RegisterRangeCheckSpell("Death Coil")
-    mb_RegisterRangeCheckSpell("Drain Soul")
-    mb_RegisterRangeCheckSpell("Curse of the Elements")
-    mb_RegisterRangeCheckSpell("Banish")
-    mb_RegisterRangeCheckSpell("Shadow Bolt")
+    mb_RegisterFriendlyRangeCheckSpell("Unending Breath")
+    mb_RegisterEnemyRangeCheckSpell("Death Coil")
+    mb_RegisterEnemyRangeCheckSpell("Drain Soul")
+    mb_RegisterEnemyRangeCheckSpell("Curse of the Elements")
+    mb_RegisterEnemyRangeCheckSpell("Banish")
+    mb_RegisterEnemyRangeCheckSpell("Shadow Bolt")
     mb_GoToMaxRangeModule_RegisterMaxRangeSpell("Shadow Bolt")
     mb_AddReagentWatch("Brilliant Wizard Oil", 2)
 end

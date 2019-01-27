@@ -89,7 +89,7 @@ function mb_Rogue_IsGoodToUseCooldowns()
     if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) < 5 then
         return false
     end
-    if not mb_IsSpellInRange("Sinister Strike", "target") then
+    if not mb_IsSpellInRangeOnEnemy("Sinister Strike", "target") then
         return false
     end
     return true
@@ -112,7 +112,7 @@ function mb_Rogue_HandleInterruptRequest(request)
         return
     end
     max_AssistByPlayerName(request.from)
-    if not mb_IsSpellInRange("Kick", "target") then
+    if not mb_IsSpellInRangeOnEnemy("Kick", "target") then
         return
     end
     if max_IsSpellNameOnCooldown("Kick") then
@@ -155,8 +155,8 @@ function mb_Rogue_OnLoad()
     end
 
     mb_Rogue_AddDesiredTalents()
-    mb_RegisterRangeCheckSpell("Kick")
-    mb_RegisterRangeCheckSpell("Sinister Strike")
+    mb_RegisterEnemyRangeCheckSpell("Kick")
+    mb_RegisterEnemyRangeCheckSpell("Sinister Strike")
     mb_AddGCDCheckSpell("Sinister Strike")
     mb_RegisterForRequest(REQUEST_INTERRUPT.type, mb_Rogue_HandleInterruptRequest)
     mb_RegisterForRequest("usePoison", mb_Rogue_HandleUsePoisonRequest)

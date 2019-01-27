@@ -17,7 +17,7 @@ function mb_GoToMaxRangeModule_RebindMovementKeyIfNeeded()
         return false
     end
     if mb_GoToMaxRangeModule_hasMovedOutOfRange then
-        if mb_IsSpellInRange(mb_GoToMaxRangeModule_spellName, "target") then
+        if mb_IsSpellInRangeOnEnemy(mb_GoToMaxRangeModule_spellName, "target") then
             mb_GoToMaxRangeModule_shouldGoToMaxRange = false
             mb_GoToMaxRangeModule_hasMovedOutOfRange = false
             return false
@@ -26,7 +26,7 @@ function mb_GoToMaxRangeModule_RebindMovementKeyIfNeeded()
             return true
         end
     else
-        if mb_IsSpellInRange(mb_GoToMaxRangeModule_spellName, "target") then
+        if mb_IsSpellInRangeOnEnemy(mb_GoToMaxRangeModule_spellName, "target") then
             mb_BindKey("9", "MOVEBACKWARD")
             return true
         else

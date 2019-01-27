@@ -218,14 +218,14 @@ function mb_Mage_OnLoad()
 
     mb_Mage_AddDesiredTalents()
     mb_AddGCDCheckSpell("Frostbolt")
-    mb_RegisterRangeCheckSpell("Arcane Intellect")
-    mb_RegisterRangeCheckSpell("Remove Lesser Curse")
-    mb_RegisterRangeCheckSpell("Counterspell")
-    mb_RegisterRangeCheckSpell("Polymorph")
+    mb_RegisterFriendlyRangeCheckSpell("Arcane Intellect")
+    mb_RegisterFriendlyRangeCheckSpell("Remove Lesser Curse")
+    mb_RegisterEnemyRangeCheckSpell("Counterspell")
+    mb_RegisterEnemyRangeCheckSpell("Polymorph")
     mb_AddReagentWatch("Arcane Powder", 50)
     mb_AddReagentWatch("Rune of Portals", 10)
     mb_AddReagentWatch("Brilliant Wizard Oil", 2)
-    mb_RegisterRangeCheckSpell("Frostbolt")
+    mb_RegisterEnemyRangeCheckSpell("Frostbolt")
 
     if mb_GetMySpecName() == "DeepFire" then
         mb_mageIsFire = true
@@ -264,7 +264,7 @@ function mb_Mage_HandleInterruptRequest(request)
         return
     end
     max_AssistByPlayerName(request.from)
-    if not mb_IsSpellInRange("Counterspell", "target") then
+    if not mb_IsSpellInRangeOnEnemy("Counterspell", "target") then
         return
     end
     if max_IsSpellNameOnCooldown("Counterspell") then

@@ -93,7 +93,7 @@ function mb_Warrior_UseDpsCooldownsIfGood()
     if not max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) == 5 then
         return false
     end
-    if not mb_IsSpellInRange("Sunder Armor", "target") then
+    if not mb_IsSpellInRangeOnEnemy("Sunder Armor", "target") then
         return false
     end
 
@@ -234,7 +234,7 @@ function mb_Warrior_DpsTank(commander)
     if max_GetActiveStance() ~= 1 then
         CastSpellByName("Battle Stance")
     end
-    if not max_HasDebuff("target", DEBUFF_TEXTURE_THUNDER_CLAP) and mb_IsSpellInRange("Sunder Armor", "target") then
+    if not max_HasDebuff("target", DEBUFF_TEXTURE_THUNDER_CLAP) and mb_IsSpellInRangeOnEnemy("Sunder Armor", "target") then
         CastSpellByName("Thunder Clap")
         return
     end
@@ -293,7 +293,7 @@ function mb_Warrior_OnLoad()
     mb_AddDesiredBuff(BUFF_SHADOW_PROTECTION)
     mb_Warrior_AddDesiredTalents()
 	mb_AddGCDCheckSpell("Sunder Armor")
-    mb_RegisterRangeCheckSpell("Sunder Armor")
+    mb_RegisterEnemyRangeCheckSpell("Sunder Armor")
     if mb_warriorIsTank then
         mb_CombatLogModule_DamageTakenPerSecond_Enable()
         mb_AddDesiredBuff(BUFF_THORNS)

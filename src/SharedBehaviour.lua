@@ -12,6 +12,8 @@ mb_shouldRequestBuffs = false
 mb_classSyncData = nil
 
 function mb_HandleSharedBehaviour(commander)
+    mb_RangeCheckModule_CacheRangesToFriendlies()
+
     if mb_HandleThrottledSharedBehaviour(commander) then
         return true
     end
@@ -479,7 +481,7 @@ end
 
 function mb_RegisterForStandardBuffRequest(buff)
     mb_RegisterForRequest(buff.type, mb_HandleStandardBuffRequest)
-    mb_RegisterRangeCheckSpell(buff.spellName)
+    mb_RegisterFriendlyRangeCheckSpell(buff.spellName)
 end
 
 function mb_HandleSharedBehaviourPostLoad(playerClass)

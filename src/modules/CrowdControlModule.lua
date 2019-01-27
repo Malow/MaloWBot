@@ -35,7 +35,7 @@ function mb_CrowdControlModule_Run()
         return true
     end
 
-    if not mb_IsSpellInRange(mb_CrowdControlModule_myCrowdControlSpellName) then
+    if not mb_IsSpellInRangeOnEnemy(mb_CrowdControlModule_myCrowdControlSpellName) then
         max_SayRaid("I'm not in range to CC " .. UnitName("target"))
         return true
     end

@@ -591,7 +591,6 @@ end
 ---		Add holy shock for the few that has it
 ---		Consecration in a max-burn AoE mode?
 ---		Blessing of Protection (request re-bless after?)
----		If high on Mana start stop-cast spamming tanks if no raid-healing is needed
 ---		Lay on hands buff rotation on try-hard tries
 --- Hunter:
 ---		Pet-logic (reagent food, auto-feed, auto-call/revive, attacking, mend pet)

@@ -99,8 +99,10 @@ function mb_Paladin_ShouldStopCasting(currentCast)
         end
     elseif currentCast.spellName == "Holy Light" then
         if currentCast.startCastTime + 2 < mb_GetTime() then
-            if max_GetMissingHealth(currentCast.target) < MB_PALADIN_HOLY_LIGHT_HEAL_AMOUNT then
+            if max_GetMissingHealth(currentCast.target) < (MB_PALADIN_HOLY_LIGHT_HEAL_AMOUNT * 1.5) then
                 return true
+            else
+                return false
             end
         end
         local healTargetUnit, missingHealth = mb_HealingModule_GetRaidHealTarget("Flash of Light")
@@ -137,9 +139,6 @@ function mb_Paladin_TankHeal()
         return false
     end
     local callBacks = {}
-    callBacks.onStart = function(spellCast)
-        mb_HealingModule_SendData(UnitName(spellCast.target), MB_PALADIN_HOLY_LIGHT_HEAL_AMOUNT, 2.5)
-    end
     mb_CastSpellByNameOnRaidMemberWithCallbacks(spell, tankUnit, callBacks)
     return true
 end

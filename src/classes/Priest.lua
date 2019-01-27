@@ -45,20 +45,20 @@ function mb_Priest(commander)
         end
     end
 
-    if not UnitAffectingCombat("player") then
+    if not mb_IsInCombat() then
         if not max_HasBuff("player", BUFF_TEXTURE_INNER_FIRE) then
             CastSpellByName("Inner Fire")
             return
         end
     end
 
-    if UnitAffectingCombat("player") and max_GetHealthPercentage("player") < 30 then
+    if mb_IsInCombat() and max_GetHealthPercentage("player") < 30 then
         if max_CastSpellIfReady("Desperate Prayer") then
             return
         end
     end
 
-    if UnitAffectingCombat("player") and mb_GetTimeInCombat() > 30 and UnitMana("player") < 1000 and not max_HasBuff("player", BUFF_TEXTURE_INNERVATE) then
+    if mb_IsInCombat() and mb_GetTimeInCombat() > 30 and UnitMana("player") < 1000 and not max_HasBuff("player", BUFF_TEXTURE_INNERVATE) then
         mb_MakeThrottledRequest(REQUEST_INNERVATE, UnitName("player"), REQUEST_PRIORITY.IMPORTANT_BUFF)
     end
 
@@ -72,7 +72,7 @@ function mb_Priest(commander)
         return
     end
 
-    if UnitAffectingCombat("player") and mb_GetTimeInCombat() > 30 then
+    if mb_IsInCombat() and mb_GetTimeInCombat() > 30 then
         max_UseEquippedItemIfReady("Trinket0Slot")
         max_UseEquippedItemIfReady("Trinket1Slot")
     end
@@ -186,7 +186,7 @@ function mb_Priest_Renew(healthPercentage)
 end
 
 function mb_Priest_InnerFocus()
-    if not UnitAffectingCombat("player") or mb_GetTimeInCombat() < 30 then
+    if not mb_IsInCombat() or mb_GetTimeInCombat() < 30 then
         return false
     end
     if max_IsSpellNameOnCooldown("Inner Focus") or max_GetManaPercentage("player") > 75 then

@@ -357,7 +357,7 @@ mb_hasStartedRunning = false
 -- OnRun
 function mb_OnRun()
 	if GetFramerate() < 5 then
-		if UnitAffectingCombat("player") then
+		if mb_IsInCombat() then
 			max_SayRaid("Warning, I have lower than 5 FPS, skipped running to prevent freezing.")
 		end
 		return
@@ -371,7 +371,14 @@ function mb_OnRun()
 	mb_RunBot(mb_GetMyCommanderName())
 end
 
+mb_isInCombat = false
+function mb_IsInCombat()
+	return mb_isInCombat
+end
+
 function mb_RunBot(commander)
+	mb_isInCombat = UnitAffectingCombat("player") == 1
+
 	mb_HandleQueuedIncomingComms()
 
 	if mb_currentBossModule.preRun ~= nil then
@@ -542,7 +549,7 @@ function mb_RebindMovementKeyIfNeeded()
 end
 
 function mb_GetTimeInCombat()
-	if not UnitAffectingCombat("player") then
+	if not mb_IsInCombat() then
 		return 0
 	end
 	return mb_GetTime() - mb_combatStartedTime

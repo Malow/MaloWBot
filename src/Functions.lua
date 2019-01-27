@@ -175,7 +175,7 @@ end
 
 -- Drinks conjured mage-water if possible, returns true/false
 function mb_DrinkIfPossible()
-	if not UnitAffectingCombat("player") and not mb_IsDrinking() then
+	if not mb_IsInCombat() and not mb_IsDrinking() then
 		local bag, slot = mb_LocateWaterInBags()
 		if bag ~= nil then
 			UseContainerItem(bag, slot)
@@ -192,7 +192,7 @@ end
 
 -- Checks combat and mana and target
 function mb_CanResurrectUnitWithSpell(unit, spellName)
-	if UnitAffectingCombat("player") then
+	if mb_IsInCombat() then
 		return false
 	elseif max_GetManaPercentage("player") < 30 then
 		return false

@@ -26,7 +26,7 @@ function mb_Rogue(commander)
         end
     end
 
-    if not UnitAffectingCombat("player") then
+    if not mb_IsInCombat() then
         if mb_shouldRequestBuffs then
             if mb_rogueShouldUsePoisons then
                 if mb_ApplyTemporaryWeaponEnchantsThrottled("Instant Poison VI", "Instant Poison VI") then

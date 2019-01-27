@@ -18,7 +18,7 @@ function mb_HandleSharedBehaviour(commander)
         return true
     end
 
-    if UnitAffectingCombat("player") then
+    if mb_IsInCombat() then
         if max_GetHealthPercentage("player") < 25 then
             mb_UseItem("Major Healthstone")
             return true
@@ -104,7 +104,7 @@ function mb_HandleThrottledSharedBehaviour(commander)
 
     mb_HandleQueuedSharedRequests()
 
-    if not UnitAffectingCombat("player") then
+    if not mb_IsInCombat() then
         mb_CheckAndRequestBuffs()
     end
 
@@ -122,7 +122,7 @@ function mb_HandleThrottledSharedBehaviour(commander)
 end
 
 function mb_HandleMassCommandRequests()
-    if mb_shouldReloadUi and not UnitAffectingCombat("player") then
+    if mb_shouldReloadUi and not mb_IsInCombat() then
         mb_shouldReloadUi = false
         ReloadUI()
         return true
@@ -331,7 +331,7 @@ function mb_DoBasicCasterLogicThrottled()
         end
     end
 
-    if not UnitAffectingCombat("player") then
+    if not mb_IsInCombat() then
         if mb_GetWaterCount() < 10 and max_GetClass("player") ~= "MAGE" then
             mb_MakeThrottledRequest(REQUEST_WATER, UnitName("player"), REQUEST_PRIORITY.WATER)
         end

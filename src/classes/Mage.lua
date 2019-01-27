@@ -65,7 +65,7 @@ function mb_Mage(commander)
         return
     end
 
-    if not UnitAffectingCombat("player") then
+    if not mb_IsInCombat() then
         if mb_GetWaterCount() < 60 then
             CastSpellByName("Conjure Water")
             return
@@ -83,7 +83,7 @@ function mb_Mage(commander)
         end
     end
 
-    if UnitAffectingCombat("player") then
+    if mb_IsInCombat() then
         if mb_Mage_HasIceBlock() then
             if max_IsSpellNameOnCooldown("Ice Block") then
                 if max_CastSpellIfReady("Cold Snap") then
@@ -142,7 +142,7 @@ function mb_Mage(commander)
         return
     end
 
-    if UnitAffectingCombat("player") and max_GetManaPercentage("player") > 25 then
+    if mb_IsInCombat() and max_GetManaPercentage("player") > 25 then
         if not mb_mageIsFire then
             if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_WINTERS_CHILL) == 5 then
                 mb_Mage_UseCooldowns()

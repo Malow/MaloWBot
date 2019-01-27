@@ -49,7 +49,7 @@ function mb_Druid(commander)
         end
     end
 
-    if UnitAffectingCombat("player") and mb_GetTimeInCombat() > 30 then
+    if mb_IsInCombat() and mb_GetTimeInCombat() > 30 then
         max_UseEquippedItemIfReady("Trinket0Slot")
         max_UseEquippedItemIfReady("Trinket1Slot")
     end
@@ -94,7 +94,7 @@ function mb_Druid_ShouldStopCasting(currentCast)
 end
 
 function mb_Druid_InnervateSelf()
-    if not UnitAffectingCombat("player") or mb_GetTimeInCombat() < 30 then
+    if not mb_IsInCombat() or mb_GetTimeInCombat() < 30 then
         return false
     end
     if max_IsSpellNameOnCooldown("Innervate") then
@@ -116,7 +116,7 @@ function mb_Druid_Tranquility()
     if UnitMana("player") < 1000 then
         return false
     end
-    if not UnitAffectingCombat("player") or max_IsSpellNameOnCooldown("Tranquility") then
+    if not mb_IsInCombat() or max_IsSpellNameOnCooldown("Tranquility") then
         return false
     end
     local healEffect, affectedPlayers = mb_GetGroupHealEffect(MB_DRUID_TRANQUILITY_HEAL_AMOUNT, "Remove Curse")
@@ -241,7 +241,7 @@ function mb_Druid_HandleDecurseRequest(request)
 end
 
 function mb_Druid_HandleInnervateRequest(request)
-    if not UnitAffectingCombat("player") then
+    if not mb_IsInCombat() then
         return
     end
     if not mb_IsFreeToAcceptRequest() then

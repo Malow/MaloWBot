@@ -163,7 +163,7 @@ function mb_HealingModule_GetRaidHealTarget(spell, unitFilter)
 end
 
 function mb_HealerModule_HandleUseConsumableRequest(request)
-    if not UnitAffectingCombat("player") then
+    if not mb_IsInCombat() then
         return
     end
     if max_GetManaPercentage("player") < 20 then

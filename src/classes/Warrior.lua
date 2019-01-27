@@ -16,7 +16,7 @@ function mb_Warrior(commander)
             return
         end
     end
-    if not UnitAffectingCombat("player") then
+    if not mb_IsInCombat() then
         if mb_shouldRequestBuffs and mb_consumablesLevel > 0 then
             if mb_ApplyTemporaryWeaponEnchantsThrottled(mb_warriorMainHandTemporaryWeaponEnchant, mb_warriorOffHandTemporaryWeaponEnchant) then
                 return
@@ -44,7 +44,7 @@ function mb_Warrior(commander)
         return
     end
 
-    if UnitAffectingCombat("player") and max_GetHealthPercentage("player") > 80 and max_GetManaPercentage("player") < 30 then
+    if mb_IsInCombat() and max_GetHealthPercentage("player") > 80 and max_GetManaPercentage("player") < 30 then
         CastSpellByName("Bloodrage")
     end
 
@@ -127,7 +127,7 @@ function mb_Warrior_Tank(commander)
         CastSpellByName("Attack")
     end
 
-    if UnitAffectingCombat("player") and max_GetHealthPercentage("player") > 80 and max_GetManaPercentage("player") < 30 then
+    if mb_IsInCombat() and max_GetHealthPercentage("player") > 80 and max_GetManaPercentage("player") < 30 then
         CastSpellByName("Bloodrage")
     end
 
@@ -161,7 +161,7 @@ function mb_Warrior_Tank(commander)
         end
     end
 
-    if not UnitAffectingCombat("player") then
+    if not mb_IsInCombat() then
         return
     end
 

@@ -66,7 +66,7 @@ function mb_Warlock(commander)
         end
     end
 
-    if not UnitAffectingCombat("player") then
+    if not mb_IsInCombat() then
         if not max_HasBuff("player", BUFF_TEXTURE_DEMON_ARMOR) then
             CastSpellByName("Demon Armor")
             return
@@ -91,7 +91,7 @@ function mb_Warlock(commander)
         end
     end
 
-    if UnitAffectingCombat("player") then
+    if mb_IsInCombat() then
         if max_GetManaPercentage("player") < 40 and max_GetHealthPercentage("player") > 75 then
             CastSpellByName("Life Tap")
             return
@@ -122,7 +122,7 @@ function mb_Warlock(commander)
         return
     end
 
-    if UnitAffectingCombat("player") and max_HasDebuff("target", DEBUFF_TEXTURE_IMPROVED_SHADOWBOLT) then
+    if mb_IsInCombat() and max_HasDebuff("target", DEBUFF_TEXTURE_IMPROVED_SHADOWBOLT) then
         max_UseEquippedItemIfReady("Trinket0Slot")
         max_UseEquippedItemIfReady("Trinket1Slot")
     end

@@ -304,6 +304,8 @@ function mb_Warrior_OnLoad()
         elseif itemSubType == "Guns" then
             mb_AddReagentWatch("Accurate Slugs", 200)
         end
+        mb_AddReagentWatch("Gift of Arthas", 20)
+        mb_AddReagentWatch("Major Healing Potion", 20)
     end
 
     local mainHandItemSubType = max_GetItemSubTypeForSlot("MainHandSlot")

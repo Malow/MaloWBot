@@ -220,9 +220,7 @@ function mb_CanBuffUnitWithSpell(unit, spell)
 	if max_GetLevelDifferenceFromSelf(unit) < -8 then
 		return false
 	end
-	if mb_IsUnitValidFriendlyTarget(unit, spell) then
-		return true
-	end
+	return mb_IsUnitValidFriendlyTarget(unit, spell)
 end
 
 -- Optional unitFilter used for Arcane Int / Divine Spirit

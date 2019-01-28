@@ -170,11 +170,11 @@ function mb_FixRaidGroup()
     if not IsPartyLeader() then
         mb_MakeRequest("promoteLeader", "promoteLeader", REQUEST_PRIORITY.COMMAND)
     else
-        SetLootMethod("freeforall")
         if not UnitInRaid("player") then
             ConvertToRaid()
             return
         end
+        SetLootMethod("freeforall")
         for i = 1, members do
             local name, rank, subgroup, level, class, fileName, zone, online, isDead = GetRaidRosterInfo(i)
             if rank == 0 then

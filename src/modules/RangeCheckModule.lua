@@ -86,6 +86,9 @@ end
 
 -- Checks if target exists, is visible, is friendly and if it's dead or ghost AND if it's in range of spell if a spell is provided.
 function mb_IsUnitValidFriendlyTarget(unit, spellName)
+    if spellName ~= nil then
+        mb_RangeCheckModule_lastRangeCheckUsage = mb_GetTime()
+    end
     if mb_cachedRangeChecks[unit] == nil then
         return false
     end
@@ -99,7 +102,6 @@ function mb_IsUnitValidFriendlyTarget(unit, spellName)
         max_SayRaid("Serious error, don't have spell " .. spellName .. " registered for rangeCheck, but still tried to check range with it.")
         return false
     end
-    mb_RangeCheckModule_lastRangeCheckUsage = mb_GetTime()
     return mb_cachedRangeChecks[unit][mb_registeredFriendlyRangeCheckSpells[spellName].range] == true
 end
 

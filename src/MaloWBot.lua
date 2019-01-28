@@ -88,8 +88,6 @@ function mb_OnEvent()
 			mb_SV = {}
 		end
 		mb_OnLoad()
-	elseif event == "PLAYER_LOGIN" then
-		mb_OnPostLoad()
 	elseif event == "ZONE_CHANGED_NEW_AREA" then
 		if GetRealZoneText() == "Ironforge" or GetRealZoneText() == "Stormwind" then
 			mb_shouldRequestBuffs = false
@@ -131,7 +129,6 @@ function mb_OnEvent()
 end
 f:RegisterEvent("ADDON_LOADED")
 f:RegisterEvent("CHAT_MSG_ADDON")
-f:RegisterEvent("PLAYER_LOGIN")
 f:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 f:RegisterEvent("TRADE_CLOSED")
 f:RegisterEvent("TRADE_SHOW")
@@ -199,7 +196,7 @@ function mb_OnLoad()
 end
 
 mb_classSpecificRunFunction = nil
--- OnPostLoad, called when macros etc. are available
+-- OnPostLoad, called the first time the bot is run, everything should be available then.
 function mb_OnPostLoad()
 	ChatFrame1.editBox.stickyType = "GUILD" -- Automatically set /g as default chat channel
 	ChatFrame1.editBox.chatType = "GUILD" -- Automatically set /g as default chat channel
@@ -253,6 +250,7 @@ end
 
 -- Runs the first time the actual bot is run (7 is pressed).
 function mb_OnFirstRun()
+	mb_OnPostLoad()
 	mb_CheckForProfessionCooldown()
 end
 

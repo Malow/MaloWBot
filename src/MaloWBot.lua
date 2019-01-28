@@ -87,6 +87,7 @@ function mb_OnEvent()
 		if mb_SV == nil then
 			mb_SV = {}
 		end
+	elseif event == "PLAYER_LOGIN" then
 		mb_OnLoad()
 	elseif event == "ZONE_CHANGED_NEW_AREA" then
 		if GetRealZoneText() == "Ironforge" or GetRealZoneText() == "Stormwind" then
@@ -147,6 +148,7 @@ f:RegisterEvent("PLAYER_REGEN_ENABLED")
 f:RegisterEvent("PLAYER_REGEN_DISABLED")
 f:RegisterEvent("PLAYER_ALIVE")
 f:RegisterEvent("PLAYER_UNGHOST")
+f:RegisterEvent("PLAYER_LOGIN")
 f:SetScript("OnEvent", mb_OnEvent)
 
 function mb_HandleMBCommunication(msg, from)
@@ -193,16 +195,25 @@ end
 
 -- OnLoad, when the addon has loaded. Some external things might not be available here
 function mb_OnLoad()
-end
-
-mb_classSpecificRunFunction = nil
--- OnPostLoad, called the first time the bot is run, everything should be available then.
-function mb_OnPostLoad()
 	ChatFrame1.editBox.stickyType = "GUILD" -- Automatically set /g as default chat channel
 	ChatFrame1.editBox.chatType = "GUILD" -- Automatically set /g as default chat channel
 	SetCVar("autoSelfCast", 0)
 	mb_CreateMBMacros()
 	mb_BindKey("0","TURNORACTION")
+
+	mb_OriginalOnUIErrorEventFunction = UIErrorsFrame_OnEvent
+	UIErrorsFrame_OnEvent = mb_OnUIErrorEvent
+
+	SetBinding("V", nil)
+	SetBinding("SHIFT-V", nil)
+	SetBinding("CTRL-V", nil)
+	SetBinding("ALT-V", nil)
+	mb_Print("Loaded")
+end
+
+mb_classSpecificRunFunction = nil
+-- OnPostLoad, called the first time the bot is run, everything should be available then.
+function mb_OnPostLoad()
 	local playerClass = max_GetClass("player")
 	mb_HandleSharedBehaviourPostLoad(playerClass)
 	if playerClass == "DRUID" then
@@ -236,16 +247,6 @@ function mb_OnPostLoad()
 	if GetRealZoneText() == "Ironforge" or GetRealZoneText() == "Stormwind" then
 		mb_shouldRequestBuffs = false
 	end
-
-	mb_OriginalOnUIErrorEventFunction = UIErrorsFrame_OnEvent
-	UIErrorsFrame_OnEvent = mb_OnUIErrorEvent
-
-	SetBinding("V", nil)
-	SetBinding("SHIFT-V", nil)
-	SetBinding("CTRL-V", nil)
-	SetBinding("ALT-V", nil)
-
-    mb_Print("Loaded")
 end
 
 -- Runs the first time the actual bot is run (7 is pressed).

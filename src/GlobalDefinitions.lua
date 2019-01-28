@@ -17,6 +17,7 @@ BUFF_TEXTURE_THORNS = "Interface\\Icons\\Spell_Nature_Thorns"
 BUFF_TEXTURE_INNERVATE = "Interface\\Icons\\Spell_Nature_Lightning"
 DEBUFF_TEXTURE_INSECT_SWARM = "Interface\\Icons\\Spell_Nature_InsectSwarm"
 DEBUFF_TEXTURE_FAERIE_FIRE = "Interface\\Icons\\Spell_Nature_FaerieFire"
+DEBUFF_TEXTURE_HIBERNATE = "Interface\\Icons\\Spell_Nature_Sleep"
 -- Hunter
 BUFF_TEXTURE_ASPECT_OF_THE_HAWK = "Interface\\Icons\\Spell_Nature_RavenForm"
 BUFF_TEXTURE_ASPECT_OF_THE_PACK = "Interface\\Icons\\Ability_Mount_WhiteTiger"

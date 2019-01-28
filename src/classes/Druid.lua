@@ -6,6 +6,10 @@ function mb_Druid(commander)
         return
     end
 
+    if mb_CrowdControlModule_Run() then
+        return
+    end
+
     if not mb_IsReadyForNewCast() then
         mb_StopAttemptedCastIfNeeded(mb_Druid_ShouldStopCasting)
         return
@@ -28,6 +32,11 @@ function mb_Druid(commander)
                 max_CastSpellOnRaidMemberByPlayerName("Innervate", request.body)
                 max_SayRaid("Innervating " .. request.body)
             end
+            mb_RequestCompleted(request)
+            return
+        elseif request.type == REQUEST_CROWD_CONTROL.type then
+            max_AssistByPlayerName(request.from)
+            mb_CrowdControlModule_RegisterTarget("Hibernate", DEBUFF_TEXTURE_HIBERNATE)
             mb_RequestCompleted(request)
             return
         end
@@ -137,6 +146,7 @@ function mb_Druid_OnLoad()
     mb_RegisterForRequest(REQUEST_REMOVE_CURSE.type, mb_Druid_HandleDecurseRequest)
     mb_RegisterForRequest("useConsumable", mb_HealerModule_HandleUseConsumableRequest)
     mb_RegisterForRequest(REQUEST_INNERVATE.type, mb_Druid_HandleInnervateRequest)
+    mb_RegisterForRequest(REQUEST_CROWD_CONTROL.type, mb_Druid_HandleCrowdControlRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
@@ -156,6 +166,7 @@ function mb_Druid_OnLoad()
     mb_RegisterFriendlyRangeCheckSpell("Regrowth")
     mb_RegisterEnemyRangeCheckSpell("Insect Swarm")
     mb_RegisterEnemyRangeCheckSpell("Faerie Fire")
+    mb_RegisterEnemyRangeCheckSpell("Hibernate")
     mb_RegisterFriendlyRangeCheckSpell("Innervate")
     mb_HealingModule_Enable()
     mb_HealingModule_RegisterHoT("Rejuvenation", BUFF_TEXTURE_REJUVENATION, 335)
@@ -187,6 +198,17 @@ function mb_Druid_Rejuvenation()
         return true
     end
     return false
+end
+
+function mb_Druid_HandleCrowdControlRequest(request)
+    if not mb_IsFreeToAcceptRequest() then
+        return
+    end
+    max_AssistByPlayerName(request.from)
+    local creatureType = UnitCreatureType("target")
+    if creatureType == "Beast" or creatureType == "Dragonkin" then
+        mb_AcceptRequest(request)
+    end
 end
 
 mb_druidLastDebuffTargetTime = 0

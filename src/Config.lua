@@ -17,6 +17,9 @@ function mb_GetConfig()
     if config["groupConfiguration"] == nil then
         config["groupConfiguration"] = mb_GetGroupConfiguration()
     end
+    if config["autoTurnToFaceTarget"] == nil then
+        config["autoTurnToFaceTarget"] = true
+    end
     config["specs"] = {}
     config["specs"]["Kaladin"] = "LightHoly" --"RetLight"
     config["specs"]["Malow"] = "SanctuarySalvation"

@@ -66,6 +66,7 @@ mb_shouldDepoison = true
 mb_shouldDispel = true
 mb_consumablesLevel = 0
 mb_shouldDotRepair = false
+mb_shouldAutoTurnToFace = true
 function mb_OnEvent()
 	if event == "CHAT_MSG_ADDON" and arg1 == "MB" then
 		if max_GetTableSize(mb_queuedIncomingComms) > 30 then
@@ -513,7 +514,7 @@ end
 mb_lastTimeMoving = 0
 mb_lastFacingWrongWayTime = 0
 function mb_OnUIErrorEvent(event, message, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
-	if message == "Target needs to be in front of you" then
+	if message == "Target needs to be in front of you" and mb_shouldAutoTurnToFace and mb_GetConfig()["autoTurnToFaceTarget"] == true then
 		mb_lastFacingWrongWayTime = mb_GetTime()
 	elseif message == "Can't do that while moving" then
 		mb_lastTimeMoving = mb_GetTime()
@@ -633,8 +634,6 @@ end
 ---		Add them to be ignored for trade over a certain quantity (don't want them to trade all their pots when they're inventory dumpers)
 ---		"Try-hard mode" on/off, which uses flasks and weapon enchants and foodbuffs, and potions in combat.
 --- Crowd-control people should be DPSing between re-cc's, the problem is re-aquiring CC target, targetlastenemy/targetnearestenemy/assist every1 in raid, and if still cant find say in raid so commander needs to target manually?
----	Auto-target mode. TargetNearestEnemy spam and just attack whatever is possible. For DPS maybe 1 person should be the "leader" and set skull, and the rest should follow that.
----		Tanks should automatically pick up untanked targets with this
 ---	Don't DPS if you risk overthreat, use KTM API? Need a way to disable it for solo/5-mans
 ---	Add a command /mb readyCheck that initates a normal ready-check and runs mb_HandleReadyCheck() for self
 ---

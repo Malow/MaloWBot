@@ -44,8 +44,7 @@ function mb_Hunter(commander)
 		end
 	end
 
-	max_AssistByPlayerName(commander)
-	if not max_HasValidOffensiveTarget() then
+	if not mb_AcquireOffensiveTarget("Multi-Shot") then
 		return
 	end
 

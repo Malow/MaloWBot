@@ -46,9 +46,7 @@ function mb_Rogue(commander)
         end
     end
 
-    max_AssistByPlayerName(commander)
-
-    if not max_HasValidOffensiveTarget() then
+    if not mb_AcquireOffensiveTarget("Sinister Strike") then
         return
     end
 

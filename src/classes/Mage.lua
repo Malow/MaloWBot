@@ -137,8 +137,11 @@ function mb_Mage(commander)
         return
     end
 
-    max_AssistByPlayerName(commander)
-    if not max_HasValidOffensiveTarget() then
+    local rangeCheckSpell = "Frostbolt"
+    if mb_mageIsFire then
+        rangeCheckSpell = "Fireball"
+    end
+    if not mb_AcquireOffensiveTarget(rangeCheckSpell) then
         return
     end
 
@@ -155,12 +158,11 @@ function mb_Mage(commander)
     end
 
     if mb_mageIsFire then
-        if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_IMPROVED_SCORCH) < 5 then
-            CastSpellByName("Scorch")
-            mb_mageLastScorch = mb_GetTime()
-        elseif mb_IsClassLeader() and mb_mageLastScorch + 20 < mb_GetTime() then
-            CastSpellByName("Scorch")
-            mb_mageLastScorch = mb_GetTime()
+        if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_IMPROVED_SCORCH) < 3 or (mb_IsClassLeader() and mb_mageLastScorch + 20 < mb_GetTime()) then
+            if mb_IsSpellInRangeOnEnemy("Scorch", "target") then
+                CastSpellByName("Scorch")
+                mb_mageLastScorch = mb_GetTime()
+            end
         else
             CastSpellByName("Fireball")
         end
@@ -225,12 +227,14 @@ function mb_Mage_OnLoad()
     mb_AddReagentWatch("Arcane Powder", 50)
     mb_AddReagentWatch("Rune of Portals", 10)
     mb_AddReagentWatch("Brilliant Wizard Oil", 2)
-    mb_RegisterEnemyRangeCheckSpell("Frostbolt")
 
     if mb_GetMySpecName() == "DeepFire" then
         mb_mageIsFire = true
+        mb_RegisterEnemyRangeCheckSpell("Fireball")
+        mb_RegisterEnemyRangeCheckSpell("Scorch")
         mb_GoToMaxRangeModule_RegisterMaxRangeSpell("Fireball")
     else
+        mb_RegisterEnemyRangeCheckSpell("Frostbolt")
         mb_GoToMaxRangeModule_RegisterMaxRangeSpell("Frostbolt")
     end
 end

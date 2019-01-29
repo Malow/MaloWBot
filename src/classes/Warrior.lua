@@ -25,7 +25,7 @@ function mb_Warrior(commander)
     end
 
     if mb_warriorIsTank then
-        mb_Warrior_Tank(commander)
+        mb_Warrior_Tank()
         return
     end
 
@@ -39,8 +39,7 @@ function mb_Warrior(commander)
         end
     end
 
-    max_AssistByPlayerName(commander)
-    if not max_HasValidOffensiveTarget() then
+    if not mb_AcquireOffensiveTarget("Sunder Armor") then
         return
     end
 
@@ -115,12 +114,11 @@ end
 mb_Warrior_lastTankingBroadcast = 0
 mb_Warrior_lastSunder = 0
 mb_Warrior_wasTankingLastFrame = false
-function mb_Warrior_Tank(commander)
-    if not max_HasValidOffensiveTarget() or UnitIsDead("target") then
-        max_AssistByPlayerName(commander)
-    end
+function mb_Warrior_Tank()
     if not max_HasValidOffensiveTarget() then
-        return
+        if not mb_AcquireOffensiveTarget("Sunder Armor") then
+            return
+        end
     end
 
     if not mb_isAutoAttacking then
@@ -150,7 +148,7 @@ function mb_Warrior_Tank(commander)
                     mb_MakeRequest("tankingBroadcast", 0, REQUEST_PRIORITY.TANKING_BROADCAST)
                     mb_Warrior_wasTankingLastFrame = false
                 end
-                mb_Warrior_DpsTank(commander)
+                mb_Warrior_DpsTank()
                 return
             end
         elseif mb_warriorShouldAutomaticallyTaunt or mb_Warrior_wasTankingLastFrame then
@@ -223,14 +221,12 @@ function mb_Warrior_Tank(commander)
     end
 end
 
-function mb_Warrior_DpsTank(commander)
-    if not max_HasValidOffensiveTarget() then
-        max_AssistByPlayerName(commander)
-        if not max_HasValidOffensiveTarget() then
+function mb_Warrior_DpsTank()
+    if mb_shouldAutoTarget then
+        if mb_Warrior_FindUntankedTarget() then
             return
         end
     end
-
     if max_GetActiveStance() ~= 1 then
         CastSpellByName("Battle Stance")
     end
@@ -278,6 +274,21 @@ function mb_Warrior_BattleShout()
     if not max_HasBuff("player", BUFF_TEXTURE_BATTLE_SHOUT) then
         CastSpellByName("Battle Shout")
         return true
+    end
+    return false
+end
+
+function mb_Warrior_FindUntankedTarget()
+    for i = 1, 10 do
+        if mb_AcquireOffensiveTarget("Sunder Armor") then
+            if UnitExists("targettarget") then
+                if mb_GetConfig()["specs"][UnitName("targettarget")] ~= "WarrTank" then
+                    return true
+                end
+            end
+        else
+            ClearTarget()
+        end
     end
     return false
 end

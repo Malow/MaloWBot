@@ -10,6 +10,7 @@ mb_shouldTrainSpells = false
 mb_shouldFollow = true
 mb_shouldRequestBuffs = false
 mb_classSyncData = nil
+mb_shouldAutoTarget = false
 
 function mb_HandleSharedBehaviour(commander)
     mb_RangeCheckModule_CacheRangesToFriendlies()
@@ -119,6 +120,21 @@ function mb_HandleThrottledSharedBehaviour(commander)
     end
 
     return false
+end
+
+function mb_AcquireOffensiveTarget(rangeCheckSpell)
+    if mb_shouldAutoTarget then
+        if max_HasValidOffensiveTarget(rangeCheckSpell) and UnitAffectingCombat("target") then
+            return true
+        end
+        TargetNearestEnemy()
+        if max_HasValidOffensiveTarget(rangeCheckSpell) and UnitAffectingCombat("target") then
+            return true
+        end
+        return false
+    end
+    max_AssistByPlayerName(mb_GetMyCommanderName())
+    return max_HasValidOffensiveTarget(rangeCheckSpell)
 end
 
 function mb_HandleMassCommandRequests()

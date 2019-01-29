@@ -396,11 +396,20 @@ function max_RaidTargetIndexToName(raidTargetIndex)
 	end
 end
 
-function max_HasValidOffensiveTarget()
-	if UnitExists("target") and not UnitIsDeadOrGhost("target") and max_CanAttackUnit("target") then
+function max_HasValidOffensiveTarget(rangeCheckSpell)
+	if not UnitExists("target") then
+		return false
+	end
+	if UnitIsDeadOrGhost("target") then
+		return false
+	end
+	if not max_CanAttackUnit("target") then
+		return false
+	end
+	if rangeCheckSpell == nil then
 		return true
 	end
-	return false
+	return mb_IsSpellInRangeOnEnemy(rangeCheckSpell, "target")
 end
 
 function max_GetItemSubTypeForSlot(itemSlotName)

@@ -82,6 +82,10 @@ function mb_HandleSpecialSlashCommand(msg)
         local mode = max_SplitString(msg, " ")[2]
         mb_areaOfEffectMode = mode == "on"
         mb_MakeRequest("usePoison", mode, REQUEST_PRIORITY.COMMAND)
+    elseif string.find(msg, "autoTarget") then
+        local mode = max_SplitString(msg, " ")[2]
+        mb_shouldAutoTarget = mode == "on"
+        mb_MakeRequest("autoTarget", mode, REQUEST_PRIORITY.COMMAND)
     elseif string.find(msg, "palaAura") then
         local aura = max_SplitString(msg, " ")[2]
         mb_MakeRequest("palaAura", aura, REQUEST_PRIORITY.COMMAND)

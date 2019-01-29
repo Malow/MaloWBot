@@ -50,8 +50,18 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				
-				
+
+
+				<FontString text="AutoTarget-Mode:" inherits="GameFontNormal">
+					<Size x="100" y="10"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT">
+							<Offset>
+								<AbsDimension x="-100" y="-123"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
 				<FontString text="AoE-Mode:" inherits="GameFontNormal">
 					<Size x="100" y="10"/>
 					<Anchors>
@@ -141,8 +151,36 @@
 					<OnClick> mb_OnCmd("useConsumable"); </OnClick>
 				</Scripts>
 			</Button>
-			
-			
+
+
+
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="Off">
+				<Size><AbsDimension x="50" y="20"/></Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="-118"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("autoTarget off"); </OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="On">
+				<Size><AbsDimension x="50" y="20"/></Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-50" y="-118"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("autoTarget on"); </OnClick>
+				</Scripts>
+			</Button>
+
 			
 			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="Off">
 				<Size><AbsDimension x="50" y="20"/></Size>

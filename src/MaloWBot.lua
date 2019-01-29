@@ -247,6 +247,8 @@ function mb_OnPostLoad()
 	if GetRealZoneText() == "Ironforge" or GetRealZoneText() == "Stormwind" then
 		mb_shouldRequestBuffs = false
 	end
+
+	ConsoleExec("targetNearestDistance 50")
 end
 
 -- Runs the first time the actual bot is run (7 is pressed).

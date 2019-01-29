@@ -13,6 +13,7 @@ function mb_RegisterSharedRequestHandlers(playerClass)
     mb_RegisterForRequest("requestBuffsMode", mb_RequestBuffsModeRequestHandler)
     mb_RegisterForRequest("goldDistribution", mb_GoldDistributionRequestHandler)
     mb_RegisterForRequest("moveOutModule", mb_MoveOutModuleRequestHandler)
+    mb_RegisterForRequest("autoTarget", mb_AutoTargetRequestHandler)
     mb_RegisterForRequest("fuckOff", mb_FuckOffRequestHandler)
     mb_RegisterForRequest(playerClass .. "Sync", mb_ClassSyncRequestHandler)
     mb_RegisterForRequest("remoteExecute", mb_RemoteExecuteRequestHandler)
@@ -154,6 +155,10 @@ function mb_MoveOutModuleRequestHandler(request)
     else
         mb_MoveOutModule_Disable()
     end
+end
+
+function mb_AutoTargetRequestHandler(request)
+    mb_shouldAutoTarget = request.body == "on"
 end
 
 function mb_FuckOffRequestHandler(request)

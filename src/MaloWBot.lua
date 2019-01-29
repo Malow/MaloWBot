@@ -276,17 +276,7 @@ end
 
 function mb_CheckForProfessionCooldown()
 	if max_HasSpell("Alchemy") then
-		CastSpellByName("Alchemy")
-		for i = 1, 200 do
-			local name =  GetTradeSkillInfo(i)
-			if name == "Transmute: Arcanite" then
-				local cooldownLeft = GetTradeSkillCooldown(i)
-				if cooldownLeft == nil or cooldownLeft < 1 then
-					max_SayGuild("My " .. name .. " is ready.")
-				end
-			end
-		end
-		CloseTradeSkill()
+		mb_CheckForAlchemyCooldowns()
 	end
 	if max_HasSpell("Tailoring") then
 		CastSpellByName("Tailoring")
@@ -302,6 +292,7 @@ function mb_CheckForProfessionCooldown()
 		CloseTradeSkill()
 	end
 	if max_HasSpell("Leatherworking") then
+		mb_AddReagentWatch("Deeprock salt", 10)
 		local shakerName = "Salt Shaker"
 			if not mb_HasItem(shakerName) then
 			max_SayGuild("I don't have a " .. shakerName)
@@ -309,6 +300,34 @@ function mb_CheckForProfessionCooldown()
 			max_SayGuild("My " .. shakerName .. " is ready.")
 		end
 	end
+end
+
+function mb_CheckForAlchemyCooldowns()
+	CastSpellByName("Alchemy")
+
+	for i = 1, 200 do
+		local name = GetTradeSkillInfo(i)
+		if name == "Transmute: Undeath to Water" then
+			mb_AddReagentWatch("Essence of Undeath", 10)
+			local cooldownLeft = GetTradeSkillCooldown(i)
+			if cooldownLeft == nil or cooldownLeft < 1 then
+				max_SayGuild("My " .. name .. " is ready.")
+			end
+			return
+		end
+	end
+
+	for i = 1, 200 do
+		if name == "Transmute: Arcanite" then
+			mb_AddReagentWatch("Thorium Bar", 5)
+			mb_AddReagentWatch("Arcane Crystal", 5)
+			local cooldownLeft = GetTradeSkillCooldown(i)
+			if cooldownLeft == nil or cooldownLeft < 1 then
+				max_SayGuild("My " .. name .. " is ready.")
+			end
+		end
+	end
+	CloseTradeSkill()
 end
 
 function mb_CreateMBMacros()

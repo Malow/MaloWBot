@@ -248,6 +248,7 @@ function mb_Paladin_OnLoad()
     mb_RegisterFriendlyRangeCheckSpell("Cleanse")
     mb_RegisterFriendlyRangeCheckSpell("Redemption")
     mb_RegisterEnemyRangeCheckSpell("Judgement")
+    mb_RegisterEnemyRangeCheckSpell("Hammer of Justice")
     mb_HealingModule_Enable()
 end
 

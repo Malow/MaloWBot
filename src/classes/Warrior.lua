@@ -33,6 +33,14 @@ function mb_Warrior(commander)
         CastSpellByName("Berserker Stance")
     end
 
+    if mb_IsInCombat() and max_GetHealthPercentage("player") > 80 and max_GetManaPercentage("player") < 30 then
+        CastSpellByName("Bloodrage")
+    end
+
+    if mb_Warrior_BattleShout() then
+        return
+    end
+
     if mb_currentBossModule.warriorDpsLogic ~= nil then
         if mb_currentBossModule.warriorDpsLogic() then
             return
@@ -43,16 +51,12 @@ function mb_Warrior(commander)
         return
     end
 
-    if mb_IsInCombat() and max_GetHealthPercentage("player") > 80 and max_GetManaPercentage("player") < 30 then
-        CastSpellByName("Bloodrage")
-    end
+    mb_Warrior_DpsTarget()
+end
 
+function mb_Warrior_DpsTarget()
     if not mb_isAutoAttacking then
         CastSpellByName("Attack")
-    end
-
-    if mb_Warrior_BattleShout() then
-        return
     end
 
     if mb_Warrior_UseDpsCooldownsIfGood() then
@@ -121,18 +125,18 @@ function mb_Warrior_Tank()
         end
     end
 
+    if mb_currentBossModule.warriorTankLogic ~= nil then
+        if mb_currentBossModule.warriorTankLogic() then
+            return
+        end
+    end
+
     if not mb_isAutoAttacking then
         CastSpellByName("Attack")
     end
 
     if mb_IsInCombat() and max_GetHealthPercentage("player") > 80 and max_GetManaPercentage("player") < 30 then
         CastSpellByName("Bloodrage")
-    end
-
-    if mb_currentBossModule.warriorTankLogic ~= nil then
-        if mb_currentBossModule.warriorTankLogic() then
-            return
-        end
     end
 
     if UnitExists("targettarget") then
@@ -280,7 +284,8 @@ end
 
 function mb_Warrior_FindUntankedTarget()
     for i = 1, 10 do
-        if mb_AcquireOffensiveTarget("Sunder Armor") then
+        TargetNearestEnemy()
+        if max_HasValidOffensiveTarget("Sunder Armor") and UnitAffectingCombat("target") then
             if UnitExists("targettarget") then
                 if mb_GetConfig()["specs"][UnitName("targettarget")] ~= "WarrTank" then
                     return true

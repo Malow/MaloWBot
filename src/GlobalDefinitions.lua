@@ -58,6 +58,7 @@ BUFF_TEXTURE_DIVINE_FAVOR = "Interface\\Icons\\Spell_Holy_Heal"
 DEBUFF_TEXTURE_JUDGEMENT_OF_LIGHT = "Interface\\Icons\\Spell_Holy_HealingAura"
 DEBUFF_TEXTURE_JUDGEMENT_OF_WISDOM = "Interface\\Icons\\Spell_Holy_RighteousnessAura"
 DEBUFF_TEXTURE_FORBEARANCE = "Interface\\Icons\\Spell_Holy_RemoveCurse"
+DEBUFF_TEXTURE_HAMMER_OF_JUSTICE = "Interface\\Icons\\Spell_Holy_SealOfMight"
 -- Priest
 BUFF_TEXTURE_POWER_WORD_FORTITUDE = "Interface\\Icons\\Spell_Holy_WordFortitude"
 BUFF_TEXTURE_PRAYER_OF_FORTITUDE = "Interface\\Icons\\Spell_Holy_PrayerOfFortitude"
@@ -88,6 +89,7 @@ BUFF_TEXTURE_BATTLE_SHOUT = "Interface\\Icons\\Ability_Warrior_BattleShout"
 DEBUFF_TEXTURE_SUNDER_ARMOR = "Interface\\Icons\\Ability_Warrior_Sunder"
 DEBUFF_TEXTURE_DEMORALIZING_SHOUT = "Interface\\Icons\\Ability_Warrior_WarCry"
 DEBUFF_TEXTURE_THUNDER_CLAP = "Interface\\Icons\\Spell_Nature_ThunderClap"
+DEBUFF_TEXTURE_CONCUSSION_BLOW = "Interface\\Icons\\Ability_ThunderBolt"
 
 --- Unit filters
 UNIT_FILTER_HAS_MANA = {

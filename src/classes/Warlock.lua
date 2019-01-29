@@ -108,6 +108,10 @@ function mb_Warlock(commander)
         return
     end
 
+    mb_Warlock_DpsTarget()
+end
+
+function mb_Warlock_DpsTarget()
     if max_GetHealthPercentage("player") < 30 and mb_IsSpellInRangeOnEnemy("Death Coil", "target") and not max_IsSpellNameOnCooldown("Death Coil") then
         CastSpellByName("Death Coil")
         return

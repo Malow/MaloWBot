@@ -1,3 +1,13 @@
+function mb_OnLuaErrorEvent(event, message, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
+	max_SayRaid("I received lua-error: " .. tostring(event))
+	mb_OriginalLuaErrorMessageFunction(event, message, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
+end
+mb_OriginalLuaErrorMessageFunction = _ERRORMESSAGE
+mb_OriginalLuaMessageFunction = message
+_ERRORMESSAGE = mb_OnLuaErrorEvent
+message = mb_OnLuaErrorEvent
+-- Above we're setting the lua-error redirects so that chars print in raid if they get a lua error on load. This has to be at the very top
+
 local MY_NAME = "MaloWBot"
 local MY_ABBREVIATION = "MB"
 
@@ -88,8 +98,9 @@ function mb_OnEvent()
 		if mb_SV == nil then
 			mb_SV = {}
 		end
-	elseif event == "PLAYER_LOGIN" then
 		mb_OnLoad()
+	elseif event == "PLAYER_LOGIN" then
+		mb_OnLogin()
 	elseif event == "ZONE_CHANGED_NEW_AREA" then
 		if GetRealZoneText() == "Ironforge" or GetRealZoneText() == "Stormwind" then
 			mb_shouldRequestBuffs = false
@@ -196,14 +207,19 @@ end
 
 -- OnLoad, when the addon has loaded. Some external things might not be available here
 function mb_OnLoad()
+	mb_OriginalOnUIErrorEventFunction = UIErrorsFrame_OnEvent
+	UIErrorsFrame_OnEvent = mb_OnGameErrorEvent
+
+	mb_Print("Loaded")
+end
+
+-- OnLogin, when all addons are finished loading
+function mb_OnLogin()
 	ChatFrame1.editBox.stickyType = "GUILD" -- Automatically set /g as default chat channel
 	ChatFrame1.editBox.chatType = "GUILD" -- Automatically set /g as default chat channel
 	SetCVar("autoSelfCast", 0)
 	mb_CreateMBMacros()
 	mb_BindKey("0","TURNORACTION")
-
-	mb_OriginalOnUIErrorEventFunction = UIErrorsFrame_OnEvent
-	UIErrorsFrame_OnEvent = mb_OnUIErrorEvent
 
 	SetBinding("V", nil)
 	SetBinding("SHIFT-V", nil)
@@ -513,13 +529,13 @@ end
 
 mb_lastTimeMoving = 0
 mb_lastFacingWrongWayTime = 0
-function mb_OnUIErrorEvent(event, message, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
+function mb_OnGameErrorEvent(event, message, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
 	if message == "Target needs to be in front of you" and mb_shouldAutoTurnToFace and mb_GetConfig()["autoTurnToFaceTarget"] == true then
 		mb_lastFacingWrongWayTime = mb_GetTime()
 	elseif message == "Can't do that while moving" then
 		mb_lastTimeMoving = mb_GetTime()
 	end
-	mb_OriginalOnUIErrorEventFunction(event, message, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
+	mb_OriginalOnUIErrorEventFunction(event, message, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
 end
 
 function mb_IsMoving()
@@ -565,6 +581,7 @@ function mb_RegisterBossModule(name, loadFunction)
 end
 
 
+
 -- TODO:
 ---
 --- Stop following, rebind 9 to movefoward for 1 frame, before casting important spells like evocation
@@ -601,6 +618,7 @@ end
 ---		Consecration in a max-burn AoE mode?
 ---		Blessing of Protection (request re-bless after?)
 ---		Lay on hands buff rotation on try-hard tries
+---		Hammer of Wrath?
 --- Hunter:
 ---		Pet-logic (reagent food, auto-feed, auto-call/revive, attacking, mend pet)
 ---			Owners request buffs for their pets

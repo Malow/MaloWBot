@@ -429,3 +429,7 @@ function mb_StartTradeThrottled(unit)
 	mb_lastStartTradeTime = mb_GetTime()
 	InitiateTrade(unit)
 end
+
+function mb_IsTargetStunned()
+	return max_HasDebuff("target", DEBUFF_TEXTURE_HAMMER_OF_JUSTICE) or max_HasDebuff("target", DEBUFF_TEXTURE_CONCUSSION_BLOW)
+end

@@ -50,6 +50,10 @@ function mb_Rogue(commander)
         return
     end
 
+    mb_Rogue_DpsTarget()
+end
+
+function mb_Rogue_DpsTarget()
     if not mb_isAutoAttacking then
         CastSpellByName("Attack")
     end

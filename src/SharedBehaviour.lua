@@ -262,6 +262,15 @@ function mb_AddDesiredBuff(buff)
     end
 end
 
+function mb_RemoveDesiredBuff(buff)
+    for i = 1, max_GetTableSize(mb_desiredBuffs) do
+        if mb_desiredBuffs[i].type == buff.type then
+            table.remove(mb_desiredBuffs, i)
+            return
+        end
+    end
+end
+
 mb_hasSaidReleasedMessage = false
 function mb_RequestResurrection()
     if UnitIsGhost("player") then
@@ -438,14 +447,23 @@ function mb_WarnForWatchedReagents()
     end
 end
 
-mb_isClassLeaderCached = nil
 function mb_IsClassLeader()
-    if mb_isClassLeaderCached ~= nil then
-        return mb_isClassLeaderCached
+    return mb_GetMyClassOrder() == 1
+end
+
+mb_myClassOrderCached = nil
+function mb_GetMyClassOrder()
+    if mb_myClassOrderCached ~= nil then
+        return mb_myClassOrderCached
     end
     local classMates = mb_GetClassMates(max_GetClass("player"))
-    mb_isClassLeaderCached = classMates[1] == UnitName("player")
-    return mb_isClassLeaderCached
+    for i = 1, max_GetTableSize(classMates) do
+        if classMates[i] == UnitName("player") then
+            mb_myClassOrderCached = i
+            return mb_myClassOrderCached
+        end
+    end
+    max_SayRaid("Error, couldn't get my class order.")
 end
 
 function mb_GetBuffWithType(type)

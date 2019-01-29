@@ -145,6 +145,10 @@ function mb_Mage(commander)
         return
     end
 
+    mb_Mage_DpsTarget()
+end
+
+function mb_Mage_DpsTarget()
     if mb_IsInCombat() and max_GetManaPercentage("player") > 25 then
         if not mb_mageIsFire then
             if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_WINTERS_CHILL) == 5 then

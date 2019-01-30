@@ -199,8 +199,8 @@ function mb_RemoteExecuteRequestHandler(request)
 end
 
 function mb_RepairReportRequestHandler(request)
-    if request.from == UnitName("player") then
-        local requiredPercentage = request.body
+    if request.from ~= UnitName("player") then
+        local requiredPercentage = tonumber(request.body)
         mb_DoRepairReport(requiredPercentage)
     end
 end

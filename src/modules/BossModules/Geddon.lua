@@ -5,7 +5,7 @@ function mb_BossModule_Geddon_Load()
     mb_currentBossModule.priestLogic = mb_BossModule_Geddon_PriestLogic
     mb_currentBossModule.paladinLogic = mb_BossModule_Geddon_PaladinLogic
     mb_currentBossModule.mageLogic = mb_BossModule_Geddon_MageLogic
-    mb_MoveOutModule_Enable()
+    mb_MoveOutModule_RegisterAutomaticFuckOffDebuffSpell("Living Bomb")
 end
 mb_RegisterBossModule("geddon", mb_BossModule_Geddon_Load)
 

@@ -518,9 +518,8 @@ function mb_RegisterForStandardBuffRequest(buff)
     mb_RegisterFriendlyRangeCheckSpell(buff.spellName)
 end
 
-function mb_HandleSharedBehaviourPostLoad(playerClass)
+function mb_HandleSharedBehaviourOnLogin(playerClass)
     mb_RegisterSharedRequestHandlers(playerClass)
-    mb_MoveOutModule_Load()
 end
 
 mb_lastReadyCheck = 0

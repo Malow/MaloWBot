@@ -106,14 +106,6 @@ function mb_HandleSpecialSlashCommand(msg)
         local mode = max_SplitString(msg, " ")[2]
         mb_areaOfEffectMode = mode == "on"
         mb_MakeRequest("areaOfEffectMode", mode, REQUEST_PRIORITY.COMMAND)
-    elseif string.find(msg, "moveOutModule") then
-        local mode = max_SplitString(msg, " ")[2]
-        if mode == "on" then
-            mb_MoveOutModule_Enable()
-        else
-            mb_MoveOutModule_Disable()
-        end
-        mb_MakeRequest("moveOutModule", mode, REQUEST_PRIORITY.COMMAND)
     elseif string.find(msg, "follow") then
         local mode = max_SplitString(msg, " ")[2]
         mb_shouldFollow = mode == "on"

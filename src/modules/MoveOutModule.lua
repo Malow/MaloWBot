@@ -1,32 +1,26 @@
-MB_MOVE_OUT_MODULE_DEBUFFS = {
-    "Flames"
-}
 
+mb_MoveOutModule_autoFollowMoveOutOnDamageSpells = {}
+mb_MoveOutModule_automaticFuckOffDebuffSpells = {}
 mb_MoveOutModule_enabled = false
-
-function mb_MoveOutModule_Load()
-    local spellNames = {}
-    table.insert(spellNames, "Flamestrike")
-    table.insert(spellNames, "Rain of Fire")
-    table.insert(spellNames, "Blizzard")
-    table.insert(spellNames, "Mana Storm")
-    table.insert(spellNames, "Flames")
-    mb_CombatLogModule_PeriodicSelfDamageWatch_Enable(spellNames)
-    local debuffNames = {}
-    table.insert(debuffNames, "Living Bomb")
-    mb_CombatLogModule_DebuffWatch_Enable(debuffNames)
-end
-
-function mb_MoveOutModule_Enable()
-    mb_MoveOutModule_enabled = true
-end
 
 function mb_MoveOutModule_Disable()
     mb_MoveOutModule_enabled = false
 end
 
-mb_MoveOutModule_startedFollowing = nil
-mb_MoveOutModule_warnedNoTarget = nil
+function mb_MoveOutModule_RegisterAutomaticFuckOffDebuffSpell(spellName)
+    mb_MoveOutModule_enabled = true
+    table.insert(mb_MoveOutModule_automaticFuckOffDebuffSpells, spellName)
+    mb_CombatLogModule_DebuffWatch_RegisterSpell(spellName)
+end
+
+function mb_MoveOutModule_RegisterAutoFollowMoveOutOnDamageSpell(spellName)
+    mb_MoveOutModule_enabled = true
+    table.insert(mb_MoveOutModule_autoFollowMoveOutOnDamageSpells, spellName)
+    mb_CombatLogModule_PeriodicSelfDamageWatch_RegisterSpell(spellName)
+end
+
+mb_MoveOutModule_startedFollowing = 0
+mb_MoveOutModule_warnedNoTarget = 0
 function mb_MoveOutModule_Update()
     if not mb_MoveOutModule_enabled then
         return false
@@ -38,7 +32,7 @@ function mb_MoveOutModule_Update()
         return false
     end
     if mb_MoveOutModule_IsStandingInShit() then
-        if mb_MoveOutModule_startedFollowing ~= nil and mb_MoveOutModule_startedFollowing + 3 > mb_GetTime() then
+        if mb_MoveOutModule_startedFollowing + 3 > mb_GetTime() then
             return true
         end
         local followTarget = mb_MoveOutModule_FindFollowTarget()
@@ -47,7 +41,7 @@ function mb_MoveOutModule_Update()
             max_SayRaid("Started following " .. UnitName(followTarget) .. " to move out of shit on the ground.")
             mb_MoveOutModule_startedFollowing = mb_GetTime()
             return true
-        elseif mb_MoveOutModule_warnedNoTarget == nil or mb_MoveOutModule_warnedNoTarget + 3 < mb_GetTime() then
+        elseif mb_MoveOutModule_warnedNoTarget + 3 < mb_GetTime() then
             max_SayRaid("Couldn't find any target to start following to move out of shit on the ground.")
             mb_MoveOutModule_warnedNoTarget = mb_GetTime()
         end
@@ -56,18 +50,8 @@ function mb_MoveOutModule_Update()
 end
 
 function mb_MoveOutModule_IsStandingInShit()
-    if mb_MoveOutModule_HasBadDebuff() then
-        return true
-    end
-    if mb_CombatLogModule_PeriodicSelfDamageWatch_HasTakenWatchedDamageIn(2) then
-        return true
-    end
-    return false
-end
-
-function mb_MoveOutModule_HasBadDebuff()
-    for _, v in pairs(MB_MOVE_OUT_MODULE_DEBUFFS) do
-        if max_HasDebuff("player", v) then
+    for k, v in pairs(mb_MoveOutModule_autoFollowMoveOutOnDamageSpells) do
+        if mb_CombatLogModule_PeriodicSelfDamageWatch_HasTakenDamageFrom(v) then
             return true
         end
     end
@@ -93,13 +77,13 @@ function mb_MoveOutModule_HandleAutomaticFuckOff()
     if mb_GetMyCommanderName() == UnitName("player") then
         return false
     end
-    local livingBombTime = mb_CombatLogModule_DebuffWatch_GetTimeForSpellName("Living Bomb")
-    if livingBombTime ~= nil then
-        mb_shouldFuckOffAt = mb_GetTime()
-        mb_shouldFollow = false
-        max_SayRaid("I'm fucking off automatically!")
-        mb_CombatLogModule_DebuffWatch_ResetForSpellName("Living Bomb")
-        return true
+    for k, v in pairs(mb_MoveOutModule_automaticFuckOffDebuffSpells) do
+        if mb_CombatLogModule_DebuffWatch_HasBeenAfflictedBy(v) then
+            mb_shouldFuckOffAt = mb_GetTime()
+            mb_shouldFollow = false
+            max_SayRaid("I'm fucking off automatically!")
+            return true
+        end
     end
     return false
 end

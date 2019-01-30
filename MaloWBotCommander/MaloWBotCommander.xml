@@ -61,7 +61,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString text="MoveOutModule:" inherits="GameFontNormal">
+				<FontString text="Unused:" inherits="GameFontNormal">
 					<Size x="100" y="10"/>
 					<Anchors>
 						<Anchor point="TOPRIGHT">

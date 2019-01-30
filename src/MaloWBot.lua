@@ -209,12 +209,12 @@ end
 function mb_OnLoad()
 	mb_OriginalOnUIErrorEventFunction = UIErrorsFrame_OnEvent
 	UIErrorsFrame_OnEvent = mb_OnGameErrorEvent
-
-	mb_Print("Loaded")
 end
 
 -- OnLogin, when all addons are finished loading
 function mb_OnLogin()
+	mb_HandleSharedBehaviourOnLogin(max_GetClass("player"))
+
 	ChatFrame1.editBox.stickyType = "GUILD" -- Automatically set /g as default chat channel
 	ChatFrame1.editBox.chatType = "GUILD" -- Automatically set /g as default chat channel
 	SetCVar("autoSelfCast", 0)
@@ -232,7 +232,6 @@ mb_classSpecificRunFunction = nil
 -- OnPostLoad, called the first time the bot is run, everything should be available then.
 function mb_OnPostLoad()
 	local playerClass = max_GetClass("player")
-	mb_HandleSharedBehaviourPostLoad(playerClass)
 	if playerClass == "DRUID" then
 		mb_Druid_OnLoad()
 		mb_classSpecificRunFunction = mb_Druid

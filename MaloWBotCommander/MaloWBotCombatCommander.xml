@@ -151,6 +151,18 @@
 					<OnClick> mb_OnCmd("useConsumable"); </OnClick>
 				</Scripts>
 			</Button>
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="BerserkerRage">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-100" y="-66"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("berserkerRage"); </OnClick>
+				</Scripts>
+			</Button>
 
 
 

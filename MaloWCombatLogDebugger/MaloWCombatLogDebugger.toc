@@ -1,0 +1,8 @@
+## Interface: 30300
+## Title: MaloWCombatLogDebugger
+## DefaultState: enabled
+## Notes: MaloWCombatLogDebugger
+## Version 1
+## Author: MaloW
+
+MaloWCombatLogDebugger.lua

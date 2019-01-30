@@ -10,7 +10,7 @@ mb_CombatLogModule_PeriodicSelfDamageWatch_log = {}
 function mb_CombatLogModule_PeriodicSelfDamageWatch_OnEvent(arg1)
     for k, v in pairs(mb_CombatLogModule_PeriodicSelfDamageWatch_spellNames) do
         if string.find(arg1, v) then
-            mb_CombatLogModule_PeriodicSelfDamageWatch_log[mb_GetTime()] = v
+            mb_CombatLogModule_PeriodicSelfDamageWatch_log[mb_GetTime()] = v -- TODO: If hit with multiple things in the same frame this fails
         end
     end
 end

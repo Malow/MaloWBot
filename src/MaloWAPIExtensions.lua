@@ -403,7 +403,7 @@ function max_HasValidOffensiveTarget(rangeCheckSpell)
 	if UnitIsDeadOrGhost("target") then
 		return false
 	end
-	if UnitIsFriend("target") then
+	if UnitIsFriend("player", "target") then
 		return false
 	end
 	if not max_CanAttackUnit("target") then

@@ -96,7 +96,7 @@ function mb_HandleThrottledSharedBehaviour(commander)
     ConfirmSummon()
     AcceptQuest()
 
-    if UnitIsDeadOrGhost("player") then
+    if UnitIsDeadOrGhost("player") and not max_hasBuff("player", BUFF_TEXTURE_FEIGN_DEATH) then
         AcceptResurrect()
         mb_RequestResurrection()
         FollowByName(commander, true)

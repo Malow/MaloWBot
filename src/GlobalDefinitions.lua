@@ -22,6 +22,7 @@ DEBUFF_TEXTURE_HIBERNATE = "Interface\\Icons\\Spell_Nature_Sleep"
 BUFF_TEXTURE_ASPECT_OF_THE_HAWK = "Interface\\Icons\\Spell_Nature_RavenForm"
 BUFF_TEXTURE_ASPECT_OF_THE_PACK = "Interface\\Icons\\Ability_Mount_WhiteTiger"
 BUFF_TEXTURE_TRUESHOT_AURA = "Interface\\Icons\\Ability_TrueShot"
+BUFF_TEXTURE_FEIGN_DEATH = "Interface\\Icons\\Ability_Rogue_FeignDeath"
 DEBUFF_TEXTURE_HUNTERS_MARK = "Interface\\Icons\\Ability_Hunter_SniperShot"
 BUFF_TEXTURES_TRANQUILIZING_SHOT = { "" }
 -- Mage

@@ -180,7 +180,7 @@ function mb_Hunter_CanDoTranquilizingShot()
 	if not max_HasSpell("Tranquilizing Shot") then
 		return false
 	end
-	if UnitIsDead("player") then
+	if mb_IsDead("player") then
 		return false
 	end
 	if max_IsSpellNameOnCooldown("Tranquilizing Shot") then

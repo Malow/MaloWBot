@@ -96,7 +96,7 @@ function mb_HandleThrottledSharedBehaviour(commander)
     ConfirmSummon()
     AcceptQuest()
 
-    if UnitIsDeadOrGhost("player") and not max_HasBuff("player", BUFF_TEXTURE_FEIGN_DEATH) then
+    if mb_IsDead("player") then
         AcceptResurrect()
         mb_RequestResurrection()
         FollowByName(commander, true)
@@ -639,7 +639,7 @@ function mb_CleanseRaidMemberThrottled(spellName, debuffType1, debuffType2, debu
 end
 
 function mb_IsFreeToAcceptRequest()
-    if UnitIsDead("player") then
+    if mb_IsDead("player") then
         return false
     end
     if mb_CrowdControlModule_IsAssignedToCrowdControl() then

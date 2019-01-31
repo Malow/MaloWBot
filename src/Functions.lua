@@ -201,7 +201,7 @@ function mb_CanResurrectUnitWithSpell(unit, spellName)
 	elseif UnitIsDead("player") then
 		return false
 	end
-	if UnitExists(unit) and UnitIsVisible(unit) and UnitIsFriend("player", unit) and UnitIsDead(unit) and CheckInteractDistance(unit, 4) then --mb_IsSpellInRange(spellName, unit) then
+	if UnitExists(unit) and UnitIsVisible(unit) and UnitIsFriend("player", unit) and mb_IsDead(unit) and CheckInteractDistance(unit, 4) then --mb_IsSpellInRange(spellName, unit) then
 		return true
 	end
 end
@@ -432,4 +432,14 @@ end
 
 function mb_IsTargetStunned()
 	return max_HasDebuff("target", DEBUFF_TEXTURE_HAMMER_OF_JUSTICE) or max_HasDebuff("target", DEBUFF_TEXTURE_CONCUSSION_BLOW)
+end
+
+function mb_IsDead(unit)
+	if not UnitIsDeadOrGhost(unit) then
+		return false
+	end
+	if max_HasBuff(unit, BUFF_TEXTURE_FEIGN_DEATH) then
+		return false
+	end
+	return true
 end

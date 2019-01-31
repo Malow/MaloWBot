@@ -312,6 +312,7 @@ function mb_CheckForAlchemyCooldowns()
 			if cooldownLeft == nil or cooldownLeft < 1 then
 				max_SayGuild("My " .. name .. " is ready.")
 			end
+			CloseTradeSkill()
 			return
 		end
 	end
@@ -325,6 +326,7 @@ function mb_CheckForAlchemyCooldowns()
 			if cooldownLeft == nil or cooldownLeft < 1 then
 				max_SayGuild("My " .. name .. " is ready.")
 			end
+			CloseTradeSkill()
 			return
 		end
 	end

@@ -50,6 +50,12 @@ function mb_Druid(commander)
         return
     end
 
+    if mb_currentBossModule.druidLogic ~= nil then
+        if mb_currentBossModule.druidLogic() then
+            return
+        end
+    end
+
     max_AssistByPlayerName(commander)
 
     if mb_IsClassLeader() and max_HasValidOffensiveTarget() then

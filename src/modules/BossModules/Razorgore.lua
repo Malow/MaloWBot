@@ -37,7 +37,7 @@ function mb_BossModule_Razorgore_MageLogic()
 end
 
 function mb_BossModule_Razorgore_WarlockLogic()
-    mb_BossModule_Razorgore_AutoDPS("Shadowbolt", mb_Warlock_DpsTarget)
+    mb_BossModule_Razorgore_AutoDPS("Shadow Bolt", mb_Warlock_DpsTarget)
     return true
 end
 

@@ -90,7 +90,7 @@ function mb_IsUnitValidFriendlyTarget(unit, spellName)
         mb_RangeCheckModule_lastRangeCheckUsage = mb_GetTime()
     end
     if mb_cachedRangeChecks[unit] == nil then
-        return false
+        mb_RangeCheckModule_CacheForUnit(unit)
     end
     if not mb_cachedRangeChecks[unit].isValid then
         return false
@@ -115,6 +115,7 @@ function mb_IsUsingAbility(abilityName)
 end
 
 function mb_RangeCheckModule_CacheRangesToFriendlies()
+    mb_RangeCheckModule_ExpireCache()
     if not mb_RangeCheckModule_shouldCacheFriendlyRanges then
         return
     end
@@ -129,31 +130,48 @@ function mb_RangeCheckModule_CacheRangesToFriendlies()
     end
     while mb_lastCachedId <= endNumber do
         local unit = max_GetUnitFromPartyOrRaidIndex(mb_lastCachedId)
-        mb_cachedRangeChecks[unit] = {}
-        if UnitExists(unit) and UnitIsVisible(unit) and not UnitIsDeadOrGhost(unit) and not max_HasBuff(unit, BUFF_TEXTURE_SPIRIT_OF_REDEMPTION) and not max_CanAttackUnit(unit) then
-            mb_cachedRangeChecks[unit].isValid = true
-            local isWithin28Yards = CheckInteractDistance(unit, 4)
-            local isAlreadyNotInHigherRange = false
-            for _, v in pairs(mb_uniqueFriendlyRangeSlots) do
-                if v.range >= 28 and isWithin28Yards then
-                    mb_cachedRangeChecks[unit][v.range] = true
-                elseif isAlreadyNotInHigherRange then
-                    mb_cachedRangeChecks[unit][v.range] = false
-                else
-                    if mb_IsActionInRange(v.slot, unit) then
-                        mb_cachedRangeChecks[unit][v.range] = true
-                    else
-                        mb_cachedRangeChecks[unit][v.range] = false
-                        isAlreadyNotInHigherRange = true
-                    end
-                end
-            end
-        else
-            mb_cachedRangeChecks[unit].isValid = false
-        end
+        mb_RangeCheckModule_CacheForUnit(unit)
         mb_lastCachedId = mb_lastCachedId + 1
     end
     if mb_lastCachedId > members then
         mb_lastCachedId = 1
+    end
+end
+
+function mb_RangeCheckModule_CacheForUnit(unit)
+    mb_cachedRangeChecks[unit] = {}
+    mb_cachedRangeChecks[unit].lastCachedTime = mb_GetTime()
+    if UnitExists(unit) and UnitIsVisible(unit) and not UnitIsDeadOrGhost(unit) and not max_HasBuff(unit, BUFF_TEXTURE_SPIRIT_OF_REDEMPTION) and not max_CanAttackUnit(unit) then
+        mb_cachedRangeChecks[unit].isValid = true
+        local isWithin28Yards = CheckInteractDistance(unit, 4)
+        local isAlreadyNotInHigherRange = false
+        for _, v in pairs(mb_uniqueFriendlyRangeSlots) do
+            if v.range >= 28 and isWithin28Yards then
+                mb_cachedRangeChecks[unit][v.range] = true
+            elseif isAlreadyNotInHigherRange then
+                mb_cachedRangeChecks[unit][v.range] = false
+            else
+                if mb_IsActionInRange(v.slot, unit) then
+                    mb_cachedRangeChecks[unit][v.range] = true
+                else
+                    mb_cachedRangeChecks[unit][v.range] = false
+                    isAlreadyNotInHigherRange = true
+                end
+            end
+        end
+    else
+        mb_cachedRangeChecks[unit].isValid = false
+    end
+end
+
+function mb_RangeCheckModule_ExpireCache()
+    local toBeExpiredUnits = {}
+    for unit, cache in pairs(mb_cachedRangeChecks) do
+        if cache.lastCachedTime + 3 < mb_GetTime() then
+            table.insert(toBeExpiredUnits, unit)
+        end
+    end
+    for _, unit in pairs(toBeExpiredUnits) do
+        mb_cachedRangeChecks[unit] = nil
     end
 end

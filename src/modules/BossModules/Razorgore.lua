@@ -72,7 +72,7 @@ function mb_BossModule_Razorgore_HunterLogic()
             return true
         end
     end
-    return false
+    return true
 end
 
 function mb_BossModule_Razorgore_DruidLogic()

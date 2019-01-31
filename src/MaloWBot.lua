@@ -317,6 +317,7 @@ function mb_CheckForAlchemyCooldowns()
 	end
 
 	for i = 1, 200 do
+		local name = GetTradeSkillInfo(i)
 		if name == "Transmute: Arcanite" then
 			mb_AddReagentWatch("Thorium Bar", 5)
 			mb_AddReagentWatch("Arcane Crystal", 5)
@@ -324,6 +325,7 @@ function mb_CheckForAlchemyCooldowns()
 			if cooldownLeft == nil or cooldownLeft < 1 then
 				max_SayGuild("My " .. name .. " is ready.")
 			end
+			return
 		end
 	end
 	CloseTradeSkill()

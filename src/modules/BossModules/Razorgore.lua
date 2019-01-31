@@ -52,7 +52,7 @@ function mb_BossModule_Razorgore_RogueLogic()
 end
 
 function mb_BossModule_Razorgore_AutoDPS(rangeCheckSpell, dpsFunction)
-    if mb_BossModule_Razorgore_TargetMob(rangeCheckSpell, "Blackwing Mage") then
+    if mb_BossModule_Razorgore_TargetMob(rangeCheckSpell, "Blackwing Mage", "Grethok the Controller") then
         dpsFunction()
     elseif mb_BossModule_Razorgore_TargetAnyMobExcept(rangeCheckSpell, "Death Talon Dragonspawn") then
         dpsFunction()
@@ -125,11 +125,12 @@ function mb_BossModule_Razorgore_PaladinLogic()
     return false
 end
 
-function mb_BossModule_Razorgore_TargetMob(rangeCheckSpell, mobName)
+function mb_BossModule_Razorgore_TargetMob(rangeCheckSpell, mobName, mobName2)
     for i = 1, 5 do
         TargetNearestEnemy()
         if max_HasValidOffensiveTarget(rangeCheckSpell) then
-            if UnitName("target") == mobName then
+            local unitName = UnitName("target")
+            if unitName ~= nil and (unitName == mobName or unitName == mobName2) then
                 return true
             end
         end

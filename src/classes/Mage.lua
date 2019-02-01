@@ -149,16 +149,8 @@ function mb_Mage(commander)
 end
 
 function mb_Mage_DpsTarget()
-    if mb_IsInCombat() and max_GetManaPercentage("player") > 25 then
-        if not mb_mageIsFire then
-            if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_WINTERS_CHILL) == 5 then
-                mb_Mage_UseCooldowns()
-            end
-        else
-            if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_IMPROVED_SCORCH) == 5 then
-                mb_Mage_UseCooldowns()
-            end
-        end
+    if mb_Mage_ShouldUseCooldowns() then
+        mb_Mage_UseCooldowns()
     end
 
     if mb_mageIsFire then
@@ -174,6 +166,25 @@ function mb_Mage_DpsTarget()
         CastSpellByName("Frostbolt")
     end
     CastSpellByName("Fire Blast")
+end
+
+function mb_Mage_ShouldUseCooldowns()
+    if mb_IsInCombat() and max_GetManaPercentage("player") > 25 then
+        local cur, max, found = MobHealth3:GetUnitHealth("target")
+        if found and cur < APPLY_DEBUFFS_HEALTH_ABOVE then
+            return false
+        end
+        if not mb_mageIsFire then
+            if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_WINTERS_CHILL) == 5 then
+                return true
+            end
+        else
+            if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_IMPROVED_SCORCH) == 5 then
+                return true
+            end
+        end
+    end
+    return false
 end
 
 function mb_Mage_UseCooldowns()

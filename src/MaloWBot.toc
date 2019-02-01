@@ -6,16 +6,17 @@
 ## Author: MaloW
 ## SavedVariables: mb_SV
 
+PersonalizedConfig.lua
 Config.lua
+MaloWBot.lua
 Functions.lua
 GlobalDefinitions.lua
-MaloWBot.lua
 MaloWAPIExtensions.lua
-PersonalizedConfig.lua
-UnitSelectors.lua
 SharedBehaviour.lua
 SharedRequestHandlers.lua
 SlashCommands.lua
+TooltipScraping.lua
+UnitSelectors.lua
 
 classes\Druid.lua
 classes\Hunter.lua

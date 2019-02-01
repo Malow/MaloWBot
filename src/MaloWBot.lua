@@ -46,8 +46,6 @@ function mb_DebugPrint(msg)
     end
 end
 
-mb_toolTip = CreateFrame("GameTooltip", "MaloWBotToolTip", UIParent, "GameTooltipTemplate")
-
 mb_cachedTime = 0
 function mb_GetTime()
     return mb_cachedTime

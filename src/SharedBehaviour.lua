@@ -205,7 +205,7 @@ function mb_DoTradeGoodies()
         return
     end
     local found, bag, slot = mb_GetTradeableItem()
-    if found and not mb_IsItemSoulbound(bag, slot) then
+    if found and not mb_IsItemSoulbound(bag, slot) and not mb_IsItemQuestItem(bag, slot) then
         local lastTradeSlot = GetTradePlayerItemLink(6)
         if lastTradeSlot == nil then
             PickupContainerItem(bag, slot)

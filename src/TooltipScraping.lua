@@ -44,9 +44,6 @@ function mb_GetSpellRange(actionSlot)
     return nil
 end
 
-function mb_GetDurabilityPercentageFromLine(line)
-end
-
 function mb_GetLowestDurabilityPercentage()
     local durabilitySlots = { 1, 3, 5, 6, 7, 8, 9, 10, 16, 17, 18 }
     local lowestDurability = 100

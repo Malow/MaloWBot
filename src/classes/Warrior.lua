@@ -275,6 +275,9 @@ function mb_Warrior_RequestHoTs()
 end
 
 function mb_Warrior_BattleShout()
+    if max_GetManaPercentage("player") < 10 then
+        return false
+    end
     if not max_HasBuff("player", BUFF_TEXTURE_BATTLE_SHOUT) then
         CastSpellByName("Battle Shout")
         return true

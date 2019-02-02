@@ -34,8 +34,9 @@ function mb_Hunter(commander)
 		return
 	end
 
-	if not max_HasBuff("player", BUFF_TEXTURE_TRUESHOT_AURA) then
+	if mb_Hunter_HasTrueshotAura() and not max_HasBuff("player", BUFF_TEXTURE_TRUESHOT_AURA) then
 		CastSpellByName("Trueshot Aura")
+		return
 	end
 
 	if mb_currentBossModule.hunterLogic ~= nil then
@@ -154,6 +155,9 @@ function mb_Hunter_OnLoad()
 	end
 	mb_GoToMaxRangeModule_RegisterMaxRangeSpell("Multi-Shot")
     mb_CombatLogModule_EnemyGainsWatch_Enable()
+	if not mb_Hunter_HasTrueshotAura() then
+		max_SayRaid("Warning, I don't have Trueshot Aura, did you forget to respec me?")
+	end
 end
 
 function mb_Hunter_HandleTranquilizingShotRequest(request)
@@ -225,6 +229,11 @@ function mb_Hunter_HasAimedShot()
 	return currentRank == 1
 end
 
+function mb_Hunter_HasTrueshotAura()
+	local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(2, 14)
+	return currentRank == 1
+end
+
 function mb_Hunter_AddDesiredTalents()
 	if mb_GetMySpecName() == "MM" then
 		mb_AddDesiredTalent(1, 1, 2) -- Improved Aspect of the Hawk
@@ -237,7 +246,7 @@ function mb_Hunter_AddDesiredTalents()
 		mb_AddDesiredTalent(2, 10, 1) -- Scatter Shot
 		mb_AddDesiredTalent(2, 11, 3) -- Barrage
 		mb_AddDesiredTalent(2, 13, 5) -- Ranged Weapon Specialization
-		mb_AddDesiredTalent(2, 14, 1) -- Trueshot
+		mb_AddDesiredTalent(2, 14, 1) -- Trueshot Aura
 		mb_AddDesiredTalent(3, 1, 3) -- Monster Slaying
 		mb_AddDesiredTalent(3, 2, 3) -- Humanoid Slaying
 		mb_AddDesiredTalent(3, 4, 2) -- Entrapment
@@ -256,7 +265,7 @@ function mb_Hunter_AddDesiredTalents()
 		mb_AddDesiredTalent(2, 9, 5) -- Mortal Shots
 		mb_AddDesiredTalent(2, 11, 3) -- Barrage
 		mb_AddDesiredTalent(2, 13, 5) -- Ranged Weapon Specialization
-		mb_AddDesiredTalent(2, 14, 1) -- Trueshot
+		mb_AddDesiredTalent(2, 14, 1) -- Trueshot Aura
 		mb_AddDesiredTalent(3, 1, 3) -- Monster Slaying
 		mb_AddDesiredTalent(3, 2, 3) -- Humanoid Slaying
 		mb_AddDesiredTalent(3, 4, 2) -- Entrapment

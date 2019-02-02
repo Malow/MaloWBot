@@ -60,7 +60,7 @@ function mb_Mage(commander)
         end
     end
 
-    if not max_HasBuff("player", BUFF_TEXTURE_MAGE_ARMOR) then
+    if not mb_IsInCombat() and not max_HasBuff("player", BUFF_TEXTURE_MAGE_ARMOR) then
         CastSpellByName("Mage Armor")
         return
     end

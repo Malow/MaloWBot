@@ -75,6 +75,7 @@ function mb_HandleSpecialSlashCommand(msg)
     elseif string.find(msg, "bossModule") then
         local module = max_SplitString(msg, " ")[2]
         mb_MakeRequest("bossModule", tostring(module), REQUEST_PRIORITY.COMMAND)
+        mb_LoadBossModule(module, true)
     elseif string.find(msg, "consumablesLevel") then
         local level = max_SplitString(msg, " ")[2]
         mb_MakeRequest("consumablesLevel", tostring(level), REQUEST_PRIORITY.COMMAND)
@@ -151,6 +152,10 @@ end
 
 function mb_FixRaidGroup()
     local members = max_GetNumPartyOrRaidMembers()
+    if not UnitInRaid("player") and members > 0 then
+        ConvertToRaid()
+        return
+    end
     if members < 40 then
         for i = 1, 100 do
             local name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i)
@@ -163,13 +168,9 @@ function mb_FixRaidGroup()
         end
         return
     end
-    if not IsPartyLeader() then
+    if not IsRaidLeader() then
         mb_MakeRequest("promoteLeader", "promoteLeader", REQUEST_PRIORITY.COMMAND)
     else
-        if not UnitInRaid("player") then
-            ConvertToRaid()
-            return
-        end
         SetLootMethod("freeforall")
         for i = 1, members do
             local name, rank, subgroup, level, class, fileName, zone, online, isDead = GetRaidRosterInfo(i)

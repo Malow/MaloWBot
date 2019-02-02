@@ -601,6 +601,37 @@ function mb_GetTimeInCombat()
 	return mb_GetTime() - mb_combatStartedTime
 end
 
+function mb_HasBossModuleLoaded()
+	return mb_currentBossModule.moduleName ~= nil
+end
+
+function mb_LoadBossModule(moduleName, shouldSayInRaid)
+	if mb_currentBossModule.unloadFunction ~= nil then
+		mb_currentBossModule.unloadFunction()
+	end
+	mb_currentBossModule = {}
+	if moduleName == "nil" then
+		if shouldSayInRaid then
+			max_SayRaid("BossModule unloaded")
+		else
+			mb_Print("BossModule unloaded")
+		end
+		-- do nothing, we already unloaded above
+		return
+	end
+	if mb_registeredBossModules[moduleName] == nil then
+		max_SayRaid("BossModule not recognized: " .. tostring(moduleName))
+	else
+		mb_currentBossModule.moduleName = moduleName
+		mb_registeredBossModules[moduleName]()
+		if shouldSayInRaid then
+			max_SayRaid("BossModule " .. moduleName .. " loaded")
+		else
+			mb_Print("BossModule " .. moduleName .. " loaded")
+		end
+	end
+end
+
 function mb_RegisterBossModule(name, loadFunction)
 	if mb_registeredBossModules == nil then
 		mb_registeredBossModules = {}

@@ -137,7 +137,7 @@ function mb_Warlock_DrainSoul()
     if UnitClassification("target") == "worldboss" then
         return false
     end
-    if mb_currentBossModule ~= nil then
+    if mb_HasBossModuleLoaded() then
         return false
     end
     if not mb_IsSpellInRangeOnEnemy("Drain Soul", "target") then

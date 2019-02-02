@@ -214,20 +214,10 @@ function mb_DoRepairReport(requiredPercentage)
 end
 
 function mb_BossModuleRequestHandler(request)
-    local moduleName = request.body
-    if mb_currentBossModule.unloadFunction ~= nil then
-        mb_currentBossModule.unloadFunction()
-    end
-    mb_currentBossModule = {}
-    if moduleName == "nil" then
-        -- do nothing, we already unloaded above
+    if request.from == UnitName("player") then
         return
     end
-    if mb_registeredBossModules[moduleName] == nil then
-        max_SayRaid("BossModule not recognized: " .. tostring(moduleName))
-    else
-        mb_registeredBossModules[moduleName]()
-    end
+    mb_LoadBossModule(request.body)
 end
 
 function mb_ConsumablesLevelRequestHandler(request)

@@ -3,6 +3,10 @@ function max_GetClass(unit)
 	return class
 end
 
+function max_IsGroupLeader()
+    return IsPartyLeader() == 1
+end
+
 function max_GetNumPartyOrRaidMembers()
 	if UnitInRaid("player") then
 		return GetNumRaidMembers()

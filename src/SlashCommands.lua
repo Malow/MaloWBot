@@ -160,15 +160,16 @@ function mb_FixRaidGroup()
         for i = 1, 100 do
             local name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i)
             if name ~= nil and online == 1 then
-                InviteByName(name)
-                if members == 0 then
-                    return
+                if max_GetRaidIndexForPlayerName(name) == nil then
+                    InviteByName(name)
+                    if members == 0 then
+                        return
+                    end
                 end
             end
         end
-        return
     end
-    if not IsRaidLeader() then
+    if not max_IsGroupLeader() then
         mb_MakeRequest("promoteLeader", "promoteLeader", REQUEST_PRIORITY.COMMAND)
     else
         SetLootMethod("freeforall")
@@ -181,6 +182,9 @@ function mb_FixRaidGroup()
         end
     end
 
+    if members < 40 then
+        return
+    end
     for i = 1, members do
         local name, rank, subgroup, level, class, fileName, zone, online, isDead = GetRaidRosterInfo(i)
         local desiredSubgroup = mb_GetDesiredSubgroupForPlayerName(name)

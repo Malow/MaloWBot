@@ -46,7 +46,9 @@ function mb_Hunter(commander)
 	end
 
 	if not mb_AcquireOffensiveTarget("Multi-Shot") then
-		return
+		if not CheckInteractDistance("target", 3) then
+			return
+		end
 	end
 
 	if mb_IsClassLeader() and mb_Hunter_TargetNeedsTranquilizing() then

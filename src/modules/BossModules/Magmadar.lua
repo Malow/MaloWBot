@@ -3,6 +3,7 @@ function mb_BossModule_Magmadar_Load()
     mb_currentBossModule.priestLogic = mb_BossModule_Magmadar_PriestLogic
     mb_shouldDispel = false
     mb_warriorShouldAutomaticallyTaunt = false
+    mb_MakeRequest("palaAura", "fire", REQUEST_PRIORITY.COMMAND)
 end
 mb_RegisterBossModule("magmadar", mb_BossModule_Magmadar_Load)
 

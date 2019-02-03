@@ -9,6 +9,7 @@ function mb_BossModule_Jindo_Load()
     mb_currentBossModule.warriorDpsLogic = mb_BossModule_Jindo_WarriorDpsLogic
     mb_rogueShouldUseCooldownsOnCooldown = false
     mb_shouldDecurse = false
+    mb_MakeRequest("palaAura", "ret", REQUEST_PRIORITY.COMMAND)
 end
 mb_RegisterBossModule("jindo", mb_BossModule_Jindo_Load)
 

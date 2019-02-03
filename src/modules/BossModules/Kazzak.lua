@@ -5,6 +5,7 @@ function mb_BossModule_Kazzak_Load()
     mb_currentBossModule.priestLogic = mb_BossModule_Kazzak_PriestLogic
     mb_currentBossModule.paladinLogic = mb_BossModule_Kazzak_PaladinLogic
     mb_shouldDispel = false
+    mb_MakeRequest("palaAura", "conc", REQUEST_PRIORITY.COMMAND)
 end
 mb_RegisterBossModule("kazzak", mb_BossModule_Kazzak_Load)
 

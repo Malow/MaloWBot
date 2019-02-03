@@ -6,7 +6,9 @@ function mb_BossModule_Geddon_Load()
     mb_currentBossModule.paladinLogic = mb_BossModule_Geddon_PaladinLogic
     mb_currentBossModule.mageLogic = mb_BossModule_Geddon_MageLogic
     mb_MoveOutModule_RegisterAutomaticFuckOffDebuffSpell("Living Bomb")
-    mb_MakeRequest("palaAura", "fire", REQUEST_PRIORITY.COMMAND)
+    if max_GetClass("player") == "PALADIN" then
+        mb_Paladin_CastAura("fire")
+    end
 end
 mb_RegisterBossModule("geddon", mb_BossModule_Geddon_Load)
 

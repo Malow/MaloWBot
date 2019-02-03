@@ -4,7 +4,9 @@ function mb_BossModule_Azuregos_Load()
     mb_currentBossModule.paladinLogic = mb_BossModule_Azuregos_PaladinLogic
     mb_shouldDispel = false
     mb_warriorShouldAutomaticallyTaunt = false
-    mb_MakeRequest("palaAura", "frost", REQUEST_PRIORITY.COMMAND)
+    if max_GetClass("player") == "PALADIN" then
+        mb_Paladin_CastAura("frost")
+    end
 end
 mb_RegisterBossModule("azuregos", mb_BossModule_Azuregos_Load)
 

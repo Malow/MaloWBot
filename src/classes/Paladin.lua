@@ -160,7 +160,10 @@ function mb_Paladin_HasAura()
     return false
 end
 
-function mb_Paladin_CastAura()
+function mb_Paladin_CastAura(aura)
+    if aura ~= nil then
+        mb_SV.paladinAura = aura
+    end
     if mb_SV.paladinAura == "devo" then
         if not max_HasBuff("player", BUFF_TEXTURE_DEVOTION_AURA) then
             CastSpellByName("Devotion Aura")
@@ -259,8 +262,7 @@ function mb_Paladin_HandleResurrectionRequest(request)
 end
 
 function mb_Paladin_HandleAuraRequest(request)
-    mb_SV.paladinAura = request.body
-    mb_Paladin_CastAura()
+    mb_Paladin_CastAura(request.body)
 end
 
 function mb_Paladin_HandleCleanseRequest(request)

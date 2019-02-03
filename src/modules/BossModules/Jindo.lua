@@ -9,7 +9,9 @@ function mb_BossModule_Jindo_Load()
     mb_currentBossModule.warriorDpsLogic = mb_BossModule_Jindo_WarriorDpsLogic
     mb_rogueShouldUseCooldownsOnCooldown = false
     mb_shouldDecurse = false
-    mb_MakeRequest("palaAura", "ret", REQUEST_PRIORITY.COMMAND)
+    if max_GetClass("player") == "PALADIN" then
+        mb_Paladin_CastAura("ret")
+    end
 end
 mb_RegisterBossModule("jindo", mb_BossModule_Jindo_Load)
 

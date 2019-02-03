@@ -2,7 +2,9 @@ function mb_BossModule_Hakkar_Load()
     mb_currentBossModule.unloadFunction = mb_BossModule_Hakkar_Unload
     mb_currentBossModule.warriorTankLogic = mb_BossModule_Hakkar_WarriorTankLogic
     mb_shouldDepoison = false
-    mb_MakeRequest("palaAura", "conc", REQUEST_PRIORITY.COMMAND)
+    if max_GetClass("player") == "PALADIN" then
+        mb_Paladin_CastAura("conc")
+    end
 end
 mb_RegisterBossModule("hakkar", mb_BossModule_Hakkar_Load)
 

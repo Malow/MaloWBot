@@ -1,6 +1,8 @@
 function mb_BossModule_Jeklik_Load()
     mb_currentBossModule.unloadFunction = mb_BossModule_Jeklik_Unload
-    mb_MakeRequest("palaAura", "fire", REQUEST_PRIORITY.COMMAND)
+    if max_GetClass("player") == "PALADIN" then
+        mb_Paladin_CastAura("fire")
+    end
 end
 mb_RegisterBossModule("jeklik", mb_BossModule_Jeklik_Load)
 

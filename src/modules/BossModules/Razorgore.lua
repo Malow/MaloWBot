@@ -16,7 +16,9 @@ function mb_BossModule_Razorgore_Load()
     if max_GetClass("player") == "HUNTER" then
         mb_RemoveDesiredBuff(BUFF_BLESSING_OF_SALVATION)
     end
-    mb_MakeRequest("palaAura", "devo", REQUEST_PRIORITY.COMMAND)
+    if max_GetClass("player") == "PALADIN" then
+        mb_Paladin_CastAura("devo")
+    end
 end
 mb_RegisterBossModule("razorgore", mb_BossModule_Razorgore_Load)
 

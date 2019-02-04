@@ -153,19 +153,28 @@ function mb_Mage_DpsTarget()
         mb_Mage_UseCooldowns()
     end
 
+    if mb_IsMoving() then
+        if mb_IsSpellInRangeOnEnemy("Fire Blast", "target") then
+            if max_CastSpellIfReady("Fire Blast") then
+                return
+            end
+        end
+    end
+
     if mb_mageIsFire then
         if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_IMPROVED_SCORCH) < 3 or (mb_IsClassLeader() and mb_mageLastScorch + 20 < mb_GetTime()) then
             if mb_IsSpellInRangeOnEnemy("Scorch", "target") then
                 CastSpellByName("Scorch")
                 mb_mageLastScorch = mb_GetTime()
+                return
             end
-        else
-            CastSpellByName("Fireball")
         end
+        CastSpellByName("Fireball")
+        return
     else
         CastSpellByName("Frostbolt")
+        return
     end
-    CastSpellByName("Fire Blast")
 end
 
 function mb_Mage_ShouldUseCooldowns()
@@ -239,6 +248,7 @@ function mb_Mage_OnLoad()
     mb_RegisterFriendlyRangeCheckSpell("Remove Lesser Curse")
     mb_RegisterEnemyRangeCheckSpell("Counterspell")
     mb_RegisterEnemyRangeCheckSpell("Polymorph")
+    mb_RegisterEnemyRangeCheckSpell("Fire Blast")
     mb_AddReagentWatch("Arcane Powder", 50)
     mb_AddReagentWatch("Rune of Portals", 10)
     mb_AddReagentWatch("Brilliant Wizard Oil", 2)

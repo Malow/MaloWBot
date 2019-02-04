@@ -297,7 +297,7 @@ function mb_CheckForProfessionCooldown()
 		CloseTradeSkill()
 	end
 	if max_HasSpell("Leatherworking") then
-		mb_AddReagentWatch("Deeprock salt", 10)
+		mb_AddReagentWatch("Deeprock Salt", 10)
 		local shakerName = "Salt Shaker"
 			if not mb_HasItem(shakerName) then
 			max_SayGuild("I don't have a " .. shakerName)

@@ -302,7 +302,8 @@ function mb_CheckForProfessionCooldown()
 			if not mb_HasItem(shakerName) then
 			max_SayGuild("I don't have a " .. shakerName)
 		elseif not mb_IsItemOnCooldown(shakerName) then
-			max_SayGuild("My " .. shakerName .. " is ready.")
+            mb_UseItem(shakerName)
+            max_SayGuild("My " .. shakerName .. " is ready. Attempting to auto-cast it.")
 		end
 	end
 end
@@ -316,7 +317,8 @@ function mb_CheckForAlchemyCooldowns()
 			mb_AddReagentWatch("Essence of Undeath", 10)
 			local cooldownLeft = GetTradeSkillCooldown(i)
 			if cooldownLeft == nil or cooldownLeft < 1 then
-				max_SayGuild("My " .. name .. " is ready.")
+                DoTradeSkill(i, 1)
+				max_SayGuild("My " .. name .. " is ready. Attempting to auto-cast it.")
 			end
 			CloseTradeSkill()
 			return
@@ -330,7 +332,8 @@ function mb_CheckForAlchemyCooldowns()
 			mb_AddReagentWatch("Arcane Crystal", 5)
 			local cooldownLeft = GetTradeSkillCooldown(i)
 			if cooldownLeft == nil or cooldownLeft < 1 then
-				max_SayGuild("My " .. name .. " is ready.")
+                DoTradeSkill(i, 1)
+				max_SayGuild("My " .. name .. " is ready. Attempting to auto-cast it.")
 			end
 			CloseTradeSkill()
 			return

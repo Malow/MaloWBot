@@ -2,6 +2,7 @@ function mb_BossModule_Azuregos_Load()
     mb_currentBossModule.unloadFunction = mb_BossModule_Azuregos_Unload
     mb_currentBossModule.priestLogic = mb_BossModule_Azuregos_PriestLogic
     mb_currentBossModule.paladinLogic = mb_BossModule_Azuregos_PaladinLogic
+    mb_mageShouldWardAgainst = "frost"
     mb_shouldDispel = false
     mb_warriorShouldAutomaticallyTaunt = false
     if max_GetClass("player") == "PALADIN" then
@@ -13,6 +14,7 @@ mb_RegisterBossModule("azuregos", mb_BossModule_Azuregos_Load)
 function mb_BossModule_Azuregos_Unload()
     mb_shouldDispel = true
     mb_warriorShouldAutomaticallyTaunt = true
+    mb_mageShouldWardAgainst = nil
 end
 
 function mb_BossModule_Azuregos_PriestLogic()

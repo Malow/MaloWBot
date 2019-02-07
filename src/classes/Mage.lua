@@ -1,5 +1,6 @@
 mb_mageLastScorch = 0
 mb_mageIsFire = false
+mb_mageShouldWardAgainst = nil
 function mb_Mage(commander)
     if mb_DoBasicCasterLogicThrottled() then
         return
@@ -118,6 +119,16 @@ function mb_Mage(commander)
 
     if mb_currentBossModule.mageLogic ~= nil then
         if mb_currentBossModule.mageLogic() then
+            return
+        end
+    end
+
+    if mb_mageShouldWardAgainst == "fire" then
+        if max_CastSpellIfReady("Fire Ward") then
+            return
+        end
+    elseif mb_mageShouldWardAgainst == "frost" then
+        if max_CastSpellIfReady("Frost Ward") then
             return
         end
     end

@@ -1,6 +1,6 @@
 function mb_BossModule_AnubisathGuardian_Load()
     mb_currentBossModule.unloadFunction = mb_BossModule_AnubisathGuardian_Unload
-    mb_MoveOutModule_RegisterAutomaticFuckOffDebuffSpell("Plague Effect")
+    mb_MoveOutModule_RegisterAutomaticFuckOffDebuffSpell("Plague")
 end
 mb_RegisterBossModule("anubisathGuardian", mb_BossModule_AnubisathGuardian_Load)
 

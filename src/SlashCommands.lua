@@ -66,6 +66,8 @@ function mb_HandleSpecialSlashCommand(msg)
         mb_MakeRequest(REQUEST_CROWD_CONTROL.type, "crowdControl", REQUEST_PRIORITY.COMMAND)
     elseif msg == "tranquilize" then
         mb_MakeThrottledRequest(REQUEST_TRANQUILIZING_SHOT, "tranqItYoBeastBeCrazy", REQUEST_PRIORITY.COMMAND)
+    elseif msg == "aoeFear" then
+        mb_MakeRequest("aoeFear", "aoeFear", REQUEST_PRIORITY.COMMAND)
     elseif msg == "goToMaxRange" then
         mb_MakeRequest("goToMaxRange", "goToMaxRange", REQUEST_PRIORITY.COMMAND)
     elseif msg == "useConsumable" then

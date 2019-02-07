@@ -47,6 +47,7 @@ modules\BossModules\Lucifron.lua
 modules\BossModules\Magmadar.lua
 modules\BossModules\ManaBurn.lua
 modules\BossModules\Mandokir.lua
+modules\BossModules\Rajaxx.lua
 modules\BossModules\Razorgore.lua
 
 modules\CombatLogSubModules\DamageTakenPerSecond.lua

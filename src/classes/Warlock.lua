@@ -63,6 +63,14 @@ function mb_Warlock(commander)
             mb_CrowdControlModule_RegisterTarget("Banish", DEBUFF_TEXTURE_BANISH)
             mb_RequestCompleted(request)
             return
+        elseif request.type == "aoeFear" then
+            if max_IsSpellNameOnCooldown("Howl of Terror") then
+                mb_RequestCompleted(request)
+                return
+            end
+            max_SayRaid("AoE Fearing!")
+            CastSpellByName("Howl of Terror")
+            return
         end
     end
 
@@ -179,6 +187,7 @@ function mb_Warlock_OnLoad()
     mb_RegisterForRequest("summon", mb_Warlock_HandleSummonRequest)
     mb_RegisterForRequest("soulstone", mb_Warlock_HandleSoulstoneRequest)
     mb_RegisterForRequest("healthstone", mb_Warlock_HandleHealthstoneRequest)
+    mb_RegisterForRequest("aoeFear", mb_Warlock_HandleAoeFearRequest)
     mb_RegisterForRequest(REQUEST_CROWD_CONTROL.type, mb_Warlock_HandleCrowdControlRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
@@ -201,6 +210,19 @@ function mb_Warlock_OnLoad()
     mb_RegisterEnemyRangeCheckSpell("Drain Mana")
     mb_GoToMaxRangeModule_RegisterMaxRangeSpell("Shadow Bolt")
     mb_AddReagentWatch("Brilliant Wizard Oil", 2)
+end
+
+function mb_Warlock_HandleAoeFearRequest(request)
+    if not mb_IsFreeToAcceptRequest() then
+        return
+    end
+    if UnitMana("player") < 500 then
+        return
+    end
+    if max_IsSpellNameOnCooldown("Howl of Terror") then
+        return
+    end
+    mb_AcceptRequest(request)
 end
 
 function mb_Warlock_HandleSummonRequest(request)

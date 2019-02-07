@@ -33,14 +33,26 @@ function mb_Priest(commander)
             mb_RequestCompleted(request)
             return
         elseif request.type == "fearWard" then
-            mb_RequestCompleted(request)
-            if not max_HasBuff(max_GetUnitForPlayerName(request.body), BUFF_TEXTURE_FEAR_WARD) then
-                max_SayRaid("I'm Fear Warding " .. request.body)
-                max_CastSpellOnRaidMemberByPlayerName("Fear Ward", request.body)
+            if max_HasBuff(max_GetUnitForPlayerName(request.body), BUFF_TEXTURE_FEAR_WARD) then
+                mb_RequestCompleted(request)
                 return
             end
+            if max_IsSpellNameOnCooldown("Fear Ward") then
+                mb_RequestCompleted(request)
+                return
+            end
+            max_SayRaid("I'm Fear Warding " .. request.body)
+            max_CastSpellOnRaidMemberByPlayerName("Fear Ward", request.body)
+            return
         elseif request.type == "HoT" then
             mb_HealingModule_CompleteHoTRequest(request)
+        elseif request.type == "aoeFear" then
+            if max_IsSpellNameOnCooldown("Psychic Scream") then
+                mb_RequestCompleted(request)
+                return
+            end
+            max_SayRaid("AoE Fearing!")
+            CastSpellByName("Psychic Scream")
             return
         end
     end
@@ -226,6 +238,7 @@ function mb_Priest_OnLoad()
     mb_RegisterForRequest(REQUEST_RESURRECT.type, mb_Priest_HandleResurrectionRequest)
     mb_RegisterForRequest(REQUEST_REMOVE_MAGIC.type, mb_Priest_HandleDispelRequest)
     mb_RegisterForRequest("useConsumable", mb_HealerModule_HandleUseConsumableRequest)
+    mb_RegisterForRequest("aoeFear", mb_Priest_HandleAoeFearRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
@@ -273,6 +286,19 @@ function mb_Priest_HandleResurrectionRequest(request)
     if mb_CanResurrectUnitWithSpell(max_GetUnitForPlayerName(request.body), "Resurrection") then
         mb_AcceptRequest(request)
     end
+end
+
+function mb_Priest_HandleAoeFearRequest(request)
+    if not mb_IsFreeToAcceptRequest() then
+        return
+    end
+    if UnitMana("player") < 500 then
+        return
+    end
+    if max_IsSpellNameOnCooldown("Psychic Scream") then
+        return
+    end
+    mb_AcceptRequest(request)
 end
 
 function mb_Priest_HandleDispelRequest(request)

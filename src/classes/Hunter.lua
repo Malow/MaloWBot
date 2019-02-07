@@ -127,6 +127,7 @@ function mb_Hunter_HasAspect()
 end
 
 function mb_Hunter_OnLoad()
+	mb_RegisterForRequest("freezingTrap", mb_Hunter_HandleFreezingTrapRequest)
 	mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
 	mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
 	mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
@@ -160,6 +161,10 @@ function mb_Hunter_OnLoad()
 	if not mb_Hunter_HasTrueshotAura() then
 		max_SayRaid("Warning, I don't have Trueshot Aura, did you forget to respec me?")
 	end
+end
+
+function mb_Hunter_HandleFreezingTrapRequest(request)
+	CastSpellByName("Freezing Trap")
 end
 
 function mb_Hunter_HandleTranquilizingShotRequest(request)

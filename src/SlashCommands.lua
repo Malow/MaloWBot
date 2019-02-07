@@ -63,7 +63,11 @@ function mb_HandleSpecialSlashCommand(msg)
     elseif msg == "interrupt" then
         mb_MakeRequest(REQUEST_INTERRUPT.type, "interrupt", REQUEST_PRIORITY.COMMAND)
     elseif msg == "crowdControl" then
-        mb_MakeRequest(REQUEST_CROWD_CONTROL.type, "crowdControl", REQUEST_PRIORITY.COMMAND)
+        if UnitExists("target") then
+            mb_MakeRequest(REQUEST_CROWD_CONTROL.type, "crowdControl", REQUEST_PRIORITY.COMMAND)
+        else
+            mb_MakeRequest("freezingTrap", "freezingTrap", REQUEST_PRIORITY.COMMAND)
+        end
     elseif msg == "tranquilize" then
         mb_MakeThrottledRequest(REQUEST_TRANQUILIZING_SHOT, "tranqItYoBeastBeCrazy", REQUEST_PRIORITY.COMMAND)
     elseif msg == "aoeFear" then

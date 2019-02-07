@@ -246,6 +246,7 @@ function mb_Priest_OnLoad()
     mb_RegisterFriendlyRangeCheckSpell("Power Word: Shield")
     mb_RegisterFriendlyRangeCheckSpell("Greater Heal")
     mb_RegisterFriendlyRangeCheckSpell("Fear Ward")
+    mb_RegisterEnemyRangeCheckSpell("Mana Burn")
     mb_HealingModule_Enable()
     mb_HealingModule_RegisterHoT("Renew", BUFF_TEXTURE_RENEW, 365)
     mb_priestIsHoly = mb_GetMySpecName() == "Holy"

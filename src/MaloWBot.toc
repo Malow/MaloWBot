@@ -35,6 +35,7 @@ modules\MoveOutModule.lua
 modules\RangeCheckModule.lua
 modules\SpellCastingModule.lua
 
+modules\BossModules\AnubisathGuardian.lua
 modules\BossModules\Azuregos.lua
 modules\BossModules\Garr.lua
 modules\BossModules\Geddon.lua
@@ -44,6 +45,7 @@ modules\BossModules\Jindo.lua
 modules\BossModules\Kazzak.lua
 modules\BossModules\Lucifron.lua
 modules\BossModules\Magmadar.lua
+modules\BossModules\ManaBurn.lua
 modules\BossModules\Mandokir.lua
 modules\BossModules\Razorgore.lua
 

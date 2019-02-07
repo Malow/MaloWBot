@@ -198,6 +198,7 @@ function mb_Warlock_OnLoad()
     mb_RegisterEnemyRangeCheckSpell("Curse of the Elements")
     mb_RegisterEnemyRangeCheckSpell("Banish")
     mb_RegisterEnemyRangeCheckSpell("Shadow Bolt")
+    mb_RegisterEnemyRangeCheckSpell("Drain Mana")
     mb_GoToMaxRangeModule_RegisterMaxRangeSpell("Shadow Bolt")
     mb_AddReagentWatch("Brilliant Wizard Oil", 2)
 end

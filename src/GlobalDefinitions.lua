@@ -24,6 +24,7 @@ BUFF_TEXTURE_ASPECT_OF_THE_PACK = "Interface\\Icons\\Ability_Mount_WhiteTiger"
 BUFF_TEXTURE_TRUESHOT_AURA = "Interface\\Icons\\Ability_TrueShot"
 BUFF_TEXTURE_FEIGN_DEATH = "Interface\\Icons\\Ability_Rogue_FeignDeath"
 DEBUFF_TEXTURE_HUNTERS_MARK = "Interface\\Icons\\Ability_Hunter_SniperShot"
+DEBUFF_TEXTURE_VIPER_STING = "Interface\\Icons\\Ability_Hunter_AimedShot"
 BUFF_TEXTURES_TRANQUILIZING_SHOT = { "" }
 -- Mage
 BUFF_TEXTURE_ARCANE_INTELLECT = "Interface\\Icons\\Spell_Holy_MagicalSentry"

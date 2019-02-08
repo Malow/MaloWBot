@@ -70,7 +70,14 @@ function mb_Warrior_DpsTarget()
             return
         end
 
-        if max_CastSpellIfReady("Bloodthirst") then
+        if mb_Warrior_Overpower() then
+            return
+        end
+
+        if not max_IsSpellNameOnCooldown("Bloodthirst") then
+            if max_GetManaPercentage("player") >= 30 then
+                CastSpellByName("Bloodthirst")
+            end
             return
         end
 
@@ -93,8 +100,43 @@ function mb_Warrior_DpsTarget()
     end
 end
 
+mb_warriorShouldOverpowerNow = false
+function mb_Warrior_Overpower()
+    if max_IsSpellNameOnCooldown("Overpower") then
+        return false
+    end
+
+    if max_GetActiveStance() == 1 then
+        CastSpellByName("Overpower")
+        return true
+    end
+
+    if mb_GetMySpecName() ~= "Fury2H" then
+        return false
+    end
+
+    if max_GetManaPercentage("player") > 30 then
+        return false
+    end
+
+    if max_GetManaPercentage("player") < 5 then
+        return false
+    end
+
+    local lastDodge = mb_CombatLogModule_SelfMissWatch_GetLastDodgedAttackTime()
+    if lastDodge + 2 < mb_GetTime() then
+        return false
+    end
+
+    if max_GetActiveStance() ~= 1 then
+        CastSpellByName("Battle Stance")
+        return true
+    end
+    return false
+end
+
 function mb_Warrior_UseDpsCooldownsIfGood()
-    if not max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) == 5 then
+    if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) < 5 then
         return false
     end
     if not mb_IsSpellInRangeOnEnemy("Sunder Armor", "target") then
@@ -200,16 +242,18 @@ function mb_Warrior_Tank()
         return
     end
 
-    if max_GetManaPercentage("player") >= 20 then
-        if max_CastSpellIfReady("Shield Slam") then
-            return
+    if not max_IsSpellNameOnCooldown("Shield Slam") then
+        if max_GetManaPercentage("player") >= 20 then
+            CastSpellByName("Shield Slam")
         end
+        return
     end
 
-    if max_GetManaPercentage("player") >= 10 then
-        if max_CastSpellIfReady("Shield Block") then
-            return
+    if not max_IsSpellNameOnCooldown("Shield Block") then
+        if max_GetManaPercentage("player") >= 10 then
+            CastSpellByName("Shield Block")
         end
+        return
     end
 
     if mb_Warrior_DemoShout() then
@@ -344,7 +388,7 @@ function mb_Warrior_OnLoad()
     mb_AddDesiredBuff(BUFF_BLESSING_OF_SANCTUARY)
     mb_AddDesiredBuff(BUFF_SHADOW_PROTECTION)
     mb_Warrior_AddDesiredTalents()
-	mb_AddGCDCheckSpell("Sunder Armor")
+    mb_AddGCDCheckSpell("Sunder Armor")
     mb_RegisterEnemyRangeCheckSpell("Sunder Armor")
     if mb_warriorIsTank then
         mb_CombatLogModule_DamageTakenPerSecond_Enable()
@@ -392,6 +436,10 @@ function mb_Warrior_OnLoad()
     end
     if bluntWatch > 0 then
         mb_AddReagentWatch("Dense Weightstone", bluntWatch)
+    end
+
+    if mb_GetMySpecName() == "Fury2H" then
+        mb_CombatLogModule_SelfMissWatch_Enable()
     end
 end
 

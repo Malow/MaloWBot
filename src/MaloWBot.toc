@@ -56,5 +56,6 @@ modules\CombatLogSubModules\EnemyGainsWatch.lua
 modules\CombatLogSubModules\FriendlyGainsWatch.lua
 modules\CombatLogSubModules\MobEmoteWatch.lua
 modules\CombatLogSubModules\PeriodicSelfDamageWatch.lua
+modules\CombatLogSubModules\SelfMissWatch.lua
 modules\CombatLogSubModules\SwingTimer.lua
 

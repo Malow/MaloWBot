@@ -85,9 +85,9 @@ function mb_Hunter(commander)
 		if max_GetDebuffStackCount("target", DEBUFF_TEXTURE_SUNDER_ARMOR) == 5 then
 			max_UseEquippedItemIfReady("Trinket0Slot")
 			max_UseEquippedItemIfReady("Trinket1Slot")
-		end
-		if max_CastSpellIfReady("Rapid Fire") then
-			return
+			if max_CastSpellIfReady("Rapid Fire") then
+				return
+			end
 		end
 	end
 

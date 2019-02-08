@@ -102,7 +102,7 @@ function mb_BossModule_Razorgore_WarriorTankLogic()
 
     for i = 1, 5 do
         if UnitName("target") ~= "Death Talon Dragonspawn" and UnitExists("targettarget") then
-            if mb_GetConfig()["specs"][UnitName("targettarget")] ~= "WarrTank" then
+            if not mb_IsUnitTank("targettarget") then
                 return false
             end
         end

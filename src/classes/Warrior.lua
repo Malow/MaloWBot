@@ -1,18 +1,19 @@
 
-mb_warriorIsTank = mb_GetMySpecName() == "WarrTank"
+mb_warriorIsTank = false
 mb_warriorMainHandTemporaryWeaponEnchant = nil
 mb_warriorOffHandTemporaryWeaponEnchant = nil
-mb_warriorShouldBerserkerRage = false
+mb_warriorShouldBerserkerRageNow = false
 mb_warriorShouldAutomaticallyTaunt = true
+
 function mb_Warrior(commander)
-    if mb_warriorShouldBerserkerRage then
+    if mb_warriorShouldBerserkerRageNow then
         if not max_IsSpellNameOnCooldown("Berserker Rage") then
             if max_GetActiveStance() ~= 3 then
                 CastSpellByName("Berserker Stance")
                 return
             end
             CastSpellByName("Berserker Rage")
-            mb_warriorShouldBerserkerRage = false
+            mb_warriorShouldBerserkerRageNow = false
             return
         end
     end
@@ -140,8 +141,7 @@ function mb_Warrior_Tank()
     end
 
     if UnitExists("targettarget") then
-        local targetOfTargetName = UnitName("targettarget")
-        if mb_GetConfig()["specs"][targetOfTargetName] == "WarrTank" then
+        if mb_IsUnitTank("targettarget") then
             if UnitIsUnit("player", "targettarget") then
                 if max_GetActiveStance() ~= 2 then
                     CastSpellByName("Defensive Stance")
@@ -200,17 +200,19 @@ function mb_Warrior_Tank()
         return
     end
 
-    if not max_IsSpellNameOnCooldown("Shield Slam") then
-        if max_GetManaPercentage("player") >= 20 then
-            CastSpellByName("Shield Slam")
+    if max_GetManaPercentage("player") >= 20 then
+        if max_CastSpellIfReady("Shield Slam") then
+            return
         end
-        return
     end
 
-    if not max_IsSpellNameOnCooldown("Shield Block") then
-        if max_GetManaPercentage("player") >= 10 then
-            CastSpellByName("Shield Block")
+    if max_GetManaPercentage("player") >= 10 then
+        if max_CastSpellIfReady("Shield Block") then
+            return
         end
+    end
+
+    if mb_Warrior_DemoShout() then
         return
     end
 
@@ -234,16 +236,16 @@ function mb_Warrior_DpsTank()
     if max_GetActiveStance() ~= 1 then
         CastSpellByName("Battle Stance")
     end
+
     if not max_HasDebuff("target", DEBUFF_TEXTURE_THUNDER_CLAP) and mb_IsSpellInRangeOnEnemy("Sunder Armor", "target") then
         CastSpellByName("Thunder Clap")
         return
     end
-    if not max_HasDebuff("target", DEBUFF_TEXTURE_DEMORALIZING_SHOUT) and CheckInteractDistance("target", 3) then
-        if mb_Warrior_HasImprovedDemoralizingShout() then
-            CastSpellByName("Demoralizing Shout")
-            return
-        end
+
+    if mb_Warrior_DemoShout() then
+        return
     end
+
     if mb_Warrior_BattleShout() then
         return
     end
@@ -252,13 +254,43 @@ function mb_Warrior_DpsTank()
         CastSpellByName("Execute")
         return
     end
-    if max_GetManaPercentage("player") >= 40 and not max_IsSpellNameOnCooldown("Shield Slam") then
-        CastSpellByName("Shield Slam")
-        return
+    if max_GetManaPercentage("player") >= 30 then
+        if max_CastSpellIfReady("Shield Slam") then
+            return
+        end
+    end
+    if max_GetManaPercentage("player") >= 55 then
+        CastSpellByName("Sunder Armor")
     end
     if max_GetManaPercentage("player") >= 80 then
         CastSpellByName("Heroic Strike")
     end
+end
+
+function mb_Warrior_DemoShout()
+    if max_HasDebuff("target", DEBUFF_TEXTURE_DEMORALIZING_SHOUT) then
+        return false
+    end
+    if not CheckInteractDistance("target", 3) then
+        return false
+    end
+
+    if mb_Warrior_HasImprovedDemoralizingShout() then
+        CastSpellByName("Demoralizing Shout")
+        return true
+    else
+        local members = max_GetNumPartyOrRaidMembers()
+        for i = 1, members do
+            local unit = max_GetUnitFromPartyOrRaidIndex(i)
+            if mb_GetConfig()["specs"][UnitName(unit)] == "BitchTank" and not mb_IsDead(unit) and CheckInteractDistance(unit, 4) then
+                return false
+            end
+        end
+        CastSpellByName("Demoralizing Shout")
+        return true
+    end
+
+    return false
 end
 
 mb_Warrior_lastHoTRequest = 0
@@ -290,7 +322,7 @@ function mb_Warrior_FindUntankedTarget()
         TargetNearestEnemy()
         if max_HasValidOffensiveTarget("Sunder Armor") and UnitAffectingCombat("target") then
             if UnitExists("targettarget") then
-                if mb_GetConfig()["specs"][UnitName("targettarget")] ~= "WarrTank" then
+                if not mb_IsUnitTank("targettarget") then
                     return true
                 end
             end
@@ -302,6 +334,7 @@ function mb_Warrior_FindUntankedTarget()
 end
 
 function mb_Warrior_OnLoad()
+    mb_warriorIsTank = mb_IsUnitTank("player")
     mb_RegisterForRequest("berserkerRage", mb_Warrior_HandleBerserkerRageRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
@@ -368,48 +401,86 @@ function mb_Warrior_HasImprovedDemoralizingShout()
 end
 
 function mb_Warrior_HandleBerserkerRageRequest(request)
-    mb_warriorShouldBerserkerRage = true
+    mb_warriorShouldBerserkerRageNow = true
+end
+
+function mb_IsUnitTank(unit)
+    local specName = mb_GetConfig()["specs"][UnitName(unit)]
+    if specName == "ProperTank" then
+        return true
+    end
+    if specName == "BitchTank" then
+        return true
+    end
+    return false
 end
 
 function mb_Warrior_AddDesiredTalents()
     local mySpec = mb_GetConfig()["specs"][UnitName("player")]
-    if mySpec == "WarrTank" then
-        mb_AddDesiredTalent(1, 1, 1)
-        mb_AddDesiredTalent(1, 1, 3)
-        mb_AddDesiredTalent(1, 2, 5)
-        mb_AddDesiredTalent(2, 2, 5)
-        mb_AddDesiredTalent(3, 1, 5)
-        mb_AddDesiredTalent(3, 2, 5)
-        mb_AddDesiredTalent(3, 3, 2)
-        mb_AddDesiredTalent(3, 4, 5)
-        mb_AddDesiredTalent(3, 6, 1)
-        mb_AddDesiredTalent(3, 7, 2)
-        mb_AddDesiredTalent(3, 9, 5)
-        mb_AddDesiredTalent(3, 10, 3)
-        mb_AddDesiredTalent(2, 12, 2)
-        mb_AddDesiredTalent(3, 13, 1)
-        mb_AddDesiredTalent(3, 14, 1)
-        mb_AddDesiredTalent(3, 16, 5)
-        mb_AddDesiredTalent(3, 17, 1)
-        mb_AddDesiredTalent(3, 6, 1)
-        mb_AddDesiredTalent(3, 7, 2)
-        mb_AddDesiredTalent(3, 7, 2)
-    elseif mySpec == "Fury" then
-        mb_AddDesiredTalent(1, 1, 3)
-        mb_AddDesiredTalent(1, 3, 3)
-        mb_AddDesiredTalent(1, 5, 5)
-        mb_AddDesiredTalent(1, 7, 1)
-        mb_AddDesiredTalent(1, 9, 3)
-        mb_AddDesiredTalent(1, 10, 3)
-        mb_AddDesiredTalent(1, 11, 2)
-        mb_AddDesiredTalent(2, 2, 5)
-        mb_AddDesiredTalent(2, 4, 5)
-        mb_AddDesiredTalent(2, 8, 5)
-        mb_AddDesiredTalent(2, 9, 2)
-        mb_AddDesiredTalent(2, 10, 2)
-        mb_AddDesiredTalent(2, 11, 5)
-        mb_AddDesiredTalent(2, 13, 1)
-        mb_AddDesiredTalent(2, 16, 5)
-        mb_AddDesiredTalent(2, 17, 1)
+    if mySpec == "ProperTank" then
+        mb_AddDesiredTalent(1, 1, 3) -- Improved Heroic Strike
+        mb_AddDesiredTalent(1, 2, 5) -- Deflection
+        mb_AddDesiredTalent(2, 2, 5) -- Cruelty
+        mb_AddDesiredTalent(3, 1, 5) -- Shield Specialization
+        mb_AddDesiredTalent(3, 2, 5) -- Anticipation
+        mb_AddDesiredTalent(3, 3, 2) -- Improved Bloodrage
+        mb_AddDesiredTalent(3, 4, 5) -- Toughness
+        mb_AddDesiredTalent(3, 6, 1) -- Last Stand
+        mb_AddDesiredTalent(3, 7, 1) -- Improved Shield Block
+        mb_AddDesiredTalent(3, 9, 5) -- Defiance
+        mb_AddDesiredTalent(3, 10, 3) -- Improved Sunder Armor
+        mb_AddDesiredTalent(2, 12, 2) -- Improved Taunt
+        mb_AddDesiredTalent(3, 13, 2) -- Improved Shield Wall
+        mb_AddDesiredTalent(3, 14, 1) -- Concussion Blow
+        mb_AddDesiredTalent(3, 16, 5) -- One-Handed Weapon Specialization
+        mb_AddDesiredTalent(3, 17, 1) -- Shield Slam
+    elseif mySpec == "BitchTank" then
+        mb_AddDesiredTalent(1, 2, 5) -- Deflection
+        mb_AddDesiredTalent(1, 5, 3) -- Tactical Mastery
+        mb_AddDesiredTalent(2, 1, 5) -- Booming Voice
+        mb_AddDesiredTalent(2, 3, 5) -- Improved Demoralizing Shout
+        mb_AddDesiredTalent(3, 1, 5) -- Shield Specialization
+        mb_AddDesiredTalent(3, 2, 5) -- Anticipation
+        mb_AddDesiredTalent(3, 4, 5) -- Toughness
+        mb_AddDesiredTalent(3, 7, 3) -- Improved Shield Block
+        mb_AddDesiredTalent(3, 9, 1) -- Defiance
+        mb_AddDesiredTalent(3, 10, 3) -- Improved Sunder Armor
+        mb_AddDesiredTalent(2, 12, 2) -- Improved Taunt
+        mb_AddDesiredTalent(3, 14, 1) -- Concussion Blow
+        mb_AddDesiredTalent(3, 16, 5) -- One-Handed Weapon Specialization
+        mb_AddDesiredTalent(3, 17, 1) -- Shield Slam
+    elseif mySpec == "FuryDW" then
+        mb_AddDesiredTalent(1, 1, 3) -- Improved Heroic Strike
+        mb_AddDesiredTalent(1, 2, 5) -- Deflection
+        mb_AddDesiredTalent(1, 3, 3) -- Improved Rend
+        mb_AddDesiredTalent(1, 5, 1) -- Tactical Mastery
+        mb_AddDesiredTalent(1, 9, 3) -- Deep Wounds
+        mb_AddDesiredTalent(1, 11, 2) -- Impale
+        mb_AddDesiredTalent(2, 2, 5) -- Cruelty
+        mb_AddDesiredTalent(2, 4, 5) -- Unbridled Wrath
+        mb_AddDesiredTalent(2, 8, 5) -- Improved Battle Shout
+        mb_AddDesiredTalent(2, 9, 5) -- Dual Wield Specialization
+        mb_AddDesiredTalent(2, 10, 2) -- Improved Execute
+        mb_AddDesiredTalent(2, 11, 5) -- Enrage
+        mb_AddDesiredTalent(2, 13, 1) -- Death Wish
+        mb_AddDesiredTalent(2, 16, 5) -- Flurry
+        mb_AddDesiredTalent(2, 17, 1) -- Bloodthirst
+    elseif mySpec == "Fury2H" then
+        mb_AddDesiredTalent(1, 1, 2) -- Improved Heroic Strike
+        mb_AddDesiredTalent(1, 3, 3) -- Improved Rend
+        mb_AddDesiredTalent(1, 5, 5) -- Tactical Mastery
+        mb_AddDesiredTalent(1, 7, 2) -- Improved Overpower
+        mb_AddDesiredTalent(1, 9, 3) -- Deep Wounds
+        mb_AddDesiredTalent(1, 10, 3) -- Two-Handed Weapon Specialization
+        mb_AddDesiredTalent(1, 11, 2) -- Impale
+        mb_AddDesiredTalent(2, 2, 5) -- Cruelty
+        mb_AddDesiredTalent(2, 4, 5) -- Unbridled Wrath
+        mb_AddDesiredTalent(2, 5, 2) -- Improved Cleave
+        mb_AddDesiredTalent(2, 8, 5) -- Improved Battle Shout
+        mb_AddDesiredTalent(2, 10, 2) -- Improved Execute
+        mb_AddDesiredTalent(2, 11, 5) -- Enrage
+        mb_AddDesiredTalent(2, 13, 1) -- Death Wish
+        mb_AddDesiredTalent(2, 16, 5) -- Flurry
+        mb_AddDesiredTalent(2, 17, 1) -- Bloodthirst
     end
 end

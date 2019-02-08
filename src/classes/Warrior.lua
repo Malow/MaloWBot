@@ -429,14 +429,14 @@ function mb_Warrior_AddDesiredTalents()
         mb_AddDesiredTalent(3, 7, 1) -- Improved Shield Block
         mb_AddDesiredTalent(3, 9, 5) -- Defiance
         mb_AddDesiredTalent(3, 10, 3) -- Improved Sunder Armor
-        mb_AddDesiredTalent(2, 12, 2) -- Improved Taunt
+        mb_AddDesiredTalent(3, 12, 2) -- Improved Taunt
         mb_AddDesiredTalent(3, 13, 2) -- Improved Shield Wall
         mb_AddDesiredTalent(3, 14, 1) -- Concussion Blow
         mb_AddDesiredTalent(3, 16, 5) -- One-Handed Weapon Specialization
         mb_AddDesiredTalent(3, 17, 1) -- Shield Slam
     elseif mySpec == "BitchTank" then
         mb_AddDesiredTalent(1, 2, 5) -- Deflection
-        mb_AddDesiredTalent(1, 5, 3) -- Tactical Mastery
+        mb_AddDesiredTalent(1, 5, 5) -- Tactical Mastery
         mb_AddDesiredTalent(2, 1, 5) -- Booming Voice
         mb_AddDesiredTalent(2, 3, 5) -- Improved Demoralizing Shout
         mb_AddDesiredTalent(3, 1, 5) -- Shield Specialization
@@ -445,7 +445,7 @@ function mb_Warrior_AddDesiredTalents()
         mb_AddDesiredTalent(3, 7, 3) -- Improved Shield Block
         mb_AddDesiredTalent(3, 9, 1) -- Defiance
         mb_AddDesiredTalent(3, 10, 3) -- Improved Sunder Armor
-        mb_AddDesiredTalent(2, 12, 2) -- Improved Taunt
+        mb_AddDesiredTalent(3, 12, 2) -- Improved Taunt
         mb_AddDesiredTalent(3, 14, 1) -- Concussion Blow
         mb_AddDesiredTalent(3, 16, 5) -- One-Handed Weapon Specialization
         mb_AddDesiredTalent(3, 17, 1) -- Shield Slam

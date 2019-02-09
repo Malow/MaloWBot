@@ -134,7 +134,12 @@ function mb_AcquireOffensiveTarget(rangeCheckSpell)
         return false
     end
     max_AssistByPlayerName(mb_GetMyCommanderName())
-    return max_HasValidOffensiveTarget(rangeCheckSpell)
+
+    if max_HasValidOffensiveTarget(rangeCheckSpell) then
+        return true
+    end
+    ClearTarget()
+    return false
 end
 
 function mb_HandleMassCommandRequests()

@@ -490,8 +490,8 @@ function mb_Warrior_AddDesiredTalents()
         mb_AddDesiredTalent(3, 1, 5) -- Shield Specialization
         mb_AddDesiredTalent(3, 2, 5) -- Anticipation
         mb_AddDesiredTalent(3, 4, 5) -- Toughness
-        mb_AddDesiredTalent(3, 7, 3) -- Improved Shield Block
-        mb_AddDesiredTalent(3, 9, 1) -- Defiance
+        mb_AddDesiredTalent(3, 7, 1) -- Improved Shield Block
+        mb_AddDesiredTalent(3, 9, 3) -- Defiance
         mb_AddDesiredTalent(3, 10, 3) -- Improved Sunder Armor
         mb_AddDesiredTalent(3, 12, 2) -- Improved Taunt
         mb_AddDesiredTalent(3, 14, 1) -- Concussion Blow

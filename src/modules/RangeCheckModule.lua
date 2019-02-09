@@ -95,6 +95,9 @@ function mb_IsUnitValidFriendlyTarget(unit, spellName)
     if not mb_cachedRangeChecks[unit].isValid then
         return false
     end
+    if mb_IsDead(unit) then
+        return false
+    end
     if spellName == nil then
         return true
     end
@@ -141,7 +144,7 @@ end
 function mb_RangeCheckModule_CacheForUnit(unit)
     mb_cachedRangeChecks[unit] = {}
     mb_cachedRangeChecks[unit].lastCachedTime = mb_GetTime()
-    if UnitExists(unit) and UnitIsVisible(unit) and not mb_IsDead(unit) and not max_HasBuff(unit, BUFF_TEXTURE_SPIRIT_OF_REDEMPTION) and not max_CanAttackUnit(unit) then
+    if UnitExists(unit) and UnitIsVisible(unit) and not max_HasBuff(unit, BUFF_TEXTURE_SPIRIT_OF_REDEMPTION) and not max_CanAttackUnit(unit) then
         mb_cachedRangeChecks[unit].isValid = true
         local isWithin28Yards = CheckInteractDistance(unit, 4)
         local isAlreadyNotInHigherRange = false

@@ -4,6 +4,7 @@ mb_warriorMainHandTemporaryWeaponEnchant = nil
 mb_warriorOffHandTemporaryWeaponEnchant = nil
 mb_warriorShouldBerserkerRageNow = false
 mb_warriorShouldAutomaticallyTaunt = true
+mb_warriorOffTanksShouldMaximizeTps = false
 
 function mb_Warrior(commander)
     if mb_warriorShouldBerserkerRageNow then
@@ -298,14 +299,20 @@ function mb_Warrior_DpsTank()
         CastSpellByName("Execute")
         return
     end
-    if max_GetManaPercentage("player") >= 30 then
-        if max_CastSpellIfReady("Shield Slam") then
-            return
+
+    if not max_IsSpellNameOnCooldown("Shield Slam") then
+        if max_GetManaPercentage("player") >= 30 then
+            CastSpellByName("Shield Slam")
+        end
+        return
+    end
+
+    if mb_warriorOffTanksShouldMaximizeTps then
+        if max_GetManaPercentage("player") >= 50 then
+            CastSpellByName("Sunder Armor")
         end
     end
-    if max_GetManaPercentage("player") >= 55 then
-        CastSpellByName("Sunder Armor")
-    end
+
     if max_GetManaPercentage("player") >= 80 then
         CastSpellByName("Heroic Strike")
     end

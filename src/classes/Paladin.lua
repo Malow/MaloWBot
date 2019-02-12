@@ -203,6 +203,9 @@ function mb_Paladin_CastAura(aura)
 end
 
 function mb_Paladin_OnLoad()
+    if not mb_Paladin_HasIllumination() then
+        max_SayRaid("Did you guys forget to respec/swap spec with me? I'm not really Holy...")
+    end
     if mb_SV.paladinAura == nil then
         mb_SV.paladinAura = "devo"
     end
@@ -347,6 +350,11 @@ function mb_Paladin_ReceivedClassSyncData()
         mb_paladinIsJudgingWisdom = false
         mb_paladinIsJudgingLight = false
     end
+end
+
+function mb_Paladin_HasIllumination()
+    local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(1, 9)
+    return currentRank == 5
 end
 
 function mb_Paladin_AddDesiredTalents()

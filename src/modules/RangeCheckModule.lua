@@ -32,17 +32,19 @@ function mb_RegisterFriendlyRangeCheckSpell(spellName)
         max_SayRaid("Warning: I'm trying to add " .. spellName .. " to range-check, but I don't know this spell")
         return
     end
-    mb_registeredFriendlyRangeCheckSpells[spellName] = {}
-    mb_registeredFriendlyRangeCheckSpells[spellName].slot = slot
+
+    PickupSpell(max_GetSpellbookId(spellName), "BOOKTYPE_SPELL ")
+    PlaceAction(slot)
+    ClearCursor()
+
     local range = mb_GetSpellRange(slot)
     if range == nil then
         max_SayRaid("Serious error, unable to get range for spell " .. spellName)
         return
     end
+    mb_registeredFriendlyRangeCheckSpells[spellName] = {}
+    mb_registeredFriendlyRangeCheckSpells[spellName].slot = slot
     mb_registeredFriendlyRangeCheckSpells[spellName].range = range
-    PickupSpell(max_GetSpellbookId(spellName), "BOOKTYPE_SPELL ")
-    PlaceAction(slot)
-    ClearCursor()
 
     mb_RangeCheckModule_shouldCacheFriendlyRanges = true
     for _, v in pairs(mb_uniqueFriendlyRangeSlots) do

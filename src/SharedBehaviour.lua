@@ -138,6 +138,9 @@ function mb_AcquireOffensiveTarget(rangeCheckSpell)
     if max_HasValidOffensiveTarget(rangeCheckSpell) then
         return true
     end
+    if mb_GetMyCommanderName() == UnitName("player") then
+        return false
+    end
     ClearTarget()
     return false
 end

@@ -264,7 +264,7 @@ function mb_Mage_OnLoad()
     mb_AddReagentWatch("Rune of Portals", 10)
     mb_AddReagentWatch("Brilliant Wizard Oil", 2)
 
-    if mb_GetMySpecName() == "DeepFire" then
+    if mb_Mage_HasImprovedFireball() then
         mb_mageIsFire = true
         mb_RegisterEnemyRangeCheckSpell("Fireball")
         mb_RegisterEnemyRangeCheckSpell("Scorch")
@@ -361,6 +361,16 @@ function mb_Mage_HasCombustion()
     return currentRank == 1
 end
 
+function mb_Mage_HasImprovedFrostbolt()
+    local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(3, 2)
+    return currentRank == 5
+end
+
+function mb_Mage_HasImprovedFireball()
+    local nameTalent, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(2, 1)
+    return currentRank == 5
+end
+
 function mb_Mage_AddDesiredTalents()
     if UnitLevel("player") == 60 then
         -- Raiding specs
@@ -382,7 +392,7 @@ function mb_Mage_AddDesiredTalents()
             mb_AddDesiredTalent(1, 5, 5) -- Magic Absorption
             mb_AddDesiredTalent(1, 6, 5) -- Arcane Concentration
             mb_AddDesiredTalent(1, 12, 3) -- Arcane Meditation
-        elseif  mb_GetMySpecName() == "ArcaneInstability" then
+        elseif  mb_GetMySpecName() == "ArcaneInstabilityFrost" then
             mb_AddDesiredTalent(3, 2, 5) -- Improved Frostbolt
             mb_AddDesiredTalent(3, 3, 3) -- Elemental Precision
             mb_AddDesiredTalent(3, 4, 5) -- Ice Shards

@@ -37,17 +37,30 @@ function mb_GetConfig()
 	config["specs"]["Verne"] = "Fury2H"
 	config["specs"]["Hammond"] = "Fury2H"
 	config["specs"]["Davrice"] = "FuryDW"
-    config["specs"]["Trudy"] = "DeepFire"
-    config["specs"]["Connie"] = "DeepFire"
-    config["specs"]["Gaily"] = "DeepFire"
-    config["specs"]["Kimmy"] = "DeepFire"
-    config["specs"]["Kita"] = "DeepFire"
-    config["specs"]["Clemidge"] = "DeepFire"
-    config["specs"]["Ticey"] = "DeepFire"
-    config["specs"]["Nell"] = "DeepFire"
     config["specs"]["Tinuviel"] = "MM"
     config["specs"]["Laurelia"] = "MM"
     config["specs"]["Elleni"] = "MMFullHM"
+
+    local magesShouldBeFire = true
+    if magesShouldBeFire then
+        config["specs"]["Trudy"] = "DeepFire"
+        config["specs"]["Connie"] = "DeepFire"
+        config["specs"]["Gaily"] = "DeepFire"
+        config["specs"]["Kimmy"] = "DeepFire"
+        config["specs"]["Kita"] = "DeepFire"
+        config["specs"]["Clemidge"] = "DeepFire"
+        config["specs"]["Ticey"] = "DeepFire"
+        config["specs"]["Nell"] = "DeepFire"
+    else
+        config["specs"]["Trudy"] = "ImpBlizzWC"
+        config["specs"]["Connie"] = "ImpBlizzWC"
+        config["specs"]["Gaily"] = "ImpBlizzWC"
+        config["specs"]["Kimmy"] = "ImpBlizzWC"
+        config["specs"]["Kita"] = "ArcaneInstabilityFrost"
+        config["specs"]["Clemidge"] = "ArcaneInstabilityFrost"
+        config["specs"]["Ticey"] = "ArcaneInstabilityFrost"
+        config["specs"]["Nell"] = "ArcaneInstabilityFrost"
+    end
     return config
 end
 

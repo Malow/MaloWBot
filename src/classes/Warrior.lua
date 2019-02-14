@@ -186,6 +186,8 @@ function mb_Warrior_Tank()
     if UnitExists("targettarget") then
         if mb_IsUnitTank("targettarget") then
             if UnitIsUnit("player", "targettarget") then
+                mb_Warrior_wasTankingLastFrame = true
+                mb_Warrior_RequestHoTs()
                 if max_GetActiveStance() ~= 2 then
                     CastSpellByName("Defensive Stance")
                 end
@@ -210,9 +212,6 @@ function mb_Warrior_Tank()
         return
     end
 
-    mb_Warrior_wasTankingLastFrame = true
-
-    mb_Warrior_RequestHoTs()
 
     if mb_Warrior_lastTankingBroadcast + 5 < mb_GetTime() then
         mb_Warrior_lastTankingBroadcast = mb_GetTime()

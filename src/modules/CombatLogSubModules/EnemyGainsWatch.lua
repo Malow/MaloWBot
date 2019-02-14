@@ -1,6 +1,7 @@
 
 function mb_CombatLogModule_EnemyGainsWatch_Enable()
     mb_CombatLogModule_AddCallback("CHAT_MSG_SPELL_CREATURE_VS_SELF_BUFF", mb_CombatLogModule_EnemyGainsWatch_OnEvent)
+    mb_CombatLogModule_AddCallback("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", mb_CombatLogModule_EnemyGainsWatch_OnEvent)
     mb_CombatLogModule_AddCallback("PLAYER_REGEN_DISABLED", mb_CombatLogModule_EnemyGainsWatch_Reset)
 end
 

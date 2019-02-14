@@ -207,8 +207,8 @@ function mb_Hunter_CanDoTranquilizingShot()
 end
 
 function mb_Hunter_TargetNeedsTranquilizing()
-    if mb_CombatLogModule_MobEmoteWatch_HasEmoted(UnitName("target"), "frenzy") then
-        max_SayRaid("Automatic Frenzy detection on target, requested Tranquilizing.")
+    if mb_CombatLogModule_EnemyGainsWatch_HasGained(UnitName("target"), "Frenzy") then
+        max_SayRaid("Automatic Frenzy detection on target, requested Tranquilization.")
         return true
     end
 	for _, buffTexture in pairs(BUFF_TEXTURES_TRANQUILIZING_SHOT) do

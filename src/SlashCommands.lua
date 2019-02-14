@@ -85,6 +85,7 @@ function mb_HandleSpecialSlashCommand(msg)
     elseif string.find(msg, "consumablesLevel") then
         local level = max_SplitString(msg, " ")[2]
         mb_MakeRequest("consumablesLevel", tostring(level), REQUEST_PRIORITY.COMMAND)
+        max_SayRaid("Consumables Level set to " .. level)
     elseif string.find(msg, "usePoison") then
         local mode = max_SplitString(msg, " ")[2]
         mb_areaOfEffectMode = mode == "on"

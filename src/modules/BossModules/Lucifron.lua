@@ -2,6 +2,9 @@ function mb_BossModule_Lucifron_Load()
     mb_currentBossModule.unloadFunction = mb_BossModule_Lucifron_Unload
     mb_currentBossModule.priestLogic = mb_BossModule_Lucifron_PriestLogic
     mb_currentBossModule.paladinLogic = mb_BossModule_Lucifron_PaladinLogic
+    if max_GetClass("player") == "PALADIN" then
+        mb_Paladin_CastAura("devo")
+    end
 end
 mb_RegisterBossModule("lucifron", mb_BossModule_Lucifron_Load)
 

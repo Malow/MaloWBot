@@ -99,13 +99,16 @@ function mb_Paladin_ShouldStopCasting(currentCast)
         end
     elseif currentCast.spellName == "Holy Light" then
         if currentCast.startCastTime + 2 < mb_GetTime() then
-            if max_GetMissingHealth(currentCast.target) < (MB_PALADIN_HOLY_LIGHT_HEAL_AMOUNT * 1.5) then
+            if max_GetMissingHealth(currentCast.target) < (MB_PALADIN_HOLY_LIGHT_HEAL_AMOUNT * 1.5 * mb_HealingModule_overhealCoef) then
                 return true
             else
                 return false
             end
         end
         local healTargetUnit, missingHealth = mb_HealingModule_GetRaidHealTarget("Flash of Light")
+        if healTargetUnit == currentCast.target then
+            return false
+        end
         if missingHealth > MB_PALADIN_FLASH_OF_LIGHT_MAX_RANK_HEAL_AMOUNT then
             return true
         end

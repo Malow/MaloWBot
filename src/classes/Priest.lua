@@ -135,13 +135,13 @@ end
 function mb_Priest_ShouldStopCasting(currentCast)
     if currentCast.spellName == "Greater Heal(Rank 1)" then
         if currentCast.startCastTime + 2 < mb_GetTime() then
-            if max_GetMissingHealth(currentCast.target) < MB_PRIEST_GHR1_HEAL_AMOUNT then
+            if max_GetMissingHealth(currentCast.target) < (MB_PRIEST_GHR1_HEAL_AMOUNT * mb_HealingModule_overhealCoef) then
                 return true
             end
         end
     elseif currentCast.spellName == "Greater Heal" then
             if currentCast.startCastTime + 2 < mb_GetTime() then
-                if max_GetMissingHealth(currentCast.target) < MB_PRIEST_GHR4_HEAL_AMOUNT then
+                if max_GetMissingHealth(currentCast.target) < (MB_PRIEST_GHR4_HEAL_AMOUNT * mb_HealingModule_overhealCoef) then
                     return true
                 end
             end

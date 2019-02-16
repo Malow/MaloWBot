@@ -100,7 +100,7 @@ end
 function mb_Druid_ShouldStopCasting(currentCast)
     if currentCast.spellName == "Regrowth" then
         if currentCast.startCastTime + 1.5 < mb_GetTime() then
-            if max_GetMissingHealth(currentCast.target) < MB_DRUID_REGROWTH_HEAL_AMOUNT or max_HasBuff(currentCast.target, BUFF_TEXTURE_REGROWTH) then
+            if max_GetMissingHealth(currentCast.target) < (MB_DRUID_REGROWTH_HEAL_AMOUNT * mb_HealingModule_overhealCoef) or max_HasBuff(currentCast.target, BUFF_TEXTURE_REGROWTH) then
                 return true
             end
         end

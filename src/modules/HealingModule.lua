@@ -1,4 +1,5 @@
 
+mb_HealingModule_overhealCoef = 1.0
 mb_HealingModule_incomingHeals = {}
 function mb_HealingModule_Enable()
     mb_RegisterForRequest("healerModuleData", mb_HealingModule_HandleDataRequest)

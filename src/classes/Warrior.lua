@@ -220,6 +220,12 @@ function mb_Warrior_Tank()
         mb_MakeRequest("tankingBroadcast", dtps, REQUEST_PRIORITY.TANKING_BROADCAST)
     end
 
+    if not max_IsSpellNameOnCooldown("Shield Block") then
+        if max_GetManaPercentage("player") >= 50 then
+            CastSpellByName("Shield Block")
+        end
+    end
+
     CastSpellByName("Revenge")
 
     if max_GetManaPercentage("player") >= 70 then

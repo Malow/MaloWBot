@@ -290,7 +290,8 @@ function mb_CheckForProfessionCooldown()
 			if name == "Mooncloth" then
 				local cooldownLeft = GetTradeSkillCooldown(i)
 				if cooldownLeft == nil or cooldownLeft < 1 then
-					max_SayGuild("My " .. name .. " is ready.")
+					DoTradeSkill(i, 1)
+					max_SayGuild("My " .. name .. " is ready. Attempting to auto-cast it.")
 				end
 			end
 		end

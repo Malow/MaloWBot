@@ -373,3 +373,7 @@ function mb_IsDead(unit)
 	end
 	return true
 end
+
+function mb_UnitIsGrey(unit)
+	return UnitIsTrivial("target") == 1
+end

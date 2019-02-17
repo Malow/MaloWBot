@@ -155,7 +155,7 @@ function mb_Warlock_DrainSoul()
     if found and cur > APPLY_DEBUFFS_HEALTH_ABOVE then
         return false
     end
-    if max_GetFreeBagSlots() > 8 and max_GetLevelDifferenceFromSelf("target") > -10 then
+    if max_GetFreeBagSlots() > 8 and not mb_UnitIsGrey("target") then
         CastSpellByName("Drain Soul")
         return true
     end

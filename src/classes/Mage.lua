@@ -61,12 +61,11 @@ function mb_Mage(commander)
         end
     end
 
-    if not mb_IsInCombat() and not max_HasBuff("player", BUFF_TEXTURE_MAGE_ARMOR) then
-        CastSpellByName("Mage Armor")
-        return
-    end
-
     if not mb_IsInCombat() then
+        if not max_HasBuff("player", BUFF_TEXTURE_MAGE_ARMOR) then
+            CastSpellByName("Mage Armor")
+            return
+        end
         if mb_GetWaterCount() < 60 then
             CastSpellByName("Conjure Water")
             return
@@ -104,15 +103,16 @@ function mb_Mage(commander)
                 end
             end
         end
-        if max_GetManaPercentage("player") < 10 then
-            if max_CastSpellIfReady("Evocation") then
-                return
-            end
-        elseif max_GetManaPercentage("player") < 20 then
+        if max_GetManaPercentage("player") < 30 then
             for i = max_GetTableSize(ITEMS_MANA_GEM), 1, -1 do
                 if mb_UseItem(ITEMS_MANA_GEM[i]) then
                     break
                 end
+            end
+        end
+        if max_GetManaPercentage("player") < 10 then
+            if max_CastSpellIfReady("Evocation") then
+                return
             end
         end
     end
@@ -158,8 +158,20 @@ function mb_Mage(commander)
 
     mb_Mage_DpsTarget()
 end
-
 function mb_Mage_DpsTarget()
+    if UnitMana("player") < 500 then
+        if mb_IsSpellInRangeOnEnemy("Shoot", "target") then
+            if not mb_isAutoShooting then
+                CastSpellByName("Shoot")
+            end
+            return
+        end
+    end
+
+    if mb_isAutoShooting and UnitMana("player") < 1000 then
+        return
+    end
+
     if mb_Mage_ShouldUseCooldowns() then
         mb_Mage_UseCooldowns()
     end
@@ -189,7 +201,7 @@ function mb_Mage_DpsTarget()
 end
 
 function mb_Mage_ShouldUseCooldowns()
-    if mb_IsInCombat() and max_GetManaPercentage("player") > 25 then
+    if mb_IsInCombat() and max_GetManaPercentage("player") > 30 then
         local cur, max, found = MobHealth3:GetUnitHealth("target")
         if found and cur < APPLY_DEBUFFS_HEALTH_ABOVE then
             return false
@@ -260,6 +272,7 @@ function mb_Mage_OnLoad()
     mb_RegisterEnemyRangeCheckSpell("Counterspell")
     mb_RegisterEnemyRangeCheckSpell("Polymorph")
     mb_RegisterEnemyRangeCheckSpell("Fire Blast")
+    mb_RegisterEnemyRangeCheckSpell("Shoot")
     mb_AddReagentWatch("Arcane Powder", 50)
     mb_AddReagentWatch("Rune of Portals", 10)
     mb_AddReagentWatch("Brilliant Wizard Oil", 2)

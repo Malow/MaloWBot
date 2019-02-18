@@ -715,8 +715,11 @@ function mb_UseConsumableFromQueue()
     end
     local itemCount = mb_GetItemCount(itemName)
     if itemCount > 0 then
-        mb_UseItem(itemName)
-        return true
+        if not mb_IsItemOnCooldown(itemName) then
+            max_SayRaid("Used " .. itemName)
+            mb_UseItem(itemName)
+            return true
+        end
     else
         max_SayRaid("I'm completely out of " .. itemName)
     end

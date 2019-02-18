@@ -172,10 +172,6 @@ function mb_HealerModule_HandleUseConsumableRequest(request)
     end
 end
 
-function mb_HealerModule_ShouldCancelHealToDecoupleMyHealingFromHigherPrioritizedHealers()
-    -- TODO for priests and druids to make sure they're all not synced up in their healing as they probably will be with the stop-casting logic
-end
-
 function mb_HealerModule_GetIncomingHealAmountFromHigherPrioritizedHealersOnUnit(unit)
     local playerName = UnitName(unit)
     local incomingHeal = 0

@@ -165,6 +165,32 @@
 			</Button>
 
 
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="DivineIntervention">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="-88"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("divineIntervention"); </OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="CombatRes">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-100" y="-88"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick> mb_OnCmd("combatRes"); </OnClick>
+				</Scripts>
+			</Button>
+
+
 
 			<Button name="$parentButton" inherits="OptionsButtonTemplate" text="Off">
 				<Size><AbsDimension x="50" y="20"/></Size>

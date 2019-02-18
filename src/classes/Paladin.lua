@@ -30,6 +30,14 @@ function mb_Paladin(commander)
             max_CastSpellOnRaidMemberByPlayerName("Cleanse", request.body)
             mb_RequestCompleted(request)
             return
+        elseif request.type == "divineIntervention" then
+            if mb_Paladin_CanDivineInterventionPlayer(request.body) then
+                max_SayRaid("Casting Divine Intervention on " .. request.body)
+                max_CastSpellOnRaidMemberByPlayerName("Divine Intervention", request.body)
+            else
+                mb_RequestCompleted(request)
+            end
+            return
         end
     end
 
@@ -234,6 +242,7 @@ function mb_Paladin_OnLoad()
     mb_RegisterForRequest(REQUEST_REMOVE_MAGIC.type, mb_Paladin_HandleCleanseRequest)
     mb_RegisterForRequest(REQUEST_REMOVE_POISON.type, mb_Paladin_HandleCleanseRequest)
     mb_RegisterForRequest(REQUEST_REMOVE_DISEASE.type, mb_Paladin_HandleCleanseRequest)
+    mb_RegisterForRequest("divineIntervention", mb_Paladin_HandleDivineInterventionRequest)
     mb_RegisterForRequest("palaAura", mb_Paladin_HandleAuraRequest)
     mb_RegisterForRequest("useConsumable", mb_HealerModule_HandleUseConsumableRequest)
     if mb_GetMySpecName() == "Wisdom" then
@@ -264,6 +273,7 @@ function mb_Paladin_OnLoad()
     mb_RegisterFriendlyRangeCheckSpell("Holy Light")
     mb_RegisterFriendlyRangeCheckSpell("Cleanse")
     mb_RegisterFriendlyRangeCheckSpell("Redemption")
+    mb_RegisterFriendlyRangeCheckSpell("Divine Intervention")
     mb_RegisterEnemyRangeCheckSpell("Judgement")
     mb_RegisterEnemyRangeCheckSpell("Hammer of Justice")
     mb_HealingModule_Enable()
@@ -287,6 +297,32 @@ function mb_Paladin_HandleCleanseRequest(request)
         return
     end
     if mb_IsUnitValidFriendlyTarget(max_GetUnitForPlayerName(request.body), "Cleanse") then
+        mb_AcceptRequest(request)
+    end
+end
+
+function mb_Paladin_CanDivineInterventionPlayer(playerName)
+    if playerName == UnitName("player") then
+        return false
+    end
+    if not mb_IsFreeToAcceptRequest() then
+        return false
+    end
+    if max_IsSpellNameOnCooldown("Divine Intervention") then
+        return false
+    end
+    local unit = max_GetUnitForPlayerName(playerName)
+    if mb_IsDead(unit) then
+        return false
+    end
+    if mb_IsUnitValidFriendlyTarget(unit, "Divine Intervention") then
+        return true
+    end
+    return false
+end
+
+function mb_Paladin_HandleDivineInterventionRequest(request)
+    if mb_Paladin_CanDivineInterventionPlayer(request.body) then
         mb_AcceptRequest(request)
     end
 end

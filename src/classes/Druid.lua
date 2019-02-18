@@ -26,6 +26,14 @@ function mb_Druid(commander)
         elseif request.type == "HoT" then
             mb_HealingModule_CompleteHoTRequest(request)
             return
+        elseif request.type == "combatRes" then
+            if mb_Druid_CanCombatResPlayer(request.body) then
+                max_SayRaid("Combat Resurrecting " .. request.body)
+                max_CastSpellOnRaidMemberByPlayerName("Rebirth", request.body)
+            else
+                mb_RequestCompleted(request)
+            end
+            return
         elseif request.type == REQUEST_INNERVATE.type then
             local unit = max_GetUnitForPlayerName(request.body)
             if not max_HasBuff(unit, BUFF_TEXTURE_INNERVATE) then
@@ -153,6 +161,7 @@ function mb_Druid_OnLoad()
     mb_RegisterForRequest("useConsumable", mb_HealerModule_HandleUseConsumableRequest)
     mb_RegisterForRequest(REQUEST_INNERVATE.type, mb_Druid_HandleInnervateRequest)
     mb_RegisterForRequest(REQUEST_CROWD_CONTROL.type, mb_Druid_HandleCrowdControlRequest)
+    mb_RegisterForRequest("combatRes", mb_Druid_HandleCombatResRequest)
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_ARCANE_INTELLECT)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)
@@ -164,6 +173,7 @@ function mb_Druid_OnLoad()
     mb_AddDesiredBuff(BUFF_SHADOW_PROTECTION)
     mb_Druid_AddDesiredTalents()
     mb_AddReagentWatch("Wild Thornroot", 80)
+    mb_AddReagentWatch("Ironwood Seed", 20)
     mb_AddReagentWatch("Major Mana Potion", 20)
     mb_AddReagentWatch("Brilliant Mana Oil", 2)
     mb_AddGCDCheckSpell("Rejuvenation")
@@ -213,6 +223,30 @@ function mb_Druid_HandleCrowdControlRequest(request)
     max_AssistByPlayerName(request.from)
     local creatureType = UnitCreatureType("target")
     if creatureType == "Beast" or creatureType == "Dragonkin" then
+        mb_AcceptRequest(request)
+    end
+end
+
+function mb_Druid_CanCombatResPlayer(playerName)
+    if not mb_IsFreeToAcceptRequest() then
+        return false
+    end
+    if max_IsSpellNameOnCooldown("Rebirth") then
+        return false
+    end
+    local unit = max_GetUnitForPlayerName(playerName)
+    if not mb_IsDead(unit) then
+        return false
+    end
+    if CheckInteractDistance(unit, 4) then
+        return true
+    end
+    max_SayRaid("Not in range to combatRes " .. playerName)
+    return false
+end
+
+function mb_Druid_HandleCombatResRequest(request)
+    if mb_Druid_CanCombatResPlayer(request.body) then
         mb_AcceptRequest(request)
     end
 end

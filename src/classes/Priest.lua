@@ -24,8 +24,10 @@ function mb_Priest(commander)
         if mb_CompleteStandardBuffRequest(request) then
             return
         elseif request.type == REQUEST_RESURRECT.type then
-            max_CastSpellOnRaidMemberByPlayerName("Resurrection", request.body)
-            max_SayRaid("I'm resurrecting " .. request.body)
+            if mb_CanResurrectUnitWithSpell(max_GetUnitForPlayerName(request.body), "Resurrection") then
+                max_CastSpellOnRaidMemberByPlayerName("Resurrection", request.body)
+                max_SayRaid("I'm resurrecting " .. request.body)
+            end
             mb_RequestCompleted(request)
             return
         elseif request.type == REQUEST_REMOVE_MAGIC.type then

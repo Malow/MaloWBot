@@ -20,8 +20,10 @@ function mb_Paladin(commander)
         if mb_CompleteStandardBuffRequest(request) then
             return
         elseif request.type == REQUEST_RESURRECT.type then
-            max_CastSpellOnRaidMemberByPlayerName("Redemption", request.body)
-            max_SayRaid("I'm resurrecting " .. request.body)
+            if mb_CanResurrectUnitWithSpell(max_GetUnitForPlayerName(request.body), "Redemption") then
+                max_CastSpellOnRaidMemberByPlayerName("Redemption", request.body)
+                max_SayRaid("I'm resurrecting " .. request.body)
+            end
             mb_RequestCompleted(request)
             return
         elseif request.type == REQUEST_REMOVE_MAGIC.type or request.type == REQUEST_REMOVE_DISEASE.type or request.type == REQUEST_REMOVE_POISON.type then

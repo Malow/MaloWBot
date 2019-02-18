@@ -436,10 +436,10 @@ function mb_Warrior_OnLoad()
         elseif itemSubType == "Guns" then
             mb_AddReagentWatch("Accurate Slugs", 200)
         end
-        mb_AddReagentWatch("Gift of Arthas", 20)
+        mb_AddReagentWatch("Gift of Arthas", 10)
         mb_AddReagentWatch("Major Healing Potion", 20)
-        mb_AddReagentWatch("Tender Wolf Steak", 10)
-        mb_AddReagentWatch("Flask of the Titans", 5)
+        mb_AddReagentWatch("Mightfish Steak", 20)
+        mb_AddReagentWatch("Flask of the Titans", 1)
         mb_AddReagentWatch("Greater Stoneshield Potion", 20)
     end
 

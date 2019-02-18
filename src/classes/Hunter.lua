@@ -46,7 +46,7 @@ function mb_Hunter(commander)
 	end
 
 	if not mb_AcquireOffensiveTarget("Multi-Shot") then
-		if not CheckInteractDistance("target", 3) then
+		if not mb_AcquireOffensiveTarget("Raptor Strike") then
 			return
 		end
 	end
@@ -153,6 +153,7 @@ function mb_Hunter_OnLoad()
 	mb_Hunter_AddDesiredTalents()
 	mb_CombatLogModule_SwingTimer_EnableAutoShot()
 	mb_RegisterEnemyRangeCheckSpell("Multi-Shot")
+	mb_RegisterEnemyRangeCheckSpell("Raptor Strike")
 	if mb_Hunter_HasAimedShot() then
 		mb_RegisterEnemyRangeCheckSpell("Aimed Shot") -- Need Aimed Shot on the bars to be able to check if we're "casting" it
 	end

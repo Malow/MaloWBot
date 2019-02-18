@@ -362,15 +362,39 @@ function mb_Warrior_RequestHoTs()
     end
 end
 
+mb_warrior_detectedNoBattleShoutTime = 0
 function mb_Warrior_BattleShout()
-    if max_GetManaPercentage("player") < 10 then
+    if max_HasBuff("player", BUFF_TEXTURE_BATTLE_SHOUT) then
         return false
     end
-    if not max_HasBuff("player", BUFF_TEXTURE_BATTLE_SHOUT) then
+    if max_GetManaPercentage("player") < 10 then
+        return true
+    end
+    if not mb_IsUnitTank("player") then
         CastSpellByName("Battle Shout")
         return true
     end
-    return false
+    local myGroup = mb_GetMyGroupUnitsThrottled()
+    for k, unit in pairs(myGroup) do
+        if max_GetClass(unit) == "WARRIOR" and not mb_IsUnitTank(unit) then
+            if not mb_IsDead(unit) then
+                if CheckInteractDistance(unit, 4) then
+                    if mb_warrior_detectedNoBattleShoutTime + 3 > mb_GetTime() then
+                        return false
+                    end
+                    if mb_warrior_detectedNoBattleShoutTime + 10 < mb_GetTime() then
+                        mb_warrior_detectedNoBattleShoutTime = mb_GetTime()
+                        return false
+                    end
+                    mb_warrior_detectedNoBattleShoutTime = 0
+                    CastSpellByName("Battle Shout")
+                    return true
+                end
+            end
+        end
+    end
+    CastSpellByName("Battle Shout")
+    return true
 end
 
 function mb_Warrior_FindUntankedTarget()

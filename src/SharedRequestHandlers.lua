@@ -222,4 +222,5 @@ end
 
 function mb_ConsumablesLevelRequestHandler(request)
     mb_consumablesLevel = tonumber(request.body)
+    mb_Print("ConsumablesLevel set to " .. mb_consumablesLevel)
 end

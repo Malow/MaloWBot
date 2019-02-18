@@ -35,21 +35,21 @@ modules\MoveOutModule.lua
 modules\RangeCheckModule.lua
 modules\SpellCastingModule.lua
 
-modules\BossModules\AnubisathGuardian.lua
+modules\BossModules\AQ20\AnubisathGuardian.lua
+modules\BossModules\AQ20\Ossirian.lua
+modules\BossModules\AQ20\Rajaxx.lua
+modules\BossModules\MC\Garr.lua
+modules\BossModules\MC\Geddon.lua
+modules\BossModules\MC\Lucifron.lua
+modules\BossModules\MC\Magmadar.lua
+modules\BossModules\ZG\Hakkar.lua
+modules\BossModules\ZG\Jeklik.lua
+modules\BossModules\ZG\Jindo.lua
+modules\BossModules\ZG\Mandokir.lua
 modules\BossModules\Azuregos.lua
-modules\BossModules\Garr.lua
-modules\BossModules\Geddon.lua
-modules\BossModules\Hakkar.lua
-modules\BossModules\Jeklik.lua
-modules\BossModules\Jindo.lua
 modules\BossModules\Kazzak.lua
-modules\BossModules\Lucifron.lua
-modules\BossModules\Magmadar.lua
 modules\BossModules\ManaBurn.lua
-modules\BossModules\Mandokir.lua
 modules\BossModules\Onyxia.lua
-modules\BossModules\Ossirian.lua
-modules\BossModules\Rajaxx.lua
 modules\BossModules\Razorgore.lua
 
 modules\CombatLogSubModules\DamageTakenPerSecond.lua

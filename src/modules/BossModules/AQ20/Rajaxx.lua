@@ -17,7 +17,7 @@ function mb_BossModule_Rajaxx_HunterLogic()
     if max_CastSpellIfReady("Feign Death") then
         return true
     end
-    if max_HasBuff("player", BUFF_TEXTURE_FEIGN_DEATH) then
+    if not mb_IsInCombat() then
         if max_CastSpellIfReady("Frost Trap") then
             return true
         end

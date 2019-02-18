@@ -4,6 +4,7 @@ MB_PALADIN_HOLY_LIGHT_HEAL_AMOUNT = 2200
 
 mb_paladinIsJudgingLight = false
 mb_paladinIsJudgingWisdom = false
+mb_paladinShouldRecastAura = false
 function mb_Paladin(commander)
     if mb_DoBasicCasterLogicThrottled() then
         return
@@ -37,7 +38,7 @@ function mb_Paladin(commander)
         end
     end
 
-    if not mb_Paladin_HasAura() then
+    if not mb_Paladin_HasAura() or mb_paladinShouldRecastAura then
         mb_Paladin_CastAura()
         return
     end
@@ -167,6 +168,11 @@ function mb_Paladin_CastAura(aura)
     if aura ~= nil then
         mb_SV.paladinAura = aura
     end
+    if not mb_IsReadyForNewCast() then
+        mb_paladinShouldRecastAura = true
+        return
+    end
+    mb_paladinShouldRecastAura = false
     if mb_SV.paladinAura == "devo" then
         if not max_HasBuff("player", BUFF_TEXTURE_DEVOTION_AURA) then
             CastSpellByName("Devotion Aura")

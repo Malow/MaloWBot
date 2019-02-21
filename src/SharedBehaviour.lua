@@ -124,6 +124,9 @@ end
 
 function mb_AcquireOffensiveTarget(rangeCheckSpell)
     if mb_shouldAutoTarget then
+        if mb_TargetSkullThrottled() then
+            return true
+        end
         if max_HasValidOffensiveTarget(rangeCheckSpell) and UnitAffectingCombat("target") then
             return true
         end

@@ -45,6 +45,10 @@ function mb_Hunter(commander)
 		end
 	end
 
+    if max_CancelBuff(BUFF_TEXTURE_FEIGN_DEATH) then
+        return
+    end
+
 	if not mb_AcquireOffensiveTarget("Multi-Shot") then
 		if not mb_AcquireOffensiveTarget("Raptor Strike") then
 			return

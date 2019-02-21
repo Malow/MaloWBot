@@ -6,6 +6,9 @@ function mb_BossModule_Rajaxx_Load()
     mb_currentBossModule.priestLogic = mb_BossModule_Rajaxx_PriestLogic
     mb_currentBossModule.paladinLogic = mb_BossModule_Rajaxx_PaladinLogic
     mb_shouldDispel = false
+    if max_GetClass("player") == "PALADIN" then
+        mb_Paladin_CastAura("devo")
+    end
 end
 mb_RegisterBossModule("rajaxx", mb_BossModule_Rajaxx_Load)
 
@@ -14,7 +17,7 @@ function mb_BossModule_Rajaxx_Unload()
 end
 
 function mb_BossModule_Rajaxx_HunterLogic()
-    if max_CastSpellIfReady("Feign Death") then
+    if max_CastSpellIfReady("Feign Death") and not max_HasBuff("player", BUFF_TEXTURE_FEIGN_DEATH) then
         return true
     end
     if not mb_IsInCombat() then

@@ -100,6 +100,9 @@ function mb_IsUnitValidFriendlyTarget(unit, spellName)
     if mb_IsDead(unit) then
         return false
     end
+    if max_HasBuff(unit, BUFF_TEXTURE_FEIGN_DEATH) then
+        return false
+    end
     if spellName == nil then
         return true
     end

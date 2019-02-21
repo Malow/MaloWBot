@@ -41,6 +41,10 @@ function mb_Mage(commander)
             end
             if not CursorHasItem() then
                 local bag, slot = mb_LocateWaterInBags()
+                if bag == nil then
+                    mb_RequestCompleted(request)
+                    return
+                end
                 PickupContainerItem(bag, slot)
                 InitiateTrade(max_GetUnitForPlayerName(request.body))
                 return

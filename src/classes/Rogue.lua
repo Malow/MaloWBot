@@ -129,19 +129,6 @@ function mb_Rogue_HandleUsePoisonRequest(request)
     mb_rogueShouldUsePoisons = request.body == "on"
 end
 
---[[function mb_Rogue_Finisher_Swords()
-    if not max_HasBuff("player", BUFF_TEXTURE_SLICE_AND_DICE) and GetComboPoints() > 0 then
-        CastSpellByName("Slice and Dice")
-        return
-    end
-    if GetPlayerBuffTimeLeft(BUFF_TEXTURE_SLICE_AND_DICE) < 6 then
-        return
-    elseif GetComboPoints() >= 4 then
-        CastSpellByName("Eviscerate")
-        return
-    end
-end ]]--
-
 function mb_Rogue_OnLoad()
     mb_AddDesiredBuff(BUFF_MARK_OF_THE_WILD)
     mb_AddDesiredBuff(BUFF_POWER_WORD_FORTITUDE)

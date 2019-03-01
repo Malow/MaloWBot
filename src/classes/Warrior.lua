@@ -66,7 +66,7 @@ function mb_Warrior_DpsTarget()
     end
 
     if not mb_areaOfEffectMode then
-        if max_GetHealthPercentage("target") < 25 then
+        if max_GetHealthPercentage("target") < 20 then
             CastSpellByName("Execute")
             return
         end
@@ -300,7 +300,7 @@ function mb_Warrior_DpsTank()
         return
     end
 
-    if max_GetHealthPercentage("target") < 25 then
+    if max_GetHealthPercentage("target") < 20 then
         CastSpellByName("Execute")
         return
     end

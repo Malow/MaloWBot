@@ -77,6 +77,7 @@ BUFF_TEXTURE_INNER_FOCUS = "Interface\\Icons\\Spell_Frost_WindWalkOn"
 DEBUFF_TEXTURE_WEAKENED_SOUL = "Interface\\Icons\\Spell_Holy_AshesToAshes"
 -- Rogue
 BUFF_TEXTURE_SLICE_AND_DICE = "Interface\\Icons\\Ability_Rogue_SliceDice"
+DEBUFF_TEXTURE_KIDNEY_SHOT = "Interface\\Icons\\Ability_Rogue_KidneyShot"
 -- Warlock
 BUFF_TEXTURE_DEMON_ARMOR = "Interface\\Icons\\Spell_Shadow_RagingScream"
 BUFF_TEXTURE_SACRIFICED_SUCCUBUS = "Interface\\Icons\\Spell_Shadow_PsychicScream"

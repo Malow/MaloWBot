@@ -1,0 +1,18 @@
+C:\Users\MaloW\Documents\Visual Studio 2017\Projects\CSharpPresser\CSharpPresser\bin\Debug\CSharpPresser.exe.config
+C:\Users\MaloW\Documents\Visual Studio 2017\Projects\CSharpPresser\CSharpPresser\bin\Debug\CSharpPresser.exe
+C:\Users\MaloW\Documents\Visual Studio 2017\Projects\CSharpPresser\CSharpPresser\bin\Debug\CSharpPresser.pdb
+C:\Users\MaloW\Documents\Visual Studio 2017\Projects\CSharpPresser\CSharpPresser\obj\Debug\CSharpPresser.csprojAssemblyReference.cache
+C:\Users\MaloW\Documents\Visual Studio 2017\Projects\CSharpPresser\CSharpPresser\obj\Debug\CSharpPresser.csproj.CoreCompileInputs.cache
+C:\Users\MaloW\Documents\Visual Studio 2017\Projects\CSharpPresser\CSharpPresser\obj\Debug\CSharpPresser.exe
+C:\Users\MaloW\Documents\Visual Studio 2017\Projects\CSharpPresser\CSharpPresser\obj\Debug\CSharpPresser.pdb
+C:\MaloWDev\C#\CSharpPresser\CSharpPresser\bin\Debug\CSharpPresser.exe.config
+C:\MaloWDev\C#\CSharpPresser\CSharpPresser\bin\Debug\CSharpPresser.exe
+C:\MaloWDev\C#\CSharpPresser\CSharpPresser\bin\Debug\CSharpPresser.pdb
+C:\MaloWDev\C#\CSharpPresser\CSharpPresser\bin\Debug\Newtonsoft.Json.dll
+C:\MaloWDev\C#\CSharpPresser\CSharpPresser\bin\Debug\Newtonsoft.Json.pdb
+C:\MaloWDev\C#\CSharpPresser\CSharpPresser\bin\Debug\Newtonsoft.Json.xml
+C:\MaloWDev\C#\CSharpPresser\CSharpPresser\obj\Debug\CSharpPresser.csproj.CoreCompileInputs.cache
+C:\MaloWDev\C#\CSharpPresser\CSharpPresser\obj\Debug\CSharpPresser.csproj.CopyComplete
+C:\MaloWDev\C#\CSharpPresser\CSharpPresser\obj\Debug\CSharpPresser.exe
+C:\MaloWDev\C#\CSharpPresser\CSharpPresser\obj\Debug\CSharpPresser.pdb
+C:\MaloWDev\C#\CSharpPresser\CSharpPresser\obj\Debug\CSharpPresser.csprojAssemblyReference.cache

@@ -1,0 +1,476 @@
+{
+  "gamePath": "C:\\Games\\World of Warcraft 1.12 - Multibox\\WoW219.exe",
+  "accounts": [
+    {
+      "accountName": "accName1",
+      "password": "password",
+      "characterName": "Devun"
+    },
+    {
+      "accountName": "accName2",
+      "password": "password",
+      "characterName": "Garret"
+    },
+    {
+      "accountName": "accName3",
+      "password": "password",
+      "characterName": "Elery"
+    },
+    {
+      "accountName": "accName4",
+      "password": "password",
+      "characterName": "Kalman"
+    },
+    {
+      "accountName": "accName5",
+      "password": "password",
+      "characterName": "Verne"
+    },
+    {
+      "accountName": "accName6",
+      "password": "password",
+      "characterName": "Hammond"
+    },
+    {
+      "accountName": "accName7",
+      "password": "password",
+      "characterName": "Davrice"
+    },
+    {
+      "accountName": "accName8",
+      "password": "password",
+      "characterName": "Carin"
+    },
+    {
+      "accountName": "accName9",
+      "password": "password",
+      "characterName": "Emilee"
+    },
+    {
+      "accountName": "accName10",
+      "password": "password",
+      "characterName": "Villetta"
+    },
+    {
+      "accountName": "accName11",
+      "password": "password",
+      "characterName": "Amorine"
+    },
+    {
+      "accountName": "accName12",
+      "password": "password",
+      "characterName": "Thana"
+    },
+    {
+      "accountName": "accName13",
+      "password": "password",
+      "characterName": "Robbin"
+    },
+    {
+      "accountName": "accName14",
+      "password": "password",
+      "characterName": "Tinuviel"
+    },
+    {
+      "accountName": "accName15",
+      "password": "password",
+      "characterName": "Laurelia"
+    },
+    {
+      "accountName": "accName16",
+      "password": "password",
+      "characterName": "Elleni"
+    },
+    {
+      "accountName": "accName17",
+      "password": "password",
+      "characterName": "Kaladin"
+    },
+    {
+      "accountName": "accName18",
+      "password": "password",
+      "characterName": "Malow"
+    },
+    {
+      "accountName": "accName19",
+      "password": "password",
+      "characterName": "Rosita"
+    },
+    {
+      "accountName": "accName20",
+      "password": "password",
+      "characterName": "Madeleina"
+    },
+    {
+      "accountName": "accName21",
+      "password": "password",
+      "characterName": "Skyler"
+    },
+    {
+      "accountName": "accName22",
+      "password": "password",
+      "characterName": "Trudy"
+    },
+    {
+      "accountName": "accName23",
+      "password": "password",
+      "characterName": "Connie"
+    },
+    {
+      "accountName": "accName24",
+      "password": "password",
+      "characterName": "Gaily"
+    },
+    {
+      "accountName": "accName25",
+      "password": "password",
+      "characterName": "Kimmy"
+    },
+    {
+      "accountName": "accName26",
+      "password": "password",
+      "characterName": "Kita"
+    },
+    {
+      "accountName": "accName27",
+      "password": "password",
+      "characterName": "Clemidge"
+    },
+    {
+      "accountName": "accName28",
+      "password": "password",
+      "characterName": "Ticey"
+    },
+    {
+      "accountName": "accName29",
+      "password": "password",
+      "characterName": "Nell"
+    },
+    {
+      "accountName": "accName30",
+      "password": "password",
+      "characterName": "Maligna"
+    },
+    {
+      "accountName": "accName31",
+      "password": "password",
+      "characterName": "Charnel"
+    },
+    {
+      "accountName": "accName32",
+      "password": "password",
+      "characterName": "Necria"
+    },
+    {
+      "accountName": "accName33",
+      "password": "password",
+      "characterName": "Odia"
+    },
+    {
+      "accountName": "accName41",
+      "password": "password",
+      "characterName": "Hardrac"
+    },
+    {
+      "accountName": "accName42",
+      "password": "password",
+      "characterName": "Bondrin"
+    },
+    {
+      "accountName": "accName43",
+      "password": "password",
+      "characterName": "Silmelin"
+    },
+    {
+      "accountName": "accName44",
+      "password": "password",
+      "characterName": "Noldralda"
+    },
+    {
+      "accountName": "accName38",
+      "password": "password",
+      "characterName": "Elbereth"
+    },
+    {
+      "accountName": "accName39",
+      "password": "password",
+      "characterName": "Arethel"
+    },
+    {
+      "accountName": "accName40",
+      "password": "password",
+      "characterName": "Gwethriel"
+    }
+  ],
+  "setups": {
+    "all": [
+		"Devun",
+		"Garret",
+		"Elery",
+		"Kalman",
+		"Verne",
+		"Hammond",
+		"Davrice",
+		"Carin",
+		"Emilee",
+		"Villetta",
+		"Amorine",
+		"Thana",
+		"Robbin",
+		"Tinuviel",
+		"Laurelia",
+		"Elleni",
+		"Kaladin",
+		"Rosita",
+		"Madeleina",
+		"Skyler",
+		"Trudy",
+		"Connie",
+		"Gaily",
+		"Kimmy",
+		"Kita",
+		"Clemidge",
+		"Ticey",
+		"Nell",
+		"Maligna",
+		"Charnel",
+		"Necria",
+		"Odia",
+		"Hardrac",
+		"Bondrin",
+		"Silmelin",
+		"Noldralda",
+		"Elbereth",
+		"Arethel",
+		"Gwethriel"
+	],
+    "ranged": [
+		"Tinuviel",
+		"Laurelia",
+		"Elleni",
+		"Kaladin",
+		"Rosita",
+		"Madeleina",
+		"Skyler",
+		"Trudy",
+		"Connie",
+		"Gaily",
+		"Kimmy",
+		"Kita",
+		"Clemidge",
+		"Ticey",
+		"Nell",
+		"Maligna",
+		"Charnel",
+		"Necria",
+		"Odia",
+		"Hardrac",
+		"Bondrin",
+		"Silmelin",
+		"Noldralda",
+		"Elbereth",
+		"Arethel",
+		"Gwethriel"
+	],
+    "rangednomages": [
+		"Tinuviel",
+		"Laurelia",
+		"Elleni",
+		"Kaladin",
+		"Rosita",
+		"Madeleina",
+		"Skyler",
+		"Maligna",
+		"Charnel",
+		"Necria",
+		"Odia",
+		"Hardrac",
+		"Bondrin",
+		"Silmelin",
+		"Noldralda",
+		"Elbereth",
+		"Arethel",
+		"Gwethriel"
+	],
+    "rangeddps": [
+		"Tinuviel",
+		"Laurelia",
+		"Elleni",
+		"Trudy",
+		"Connie",
+		"Gaily",
+		"Kimmy",
+		"Kita",
+		"Clemidge",
+		"Ticey",
+		"Nell",
+		"Maligna",
+		"Charnel",
+		"Necria",
+		"Odia"
+	],
+    "healers": [
+		"Kaladin",
+		"Rosita",
+		"Madeleina",
+		"Skyler",
+		"Hardrac",
+		"Bondrin",
+		"Silmelin",
+		"Noldralda",
+		"Elbereth",
+		"Arethel",
+		"Gwethriel"
+	],
+	"paladins": [
+		"Kaladin",
+		"Rosita",
+		"Madeleina",
+		"Skyler"
+	],
+    "mages": [
+		"Trudy",
+		"Connie",
+		"Gaily",
+		"Kimmy",
+		"Kita",
+		"Clemidge",
+		"Ticey",
+		"Nell"
+	],
+    "warlocks": [
+		"Maligna",
+		"Charnel",
+		"Necria",
+		"Odia"
+	],
+    "druids": [
+		"Elbereth",
+		"Arethel",
+		"Gwethriel"
+	],
+    "hunters": [
+		"Tinuviel",
+		"Laurelia",
+		"Elleni",
+	],
+    "warriors": [
+		"Devun",
+		"Garret",
+		"Elery",
+		"Kalman",
+		"Verne",
+		"Hammond",
+		"Davrice"
+	],
+    "rogues": [
+		"Carin",
+		"Emilee",
+		"Villetta",
+		"Amorine",
+		"Thana",
+		"Robbin"
+	],
+    "onymain": [
+		"Tinuviel",
+		"Laurelia",
+		"Elleni",
+		"Kaladin",
+		"Rosita",
+		"Madeleina",
+		"Skyler",
+		"Elbereth",
+		"Arethel",
+		"Gwethriel"
+	],
+    "allBuffs": [
+		"Rosita",
+		"Madeleina",
+		"Skyler",
+		"Trudy",
+		"Maligna",
+		"Gwethriel",
+		"Hardrac",
+		"Noldralda"
+	],
+    "waterfarm": [
+		"Amorine",
+		"Thana",
+		"Emilee",
+		"Verne",
+		"Davrice",
+		"Tinuviel",
+		"Laurelia",
+		"Malow",
+		"Kaladin"
+	],
+    "dmfarm": [
+		"Garret",
+		"Carin",
+		"Kaladin",
+		"Rosita",
+		"Madeleina",
+		"Skyler",
+		"Trudy",
+		"Connie",
+		"Gaily",
+		"Kimmy",
+		"Kita",
+		"Clemidge",
+		"Ticey",
+		"Nell",
+		"Maligna",
+		"Gwethriel"
+	],
+    "zg": [
+		"Maligna",
+		"Necria",
+		"Hardrac",
+		"Noldralda",
+		"Elbereth",
+		"Arethel"
+	],
+    "hakkar": [
+		"Rosita",
+		"Madeleina",
+		"Skyler",
+		"Hardrac",
+		"Silmelin",
+		"Noldralda",
+		"Gwethriel",
+		"Maligna",
+		"Trudy",
+	],
+    "priests": [
+		"Hardrac",
+		"Bondrin",
+		"Silmelin",
+		"Noldralda"
+	],
+    "proffcds": [
+		"Amorine",
+		"Thana",
+		"Carin",
+		"Tinuviel",
+		"Laurelia",
+		"Connie",
+		"Kimmy",
+		"Bondrin",
+		"Hardrac",
+		"Silmelin",
+		"Noldralda"
+	],
+    "aq": [
+		"Tinuviel",
+		"Rosita",
+		"Madeleina",
+		"Maligna",
+		"Hardrac",
+		"Bondrin",
+		"Silmelin",
+		"Noldralda",
+		"Elbereth",
+		"Gwethriel"
+	]
+  }
+}

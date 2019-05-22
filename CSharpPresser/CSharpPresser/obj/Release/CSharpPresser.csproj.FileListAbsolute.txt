@@ -1,0 +1,11 @@
+C:\MaloWDev\C#\CSharpPresser\CSharpPresser\bin\Release\CSharpPresser.exe.config
+C:\MaloWDev\C#\CSharpPresser\CSharpPresser\bin\Release\CSharpPresser.exe
+C:\MaloWDev\C#\CSharpPresser\CSharpPresser\bin\Release\CSharpPresser.pdb
+C:\MaloWDev\C#\CSharpPresser\CSharpPresser\obj\Release\CSharpPresser.csprojAssemblyReference.cache
+C:\MaloWDev\C#\CSharpPresser\CSharpPresser\obj\Release\CSharpPresser.csproj.CoreCompileInputs.cache
+C:\MaloWDev\C#\CSharpPresser\CSharpPresser\obj\Release\CSharpPresser.exe
+C:\MaloWDev\C#\CSharpPresser\CSharpPresser\obj\Release\CSharpPresser.pdb
+C:\MaloWDev\C#\CSharpPresser\CSharpPresser\bin\Release\Newtonsoft.Json.dll
+C:\MaloWDev\C#\CSharpPresser\CSharpPresser\bin\Release\Newtonsoft.Json.pdb
+C:\MaloWDev\C#\CSharpPresser\CSharpPresser\bin\Release\Newtonsoft.Json.xml
+C:\MaloWDev\C#\CSharpPresser\CSharpPresser\obj\Release\CSharpPresser.csproj.CopyComplete

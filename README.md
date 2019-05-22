@@ -7,6 +7,7 @@ Classes and specs not yet supported: Shamans, Feral or Balance Druids, Protectio
 Supported instances and bosses via specific boss-modules where needed: Full AQ-20, ZG and Onyxia support. Full MC support except for Ragnaros. Full support for Kazzak and Azuregos world-bosses. Experimental Razorgore support.
 
 Installation & Running instructions: 
+* Download and install the MobHealth3 addon found here: https://wow.curseforge.com/projects/project-2615/files
 * Install the MaloWBot addon (the other addons are optional, though I do recommend at least the MaloWBotCommander addon as well).
 * Modify the MaloWBot/Config.lua and MaloWBot/PersonalizedConfig.lua to match your raid.
 * Start 1 instance of WoW that you want to be the "Commander" and make sure that character's name is set at line 6 of MaloWBot/Config.lua instead of the "targetThatCantBeFound"-string. 

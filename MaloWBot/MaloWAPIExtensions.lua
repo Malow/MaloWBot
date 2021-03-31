@@ -412,6 +412,9 @@ function max_HasValidOffensiveTarget(rangeCheckSpell)
 	if not max_CanAttackUnit("target") then
 		return false
 	end
+	if not UnitAffectingCombat("target") then
+		return false
+	end
 	if rangeCheckSpell == nil then
 		return true
 	end
